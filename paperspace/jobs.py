@@ -12,10 +12,6 @@ import requests
 
 from . import config
 
-print('ps PAPERSPACE_API_KEY: ' + config.PAPERSPACE_API_KEY)
-print('ps CONFIG_HOST: ' + config.CONFIG_HOST)
-print('ps CONFIG_LOG_HOST: ' + config.CONFIG_LOG_HOST)
-
 def zip_to_tmp(obj_name):
     zipname = os.path.join(tempfile.gettempdir(),
                            os.path.basename(obj_name)) + '.zip'
@@ -274,11 +270,6 @@ def artifactsGet(params):
 
 
 def runas_job(params={}):
-
-    print('runas_job PAPERSPACE_API_KEY: ' + config.PAPERSPACE_API_KEY)
-    print('runas_job CONFIG_HOST: ' + config.CONFIG_HOST)
-    print('runas_job CONFIG_LOG_HOST: ' + config.CONFIG_LOG_HOST)
-
     if 'PAPERSPACE_JOB_RUNNER' in os.environ:
         return
 
