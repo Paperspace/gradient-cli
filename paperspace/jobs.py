@@ -10,13 +10,11 @@ import boto3
 import botocore
 import requests
 
-PAPERSPACE_API_KEY = ''
-CONFIG_HOST = 'https://api.paperspace.io'
-CONFIG_LOG_HOST = 'https://logs.paperspace.io'
+from . import config
 
-if 'PAPERSPACE_API_KEY' in os.environ:
-    PAPERSPACE_API_KEY = os.environ['PAPERSPACE_API_KEY']
-
+print('ps PAPERSPACE_API_KEY: ' + config.PAPERSPACE_API_KEY)
+print('ps CONFIG_HOST: ' + config.CONFIG_HOST)
+print('ps CONFIG_LOG_HOST: ' + config.CONFIG_LOG_HOST)
 
 def zip_to_tmp(obj_name):
     zipname = os.path.join(tempfile.gettempdir(),
@@ -43,7 +41,7 @@ def print_json_pretty(res):
     print(json.dumps(res, indent=2, sort_keys=True))
 
 
-def paperspace(category, method, params):
+def method(category, method, params):
 
     if method in ['artifactsGet', 'artifactsList', 'getJob', 'getJobs',
                   'getLogs']:
@@ -78,14 +76,42 @@ def paperspace(category, method, params):
             params['workspaceFileName'] = os.path.basename(workspace_file)
             del params['workspace']
 
-    r = requests.request(http_method, CONFIG_HOST + path,
-                         headers={'x-api-key': PAPERSPACE_API_KEY},
+    r = requests.request(http_method, config.CONFIG_HOST + path,
+                         headers={'x-api-key': config.PAPERSPACE_API_KEY},
                          params=params, files=files)
 
     return r.json()
 
 
-def jobs_logs(params, tail=False, json=False):
+def getJobs(params):
+    return method('jobs', 'getJobs', params)
+
+
+def artifactsList(params):
+    return method('jobs', 'artifactsList', params)
+
+
+def artifactsDestroy(params):
+    return method('jobs', 'artifactsDestroy', params)
+
+
+def getJob(params):
+    return method('jobs', 'getJob', params)
+
+
+def clone(params):
+    return method('jobs', 'clone', params)
+
+
+def stop(params):
+    return method('jobs', 'stop', params)
+
+
+def destroy(params):
+    return method('jobs', 'destroy', params)
+
+
+def logs(params, tail=False, json=False):
     last_line = 0
     PSEOF = False
     json_res = []
@@ -96,8 +122,8 @@ def jobs_logs(params, tail=False, json=False):
         params['line'] = 0
 
     while True:
-        r = requests.request('GET', CONFIG_LOG_HOST + '/jobs/logs',
-                             headers={'x-api-key': PAPERSPACE_API_KEY},
+        r = requests.request('GET', config.CONFIG_LOG_HOST + '/jobs/logs',
+                             headers={'x-api-key': config.PAPERSPACE_API_KEY},
                              params=params)
         try:
             res = r.json()
@@ -138,9 +164,9 @@ def jobs_logs(params, tail=False, json=False):
     return True
 
 
-def jobs_waitfor(params):
+def waitfor(params):
     while True:
-        job = paperspace('jobs', 'getJob', params)
+        job = method('jobs', 'getJob', params)
         if 'state' not in job:
             return job
         state = job['state']
@@ -154,8 +180,8 @@ def jobs_waitfor(params):
         time.sleep(5)
 
 
-def jobs_create(params):
-    job = paperspace('jobs', 'createJob', params)
+def create(params):
+    job = method('jobs', 'createJob', params)
     if 'id' not in job:
         print_json_pretty(job)
         return job
@@ -165,15 +191,15 @@ def jobs_create(params):
 
     if job['state'] == 'Pending':
         print('Waiting for job to run...')
-        job = jobs_waitfor({'jobId': jobId, 'state': 'Running'})
+        job = waitfor({'jobId': jobId, 'state': 'Running'})
         if 'state' not in job:
             print_json_pretty(job)
             return job
 
     if job['state'] != 'Error':
         print('Awaiting logs...')
-        jobs_logs({'jobId': jobId}, tail=True)
-        job = paperspace('jobs', 'getJob', {'jobId': jobId})
+        logs({'jobId': jobId}, tail=True)
+        job = method('jobs', 'getJob', {'jobId': jobId})
         if 'state' not in job:
             print_json_pretty(job)
             return job
@@ -185,7 +211,7 @@ def jobs_create(params):
     return job
 
 
-def jobs_artifactsGet(params):
+def artifactsGet(params):
     if 'dest' in params:
         dest = os.path.abspath(os.path.expanduser(params['dest']))
         if not os.path.exists(dest):
@@ -198,10 +224,10 @@ def jobs_artifactsGet(params):
     else:
         dest = os.getcwd()
 
-    artifacts_list = paperspace('jobs', 'artifactsList', params)
+    artifacts_list = method('jobs', 'artifactsList', params)
     if artifacts_list:
-  
-        creds = paperspace('jobs', 'artifactsGet', params)
+
+        creds = method('jobs', 'artifactsGet', params)
         if creds:
             bucket = creds['bucket']
             folder = creds['folder']
@@ -240,7 +266,6 @@ def jobs_artifactsGet(params):
 
 
 # TO DO:
-# create/use project config
 # deal with timeouts/server unreachable
 # deal with returned errors
 # deal with invalid directories, e.g. root for workspace
@@ -249,6 +274,11 @@ def jobs_artifactsGet(params):
 
 
 def runas_job(params={}):
+
+    print('runas_job PAPERSPACE_API_KEY: ' + config.PAPERSPACE_API_KEY)
+    print('runas_job CONFIG_HOST: ' + config.CONFIG_HOST)
+    print('runas_job CONFIG_LOG_HOST: ' + config.CONFIG_LOG_HOST)
+
     if 'PAPERSPACE_JOB_RUNNER' in os.environ:
         return
 
@@ -260,11 +290,11 @@ def runas_job(params={}):
     # TO DO: remove these replacements once we are auto importing paperspace on the job runner
     # and have defined the PAPERSPACE_JOB_RUNNER env var and passed it into the container
     src = src.replace('import paperspace', '# import paperspace')
-    src = src.replace('paperspace.PAPERSPACE_API_KEY', 'pass # paperspace.PAPERSPACE_API_KEY')
-    src = src.replace('paperspace.CONFIG_HOST', 'pass # paperspace.CONFIG_HOST')
-    src = src.replace('paperspace.CONFIG_LOG_HOST', 'pass # paperspace.CONFIG_LOG_HOST')
-    src = src.replace('paperspace.runas_job', 'paperspace_null_runas_job')
-    src = "\ndef paperspace_null_runas_job(*args, **kwargs):\n    return None\n" + src
+    src = src.replace('paperspace.config.PAPERSPACE_API_KEY', '_paperspace_config_PAPERSPACE_API_KEY')
+    src = src.replace('paperspace.config.CONFIG_HOST', '_paperspace_config_CONFIG_HOST')
+    src = src.replace('paperspace.config.CONFIG_LOG_HOST', '_paperspace_config_CONFIG_LOG_HOST')
+    src = src.replace('paperspace.jobs.runas_job', '_paperspace_jobs_null_runas_job')
+    src = "def _paperspace_jobs_null_runas_job(*args, **kwargs): return None\n" + src
 
     src_path = os.path.join(tempfile.gettempdir(), src_file)
     with open(src_path, "w") as file:
@@ -279,7 +309,7 @@ def runas_job(params={}):
     params['command'] = 'python3 ' + src_file
     params['workspace'] = src_path
 
-    jobs_create(params)
+    create(params)
     sys.exit(0)
 
 
@@ -287,3 +317,9 @@ def runas_job(params={}):
 # automatic install of imported dependencies
 # make console logging optional
 # allow return results
+# prevent interactive use
+# combine local workspace with source
+# detect/use python environment
+# set PAPERSPACE_JOB_RUNNER within job runner
+# allow specification of apiKey within runas_job call
+# allow artibitrary command with args
