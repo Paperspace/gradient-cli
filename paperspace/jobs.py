@@ -107,10 +107,10 @@ def destroy(params):
     return method('jobs', 'destroy', params)
 
 
-def logs(params, tail=False, json=False):
+def logs(params, tail=False, no_logging=False):
     last_line = 0
     PSEOF = False
-    json_res = []
+    result = []
     MAX_BACKOFF = 30
     backoff = 0
 
@@ -125,8 +125,8 @@ def logs(params, tail=False, json=False):
             res = r.json()
         except ValueError:
             res = []
-        if json:
-            json_res += res
+        if no_logging:
+            result += res
         else:
             for l in res:
                 m = l['message']
@@ -154,9 +154,8 @@ def logs(params, tail=False, json=False):
         else:
             break
 
-    if json:
-        print_json_pretty(json_res)
-        return json_res
+    if no_logging:
+         return result
     return True
 
 
@@ -176,8 +175,10 @@ def waitfor(params):
         time.sleep(5)
 
 
-def create(params):
+def create(params, no_logging=False):
     job = method('jobs', 'createJob', params)
+    if no_logging:
+        return job
     if 'id' not in job:
         print_json_pretty(job)
         return job
@@ -207,7 +208,8 @@ def create(params):
     return job
 
 
-def artifactsGet(params):
+def artifactsGet(params, no_logging=False):
+    result = []
     if 'dest' in params:
         dest = os.path.abspath(os.path.expanduser(params['dest']))
         if not os.path.exists(dest):
@@ -215,6 +217,8 @@ def artifactsGet(params):
         else:
             if not os.path.isdir(dest):
                 print('Destination path not is not directory: %s' % dest)
+                if no_logging:
+                    return result
                 return False
         del params['dest']
     else:
@@ -245,7 +249,8 @@ def artifactsGet(params):
                     os.makedirs(dest_dir)
 
                 key = folder + '/' + file
-                print('Downloading %s' % file)
+                if not no_logging:
+                    print('Downloading %s' % file)
 
                 try:
                     s3.Bucket(bucket).download_file(key, dest_file)
@@ -254,10 +259,16 @@ def artifactsGet(params):
                         print("The s3 object does not exist: %s" % key)
                     else:
                         raise
+                if no_logging:
+                    result.append({ 'file': file, 'destination': dest_file })
 
+            if no_logging:
+                return result
             print('Download complete')
             return True
 
+    if no_logging:
+        return result
     return False
 
 
@@ -269,7 +280,7 @@ def artifactsGet(params):
 # stream file uploads/downloads
 
 
-def runas_job(params={}):
+def runas_job(params={}, no_logging=False):
     if 'PAPERSPACE_JOB_RUNNER' in os.environ:
         return
 
@@ -300,7 +311,7 @@ def runas_job(params={}):
     params['command'] = 'python3 ' + src_file
     params['workspace'] = src_path
 
-    create(params)
+    create(params, no_logging)
     sys.exit(0)
 
 
