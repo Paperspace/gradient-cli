@@ -325,8 +325,10 @@ def runas_job(params={}, no_logging=False):
     src = src.replace('paperspace.config.PAPERSPACE_API_KEY', '_paperspace_config_PAPERSPACE_API_KEY')
     src = src.replace('paperspace.config.CONFIG_HOST', '_paperspace_config_CONFIG_HOST')
     src = src.replace('paperspace.config.CONFIG_LOG_HOST', '_paperspace_config_CONFIG_LOG_HOST')
-    src = src.replace('paperspace.jobs.runas_job', '_paperspace_jobs_null_runas_job')
-    src = "def _paperspace_jobs_null_runas_job(*args, **kwargs): return None\n" + src
+    src = src.replace('paperspace.jobs.runas_job', '_paperspace_null_func')
+    src = src.replace('paperspace.login', '_paperspace_null_func')
+    src = src.replace('paperspace.logout', '_paperspace_null_func')
+    src = "def _paperspace_null_func(*args, **kwargs): return None\n" + src
 
     src_path = os.path.join(tempfile.gettempdir(), src_file)
     with open(src_path, "w") as file:
