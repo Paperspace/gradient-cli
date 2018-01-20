@@ -4,6 +4,7 @@ import os
 import sys
 
 import requests
+from six.moves import input
 
 from . import config
 from .method import *
@@ -38,7 +39,7 @@ def login(email=None, password=None, apiToken=None):
         config_data = json.load(open(config_path))
 
     if not email:
-        email = raw_input('Email: ')
+        email = input('Email: ')
     if not password:
         password = getpass.getpass('Password: ')
 

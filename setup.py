@@ -28,5 +28,5 @@ setup(
     ],
     keywords='paperspace api development library',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    install_requires=['requests[security]', 'boto3', 'botocore'],
+    install_requires=['requests[security]', 'boto3', 'botocore', 'six'],
 )
