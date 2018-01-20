@@ -2,8 +2,6 @@ import paperspace
 
 # Tests:
 
-paperspace.config.PAPERSPACE_API_KEY = '14a4bc1cbc414...'
-
 project = 'myproject'
 print('project: %s' % project)
 
