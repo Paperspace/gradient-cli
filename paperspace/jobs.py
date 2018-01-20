@@ -12,6 +12,7 @@ import requests
 
 from . import config
 from .login import apikey
+from .method import *
 
 def zip_to_tmp(obj_name):
     zipname = os.path.join(tempfile.gettempdir(),
@@ -86,20 +87,9 @@ def method(category, method, params):
         return requests_exception_to_error_obj(e)
 
     try:
-        return r.json()
+        return response_error_check(r.json())
     except ValueError:
-        return status_code_to_error_obj(status_code)
-
-
-def requests_exception_to_error_obj(e):
-    return { 'error': { 'message': str(e) } }
-
-
-def status_code_to_error_obj(status_code):
-    message = 'unknown'
-    if status_code in requests.status_codes._codes:
-        message = requests.status_codes._codes[status_code][0]
-    return { 'error': { 'message': message, 'status': status_code } }
+        return status_code_to_error_obj(r.status_code)
 
 
 def getJobs(params):
@@ -147,41 +137,60 @@ def logs(params, tail=False, no_logging=False):
         params['line'] = 0
 
     while True:
-        r = requests.request('GET', config.CONFIG_LOG_HOST + '/jobs/logs',
-                             headers={'x-api-key': config.PAPERSPACE_API_KEY},
-                             params=params)
         try:
-            res = r.json()
-        except ValueError:
-            res = []
-        if no_logging:
-            result += res
+            r = requests.request('GET', config.CONFIG_LOG_HOST + '/jobs/logs',
+                                 headers={'x-api-key': config.PAPERSPACE_API_KEY},
+                                 params=params)
+        except requests.exceptions.RequestException as e:
+            res = requests_exception_to_error_obj(e)
+            if no_logging:
+                return res
+            print_json_pretty(res)
+            return False
         else:
-            for l in res:
-                m = l['message']
-                if m != 'PSEOF':
-                    print(m)
+            try:
+                res = r.json()
+                if 'error' in res:
+                    if no_logging:
+                        return res
+                    print_json_pretty(res)
+                    if tail:
+                        print('Error: logs tail exited before job completed')
+                    else:
+                        print('Error: logs exited on error')
+                    return False
 
-        if res:
-            last_line = res[-1]['line']
-            PSEOF = res[-1]['message'] == 'PSEOF'
+            except ValueError:
+                res = []
 
-        if PSEOF:
-            break
-
-        if last_line > params['line']:
-            params['line'] = last_line
-            backoff = 0
-            continue
-
-        if tail:
-            if backoff:
-                time.sleep(backoff)
-                backoff = min(backoff * 2, MAX_BACKOFF)
+            if no_logging:
+                result += res
             else:
-                backoff = 1
-        else:
-            break
+                for l in res:
+                    m = l['message']
+                    if m != 'PSEOF':
+                        print(m)
+
+            if res:
+                last_line = res[-1]['line']
+                PSEOF = res[-1]['message'] == 'PSEOF'
+
+            if PSEOF:
+                break
+
+            if last_line > params['line']:
+                params['line'] = last_line
+                backoff = 0
+                continue
+
+            if tail:
+                if backoff:
+                    time.sleep(backoff)
+                    backoff = min(backoff * 2, MAX_BACKOFF)
+                else:
+                    backoff = 1
+            else:
+                break
 
     if no_logging:
          return result
@@ -224,8 +233,10 @@ def create(params, no_logging=False):
 
     if job['state'] != 'Error':
         print('Awaiting logs...')
-        logs({'jobId': jobId}, tail=True)
-        job = method('jobs', 'getJob', {'jobId': jobId})
+        if logs({'jobId': jobId}, tail=True):
+            job = method('jobs', 'getJob', {'jobId': jobId})
+        else:
+            job = waitfor({'jobId': jobId, 'state': 'Stopped'})
         if 'state' not in job:
             print_json_pretty(job)
             return job
@@ -257,7 +268,7 @@ def artifactsGet(params, no_logging=False):
     if artifacts_list:
 
         creds = method('jobs', 'artifactsGet', params)
-        if creds:
+        if 'bucket' in creds:
             bucket = creds['bucket']
             folder = creds['folder']
             credentials = creds['Credentials']
@@ -295,6 +306,11 @@ def artifactsGet(params, no_logging=False):
                 return result
             print('Download complete')
             return True
+        else:
+            if no_logging:
+                return creds
+            print_json_pretty(creds)
+            return False
 
     if no_logging:
         return result

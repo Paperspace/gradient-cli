@@ -6,22 +6,26 @@ import sys
 import requests
 
 from . import config
+from .method import *
 
 
-def errorcheck(res, *args):
+def is_error_or_missing_keys_print(res, *required_keys):
     if 'error' in res:
-        if 'message' in res['error']:
-            print(res['error']['message'])
-            return False
-        print(json.dumps(res, indent=2, sort_keys=True))
-        return False
-    elif not all(key in res for key in args):
         if 'message' in res:
             print(res['message'])
-            return False
+            return True
+        if 'message' in res['error']:
+            print(res['error']['message'])
+            return True
         print(json.dumps(res, indent=2, sort_keys=True))
-        return False   
-    return True
+        return True
+    elif not all(key in res for key in required_keys):
+        if 'message' in res:
+            print(res['message'])
+            return True
+        print(json.dumps(res, indent=2, sort_keys=True))
+        return True
+    return False
 
 
 def login(email=None, password=None, apiToken=None):
@@ -34,29 +38,45 @@ def login(email=None, password=None, apiToken=None):
         config_data = json.load(open(config_path))
 
     if not email:
-        email = input('Email: ')
+        email = raw_input('Email: ')
     if not password:
         password = getpass.getpass('Password: ')
 
     # get access_token
     params = { "email": email, "password": password }
-    r = requests.request('post', config.CONFIG_HOST + '/users/login',
-                         json=params)
-    res = r.json() 
+    try:
+        r = requests.request('post', config.CONFIG_HOST + '/users/login',
+                             json=params)
+    except requests.exceptions.RequestException as e:
+        res = requests_exception_to_error_obj(e)
+    else:
+        try:
+            res = response_error_check(r.json())
+        except ValueError:
+            res = status_code_to_error_obj(r.status_code)
 
-    if not errorcheck(res, 'id'):
-        return False     
+    if is_error_or_missing_keys_print(res, 'id'):
+        return False
 
     # get api key using access_token
     params = { 'access_token': res['id'] }
     if apiToken:
         params['apiToken'] = apiToken
-    r = requests.request('post', config.CONFIG_HOST + '/apiTokens/createPublic',
-                         params=params)
-    api_token = r.json()
-    
-    if not errorcheck(api_token, 'key', 'name'):
-        return False     
+    try:
+        r = requests.request('post', config.CONFIG_HOST + '/apiTokens/createPublic',
+                             params=params)
+    except requests.exceptions.RequestException as e:
+        res = requests_exception_to_error_obj(e)
+    else:
+        try:
+            res = response_error_check(r.json())
+        except ValueError:
+            res = status_code_to_error_obj(r.status_code)
+
+    if is_error_or_missing_keys_print(res, 'key', 'name'):
+        return False
+
+    api_token = res
 
     # update config.PAPERSPACE_API_KEY
     config.PAPERSPACE_API_KEY = api_token['key']
@@ -91,6 +111,14 @@ def logout():
             outfile.write('\n')
 
 if __name__ == '__main__':
-	email, password, apiToken, *rest = sys.argv[1:] + [None] * 3
-	if not login(email, password, apiToken):
-		sys.exit(1)
+    email = None
+    password = None
+    apiToken = None
+    if len(sys.argv) > 1:
+        email = sys.argv[1]
+    if len(sys.argv) > 2:
+        password = sys.argv[2]
+    if len(sys.argv) > 3:
+        apiToken = sys.argv[3]
+    if not login(email, password, apiToken):
+        sys.exit(1)
