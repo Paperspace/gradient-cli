@@ -78,11 +78,28 @@ def method(category, method, params):
             params['workspaceFileName'] = os.path.basename(workspace_file)
             del params['workspace']
 
-    r = requests.request(http_method, config.CONFIG_HOST + path,
-                         headers={'x-api-key': config.PAPERSPACE_API_KEY},
-                         params=params, files=files)
+    try:
+        r = requests.request(http_method, config.CONFIG_HOST + path,
+                             headers={'x-api-key': config.PAPERSPACE_API_KEY},
+                             params=params, files=files)
+    except requests.exceptions.RequestException as e:
+        return requests_exception_to_error_obj(e)
 
-    return r.json()
+    try:
+        return r.json()
+    except ValueError:
+        return status_code_to_error_obj(status_code)
+
+
+def requests_exception_to_error_obj(e):
+    return { 'error': { 'message': str(e) } }
+
+
+def status_code_to_error_obj(status_code):
+    message = 'unknown'
+    if status_code in requests.status_codes._codes:
+        message = requests.status_codes._codes[status_code][0]
+    return { 'error': { 'message': message, 'status': status_code } }
 
 
 def getJobs(params):
