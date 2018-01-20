@@ -39,7 +39,10 @@ def print_json_pretty(res):
 
 
 def method(category, method, params):
-    if not config.PAPERSPACE_API_KEY:
+    if 'apiKey' in params:
+        config.PAPERSPACE_API_KEY = params['apiKey']
+        del params['apiKey']
+    elif not config.PAPERSPACE_API_KEY:
         config.PAPERSPACE_API_KEY = apikey()
 
     if method in ['artifactsGet', 'artifactsList', 'getJob', 'getJobs',
@@ -111,7 +114,10 @@ def destroy(params):
 
 
 def logs(params, tail=False, no_logging=False):
-    if not config.PAPERSPACE_API_KEY:
+    if 'apiKey' in params:
+        config.PAPERSPACE_API_KEY = params['apiKey']
+        del params['apiKey']
+    elif not config.PAPERSPACE_API_KEY:
         config.PAPERSPACE_API_KEY = apikey()
 
     last_line = 0
