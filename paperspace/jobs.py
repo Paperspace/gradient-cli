@@ -11,6 +11,7 @@ import botocore
 import requests
 
 from . import config
+from .login import apikey
 
 def zip_to_tmp(obj_name):
     zipname = os.path.join(tempfile.gettempdir(),
@@ -38,6 +39,8 @@ def print_json_pretty(res):
 
 
 def method(category, method, params):
+    if not config.PAPERSPACE_API_KEY:
+        config.PAPERSPACE_API_KEY = apikey()
 
     if method in ['artifactsGet', 'artifactsList', 'getJob', 'getJobs',
                   'getLogs']:
@@ -108,6 +111,9 @@ def destroy(params):
 
 
 def logs(params, tail=False, no_logging=False):
+    if not config.PAPERSPACE_API_KEY:
+        config.PAPERSPACE_API_KEY = apikey()
+
     last_line = 0
     PSEOF = False
     result = []
