@@ -304,6 +304,7 @@ def runas_job(params={}, no_logging=False):
     # TO DO: remove these replacements once we are auto importing paperspace on the job runner
     # and have defined the PAPERSPACE_JOB_RUNNER env var and passed it into the container
     src = src.replace('import paperspace', '# import paperspace')
+    src = src.replace('from paperspace', '# from paperspace')
     src = src.replace('paperspace.config.PAPERSPACE_API_KEY', '_paperspace_config_PAPERSPACE_API_KEY')
     src = src.replace('paperspace.config.CONFIG_HOST', '_paperspace_config_CONFIG_HOST')
     src = src.replace('paperspace.config.CONFIG_LOG_HOST', '_paperspace_config_CONFIG_LOG_HOST')
