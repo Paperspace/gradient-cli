@@ -20,14 +20,11 @@ def main():
         while args:
             opt = args.pop(0)
             if opt == '--email':
-                if args:
-                    email = args.pop(0)
+                email = args.pop(0) if args else None
             elif opt == '--password':
-                if args:
-                    password = args.pop(0)
+                password = args.pop(0) if args else None
             elif opt == '--apiToken':
-                if args:
-                    apiToken = args.pop(0)
+                apiToken = args.pop(0) if args else None
             elif not email:
                 email = opt
             elif not password:
