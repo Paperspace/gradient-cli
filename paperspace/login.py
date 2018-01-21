@@ -110,16 +110,4 @@ def logout():
         with open(config_path, 'w') as outfile:
             json.dump(config_data, outfile, indent=2, sort_keys=True)
             outfile.write('\n')
-
-if __name__ == '__main__':
-    email = None
-    password = None
-    apiToken = None
-    if len(sys.argv) > 1:
-        email = sys.argv[1]
-    if len(sys.argv) > 2:
-        password = sys.argv[2]
-    if len(sys.argv) > 3:
-        apiToken = sys.argv[3]
-    if not login(email, password, apiToken):
-        sys.exit(1)
+    return True

@@ -18,25 +18,25 @@ Sample usage
 
 4. Download your api key by executing the following:
 
-    python -m paperspace.login
+    paperspace login
 
-  Follow the prompts to enter your Paperspace email and password.
+   Follow the prompts to enter your Paperspace email and password.
 
-  You can also enter your credentials directly on the command line as follows:
+   You can also enter your credentials directly on the command line as follows:
 
-    python -m paperspace.login <email> <password> [<api_token_name>]
+    paperspace login <email> <password> [<api_token_name>]
 
-  Note: your api key is cached in ~/.paperspace/config.json
-  You can remove your cached api key by executing:
+   Note: your api key is cached in ~/.paperspace/config.json
+   You can remove your cached api key by executing:
 
-    python -m paperspace.logout
+    paperspace logout
 
 5. Execute the sample script hello.py:
 
     python hello.py
 
-  The script will be run on the remote job cluster node, and its output will be
-  logged locally.
+   The script will be run on the remote job cluster node, and its output will be
+   logged locally.
 
 
 A slightly more complex example
@@ -71,8 +71,9 @@ Other Authentication options
 
     (on linux:) export PAPERSPACE_API_KEY=1qks1hKsU7e1k...
 
-  Note: the above methods take precedence over use of the cached api key in
+   Note: the above methods take precedence over use of the cached api key in
    ~/.paperspace/config.json
+
 
 Contributing
 ============
