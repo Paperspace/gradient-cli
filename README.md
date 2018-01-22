@@ -71,7 +71,7 @@ Other Authentication options
 
     (on linux/mac:) `export PAPERSPACE_API_KEY=1qks1hKsU7e1k...`
 
-    (on windows:) `setx PAPERSPACE_API_KEY "1qks1hKsU7e1k..."`
+    (on windows:) `set PAPERSPACE_API_KEY=1qks1hKsU7e1k...`
 
    Note: the above methods take precedence over use of the cached api key in
    `~/.paperspace/config.json`
