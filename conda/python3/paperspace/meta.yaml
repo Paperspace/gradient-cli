@@ -1,0 +1,53 @@
+{% set name = "paperspace" %}
+{% set version = "0.0.8" %}
+{% set file_ext = "tar.gz" %}
+{% set hash_type = "sha256" %}
+{% set hash_value = "2a096ac789499ff03f2419b3499415d5fa717218de6f0400e4661e8fd73385ad" %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  fn: '{{ name }}-{{ version }}.{{ file_ext }}'
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ file_ext }}
+  '{{ hash_type }}': '{{ hash_value }}'
+
+build:
+  number: 0
+  entry_points:
+    - paperspace = paperspace.main:main
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - requests
+    - boto3
+    - botocore
+    - six
+  run:
+    - python
+    - requests
+    - boto3
+    - botocore
+    - six
+
+test:
+  imports:
+    - paperspace
+  commands:
+
+about:
+  home: https://github.com/paperspace/paperspace-python
+  license: ISC License (ISCL)
+  license_family: OTHER
+  license_file: ''
+  summary: Paperspace API for Python
+  description: "Paperspace API for Python"
+  doc_url: ''
+  dev_url: ''
+
+extra:
+  recipe-maintainers: ''
