@@ -14,26 +14,26 @@ Sample usage
 
 3. Use pip or pipenv to install the paperspace-python package:
 
-    pip install paperspace
+    `pip install paperspace`
 
 4. Download your api key by executing the following:
 
-    paperspace login
+    `paperspace login`
 
    Follow the prompts to enter your Paperspace email and password.
 
    You can also enter your credentials directly on the command line as follows:
 
-    paperspace login <email> <password> [<api_token_name>]
+    `paperspace login <email> <password> [<api_token_name>]`
 
    Note: your api key is cached in ~/.paperspace/config.json
    You can remove your cached api key by executing:
 
-    paperspace logout
+    `paperspace logout`
 
 5. Execute the sample script hello.py:
 
-    python hello.py
+    `python hello.py`
 
    The script will be run on the remote job cluster node, and its output will be
    logged locally.
@@ -60,11 +60,11 @@ Other Authentication options
 ============================
 1. Specify your apiKey explicitly on any of the paperspace.jobs methods, e.g.:
 
-    paperspace.jobs.create({'apiKey': '1qks1hKsU7e1k...', 'project': 'myproject', 'machineType': 'GPU+', 'container': 'Test-Container'})
+    `paperspace.jobs.create({'apiKey': '1qks1hKsU7e1k...', 'project': 'myproject', 'machineType': 'GPU+', 'container': 'Test-Container'})`
 
 2. Set the package paperspace.config option in your python code:
 
-    paperspace.config.PAPERSPACE_API_KEY = '1qks1hKsU7e1k...'
+    `paperspace.config.PAPERSPACE_API_KEY = '1qks1hKsU7e1k...'`
 
 
 3. Set the PAPERSPACE_API_KEY environment variable:
@@ -72,7 +72,7 @@ Other Authentication options
     (on linux:) export PAPERSPACE_API_KEY=1qks1hKsU7e1k...
 
    Note: the above methods take precedence over use of the cached api key in
-   ~/.paperspace/config.json
+   `~/.paperspace/config.json`
 
 
 Contributing
