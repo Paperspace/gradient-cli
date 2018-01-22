@@ -41,7 +41,7 @@ Sample usage
 
 A slightly more complex example
 ===============================
-    # tests/test_remote.py
+    # test/test_remote.py
     import os
     import paperspace
 
@@ -69,7 +69,9 @@ Other Authentication options
 
 3. Set the PAPERSPACE_API_KEY environment variable:
 
-    (on linux:) export PAPERSPACE_API_KEY=1qks1hKsU7e1k...
+    (on linux/mac:) `export PAPERSPACE_API_KEY=1qks1hKsU7e1k...`
+
+    (on windows:) `setx PAPERSPACE_API_KEY "1qks1hKsU7e1k..."`
 
    Note: the above methods take precedence over use of the cached api key in
    `~/.paperspace/config.json`
