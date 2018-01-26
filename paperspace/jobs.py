@@ -318,15 +318,13 @@ def artifactsGet(params, no_logging=False):
 
 
 # TO DO:
-# deal with timeouts/server unreachable
-# deal with returned errors
 # deal with invalid directories, e.g. root for workspace
 # detect running interactively
 # stream file uploads/downloads
 
 
 def runas_job(params={}, no_logging=False):
-    if 'PAPERSPACE_JOB_RUNNER' in os.environ:
+    if 'PS_JOB_RUNNER' in os.environ:
         return
 
     stack = inspect.stack()
@@ -335,7 +333,6 @@ def runas_job(params={}, no_logging=False):
     src_file = os.path.basename(inspect.getsourcefile(obj))
 
     # TO DO: remove these replacements once we are auto importing paperspace on the job runner
-    # and have defined the PAPERSPACE_JOB_RUNNER env var and passed it into the container
     src = src.replace('import paperspace', '# import paperspace')
     src = src.replace('from paperspace', '# from paperspace')
     src = src.replace('paperspace.config.PAPERSPACE_API_KEY', '_paperspace_config_PAPERSPACE_API_KEY')
@@ -370,6 +367,3 @@ def runas_job(params={}, no_logging=False):
 # prevent interactive use
 # combine local workspace with source
 # detect/use python environment
-# set PAPERSPACE_JOB_RUNNER within job runner
-# allow specification of apiKey within runas_job call
-# allow artibitrary command with args
