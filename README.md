@@ -1,5 +1,5 @@
-Paperspace API for Python
-=========================
+Paperspace Python
+=================
 
 Sample usage
 ============
@@ -18,24 +18,24 @@ Sample usage
 
 4. Download your api key by executing the following:
 
-    `paperspace login`
+    `paperspace-python login`
 
    Follow the prompts to enter your Paperspace email and password.
 
    You can also enter your credentials directly on the command line as follows:
 
-    `paperspace login <email> <password> [<api_token_name>]`
+    `paperspace-python login <email> <password> [<api_token_name>]`
 
    Note: your api key is cached in ~/.paperspace/config.json
    You can remove your cached api key by executing:
 
-    `paperspace logout`
+    `paperspace-logout logout`
 
-5. Execute the sample script hello.py:
+5. Execute the sample Python script hello.py:
 
     `python hello.py`
 
-   The script will be run on the remote job cluster node, and its output will be
+   The script will be run on the Paperspace job cluster node, and its output will be
    logged locally.
 
 
