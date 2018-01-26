@@ -10,8 +10,8 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='paperspace',
-    version='0.0.8',
-    description='Paperspace API for Python',
+    version='0.0.9',
+    description='Paperspace Python',
     long_description=long_description,
     url='https://github.com/paperspace/paperspace-python',
     author='Paperspace Co.',
@@ -30,6 +30,6 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     install_requires=['requests[security]', 'boto3', 'botocore', 'six'],
     entry_points={'console_scripts': [
-        'paperspace = paperspace.main:main',
+        'paperspace-python = paperspace.main:main',
     ]},
 )

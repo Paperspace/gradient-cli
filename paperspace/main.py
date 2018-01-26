@@ -1,6 +1,7 @@
 import sys
 import os
 
+from . import __version__
 from .login import login, logout
 
 
@@ -10,8 +11,17 @@ def main():
 
     if not args:
         usage(prog)
+        sys.exit(1)
 
     cmd = args.pop(0)
+
+    if cmd in ['help', '--help', '-h']:
+        usage(prog)
+        sys.exit(0)
+
+    if cmd in ['version', '--version', '-v']:
+        vers()
+        sys.exit(0)
 
     if cmd == 'login':
         email = None
@@ -37,8 +47,11 @@ def main():
         return not logout()
 
     usage(prog)
+    sys.exit(1)
 
+
+def vers():
+    print('paperspace-python %s' % __version__)
 
 def usage(prog):
-    print('usage: %s login [[--email] <user@domain.com>] [[--password] <secretpw>] [[--apiToken] <api token name>]\n       %s logout' % (prog, prog))
-    sys.exit(1)
+    print('usage: %s login [[--email] <user@domain.com>] [[--password] "<secretpw>"] [[--apiToken] "<api token name>"]\n       %s logout' % (prog, prog))
