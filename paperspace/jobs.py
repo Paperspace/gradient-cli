@@ -208,7 +208,8 @@ def waitfor(params):
            or (state == 'Running' and params['state'] == 'Pending')
            or state == 'Error'
            or state == 'Stopped'
-           or state == 'Failed'):
+           or state == 'Failed'
+           or state == 'Cancelled'):
             return job
         time.sleep(5)
 
@@ -231,7 +232,7 @@ def create(params, no_logging=False):
             print_json_pretty(job)
             return job
 
-    if job['state'] != 'Error':
+    if job['state'] != 'Error' and job['state'] != 'Cancelled':
         print('Awaiting logs...')
         if logs({'jobId': jobId}, tail=True):
             job = method('jobs', 'getJob', {'jobId': jobId})
@@ -241,10 +242,12 @@ def create(params, no_logging=False):
             print_json_pretty(job)
             return job
 
-    if job['state'] != 'Error':
-        print('Job %s; exitCode %d' % (job['state'], job['exitCode']))
-    else:
+    if job['state'] == 'Error':
         print('Job %s: %s' % (job['state'], job['jobError']))
+    elif job['state'] == 'Cancelled':
+        print('Job %s' % (job['state']))
+    else:
+        print('Job %s; exitCode %d' % (job['state'], job['exitCode']))
     return job
 
 
