@@ -29,7 +29,7 @@ Upload Package to Anaconda.org
 ------------------------------
 anaconda login
 
-anaconda upload /home/sanfilip/miniconda3/conda-bld/linux-64/paperspace-X.X.X-py36_0.tar.bz2
+anaconda upload ~/miniconda3/conda-bld/linux-64/paperspace-X.X.X-py36_0.tar.bz2
 
 anaconda logout
 

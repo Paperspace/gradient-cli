@@ -1,8 +1,8 @@
 {% set name = "paperspace" %}
-{% set version = "0.0.8" %}
+{% set version = "0.0.9" %}
 {% set file_ext = "tar.gz" %}
 {% set hash_type = "sha256" %}
-{% set hash_value = "2a096ac789499ff03f2419b3499415d5fa717218de6f0400e4661e8fd73385ad" %}
+{% set hash_value = "674c422e1cf775c7ac8d31fe144191aae22a68ecef308d78559abbf0e4b6aa39" %}
 
 package:
   name: '{{ name|lower }}'
@@ -16,7 +16,7 @@ source:
 build:
   number: 0
   entry_points:
-    - paperspace = paperspace.main:main
+    - paperspace-python = paperspace.main:main
   script: python setup.py install --single-version-externally-managed --record=record.txt
 
 requirements:
@@ -38,14 +38,15 @@ test:
   imports:
     - paperspace
   commands:
+    - paperspace-python --help
 
 about:
   home: https://github.com/paperspace/paperspace-python
   license: ISC License (ISCL)
   license_family: OTHER
   license_file: ''
-  summary: Paperspace API for Python
-  description: "Paperspace API for Python"
+  summary: Paperspace Python
+  description: "Paperspace Python"
   doc_url: ''
   dev_url: ''
 
