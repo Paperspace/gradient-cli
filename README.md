@@ -12,7 +12,7 @@ Sample usage
    Wait for an email confirmation indicating your account has been approved
    before proceeding.
 
-3. Use pip or pipenv to install the paperspace-python package:
+3. Use pip, pipenv, or conda to install the paperspace-python package, e.g.:
 
     `pip install paperspace`
 
@@ -45,7 +45,7 @@ A slightly more complex example
     import os
     import paperspace
 
-    paperspace.jobs.runas_job({'project': 'myproject', 'machineType': 'GPU+', 'container': 'Test-Container'})
+    paperspace.run({'project': 'myproject', 'machineType': 'GPU+', 'container': 'Test-Container'})
 
     print(os.getcwd())
     print('something useful')
@@ -65,7 +65,6 @@ Other Authentication options
 2. Set the package paperspace.config option in your python code:
 
     `paperspace.config.PAPERSPACE_API_KEY = '1qks1hKsU7e1k...'`
-
 
 3. Set the PAPERSPACE_API_KEY environment variable:
 

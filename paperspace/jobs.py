@@ -92,7 +92,7 @@ def method(category, method, params):
         return status_code_to_error_obj(r.status_code)
 
 
-def getJobs(params):
+def list(params):
     return method('jobs', 'getJobs', params)
 
 
@@ -104,7 +104,7 @@ def artifactsDestroy(params):
     return method('jobs', 'artifactsDestroy', params)
 
 
-def getJob(params):
+def show(params):
     return method('jobs', 'getJob', params)
 
 
@@ -323,7 +323,7 @@ def artifactsGet(params, no_logging=False):
 # stream file uploads/downloads
 
 
-def runas_job(params={}, no_logging=False):
+def run(params={}, no_logging=False):
     if 'PS_JOB_RUNNER' in os.environ:
         return
 
@@ -338,7 +338,8 @@ def runas_job(params={}, no_logging=False):
     src = src.replace('paperspace.config.PAPERSPACE_API_KEY', '_paperspace_config_PAPERSPACE_API_KEY')
     src = src.replace('paperspace.config.CONFIG_HOST', '_paperspace_config_CONFIG_HOST')
     src = src.replace('paperspace.config.CONFIG_LOG_HOST', '_paperspace_config_CONFIG_LOG_HOST')
-    src = src.replace('paperspace.jobs.runas_job', '_paperspace_null_func')
+    src = src.replace('paperspace.jobs.run', '_paperspace_null_func')
+    src = src.replace('paperspace.run', '_paperspace_null_func')
     src = src.replace('paperspace.login', '_paperspace_null_func')
     src = src.replace('paperspace.logout', '_paperspace_null_func')
     src = "def _paperspace_null_func(*args, **kwargs): return None\n" + src

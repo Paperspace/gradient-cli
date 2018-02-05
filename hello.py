@@ -1,5 +1,5 @@
 import paperspace
 
-paperspace.jobs.runas_job()
+paperspace.run()
 
 print('hello paperspace-python!')

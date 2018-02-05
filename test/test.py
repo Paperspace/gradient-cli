@@ -11,8 +11,8 @@ def errorcheck(res):
         paperspace.print_json_pretty(res)
         sys.exit(1)
 
-print("paperspace.jobs.getJobs({'project': project})")
-jobs = paperspace.jobs.getJobs({'project': project})
+print("paperspace.jobs.list({'project': project})")
+jobs = paperspace.jobs.list({'project': project})
 errorcheck(jobs)
 for job in jobs:
     print(job['id'])
@@ -35,8 +35,8 @@ if not paperspace.jobs.artifactsGet({'jobId': jobId, 'dest': '~/temp1'}):
     print('paperspace.jobs.artifactsGet returned False')
     sys.exit(1)
 
-print("paperspace.jobs.getJob({'jobId': jobId})")
-job = paperspace.jobs.getJob({'jobId': jobId})
+print("paperspace.jobs.show({'jobId': jobId})")
+job = paperspace.jobs.show({'jobId': jobId})
 paperspace.print_json_pretty(job)
 
 print("paperspace.jobs.logs({'jobId': jobId, 'limit': 4}, tail=True)")
@@ -73,8 +73,8 @@ if artifacts:
     if artifacts:
         paperspace.print_json_pretty(artifacts)
 
-print("paperspace.jobs.getJobs({'project': project})")
-jobs = paperspace.jobs.getJobs({'project': project})
+print("paperspace.jobs.list({'project': project})")
+jobs = paperspace.jobs.list({'project': project})
 errorcheck(jobs)
 for job in jobs:
     print(job['id'])
@@ -83,8 +83,8 @@ print("paperspace.jobs.destroy({'jobId': clonedJob['id']})")
 res = paperspace.jobs.destroy({'jobId': clonedJob['id']})
 paperspace.print_json_pretty(res)
 
-print("paperspace.jobs.getJobs({'project': project})")
-jobs = paperspace.jobs.getJobs({'project': project})
+print("paperspace.jobs.list({'project': project})")
+jobs = paperspace.jobs.list({'project': project})
 errorcheck(jobs)
 for job in jobs:
     print(job['id'])
