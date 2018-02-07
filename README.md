@@ -29,7 +29,7 @@ Sample usage
    Note: your api key is cached in ~/.paperspace/config.json
    You can remove your cached api key by executing:
 
-    `paperspace-logout logout`
+    `paperspace-python logout`
 
 5. Execute the sample Python script hello.py:
 
