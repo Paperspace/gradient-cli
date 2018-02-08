@@ -8,6 +8,10 @@ verify_ssl = true
 [packages]
 
 "e1839a8" = {path = ".", editable = true}
+requests = {extras = ["security"]}
+"boto3" = "*"
+botocore = "*"
+six = "*"
 
 
 [dev-packages]
