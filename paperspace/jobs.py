@@ -1,6 +1,7 @@
 import inspect
 import json
 import os
+import re
 import sys
 import tempfile
 import time
@@ -40,11 +41,13 @@ def print_json_pretty(res):
 
 
 def method(category, method, params):
+    params = params.copy()
     if 'apiKey' in params:
-        config.PAPERSPACE_API_KEY = params['apiKey']
-        del params['apiKey']
+        config.PAPERSPACE_API_KEY = params.pop('apiKey')
     elif not config.PAPERSPACE_API_KEY:
         config.PAPERSPACE_API_KEY = apikey()
+    params.pop('tail', None)
+    params.pop('no_logging', None)
 
     if method in ['artifactsGet', 'artifactsList', 'getJob', 'getJobs',
                   'getLogs']:
@@ -121,11 +124,13 @@ def destroy(params):
 
 
 def logs(params, tail=False, no_logging=False):
+    params = params.copy()
     if 'apiKey' in params:
-        config.PAPERSPACE_API_KEY = params['apiKey']
-        del params['apiKey']
+        config.PAPERSPACE_API_KEY = params.pop('apiKey')
     elif not config.PAPERSPACE_API_KEY:
         config.PAPERSPACE_API_KEY = apikey()
+    tail = params.pop('tail', False) or tail
+    no_logging = params.pop('no_logging', False) or no_logging
 
     last_line = 0
     PSEOF = False
@@ -215,6 +220,7 @@ def waitfor(params):
 
 
 def create(params, no_logging=False):
+    no_logging = no_logging or params.get('no_logging', False)
     job = method('jobs', 'createJob', params)
     if no_logging:
         return job
@@ -252,6 +258,8 @@ def create(params, no_logging=False):
 
 
 def artifactsGet(params, no_logging=False):
+    params = params.copy()
+    no_logging = no_logging or params.get('no_logging', False)
     result = []
     if 'dest' in params:
         dest = os.path.abspath(os.path.expanduser(params['dest']))
@@ -330,44 +338,76 @@ def run(params={}, no_logging=False):
     if 'PS_JOB_RUNNER' in os.environ:
         return
 
-    stack = inspect.stack()
-    obj = __import__(stack[1][0].f_globals['__name__'])
-    src = inspect.getsource(obj)
-    src_file = os.path.basename(inspect.getsourcefile(obj))
+    params = params.copy()
+    run_this = False
+    if 'script' not in params:
+        run_this = True
 
-    # TO DO: remove these replacements once we are auto importing paperspace on the job runner
-    src = src.replace('import paperspace', '# import paperspace')
-    src = src.replace('from paperspace', '# from paperspace')
-    src = src.replace('paperspace.config.PAPERSPACE_API_KEY', '_paperspace_config_PAPERSPACE_API_KEY')
-    src = src.replace('paperspace.config.CONFIG_HOST', '_paperspace_config_CONFIG_HOST')
-    src = src.replace('paperspace.config.CONFIG_LOG_HOST', '_paperspace_config_CONFIG_LOG_HOST')
-    src = src.replace('paperspace.jobs.run', '_paperspace_null_func')
-    src = src.replace('paperspace.run', '_paperspace_null_func')
-    src = src.replace('paperspace.login', '_paperspace_null_func')
-    src = src.replace('paperspace.logout', '_paperspace_null_func')
-    src = "def _paperspace_null_func(*args, **kwargs): return None\n" + src
+        stack = inspect.stack()
+        obj = __import__(stack[1][0].f_globals['__name__'])
+        src = inspect.getsource(obj)
+        src_file = os.path.basename(inspect.getsourcefile(obj))
 
-    src_path = os.path.join(tempfile.gettempdir(), src_file)
-    with open(src_path, "w") as file:
-        file.write(src)
+        # TO DO: remove these replacements once we are auto importing paperspace on the job runner
+        src, n = re.subn('^import paperspace', 'def _paperspace_null_func(*args, **kwargs): return None\n#import _paperspace', src, count=1, flags=re.MULTILINE)
+        if n != 0:
+            src = re.sub('^import paperspace*$', '', src, flags=re.MULTILINE)
+            src = re.sub('import paperspace', 'pass #import _paperspace', src)
+            src = re.sub('^from paperspace', '#from _paperspace', src, flags=re.MULTILINE)
+            src = re.sub('from paperspace', 'pass #from _paperspace', src)
+            src = src.replace('paperspace.config.PAPERSPACE_API_KEY', '_paperspace_config_PAPERSPACE_API_KEY')
+            src = src.replace('paperspace.config.CONFIG_HOST', '_paperspace_config_CONFIG_HOST')
+            src = src.replace('paperspace.config.CONFIG_LOG_HOST', '_paperspace_config_CONFIG_LOG_HOST')
+            src = src.replace('paperspace.jobs.run', '_paperspace_null_func')
+            src = src.replace('paperspace.run', '_paperspace_null_func')
+            src = src.replace('paperspace.login', '_paperspace_null_func')
+            src = src.replace('paperspace.logout', '_paperspace_null_func')
+
+        # XXX TEST CODE
+        #print(src)
+        #sys.exit(0)
+
+        src_path = os.path.join(tempfile.gettempdir(), src_file)
+        with open(src_path, "w") as file:
+            file.write(src)
+    else:
+        src_file = os.path.basename(params['script'])
+        src_path = params.pop('script')
 
     if 'project' not in params:
         params['project'] = 'paperspace-python'
     if 'machineType' not in params:
-        params['machineType'] = 'GPU+'
+        params['machineType'] = 'P5000'
     if 'container' not in params:
-        params['container'] = 'Test-Container'
-    params['command'] = 'python3 ' + src_file
-    params['workspace'] = src_path
+        params['container'] = 'paperspace/tensorflow-python'
+    if 'command' not in params:
+        # TODO validate python version; handle no version, specific version
+        python_ver = params['python'] if 'python' in params else str(sys.version_info[0])
+        params['command'] = 'python' + python_ver + ' ' + src_file
+        if 'workspace' not in params or run_this:
+            params['workspace'] = src_path
 
-    create(params, no_logging)
-    sys.exit(0)
+    # XXX TEST CODE
+    #print(params)
+
+    params.pop('python', None)
+    params.pop('conda', None)
+    params.pop('init', None)
+    params.pop('req', None)
+    params.pop('pipenv', None)
+
+    # XXX TEST CODE
+    #print('edited', params)
+    #return {}
+
+    res = create(params, no_logging)
+    if run_this:
+        sys.exit(0)
+    return res
 
 
 # TO DO:
 # automatic install of imported dependencies
-# make console logging optional
 # allow return results
-# prevent interactive use
 # combine local workspace with source
 # detect/use python environment
