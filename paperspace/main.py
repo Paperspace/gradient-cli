@@ -2,7 +2,8 @@ import sys
 import os
 
 from . import __version__
-from .login import login, logout
+from .login import login, logout, set_apikey
+from .jobs import run, print_json_pretty
 
 
 def main():
@@ -15,12 +16,14 @@ def main():
 
     cmd = args.pop(0)
 
-    if cmd in ['help', '--help', '-h']:
+    help_opts = ['help', '--help', '-h']
+
+    if cmd in help_opts:
         usage(prog)
         sys.exit(0)
 
     if cmd in ['version', '--version', '-v']:
-        vers()
+        vers(prog)
         sys.exit(0)
 
     if cmd == 'login':
@@ -29,7 +32,10 @@ def main():
         apiToken = None
         while args:
             opt = args.pop(0)
-            if opt == '--email':
+            if opt in help_opts:
+                print('usage: %s' % login_usage(prog))
+                sys.exit(0)
+            elif opt == '--email':
                 email = args.pop(0) if args else None
             elif opt == '--password':
                 password = args.pop(0) if args else None
@@ -44,14 +50,82 @@ def main():
         return not login(email, password, apiToken)
 
     if cmd == 'logout':
+        if args:
+            print('usage: %s logout' % prog)
+            sys.exit(not (args[0] in help_opts))
         return not logout()
 
+    if cmd == 'apikey' or cmd == 'apiKey':
+        if not args or args[0] in help_opts:
+            print('usage: %s' % apikey_usage(prog))
+            sys.exit(not args)
+        return not set_apikey(args[0])
+
+    if cmd == 'run':
+        if not args or args[0] in help_opts:
+            print('run usage: %s' % run_usage(prog))
+            sys.exit(not args)
+        params = {}
+        while args:
+            opt = args.pop(0)
+            if opt.startswith('--'):
+                param = opt[2:]
+                if param in ['script', 'python', 'apiKey', 'container', 'machineType', 'name', 'project', 'projectId', 'command',
+                    'workspace', 'dataset', 'registryUsername', 'registryPassword', 'workspaceUsername', 'workspacePassword']:
+                    if args and not args[0].startswith('--'):
+                        params[param] = args.pop(0)
+                    else:
+                        print('error: missing argument for %s' % opt)
+                        print('usage: %s' % run_usage(prog))
+                        sys.exit(1)
+                elif param in ['init', 'req', 'pipenv']:
+                    params[param] = True
+                    if args and not args[0].startswith('--') and not args[0].endswith('.py'):
+                        params[param] = args.pop(0)
+                elif param in ['conda', 'no_logging']:
+                    params[param] = True
+                else:
+                    print('error: invalid option: %s' % opt)
+                    print('usage: %s' % run_usage(prog))
+                    sys.exit(1)
+            elif 'script' not in params:
+                params['script'] = opt
+            else:
+                print('error: invalid argument: %s' % opt)
+                print('usage: %s' % run_usage(prog))
+                sys.exit(1)
+        if 'script' not in params:
+            print('usage: %s' % run_usage(prog))
+            sys.exit(1)
+        res = run(params)
+        if 'error' in res:
+            print_json_pretty(res)
+            sys.exit(1)
+        sys.exit(0)
+
+    print('error: invalid command: %s' % cmd)
     usage(prog)
     sys.exit(1)
 
 
-def vers():
-    print('paperspace-python %s' % __version__)
+def vers(prog):
+    print('%s %s' % (prog, __version__))
+
+
+def login_usage(prog):
+    return format('%s login [[--email] <user@domain.com>] [[--password] "<secretpw>"] [[--apiToken] "<api token name>"]\n       %s logout' % (prog, prog))
+
+
+def apikey_usage(prog):
+    return format('%s apikey <api_key>' % prog)
+
+
+def run_usage(prog):
+    return format('%s run <python_script.py> [--python 2 | 3] [--conda] [--init [<script.sh>] | --req [<requirements.txt>] | --pipenv [<Pipfile>[,<Pipfile.lock>]]]' % prog)
+
 
 def usage(prog):
-    print('usage: %s login [[--email] <user@domain.com>] [[--password] "<secretpw>"] [[--apiToken] "<api token name>"]\n       %s logout' % (prog, prog))
+    print('usage: %s' % login_usage(prog))
+    print('       %s' % apikey_usage(prog))
+    print('       %s' % run_usage(prog))
+    print('       %s version' % prog)
