@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='paperspace',
-    version='0.0.9',
+    version='0.0.10',
     description='Paperspace Python',
     long_description=long_description,
     url='https://github.com/paperspace/paperspace-python',
