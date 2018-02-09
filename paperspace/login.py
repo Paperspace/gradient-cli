@@ -102,6 +102,25 @@ def apikey():
     return ''
 
 
+def set_apikey(apikey):
+    paperspace_dir = os.path.expanduser('~/.paperspace')
+    config_path = os.path.join(paperspace_dir, 'config.json')
+    if not os.path.exists(paperspace_dir):
+        os.makedirs(paperspace_dir)
+    config_data = {}
+
+    # update config.PAPERSPACE_API_KEY
+    config.PAPERSPACE_API_KEY = apikey
+
+    # save api key
+    config_data['apiKey'] = apikey
+    with open(config_path, 'w') as outfile:
+        json.dump(config_data, outfile, indent=2, sort_keys=True)
+        outfile.write('\n')
+
+    return True
+
+
 def logout():
     paperspace_dir = os.path.expanduser('~/.paperspace')
     config_path = os.path.join(paperspace_dir, 'config.json')
