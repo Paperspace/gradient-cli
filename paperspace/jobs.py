@@ -338,6 +338,16 @@ def run(params={}, no_logging=False):
     if 'PS_JOB_RUNNER' in os.environ:
         return
 
+    # handle script is first arg, params is second
+    if isinstance(params, str):
+        script = params
+        if isinstance(no_logging, dict):
+            params = no_logging
+            no_logging = False
+        else:
+            params = {}
+        params['script'] = script
+
     params = params.copy()
     run_this = False
     if 'script' not in params:
