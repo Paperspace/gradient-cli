@@ -15,24 +15,29 @@ from . import config
 from .login import apikey
 from .method import *
 
-def zip_to_tmp(obj_name):
+def zip_to_tmp(files, ignore_files=[]):
+    file = files[0]
     zipname = os.path.join(tempfile.gettempdir(),
-                           os.path.basename(obj_name)) + '.zip'
+                           os.path.basename(os.path.abspath(os.path.expanduser(file)))) + '.zip'
     outZipFile = zipfile.ZipFile(zipname, 'w', zipfile.ZIP_DEFLATED)
-
-    if os.path.isdir(obj_name):
-        for dirpath, dirnames, filenames in os.walk(obj_name):
-            for filename in dirnames + filenames:
-                filepath = os.path.join(dirpath, filename)
-                basename = os.path.basename(filepath)
-                if ('/.git/' not in filepath
-                   and basename not in ['.git', '.gitignore']):
-                    arcname = os.path.relpath(filepath, obj_name)
-                    outZipFile.write(filepath, arcname)
-    else:
-        outZipFile.write(obj_name, os.path.basename(obj_name))
-
-    outZipFile.close()
+    files_added = set()
+    with outZipFile:
+        for file in files:
+            if os.path.isdir(file):
+                for dirpath, dirnames, filenames in os.walk(file):
+                    dirnames[:] = [d for d in dirnames if d not in ignore_files]
+                    for filename in filenames:
+                        if filename not in ignore_files:
+                            filepath = os.path.join(dirpath, filename)
+                            arcname = os.path.relpath(filepath, file)
+                            if arcname not in files_added:
+                                outZipFile.write(filepath, arcname)
+                                files_added.add(arcname)
+            else:
+                arcname = os.path.basename(file)
+                if arcname not in files_added:
+                    outZipFile.write(file, arcname)
+                    files_added.add(arcname)
     return zipname
 
 
@@ -47,7 +52,9 @@ def method(category, method, params):
     elif not config.PAPERSPACE_API_KEY:
         config.PAPERSPACE_API_KEY = apikey()
     params.pop('tail', None)
-    params.pop('no_logging', None)
+    no_logging = params.pop('no_logging', None)
+    workspace_files = params.pop('extraFiles', [])
+    ignore_files = params.pop('ignoreFiles', [])
 
     if method in ['artifactsGet', 'artifactsList', 'getJob', 'getJobs',
                   'getLogs']:
@@ -68,19 +75,39 @@ def method(category, method, params):
 
     files = None
     if method == 'createJob' and 'workspace' in params:
-        workspace = params['workspace']
-        workspace_file = None
-        if workspace and workspace != 'none':
-            workspace_path = os.path.expanduser(workspace)
-            if os.path.exists(workspace_path):
-                if (not workspace_path.endswith('.zip')
-                   and not workspace_path.endswith('.gz')):
-                    workspace_file = zip_to_tmp(workspace_path)
-                else:
-                    workspace_file = workspace_path
+
+        workspace = params.get('workspace', None)
+        ignore_files.extend(['.git', '.gitignore'])
+        if workspace:
+            if workspace != 'none':
+                workspace_files.insert(0, workspace)
+                del params['workspace']
+
+        if workspace_files:
+            workspace_file = None
+            for file in workspace_files:
+                file_path = os.path.expanduser(file)
+                if not os.path.exists(file_path):
+                    message = format('error: file or directory not found: %s' % file_path)
+                    print(message)
+                    if no_logging:
+                        return { 'error': True, 'message': message }
+                    sys.exit(1)
+                elif file_path == '/':
+                    message = 'error: cannot zip root directory'
+                    print(message)
+                    if no_logging:
+                        return { 'error': True, 'message': message }
+                    sys.exit(1)
+
+                if len(workspace_files) == 1 and (file_path.endswith('.zip') or file_path.endswith('.gz')):
+                    workspace_file = file_path
+
+            if not workspace_file:
+                workspace_file = zip_to_tmp(workspace_files, ignore_files)
+
             files = {'file': open(workspace_file, 'rb')}
             params['workspaceFileName'] = os.path.basename(workspace_file)
-            del params['workspace']
 
     try:
         r = requests.request(http_method, config.CONFIG_HOST + path,
@@ -219,7 +246,7 @@ def waitfor(params):
         time.sleep(5)
 
 
-def create(params, no_logging=False):
+def create(params, no_logging=False, extra_files=[]):
     no_logging = no_logging or params.get('no_logging', False)
     job = method('jobs', 'createJob', params)
     if no_logging:
@@ -329,7 +356,6 @@ def artifactsGet(params, no_logging=False):
 
 
 # TO DO:
-# deal with invalid directories, e.g. root for workspace
 # detect running interactively
 # stream file uploads/downloads
 
@@ -373,10 +399,6 @@ def run(params={}, no_logging=False):
             src = src.replace('paperspace.login', '_paperspace_null_func')
             src = src.replace('paperspace.logout', '_paperspace_null_func')
 
-        # XXX TEST CODE
-        #print(src)
-        #sys.exit(0)
-
         src_path = os.path.join(tempfile.gettempdir(), src_file)
         with open(src_path, "w") as file:
             file.write(src)
@@ -390,25 +412,58 @@ def run(params={}, no_logging=False):
         params['machineType'] = 'P5000'
     if 'container' not in params:
         params['container'] = 'paperspace/tensorflow-python'
+
+    python_ver = params.pop('python', str(sys.version_info[0])) # defaults locally running version
+    # TODO validate python version; handle no version, specific version
+
     if 'command' not in params:
-        # TODO validate python version; handle no version, specific version
-        python_ver = params['python'] if 'python' in params else str(sys.version_info[0])
-        params['command'] = 'python' + python_ver + ' ' + src_file
-        if 'workspace' not in params or run_this:
-            params['workspace'] = src_path
+         params['command'] = 'python' + python_ver + ' ' + src_file
 
-    # XXX TEST CODE
-    #print(params)
+    params['extraFiles'] = []
+    if 'workspace' not in params:
+        params['workspace'] = src_path
+    else:
+        params['extraFiles'].append(src_path)
 
-    params.pop('python', None)
-    params.pop('conda', None)
-    params.pop('init', None)
-    params.pop('req', None)
-    params.pop('pipenv', None)
+    if 'ignoreFiles' in params:
+        if isinstance(params['ignoreFiles'], str):
+            params['ignoreFiles'] = params['ignoreFiles'].split(',')
 
-    # XXX TEST CODE
-    #print('edited', params)
-    #return {}
+    req = params.pop('req', None)
+    if req:
+        if not isinstance(req, str):
+            req = 'requirements.txt'
+        if os.path.exists(req):
+            params['extraFiles'].append(req)
+        params['command'] = 'pip' + python_ver + ' install -r ' + os.path.basename(req) + '\n' + params['command']
+
+    pipenv = params.pop('pipenv', None)
+    if pipenv:
+        if isinstance(pipenv, str):
+            pipenv = pipenv.split(',')
+        elif isinstance(pipenv, bool):
+            pipenv = ['Pipfile', 'Pipfile.lock']
+        for pipfile in pipenv:
+            if os.path.exists(pipfile):
+                params['extraFiles'].append(pipfile)
+        uses_python_ver = ''
+        if python_ver.startswith('3'):
+            uses_python_ver == '--three '
+        elif python_ver.startswith('2'):
+            uses_python_ver == '--two '
+        params['command'] = 'pipenv ' + uses_python_ver + 'install\npipenv graph\n' + params['command']
+
+    conda = params.pop('conda', None)
+    if conda:
+        params['command'] = 'conda -env ' + conda + '\n' + params['command']
+
+    init = params.pop('init', None)
+    if init:
+        if not isinstance(init, str):
+            init = 'init.sh'
+        if os.path.exists(init):
+            params['extraFiles'].append(init)
+        params['command'] = '. ' + os.path.basename(init) + '\n' + params['command']
 
     res = create(params, no_logging)
     if run_this:
@@ -419,5 +474,4 @@ def run(params={}, no_logging=False):
 # TO DO:
 # automatic install of imported dependencies
 # allow return results
-# combine local workspace with source
 # detect/use python environment
