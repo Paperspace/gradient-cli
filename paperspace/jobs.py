@@ -419,6 +419,19 @@ def run(params={}, no_logging=False):
     if 'command' not in params:
          params['command'] = 'python' + python_ver + ' ' + src_file
 
+    if not os.path.exists(src_path):
+        message = format('error: file not found: %s' % src_path)
+        print(message)
+        if 'no_logging' in params:
+            return { 'error': True, 'message': message }
+        sys.exit(1)
+    elif os.path.isdir(src_path):
+        message = format('error: specified file is a directory: %s' % src_path)
+        print(message)
+        if 'no_logging' in params:
+            return { 'error': True, 'message': message }
+        sys.exit(1)
+
     params['extraFiles'] = []
     if 'workspace' not in params:
         params['workspace'] = src_path
@@ -439,11 +452,7 @@ def run(params={}, no_logging=False):
 
     pipenv = params.pop('pipenv', None)
     if pipenv:
-        if isinstance(pipenv, str):
-            pipenv = pipenv.split(',')
-        elif isinstance(pipenv, bool):
-            pipenv = ['Pipfile', 'Pipfile.lock']
-        for pipfile in pipenv:
+        for pipfile in ['Pipfile', 'Pipfile.lock']:
             if os.path.exists(pipfile):
                 params['extraFiles'].append(pipfile)
         uses_python_ver = ''
@@ -451,7 +460,7 @@ def run(params={}, no_logging=False):
             uses_python_ver == '--three '
         elif python_ver.startswith('2'):
             uses_python_ver == '--two '
-        params['command'] = 'pipenv ' + uses_python_ver + 'install\npipenv graph\n' + params['command']
+        params['command'] = 'pipenv ' + uses_python_ver + 'install\n' + params['command']
 
     conda = params.pop('conda', None)
     if conda:
