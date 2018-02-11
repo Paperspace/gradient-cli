@@ -70,20 +70,21 @@ def main():
             opt = args.pop(0)
             if opt.startswith('--'):
                 param = opt[2:]
-                if param in ['script', 'python', 'apiKey', 'container', 'machineType', 'name', 'project', 'projectId', 'command',
-                    'workspace', 'dataset', 'registryUsername', 'registryPassword', 'workspaceUsername', 'workspacePassword']:
+                if param in ['script', 'python', 'conda', 'ignoreFiles', 'apiKey', 'container', 'machineType', 'name',
+                    'project', 'projectId', 'command', 'workspace', 'dataset', 'registryUsername', 'registryPassword',
+                    'workspaceUsername', 'workspacePassword']:
                     if args and not args[0].startswith('--'):
                         params[param] = args.pop(0)
                     else:
                         print('error: missing argument for %s' % opt)
                         print('usage: %s' % run_usage(prog))
                         sys.exit(1)
-                elif param in ['init', 'req', 'pipenv']:
+                elif param in ['init', 'pipenv', 'req']:
                     params[param] = True
                     if args and not args[0].startswith('--') and not args[0].endswith('.py'):
                         params[param] = args.pop(0)
-                elif param in ['conda', 'no_logging']:
-                    params[param] = True
+                elif param in ['no_logging', 'nologging', 'noLogging', 'json']:
+                    params['no_logging'] = True
                 else:
                     print('error: invalid option: %s' % opt)
                     print('usage: %s' % run_usage(prog))
@@ -121,7 +122,7 @@ def apikey_usage(prog):
 
 
 def run_usage(prog):
-    return format('%s run <python_script.py> [--python 2 | 3] [--conda] [--init [<script.sh>] | --req [<requirements.txt>] | --pipenv [<Pipfile>[,<Pipfile.lock>]]]' % prog)
+    return format('%s run <python_script.py> [--python 2 | 3] [--init [<init.sh>]] [--conda <env>] [--pipenv [Pipfile,Pipfile.lock]] [--req [<requirements.txt>] |' % prog)
 
 
 def usage(prog):
