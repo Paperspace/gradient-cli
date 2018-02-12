@@ -35,28 +35,36 @@ Sample usage
 
     `python hello.py`
 
- This sample shows how a script can automatically run itself on the Paperspace job cluster node.
- Note: the script is further modified before transfer in order to remove `paperspace` references.
+   The source of this sample script shows how a script can automatically run itself on the Paperspace job cluster node:
+
+    ```
+    import paperspace
+
+    paperspace.run()
+
+    print('hello paperspace-python!')
+    ```
+
+   Note: the source is modified before transfer to the job cluster in order to remove imported `paperspace` references.
 
 6. Execute an unmodified Python script remotely:
 
-    `paperspace-python myscript.py`
+    `paperspace-python run myscript.py`
 
- The script will be run on the Paperspace job cluster node, and its output will be logged locally.
+   The script will be run on the Paperspace job cluster node, and its output will be logged locally.
 
 
 A slightly more complex example
 ===============================
-    # tests/test_remote.py
 
+    # tests/test_remote.py - runs itself on paperspace, demonstrates setting jobs create options
     import os
-
     import paperspace
 
-    paperspace.run({'project': 'myproject', 'machineType': 'GPU+', 'container': 'Test-Container'})
+    paperspace.run({'project': 'myproject', 'machineType': 'P5000',
+                    'container': 'paperspace/tensorflow-python'})
 
     print(os.getcwd())
-
     print('something useful')
 
 
@@ -82,7 +90,8 @@ You can run an python script on paperspace from the command line as follows:
 
 You can also provide additional jobs options on the command line:
 
-    paperspace-python run myscript.py --project myproject --machineType P5000 --container Test-Container
+    paperspace-python run myscript.py --project myproject --machineType P5000 \
+     --container paperspace/tensorflow-python`
 
 Alternatively you can use the `paperspace.run()` fuction in code with, a script file name as the first argument:
 
@@ -92,7 +101,8 @@ Alternatively you can use the `paperspace.run()` fuction in code with, a script 
 
 In code you can provide additional paperspace jobs create options in a dict in the second argument to run():
 
-    paperspace.run('myscript.py', {'project': 'myproject', 'machineType': 'GPU+', 'container': 'Test-Container'})
+    paperspace.run('myscript.py', {'project': 'myproject', 'machineType': 'P5000',
+                                   'container': 'paperspace/tensorflow-python'})
 
 See the Paperspace API [jobs create](https://paperspace.github.io/paperspace-node/jobs.html#.create) documentation for the full list of jobs create options that can be specified.
 
@@ -102,7 +112,16 @@ Setting up python script dependencies remotely
 When running python scripts on paperspace you may need to provide additional dependencies to your scripts.
 The `paperspace-python run` command and `paperspace.run()` function provide several options to support this:
 
-    paperspace-python run [-m] <python_script.py> [--python 2|3] [--init [<init.sh>]] [--pipenv] [--req [<requirements.txt>] [--workspace .|<workspace_path>] [--ignoreFiles "<file-or-dir>,<file-or-dir>,..."] [other jobs create options...] [--dryrun] [script args]
+    paperspace-python run [-m] <python_script.py>
+      [--python 2|3]
+      [--init [<init.sh>]]
+      [--pipenv]
+      [--req [<requirements.txt>]]
+      [--workspace .|<workspace_path>]
+      [--ignoreFiles "<file-or-dir>,<file-or-dir>,..."]
+      [other jobs create options...]
+      [--dryrun]
+      [script args]
 
 The `-m` option runs the specified library module as a script.  This is equivalent to the `-m` option of the `python` executable.
 
@@ -158,9 +177,12 @@ See the scripts in the `tests` folder for other examples.
 
 Other Authentication options
 ============================
-1. Specify your apiKey explicitly on any of the paperspace.jobs methods, e.g.:
+1. Specify your apiKey explicitly on the paperspace.run() function or any of the paperspace.jobs methods, e.g.:
 
-    `paperspace.jobs.create({'apiKey': '1qks1hKsU7e1k...', 'project': 'myproject', 'machineType': 'GPU+', 'container': 'Test-Container'})`
+    ```
+    paperspace.jobs.create({'apiKey': '1qks1hKsU7e1k...', 'project': 'myproject',
+                            'machineType': 'P5000', 'container': 'paperspace/tensorflow-python'})
+    ```
 
 2. Set the package paperspace.config option in your python code:
 
