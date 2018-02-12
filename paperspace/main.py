@@ -81,22 +81,25 @@ def main():
                         sys.exit(1)
                 elif param in ['init', 'req']:
                     params[param] = True
-                    if args and not args[0].startswith('--') and not args[0].endswith('.py'):
+                    if args and not args[0].startswith('-') and not args[0].endswith('.py'):
                         params[param] = args.pop(0)
                 elif param in ['no_logging', 'nologging', 'noLogging', 'json']:
                     params['no_logging'] = True
-                elif param == 'pipenv':
+                elif param in ['dryrun', 'pipenv']:
                     params[param] = True
                 else:
                     print('error: invalid option: %s' % opt)
                     print('usage: %s' % run_usage(prog))
                     sys.exit(1)
+            elif opt == '-m':
+                params['module'] = True
             elif 'script' not in params:
                 params['script'] = opt
             else:
-                print('error: invalid argument: %s' % opt)
-                print('usage: %s' % run_usage(prog))
-                sys.exit(1)
+                if 'script_args' not in params:
+                    params['script_args'] = [opt]
+                else:
+                    params['script_args'].append(opt)
         if 'script' not in params:
             print('usage: %s' % run_usage(prog))
             sys.exit(1)
@@ -124,7 +127,7 @@ def apikey_usage(prog):
 
 
 def run_usage(prog):
-    return format('%s run <python_script.py> [--python 2 | 3] [--init [<init.sh>]] [--conda <env>] [--pipenv] [--req [<requirements.txt>]' % prog)
+    return format('%s run [-m] <python_script.py> [--python 2|3] [--init [<init.sh>]] [--pipenv] [--req [<requirements.txt>] [--workspace .|<workspace_path>] [other jobs create options...] [--dryrun] [script args]' % prog)
 
 
 def usage(prog):

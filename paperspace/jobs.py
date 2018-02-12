@@ -23,6 +23,7 @@ def zip_to_tmp(files, ignore_files=[]):
     files_added = set()
     with outZipFile:
         for file in files:
+            file = os.path.abspath(os.path.expanduser(file))
             if os.path.isdir(file):
                 for dirpath, dirnames, filenames in os.walk(file):
                     dirnames[:] = [d for d in dirnames if d not in ignore_files]
@@ -77,7 +78,7 @@ def method(category, method, params):
     if method == 'createJob' and 'workspace' in params:
 
         workspace = params.get('workspace', None)
-        ignore_files.extend(['.git', '.gitignore'])
+        ignore_files.extend(['.git', '.gitignore', '__pycache__'])
         if workspace:
             if workspace != 'none':
                 workspace_files.insert(0, workspace)
@@ -89,15 +90,15 @@ def method(category, method, params):
                 file_path = os.path.expanduser(file)
                 if not os.path.exists(file_path):
                     message = format('error: file or directory not found: %s' % file_path)
-                    print(message)
                     if no_logging:
                         return { 'error': True, 'message': message }
+                    print(message)
                     sys.exit(1)
                 elif file_path == '/':
                     message = 'error: cannot zip root directory'
-                    print(message)
                     if no_logging:
                         return { 'error': True, 'message': message }
+                    print(message)
                     sys.exit(1)
 
                 if len(workspace_files) == 1 and (file_path.endswith('.zip') or file_path.endswith('.gz')):
@@ -157,7 +158,7 @@ def logs(params, tail=False, no_logging=False):
     elif not config.PAPERSPACE_API_KEY:
         config.PAPERSPACE_API_KEY = apikey()
     tail = params.pop('tail', False) or tail
-    no_logging = params.pop('no_logging', False) or no_logging
+    no_logging = no_logging or params.pop('no_logging', False)
 
     last_line = 0
     PSEOF = False
@@ -267,7 +268,7 @@ def create(params, no_logging=False, extra_files=[]):
 
     if job['state'] != 'Error' and job['state'] != 'Cancelled':
         print('Awaiting logs...')
-        if logs({'jobId': jobId}, tail=True):
+        if logs({'jobId': jobId}, tail=True, no_logging=no_logging):
             job = method('jobs', 'getJob', {'jobId': jobId})
         else:
             job = waitfor({'jobId': jobId, 'state': 'Stopped'})
@@ -416,8 +417,17 @@ def run(params={}, no_logging=False):
     python_ver = params.pop('python', str(sys.version_info[0])) # defaults locally running version
     # TODO validate python version; handle no version, specific version
 
+    run_as_module_opt = ''
+    if params.pop('module', None):
+        run_as_module_opt = '-m '
+
+    script_args = params.pop('script_args', None)
+    args = ''
+    if script_args:
+        args = ' ' + ' '.join(script_args)
+
     if 'command' not in params:
-         params['command'] = 'python' + python_ver + ' ' + src_file
+         params['command'] = 'python' + python_ver + ' ' + run_as_module_opt + src_file + args
 
     if not os.path.exists(src_path):
         message = format('error: file not found: %s' % src_path)
@@ -472,7 +482,11 @@ def run(params={}, no_logging=False):
             init = 'init.sh'
         if os.path.exists(init):
             params['extraFiles'].append(init)
-        params['command'] = '. ' + os.path.basename(init) + '\n' + params['command']
+        params['command'] = 'source ' + os.path.basename(init) + '\n' + params['command']
+
+    if params.pop('dryrun', None):
+        print(params['command'])
+        sys.exit(1)
 
     res = create(params, no_logging)
     if run_this:
