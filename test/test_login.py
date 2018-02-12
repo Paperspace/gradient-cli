@@ -9,5 +9,5 @@ jobs = paperspace.jobs.list({'project': 'all'})
 if 'error' in jobs:
     paperspace.print_json_pretty(jobs)
 else:
-    if jobs:
-        print(jobs[-1]['id'])
+    for job in jobs:
+        print(job['id'])
