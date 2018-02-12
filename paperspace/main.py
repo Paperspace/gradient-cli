@@ -127,7 +127,16 @@ def apikey_usage(prog):
 
 
 def run_usage(prog):
-    return format('%s run [-m] <python_script.py> [--python 2|3] [--init [<init.sh>]] [--pipenv] [--req [<requirements.txt>] [--workspace .|<workspace_path>] [other jobs create options...] [--dryrun] [script args]' % prog)
+    return format('%s run [-m] <python_script.py>\n'
+        '    [--python 2|3]\n'
+        '    [--init [<init.sh>]]\n'
+        '    [--pipenv]\n'
+        '    [--req [<requirements.txt>]]\n'
+        '    [--workspace .|<workspace_path>]\n'
+        '    [--ignoreFiles "<file-or-dir>,<file-or-dir>,..."]\n'
+        '    [other jobs create options...]\n'
+        '    [--dryrun]\n'
+        '    [script args]' % prog)
 
 
 def usage(prog):
