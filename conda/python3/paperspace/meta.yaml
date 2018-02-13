@@ -1,8 +1,8 @@
 {% set name = "paperspace" %}
-{% set version = "0.0.9" %}
+{% set version = "0.0.10" %}
 {% set file_ext = "tar.gz" %}
 {% set hash_type = "sha256" %}
-{% set hash_value = "674c422e1cf775c7ac8d31fe144191aae22a68ecef308d78559abbf0e4b6aa39" %}
+{% set hash_value = "e1b839a9eba4fd8194072ba3984ebec9e0dbda12d5bf232bd24a1b92e3ae29d6" %}
 
 package:
   name: '{{ name|lower }}'
