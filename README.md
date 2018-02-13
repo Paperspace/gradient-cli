@@ -94,7 +94,7 @@ You can also provide additional jobs options on the command line:
     paperspace-python run myscript.py --project myproject --machineType P5000 \
      --container paperspace/tensorflow-python`
 
-Alternatively you can use the `paperspace.run()` fuction in code with, a script file name as the first argument:
+Alternatively you can use the `paperspace.run()` fuction in code with a script file name as the first argument:
 
     import paperspace
 
