@@ -66,9 +66,12 @@ def main():
             print('run usage: %s' % run_usage(prog))
             sys.exit(not args)
         params = {}
+        skip_arg_processing = False
         while args:
             opt = args.pop(0)
-            if opt.startswith('--'):
+            if opt == '-':
+                skip_arg_processing = True
+            elif opt.startswith('--') and not skip_arg_processing:
                 param = opt[2:]
                 if param in ['script', 'python', 'conda', 'ignoreFiles', 'apiKey', 'container', 'machineType', 'name',
                     'project', 'projectId', 'command', 'workspace', 'dataset', 'registryUsername', 'registryPassword',
@@ -91,8 +94,12 @@ def main():
                     print('error: invalid option: %s' % opt)
                     print('usage: %s' % run_usage(prog))
                     sys.exit(1)
-            elif opt == '-m':
-                params['module'] = True
+            elif opt == '-m' and not skip_arg_processing:
+                params['run_module'] = True
+                skip_arg_processing = True
+            elif opt == '-c' and not skip_arg_processing:
+                params['run_command'] = True
+                skip_arg_processing = True
             elif 'script' not in params:
                 params['script'] = opt
             else:
@@ -100,9 +107,6 @@ def main():
                     params['script_args'] = [opt]
                 else:
                     params['script_args'].append(opt)
-        if 'script' not in params:
-            print('usage: %s' % run_usage(prog))
-            sys.exit(1)
         res = run(params)
         if 'error' in res:
             print_json_pretty(res)
@@ -127,16 +131,17 @@ def apikey_usage(prog):
 
 
 def run_usage(prog):
-    return format('%s run [-m] <python_script.py>\n'
+    return format('%s run [options] [[-m] <script> [args] | -c "python code" | --command "shell cmd"]\n'
+        '    options:\n'
         '    [--python 2|3]\n'
         '    [--init [<init.sh>]]\n'
         '    [--pipenv]\n'
         '    [--req [<requirements.txt>]]\n'
         '    [--workspace .|<workspace_path>]\n'
-        '    [--ignoreFiles "<file-or-dir>,<file-or-dir>,..."]\n'
-        '    [other jobs create options...]\n'
+        '    [--ignoreFiles "<file-or-dir>,..."]\n'
+        '    [jobs create options]\n'
         '    [--dryrun]\n'
-        '    [script args]' % prog)
+        '    [-]' % prog)
 
 
 def usage(prog):
