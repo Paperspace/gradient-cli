@@ -80,8 +80,8 @@ errorcheck(jobs)
 for job in jobs:
     print(job['id'])
 
-print("paperspace.jobs.destroy({'jobId': '%s'})" % jobId)
-res = paperspace.jobs.destroy({'jobId': '%s'})
+print("paperspace.jobs.destroy({'jobId': '%s'})" % clonedJob['id'])
+res = paperspace.jobs.destroy({'jobId': clonedJob['id']})
 paperspace.print_json_pretty(res)
 
 print("paperspace.jobs.list({'project': '%s'})" % project)
