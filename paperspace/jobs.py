@@ -375,6 +375,16 @@ def run(params={}, no_logging=False):
             params = {}
         params['script'] = script
 
+    python_opt = ''
+    python_cmd_str_term = ''
+    run_module = params.pop('run_module', None)
+    if run_module:
+        python_opt = '-m '
+    run_command = params.pop('run_command', None)
+    if run_command:
+        python_opt = "-c '"
+        python_cmd_str_term = "' "
+
     params = params.copy()
     run_this = False
     if 'script' not in params:
@@ -404,8 +414,12 @@ def run(params={}, no_logging=False):
         with open(src_path, "w") as file:
             file.write(src)
     else:
-        src_file = os.path.basename(params['script'])
-        src_path = params.pop('script')
+        if not run_module and not run_command:
+            src_file = os.path.basename(params['script'])
+            src_path = params.pop('script')
+        else:
+            src_file = params.pop('script')
+            src_path = src_file
 
     if 'project' not in params:
         params['project'] = 'paperspace-python'
@@ -417,48 +431,42 @@ def run(params={}, no_logging=False):
     python_ver = params.pop('python', str(sys.version_info[0])) # defaults locally running version
     # TODO validate python version; handle no version, specific version
 
-    run_as_module_opt = ''
-    if params.pop('module', None):
-        run_as_module_opt = '-m '
-
     script_args = params.pop('script_args', None)
     args = ''
     if script_args:
         args = ' ' + ' '.join(script_args)
 
     if 'command' not in params:
-         params['command'] = 'python' + python_ver + ' ' + run_as_module_opt + src_file + args
-
-    if not os.path.exists(src_path):
-        message = format('error: file not found: %s' % src_path)
-        print(message)
-        if 'no_logging' in params:
-            return { 'error': True, 'message': message }
-        sys.exit(1)
-    elif os.path.isdir(src_path):
-        message = format('error: specified file is a directory: %s' % src_path)
-        print(message)
-        if 'no_logging' in params:
-            return { 'error': True, 'message': message }
-        sys.exit(1)
+         params['command'] = 'python' + python_ver + ' ' + python_opt + src_file + python_cmd_str_term + args
 
     params['extraFiles'] = []
-    if 'workspace' not in params:
-        params['workspace'] = src_path
+    if not run_module and not run_command:
+        if not os.path.exists(src_path):
+            message = format('error: file not found: %s' % src_path)
+            print(message)
+            if 'no_logging' in params:
+                return { 'error': True, 'message': message }
+            sys.exit(1)
+        elif os.path.isdir(src_path):
+            message = format('error: specified file is a directory: %s' % src_path)
+            print(message)
+            if 'no_logging' in params:
+                return { 'error': True, 'message': message }
+            sys.exit(1)
+        if 'workspace' not in params:
+            params['workspace'] = src_path
+        else:
+            params['extraFiles'].append(src_path)
     else:
-        params['extraFiles'].append(src_path)
+        if not run_command and os.path.exists(src_path) and not os.path.isdir(src_path):
+            if 'workspace' not in params:
+                params['workspace'] = src_path
+            else:
+                params['extraFiles'].append(src_path)
 
     if 'ignoreFiles' in params:
         if isinstance(params['ignoreFiles'], str):
             params['ignoreFiles'] = params['ignoreFiles'].split(',')
-
-    req = params.pop('req', None)
-    if req:
-        if not isinstance(req, str):
-            req = 'requirements.txt'
-        if os.path.exists(req):
-            params['extraFiles'].append(req)
-        params['command'] = 'pip' + python_ver + ' install -r ' + os.path.basename(req) + '\n' + params['command']
 
     pipenv = params.pop('pipenv', None)
     if pipenv:
@@ -467,9 +475,22 @@ def run(params={}, no_logging=False):
                 params['extraFiles'].append(pipfile)
         uses_python_ver = ''
         if python_ver.startswith('3'):
-            uses_python_ver == '--three '
+            uses_python_ver = '--three '
         elif python_ver.startswith('2'):
-            uses_python_ver == '--two '
+            uses_python_ver = '--two '
+        params['command'] = 'pipenv ' + uses_python_ver + 'run ' + params['command']
+
+    req = params.pop('req', None)
+    if req:
+        if not isinstance(req, str):
+            req = 'requirements.txt'
+        if os.path.exists(req):
+            params['extraFiles'].append(req)
+        params['command'] = 'pip' + python_ver + ' install -r ' + os.path.basename(req) + '\n' + params['command']
+        if pipenv:
+            params['command'] = 'pipenv ' + uses_python_ver + 'run ' + params['command']
+
+    if pipenv:
         params['command'] = 'pipenv ' + uses_python_ver + 'install\n' + params['command']
 
     conda = params.pop('conda', None)
