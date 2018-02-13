@@ -1,8 +1,8 @@
 Paperspace Python
 =================
 
-Sample usage
-============
+Getting Started
+===============
 1. Make sure you have a Paperspace account set up. Go to http://paperspace.com
    to register.
 
@@ -31,7 +31,7 @@ Sample usage
 
     `paperspace-python logout`
 
-5. Execute the sample Python script hello.py:
+5. Run the sample script hello.py using Python:
 
     `python hello.py`
 
@@ -47,15 +47,16 @@ Sample usage
 
    Note: the source is modified before transfer to the job cluster in order to remove imported `paperspace` references.
 
-6. Execute an unmodified Python script remotely:
+6. Use paperspace-python to run a python script remotely:
 
     `paperspace-python run myscript.py`
 
    The script will be run on the Paperspace job cluster node, and its output will be logged locally.
 
 
-A slightly more complex example
-===============================
+Specifying jobs options within a script
+=======================================
+This example shows how a script can specify paperspace jobs options for itself, such as `project` name, `machineType`, and a `container` reference:
 
     # tests/test_remote.py - runs itself on paperspace, demonstrates setting jobs create options
     import os
@@ -68,18 +69,18 @@ A slightly more complex example
     print('something useful')
 
 
-Automatic running of the current python script remotely
-=======================================================
-The above example demonstrate running a python script locally and having that script transmit itself to the paperspace jobs cluster for further execution.  To do this a copy of the local script is modified before transmission to the jobs cluster, in order to strip out the `import paperspace` statements and other `paperspace` library references. There are also some limitations on the types of import statements that are supported, and the dependencies that are supported in each environment (local vs. remote):
+Automatic running of a python script remotely
+=============================================
+The above example demonstrates running a python script locally and having that script transmit itself to the paperspace jobs cluster for further execution.  To do this a copy of the local script is modified before transmission to the jobs cluster, in order to strip out the `import paperspace` statements and other `paperspace` library references. There are also some limitations on the types of import statements that are supported, and the dependencies that are supported in each environment (local vs. remote):
 
 1. You need to use a bare import statement, `import paperspace`, and not use the `import paperspace as ...` form.
 2. The import form `from paperspace import ...` is currently not supported.
 3. Everything after the `paperspace.run()` function call is ignored when running locally (when no script name is provided).  The local script execution stops after the `paperspace.run()` call.
 4. Dependencies that are included before `paperspace.run()` must be available locally.
 5. If you need to reference dependencies that are not available locally but are available remotely, those should be imported after the `paperspace.run()` call.
-6. Dependencies that are needed remotely need to either be already installed in the container used for the job, or need to be installed using one of the techniques below in the section [Setting up python script dependencies remotely](#setting-up-python-script-dependencies-remotely)
+6. Dependencies that are needed remotely need to either be already installed in the container used for the job, or need to be installed using one of the techniques below in the section [Dependency Options](#dependency-options)
 
-Because of these limitations it may not always be appropriate to run python scripts automatically from within the same script file.  As an alternative you can run your python scripts unmodified using the techniques in the next section.
+Because of these limitations it may not always be appropriate to run python scripts automatically from within the same script file.  As an alternative you can run your python scripts unmodified using the techniques below.
 
 
 Running a python script by name
@@ -107,29 +108,110 @@ In code you can provide additional paperspace jobs create options in a dict in t
 See the Paperspace API [jobs create](https://paperspace.github.io/paperspace-node/jobs.html#.create) documentation for the full list of jobs create options that can be specified.
 
 
-Setting up python script dependencies remotely
-==============================================
-When running python scripts on paperspace you may need to provide additional dependencies to your scripts.
-The `paperspace-python run` command and `paperspace.run()` function provide several options to support this:
+Using paperspace-python run
+===========================
+The `paperspace-python run` command provides a number of options to run python code and other commands remotely, as well as copy files and set up python dependencies:
 
-    paperspace-python run [-m] <python_script.py>
+    paperspace-python run [options] [[-m] <script> [args] | -c "python code" | --command "shell cmd"]
+      options:
       [--python 2|3]
       [--init [<init.sh>]]
       [--pipenv]
       [--req [<requirements.txt>]]
       [--workspace .|<workspace_path>]
-      [--ignoreFiles "<file-or-dir>,<file-or-dir>,..."]
-      [other jobs create options...]
+      [--ignoreFiles "<file-or-dir>,..."]
+      [jobs create options]
       [--dryrun]
-      [script args]
+      [-]
 
-The `-m` option runs the specified library module as a script.  This is equivalent to the `-m` option of the `python` executable.
+Basic Run Scenarios
+===================
+1. Run a python script remotely:
+
+    `paperspace-python run <python_script.py> [args]`
+
+   Example:
+
+    `paperspace-python run myscript.py a b c`
+
+2. Run a python module remotely using the `-m` option:
+
+    `paperspace-python run -m <module_path> [args]`
+
+   Example:
+
+    `paperspace-python run -m pip --version`
+
+3. Run a python command remotely using the `-c` option:
+
+    `paperspace-python run -c "python_statement;..."`
+
+   Example:
+
+    `paperspace-python run -c "import os; print(os.getcwd())"`
+
+4. Run an executable or shell command remotely using the `--command` option:
+
+    `paperspace-python run --command "<executable or shell command>"`
+
+   Example:
+
+    `paperspace-python run --command "ls -al"`
+
+Run Options
+===========
+The `<script>` option is a python script or path to a python module.  The script or module will be uploaded if it exists on the local file system.
+
+Other script`args` can be provided after the python script or module path.  You can use the `-` option to suppress interpretation of the list of script args as `paperspace-python run` options. 
+
+The `-m <module path>` option runs the specified library module as a script.  This is equivalent to the `-m` option of the `python` executable.  Further paperspace run option processing is disabled after the `-m` option.
+
+The `-c "python_statement;..."` option runs the specified python statements.  This is equivalent to the `-c` option of the `python` executable.  Further paperspace run option processing is disabled after the `-c` option.
+
+The `-` option disables further run command option processing and passes the remaining arguments to the script specified.  This allows you to pass arguments to your script that might otherwise conflict with run command options or jobs create options.
+
+The `--command "shell cmd"` option is used to run an arbitrary executable or shell command inside the container.  Note: the executable or shell command must already be available inside the container image, or be copied over using the `--workspace` option.
+
+Job Options
+===========
+The `--workspace` option allows you to specify a workspace file or directory to upload, or a git repo link to download and merge with the container.  For example, to upload the current directory along with a script file run:
+
+    paperspace-python run myscript.py --workspace .
+
+See the Paperspae API [jobs create](https://paperspace.github.io/paperspace-node/jobs.html#.create) documentation for more details on the `--workspace` option and related options.
+
+The `--ignoreFiles "<file-or-dir>,..."` option can be used specify a simple comma separated list of files and directories to ignore for the workspace upload:
+
+    paperspace-python run myscript.py --workspace . --ignoreFiles "hello.py,paperspace"
+
+The following files and directories are ignored by default: `.git`, `.gitignore`, `__pycache__`.
+
+Other `jobs create options` can be specified, such as `--machineType <machine type>`, `--container <container image reference>`, and `--project <project name>`.
+
+Here are some of the other jobs create options available:
+
+- `--project "<project name>"`  (defaults to 'paperspace-python')
+- `--machineType [GPU+|P4000|P5000|P6000|V100]`  (defaults to P5000)
+- `--container <docker image link or paperspace container name>`  (defaults to `docker.io/paperspace/tensorflow-python`)
+- `--name "<job name>"` (defaults to 'job for project <project name>')
+- `--projectId "<existing paperspace project id>"`
+- `--registryUsername "<username>"`  (for access to a private docker registry)
+- `--registryPassword "<secretpw>"`  (for access to a private docker registry)
+- `--workspaceUsername "<username>"`  (for access to a private git repo)
+- `--workspacePassword "<secretpw>"`  (for access to a private git repo)
+
+See the Paperspae API [jobs create](https://paperspace.github.io/paperspace-node/jobs.html#.create) documentation for a complete description of these options.
+
+Dependency Options
+==================
+When running python scripts on paperspace you may need to provide additional dependencies to your scripts or specify the python version.
+The `paperspace-python run` command has several options to support this: `--python`, `--init`, `--pipenv`, and `--req`. In addition you can use the `--workspace` option above to upload file dependencies.
 
 The `--python 2|3` option allows you specify whether to use `python2` or `python3` when running the script on paperspace.
 If ommitted, the script will be run with the same major version as is being used to run `paperspace-python` locally.
 
 The `--init [<init.sh>]` option is used to specify a script to be run on the remote machine, inside the container, before the python script is run.
-If the script name is ommitted, it is assumed to be the script named `init.sh` in the current directory.  The script is run using
+If the init script name is ommitted, it is assumed to be the script named `init.sh` in the current directory.  The script is run using
 `source init.sh` in the container bash shell.  You can use this option to provide a list of commands to run to set up the dependencies for the script, such as running a list of `pip install` commands.  However, if you are using `pipenv` or a `requirements.txt` file we recommend you use one of the options below.  Multiple dependency setup options can be combinded however.
 
 The `--pipenv` option is used to upload and run the `Pipfile` and `Pipfile.lock` files in the current directory, if found.  These files
@@ -138,22 +220,7 @@ are used on the paperspace machine to initialize the python environment using th
 The `--req [<requirements.txt>]` option is used specify that a `requirements.txt` file should be used to install the required python dependencies using `pip`.
 By default this option looks for a file named `requirements.txt` in the current directory, but you can override this by specifying a different file name.  Note: `pip` must already be installed in the container for this option to work.  The default container used by paperspace-python already has the `pip` package installed.
 
-The jobs create `--workspace` option is also available with any or all of the above options.
-With the `--workspace` option you can specify a workspace directory to upload.  For example, to upload the current directory along with the script file run:
-
-    paperspace-python run myscript.py --workspace .
-
-See the Paperspae API [jobs create](https://paperspace.github.io/paperspace-node/jobs.html#.create) documentation for more details on the `--workspace` option and related options.
-
-The `--ignoreFiles "<file-or-dir>,<file-or-dir>,..."` option can be used specify a simple comma separated list of files and directories to ignore for the workspace upload:
-
-    paperspace-python run myscript.py --workspace . --ignoreFiles "hello.py,paperspace"
-
-The following files and directories are ignored by default: `.git`, `.gitignore`, `__pycache__`.
-
 The `--dryrun` option allows you to see the resultant script that will be run on the paperspace job runner without actually running it.
-
-Finally, you can provide a trailing list of arguments to pass to the script.
 
 All of the above options can be combined in any combination, however, the order of operations is fixed to the following:
 
@@ -161,6 +228,8 @@ All of the above options can be combined in any combination, however, the order 
 2. `pipenv [--two|--three] install` is run if `--pipenv` is specified
 3. `pip[2|3] install -r requirements.txt` is run if `--req <requirements.txt>` is specified
 4. `python[2|3] myscript.py` is run
+
+As mentioned above, you can use the `--dryrun` option to see the resultant commands that will be run on the paperspace jobs cluster node for a given set of options, without actually running the commands.
 
 
 Default Container
