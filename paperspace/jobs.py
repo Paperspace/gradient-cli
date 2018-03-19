@@ -58,7 +58,7 @@ def method(category, method, params):
     ignore_files = params.pop('ignoreFiles', [])
 
     if method in ['artifactsGet', 'artifactsList', 'getJob', 'getJobs',
-                  'getLogs']:
+                  'getLogs', 'getClusterAvailableMachineTypes']:
 
         http_method = 'GET'
         path = '/' + category + '/' + method
@@ -149,6 +149,10 @@ def stop(params):
 
 def destroy(params):
     return method('jobs', 'destroy', params)
+
+
+def machineTypes(params = {}):
+    return method('jobs', 'getClusterAvailableMachineTypes', params)
 
 
 def logs(params, tail=False, no_logging=False):

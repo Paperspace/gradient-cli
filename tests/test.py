@@ -11,6 +11,12 @@ def errorcheck(res):
         paperspace.print_json_pretty(res)
         sys.exit(1)
 
+
+print("paperspace.jobs.machineTypes()")
+machineTypes = paperspace.jobs.machineTypes()
+errorcheck(machineTypes)
+paperspace.print_json_pretty(machineTypes)
+
 print("paperspace.jobs.list({'project': '%s'})" % project)
 jobs = paperspace.jobs.list({'project': project})
 errorcheck(jobs)
