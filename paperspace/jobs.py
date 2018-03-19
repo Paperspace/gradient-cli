@@ -261,6 +261,7 @@ def create(params, no_logging=False, extra_files=[]):
         return job
     jobId = job['id']
     print('New jobId: %s' % jobId)
+    print('Cluster: %s' % job['cluster'])
     print('Job %s' % job['state'])
 
     if job['state'] == 'Pending':
