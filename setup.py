@@ -1,16 +1,20 @@
-from setuptools import setup, find_packages
 from codecs import open
 from os import path
+from setuptools import setup, find_packages
 
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except(IOError, ImportError, OSError):
+    with open('README.md', encoding='utf-8') as f:
+        long_description = f.read()
 
 setup(
     name='paperspace',
-    version='0.0.10',
+    version='0.0.11',
     description='Paperspace Python',
     long_description=long_description,
     url='https://github.com/paperspace/paperspace-python',
