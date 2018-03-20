@@ -1,6 +1,10 @@
 Paperspace Python
 =================
 
+Release Notes
+=============
+See [releasenotes.md](https://github.com/Paperspace/paperspace-python/blob/master/releasenotes.md) for details on the current release, as well as release history.
+
 Getting Started
 ===============
 1. Make sure you have a Paperspace account set up. Go to http://paperspace.com
@@ -235,7 +239,7 @@ As mentioned above, you can use the `--dryrun` option to see the resultant comma
 Default Container
 =================
 If no `container` option is specified when using `paperspace run <script.py>` or the `paperspace.run()` function the default container image used is `paperspace/tensorflow-python` on Docker Hub.  This container has the tensorflow-gpu libraries installed for both python2 and python3, as well as several other popular packages, including numpy, scipy, scikit-learn, pandas, Pillow and matplotlib.
-It is based off the Google docker image `gcr.io/tensorflow/tensorflow:latest-gpu` with the addition of support for python3, pip3, and pipenv.
+It is based off the Google docker image `gcr.io/tensorflow/tensorflow:1.5.0-gpu` with the addition of support for python3, pip3, and pipenv.
 
 A Dockerfile for building this container image is [here](https://github.com/Paperspace/tensorflow-python/).
 
