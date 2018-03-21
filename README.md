@@ -10,17 +10,11 @@ Getting Started
 1. Make sure you have a Paperspace account set up. Go to http://paperspace.com
    to register.
 
-2. Send an email message to support@paperspace.com to request access to the
-   Paperspace API Beta program.
-
-   Wait for an email confirmation indicating your account has been approved
-   before proceeding.
-
-3. Use pip, pipenv, or conda to install the paperspace-python package, e.g.:
+2. Use pip, pipenv, or conda to install the paperspace-python package, e.g.:
 
     `pip install paperspace`
 
-4. Download your api key by executing the following:
+3. Download your api key by executing the following:
 
     `paperspace-python login`
 
@@ -35,7 +29,7 @@ Getting Started
 
     `paperspace-python logout`
 
-5. Run the sample script hello.py using Python:
+4. Run the sample script hello.py using Python:
 
     `python hello.py`
 
@@ -51,7 +45,7 @@ Getting Started
 
    Note: the source is modified before transfer to the job cluster in order to remove imported `paperspace` references.
 
-6. Use paperspace-python to run a python script remotely:
+5. Use paperspace-python to run a python script remotely:
 
     `paperspace-python run myscript.py`
 
