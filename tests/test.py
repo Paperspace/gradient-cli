@@ -23,7 +23,7 @@ errorcheck(jobs)
 for job in jobs:
     print(job['id'])
 
-print("jobs.create({'project': '%s', 'machineType': 'P5000', 'container': 'paperspace/tensorflow-python', 'command': './do.sh', 'workspace': '~/myproject3'})" % project)
+print("jobs.create({'project': '%s', 'machineType': 'P5000', 'container': 'paperspace/tensorflow-python', 'command': './do.sh', 'workspace': '~/myproject3', 'cluster': 'Gradient-Node'})" % project)
 job = paperspace.jobs.create({'project': project,
                               'machineType': 'P5000', 'container': 'paperspace/tensorflow-python',
                               'command': './do.sh', 'workspace': '~/myproject3'})
