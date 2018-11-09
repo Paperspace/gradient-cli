@@ -176,7 +176,14 @@ def create(params, no_logging=False, extra_files=[]):
     elif job['state'] == 'Cancelled':
         print('Job %s' % (job['state']))
     else:
-        print('Job %s; exitCode %d' % (job['state'], job['exitCode']))
+        job = waitfor({'jobId': jobId, 'state': 'Stopped'})
+        if job['state'] == 'Error':
+            print('Job %s: %s' % (job['state'], job['jobError']))
+        else:
+            if 'exitCode' not in job:
+                print('Job %s, exitCode %s' % (job['state'], 'None'))
+            else:
+                print('Job %s, exitCode %s' % (job['state'], job['exitCode']))
     return job
 
 
