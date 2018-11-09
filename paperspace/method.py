@@ -7,6 +7,7 @@ import zipfile
 from pprint import pprint
 
 import requests
+import subprocess
 
 from . import config
 
@@ -84,8 +85,18 @@ def method(category, method, params):
 
     files = None
     if method == 'createJob' and 'workspace' in params:
-
         workspace = params.get('workspace', None)
+        if workspace[:1] == '~':
+             workspace = os.path.expanduser(workspace)
+        if workspace.find("$") != -1:
+             workspace = os.path.expandvars(workspace)
+        if os.path.isdir(os.path.abspath(workspace)+"/.git"):
+            try:
+                git_short_hash = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'], cwd=os.path.abspath(workspace)).strip()
+                code_commit = git_short_hash.decode("utf-8")
+                params['codeCommit'] = code_commit
+            except Exception as e:
+                pass
         ignore_files.extend(['.git', '.gitignore', '__pycache__'])
         if workspace:
             if workspace != 'none':

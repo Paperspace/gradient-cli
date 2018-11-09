@@ -152,6 +152,8 @@ def create(params, no_logging=False, extra_files=[]):
     jobId = job['id']
     print('New jobId: %s' % jobId)
     print('Cluster: %s' % job['cluster'])
+    if job['codeCommit']:
+        print('Git commit: %s' % job['codeCommit'])
     print('Job %s' % job['state'])
 
     if job['state'] == 'Pending':
