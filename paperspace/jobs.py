@@ -318,8 +318,8 @@ def run(params={}, no_logging=False):
 
     if 'project' not in params:
         params['project'] = 'paperspace-python'
-    if 'machineType' not in params:
-        params['machineType'] = 'P5000'
+    # if 'machineType' not in params:
+    #     params['machineType'] = 'P5000'
     if 'container' not in params:
         params['container'] = 'paperspace/tensorflow-python'
 
