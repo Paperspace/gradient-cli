@@ -1,5 +1,14 @@
 # Paperspace Python Release Notes
 
+## Release Notes for v0.0.12
+
+#### New features
+* New cluster and machineType functionality supported: send jobs to a gradient-node based on the cluster name or clusterId
+    * For more information on running gradient-node see the [Gradient Private Cloud](https://docs.paperspace.com/gradient/private-cloud/about) docs
+* Send jobs to a specific node by specifying node attributes
+* Changed default handling of machineType: cluster preferences come first
+* Jobs create automatically records the git commit hash for local workspaces using git
+
 ## Release Notes for v0.0.11
 
 #### New features
