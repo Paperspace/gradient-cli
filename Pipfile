@@ -9,6 +9,7 @@ verify_ssl = true
 
 "e1839a8" = {path = ".", editable = true}
 requests = {extras = ["security"]}
+cryptography = {extras = ["security"]}
 "boto3" = "*"
 botocore = "*"
 six = "*"
