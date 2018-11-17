@@ -9,8 +9,7 @@ from pprint import pprint
 import requests
 import subprocess
 
-from . import config
-from . import login
+from .config import *
 
 def zip_to_tmp(files, ignore_files=[]):
     file = files[0]
@@ -48,7 +47,7 @@ def method(category, method, params):
     if 'apiKey' in params:
         config.PAPERSPACE_API_KEY = params.pop('apiKey')
     elif not config.PAPERSPACE_API_KEY:
-        config.PAPERSPACE_API_KEY = login.apikey()
+        config.PAPERSPACE_API_KEY = get_apikey()
     params.pop('tail', None)
     no_logging = params.pop('no_logging', None)
     workspace_files = params.pop('extraFiles', [])
@@ -168,3 +167,13 @@ def status_code_to_error_obj(status_code):
     if status_code in requests.status_codes._codes:
         message = requests.status_codes._codes[status_code][0]
     return { 'error': True, 'message': message, 'status': status_code }
+
+
+def get_apikey():
+    paperspace_dir = os.path.expanduser('~/.paperspace')
+    config_path = os.path.join(paperspace_dir, 'config.json')
+    if os.path.exists(config_path):
+        config_data = json.load(open(config_path))
+        if config_data and 'apiKey' in config_data:
+            return config_data['apiKey']
+    return ''

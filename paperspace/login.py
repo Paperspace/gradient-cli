@@ -6,8 +6,8 @@ import sys
 import requests
 from six.moves import input
 
-from . import config
-from .method import *
+from .config import *
+from .method import requests_exception_to_error_obj, response_error_check, status_code_to_error_obj
 
 
 def is_error_or_missing_keys_print(res, *required_keys):
