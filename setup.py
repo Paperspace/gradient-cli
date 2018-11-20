@@ -14,7 +14,7 @@ except(IOError, ImportError, OSError):
 
 setup(
     name='paperspace',
-    version='0.0.12',
+    version='0.0.13',
     description='Paperspace Python',
     long_description=long_description,
     url='https://github.com/paperspace/paperspace-python',
