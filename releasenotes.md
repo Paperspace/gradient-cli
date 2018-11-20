@@ -1,5 +1,13 @@
 # Paperspace Python Release Notes
 
+## Release Notes for v0.0.13
+
+#### New features
+* Allow user to select custom port mappings between container and host
+
+#### Fixes
+* Fix circular import bug causing problems for python2 users on v0.0.12
+
 ## Release Notes for v0.0.12
 
 #### New features
