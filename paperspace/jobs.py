@@ -77,7 +77,7 @@ def logs(params, tail=False, no_logging=False):
         else:
             try:
                 res = r.json()
-                if 'error' in res:
+                if res in ('error', 'preempted'):
                     if no_logging:
                         return res
                     print_json_pretty(res)
@@ -136,6 +136,7 @@ def waitfor(params):
            or state == 'Error'
            or state == 'Stopped'
            or state == 'Failed'
+           or state == 'Preempted'
            or state == 'Cancelled'):
             return job
         time.sleep(5)
