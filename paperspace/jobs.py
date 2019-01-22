@@ -77,7 +77,7 @@ def logs(params, tail=False, no_logging=False):
         else:
             try:
                 res = r.json()
-                if res in ('error', 'preempted'):
+                if 'error' in res:
                     if no_logging:
                         return res
                     print_json_pretty(res)
