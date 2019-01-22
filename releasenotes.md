@@ -1,5 +1,13 @@
 # Paperspace Python Release Notes
 
+## Release Notes for v0.0.14
+
+#### New features
+* Allow user to select preemptible machine types
+
+#### Fixes
+* Fix package.egg-info issue affecting Windows users downloading paperspace from PyPI
+
 ## Release Notes for v0.0.13
 
 #### New features
