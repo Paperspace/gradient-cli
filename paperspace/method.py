@@ -135,7 +135,7 @@ def method(category, method, params):
             data = params
             params = None
         r = requests.request(http_method, config.CONFIG_HOST + path,
-                             headers={'x-api-key': config.PAPERSPACE_API_KEY},
+                             headers={'x-api-key': config.PAPERSPACE_API_KEY, 'ps_client_name': 'paperspace-python', 'ps_client_version' : "0.0.14"},
                              params=params, data=data, files=files)
         #pprint(vars(r.request))
     except requests.exceptions.RequestException as e:
