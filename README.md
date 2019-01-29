@@ -272,19 +272,9 @@ Other Authentication options
 Using SAML, AD or GitHub credentials
 ====================================
 Currently only email login is supported in the CLI - if you're using AD, SAML or GitHub to login to Paperspace, you will need an API key to log in with the CLI. 
-Follow these steps to create an API key:   
 
-1. Log into your account and open the Paperspace Console.
-
-2. In the left bar, click on _Create an API key_.
-
-3. Enter a name and description for your API key.
-
-4. Click _Create API token_
-
-5. Copy the created key to your clipboard. Keep in mind that after you leave the page, you will not be able to see the key again. 
-
-6. Use your API key to authenticate in the CLI client.
+You can create an API key from within your Paperspace console under the [API](https://www.paperspace.com/console/account/api) section. Login to your [Paperspace console](https://www.paperspace.com/console), scroll to the API section in the left navigation bar, and click [CREATE AN API KEY](https://www.paperspace.com/console/account/api). Follow the instructions there.
+You will need to pick and API token name for your API key, and also provide a description.  You can copy the API key value associated with the API token name only at the time of initial creation. If you need to access your API key in the future, you can instead access it by API token name using the 'paperspace-python login' command.
 
 Contributing
 ============
