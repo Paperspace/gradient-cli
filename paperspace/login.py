@@ -10,13 +10,19 @@ from .config import *
 from .method import requests_exception_to_error_obj, response_error_check, status_code_to_error_obj
 
 
+UNAUTHORIZED_EXTENDED_INFO = '\n\nNote: Please keep in mind that currently you can login only with the email and password ' \
+	'from your Paperspace account. If you\'re using AD, SAML or GitHub credentials, please log into the Paperspace Console ' \
+	'and create an API key for use with the CLI client. For more information, please refer to the CLI client documentation.'
+
+
 def is_error_or_missing_keys_print(res, *required_keys):
     if 'error' in res:
         if 'message' in res:
             print(res['message'])
             return True
         if 'message' in res['error']:
-            print(res['error']['message'])
+            error_message = res['error']['message'] + UNAUTHORIZED_EXTENDED_INFO
+            print(error_message)
             return True
         print(json.dumps(res, indent=2, sort_keys=True))
         return True
