@@ -1,7 +1,5 @@
 import getpass
 import json
-import os
-import sys
 
 import requests
 from six.moves import input
@@ -9,10 +7,10 @@ from six.moves import input
 from .config import *
 from .method import requests_exception_to_error_obj, response_error_check, status_code_to_error_obj
 
-
-UNAUTHORIZED_EXTENDED_INFO = '\n\nNote: Please keep in mind that currently you can login only with the email and password ' \
-	'from your Paperspace account. If you\'re using AD, SAML or GitHub credentials, please log into the Paperspace Console ' \
-	'and create an API key for use with the CLI client. For more information, please refer to the CLI client documentation.'
+UNAUTHORIZED_EXTENDED_INFO = '\n\nNote: Please keep in mind that currently you can login only with the email and ' \
+                             'password from your Paperspace account. If you\'re using AD, SAML or GitHub ' \
+                             'credentials, please log into the Paperspace Console and create an API key for use with ' \
+                             'the CLI client. For more information, please refer to the CLI client documentation.'
 
 
 def is_error_or_missing_keys_print(res, *required_keys):
@@ -50,7 +48,7 @@ def login(email=None, password=None, apiToken=None):
         password = getpass.getpass('Password: ')
 
     # get access_token
-    params = { "email": email, "password": password }
+    params = {"email": email, "password": password}
     try:
         r = requests.request('post', config.CONFIG_HOST + '/users/login',
                              json=params)
@@ -66,7 +64,7 @@ def login(email=None, password=None, apiToken=None):
         return False
 
     # get api key using access_token
-    params = { 'access_token': res['id'] }
+    params = {'access_token': res['id']}
     if apiToken:
         params['apiToken'] = apiToken
     try:
