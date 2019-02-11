@@ -75,7 +75,8 @@ def main():
                 param = opt[2:]
                 if param in ['script', 'python', 'conda', 'ignoreFiles', 'apiKey', 'container', 'machineType', 'name',
                     'project', 'projectId', 'command', 'workspace', 'dataset', 'registryUsername', 'registryPassword',
-                    'workspaceUsername', 'workspacePassword', 'cluster', 'clusterId', 'ports', 'isPreemptible']:
+                    'workspaceUsername', 'workspacePassword', 'cluster', 'clusterId', 'ports', 'isPreemptible',
+                    'useDockerfile']:
                     if args and not args[0].startswith('--'):
                         params[param] = args.pop(0)
                     else:
