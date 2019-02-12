@@ -74,8 +74,10 @@ def main():
             elif opt.startswith('--') and not skip_arg_processing:
                 param = opt[2:]
                 if param in ['script', 'python', 'conda', 'ignoreFiles', 'apiKey', 'container', 'machineType', 'name',
-                    'project', 'projectId', 'command', 'workspace', 'dataset', 'registryUsername', 'registryPassword',
-                    'workspaceUsername', 'workspacePassword', 'cluster', 'clusterId', 'ports', 'isPreemptible']:
+                             'project', 'projectId', 'command', 'workspace', 'dataset', 'registryUsername',
+                             'registryPassword', 'workspaceUsername', 'workspacePassword', 'cluster', 'clusterId',
+                             'ports', 'isPreemptible', 'useDockerfile', 'buildOnly', 'registryTarget',
+                             'registryTargetUsername', 'registryTargetPassword', 'relDockerfilePath']:
                     if args and not args[0].startswith('--'):
                         params[param] = args.pop(0)
                     else:

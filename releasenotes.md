@@ -1,5 +1,17 @@
 # Paperspace Python Release Notes
 
+## Release Notes for v0.0.15
+
+### New features
+* Run gradient jobs from custom Dockerfile built containers (see: https://docs.paperspace.com/gradient/jobs/create-a-job#new-run-jobs-from-dockerfiles)
+
+* Push GPU-enabled container images to a registry of your choice 
+
+* Add support for yarn package manager 
+
+### Fixes
+* Add custom headers to requests 
+
 ## Release Notes for v0.0.14
 
 #### New features

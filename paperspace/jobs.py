@@ -1,3 +1,4 @@
+import base64
 import inspect
 import json
 import os
@@ -414,6 +415,7 @@ def run(params={}, no_logging=False):
         print(params['command'])
         sys.exit(1)
 
+    params['command'] = base64.b64encode(bytes(params['command'], 'utf-8'))
     res = create(params, no_logging)
     if run_this:
         sys.exit(0)
