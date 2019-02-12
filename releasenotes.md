@@ -7,8 +7,6 @@
 
 * Push GPU-enabled container images to a registry of your choice 
 
-* Add support for yarn package manager 
-
 ### Fixes
 * Add custom headers to requests 
 
