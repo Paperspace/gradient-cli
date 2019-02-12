@@ -1,37 +1,33 @@
 {% set name = "paperspace" %}
 {% set version = "0.0.14" %}
-{% set file_ext = "tar.gz" %}
-{% set hash_type = "sha256" %}
-{% set hash_value = "eaee7d09abdc1ee7b575250f5d127f1f874a2fa456ebb7c6ddee4a366356297c" %}
 
 package:
-  name: '{{ name|lower }}'
-  version: '{{ version }}'
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
 
 source:
-  fn: '{{ name }}-{{ version }}.{{ file_ext }}'
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ file_ext }}
-  '{{ hash_type }}': '{{ hash_value }}'
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b43d8216354a6fce571f3c091cbf04a52603c6a52ddfa70a7be586ec67c9eea1
 
 build:
   number: 0
   entry_points:
     - paperspace-python = paperspace.main:main
-  script: python setup.py install --single-version-externally-managed --record=record.txt
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv "
 
 requirements:
   host:
-    - python
-    - setuptools
-    - requests
     - boto3
     - botocore
+    - pip
+    - python
+    - requests
     - six
   run:
-    - python
-    - requests
     - boto3
     - botocore
+    - python
+    - requests
     - six
 
 test:
@@ -42,13 +38,13 @@ test:
 
 about:
   home: https://github.com/paperspace/paperspace-python
-  license: ISC License (ISCL)
+  license: ISC (ISCL)
   license_family: OTHER
-  license_file: ''
+  license_file: 
   summary: Paperspace Python
-  description: "Paperspace Python"
-  doc_url: ''
-  dev_url: ''
+  doc_url: 
+  dev_url: 
 
 extra:
-  recipe-maintainers: ''
+  recipe-maintainers:
+    - your-github-id-here
