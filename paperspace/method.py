@@ -10,6 +10,7 @@ import requests
 import subprocess
 
 from .config import *
+from .__init__ import __version__
 
 def zip_to_tmp(files, ignore_files=[]):
     file = files[0]
@@ -135,7 +136,8 @@ def method(category, method, params):
             data = params
             params = None
         r = requests.request(http_method, config.CONFIG_HOST + path,
-                             headers={'x-api-key': config.PAPERSPACE_API_KEY, 'ps_client_name': 'paperspace-python', 'ps_client_version' : "0.0.14"},
+                             headers={'x-api-key': config.PAPERSPACE_API_KEY, 'ps_client_name': 'paperspace-python', 
+                             'ps_client_version' : __version__},
                              params=params, data=data, files=files)
         #pprint(vars(r.request))
     except requests.exceptions.RequestException as e:
