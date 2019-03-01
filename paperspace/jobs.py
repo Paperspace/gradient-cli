@@ -1,18 +1,14 @@
 import base64
 import inspect
-import json
-import os
 import re
-import sys
-import time
 
 import boto3
 import botocore
-import requests
+import six
 
-from . import config
 from .login import apikey
 from .method import *
+
 
 def list(params={}):
     return method('jobs', 'getJobs', params)
@@ -415,12 +411,14 @@ def run(params={}, no_logging=False):
         print(params['command'])
         sys.exit(1)
 
-    params['command'] = base64.b64encode(bytes(params['command'], 'utf-8'))
+    if six.PY3:
+        params['command'] = bytes(params['command'], 'utf-8')
+
+    params['command'] = base64.b64encode(params['command'])
     res = create(params, no_logging)
     if run_this:
         sys.exit(0)
     return res
-
 
 # TO DO:
 # automatic install of imported dependencies

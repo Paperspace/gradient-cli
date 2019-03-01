@@ -102,3 +102,5 @@ ENV/
 
 #vscode
 .vscode/*
+
+.idea
