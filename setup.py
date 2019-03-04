@@ -1,6 +1,9 @@
 from codecs import open
 from os import path
+
 from setuptools import setup, find_packages
+
+from paperspace.__version__ import version
 
 here = path.abspath(path.dirname(__file__))
 
@@ -14,7 +17,7 @@ except(IOError, ImportError, OSError):
 
 setup(
     name='paperspace',
-    version='0.0.15',
+    version=version,
     description='Paperspace Python',
     long_description=long_description,
     url='https://github.com/paperspace/paperspace-python',
@@ -32,7 +35,7 @@ setup(
     ],
     keywords='paperspace api development library',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    install_requires=['requests[security]', 'boto3', 'botocore', 'six'],
+    install_requires=['requests[security]', 'boto3', 'botocore', 'six', 'gradient-statsd'],
     entry_points={'console_scripts': [
         'paperspace-python = paperspace.main:main',
     ]},

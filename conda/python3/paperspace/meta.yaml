@@ -1,5 +1,5 @@
 {% set name = "paperspace" %}
-{% set version = "0.0.15" %}
+{% set version = "0.0.16" %}
 
 package:
   name: "{{ name|lower }}"

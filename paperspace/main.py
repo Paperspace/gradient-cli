@@ -1,7 +1,7 @@
 import sys
 import os
 
-from . import __version__
+from .__version__ import version
 from .login import login, logout, set_apikey
 from .jobs import run, print_json_pretty
 
@@ -121,7 +121,7 @@ def main():
 
 
 def vers(prog):
-    print('%s %s' % (prog, __version__))
+    print('%s %s' % (prog, version))
 
 
 def login_usage(prog):
