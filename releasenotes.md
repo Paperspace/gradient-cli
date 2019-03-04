@@ -1,5 +1,13 @@
 # Paperspace Python Release Notes
 
+## Release Notes for v0.0.16
+
+### New features
+* Add statsd agent support with StatsdClient
+
+### Fixes
+* Fix crashing on converting to bytes in python < 3
+
 ## Release Notes for v0.0.15
 
 ### New features

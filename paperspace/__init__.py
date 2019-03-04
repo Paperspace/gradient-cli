@@ -1,12 +1,14 @@
-from .config import *
-from .login import login, logout
-from .method import print_json_pretty
-from .jobs import run
+from gradient_statsd import Client as StatsdClient
+
 from . import jobs
 from . import machines
 from . import networks
 from . import scripts
 from . import templates
 from . import users
+from .config import *
+from .jobs import run
+from .login import login, logout
+from .method import print_json_pretty
 
-__version__ = "0.0.15"
+_ = StatsdClient  # to keep import save from "Optimize Imports", auto code cleanup, etc.

@@ -1,15 +1,14 @@
 import json
-import os
+import subprocess
 import sys
 import tempfile
-import time
 import zipfile
-from pprint import pprint
 
 import requests
-import subprocess
 
+from .__version__ import version
 from .config import *
+
 
 def zip_to_tmp(files, ignore_files=[]):
     file = files[0]
@@ -136,7 +135,7 @@ def method(category, method, params):
             params = None
         r = requests.request(http_method, config.CONFIG_HOST + path,
                              headers={'x-api-key': config.PAPERSPACE_API_KEY, 'ps_client_name': 'paperspace-python', 
-                             'ps_client_version' : "0.0.15"},
+                             'ps_client_version' : version},
                              params=params, data=data, files=files)
         #pprint(vars(r.request))
     except requests.exceptions.RequestException as e:

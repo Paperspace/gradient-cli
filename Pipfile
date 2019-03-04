@@ -1,21 +1,19 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 name = "pypi"
 verify_ssl = true
 
-
 [packages]
-
-"e1839a8" = {path = ".", editable = true}
+e1839a8 = {path = ".",editable = true}
 requests = {extras = ["security"]}
 cryptography = {extras = ["security"]}
 "boto3" = "*"
 botocore = "*"
 six = "*"
-
+gradient-statsd = "*"
 
 [dev-packages]
-
 twine = "*"
 pypandoc = "*"
+pylint = "*"
+hacking = "*"
