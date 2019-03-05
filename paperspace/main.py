@@ -1,7 +1,7 @@
 import sys
 import os
 
-from . import __version__ as version
+from .version import version
 from .login import login, logout, set_apikey
 from .jobs import run, print_json_pretty
 

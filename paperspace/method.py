@@ -6,7 +6,7 @@ import zipfile
 
 import requests
 
-from . import __version__ as version
+from paperspace.version import version
 from .config import *
 
 
