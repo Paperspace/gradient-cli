@@ -11,4 +11,6 @@ from .jobs import run
 from .login import login, logout
 from .method import print_json_pretty
 
+__version__ = "0.0.16"
+
 _ = StatsdClient  # to keep import save from "Optimize Imports", auto code cleanup, etc.

@@ -1,15 +1,18 @@
+import re
 from codecs import open
-from os import path
+from os import path, io
 
 from setuptools import setup, find_packages
 
-from paperspace.__version__ import version
+with io.open("paperspace/__init__.py", "rt", encoding="utf8") as f:
+    version = re.search(r"__version__ = \"(.*?)\"", f.read()).group(1)
 
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
 try:
     import pypandoc
+
     long_description = pypandoc.convert('README.md', 'rst')
 except(IOError, ImportError, OSError):
     with open('README.md', encoding='utf-8') as f:
@@ -24,7 +27,6 @@ setup(
     author='Paperspace Co.',
     author_email='info@paperspace.com',
     classifiers=[
-        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries',
         'License :: OSI Approved :: ISC License (ISCL)',
@@ -32,6 +34,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     keywords='paperspace api development library',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),

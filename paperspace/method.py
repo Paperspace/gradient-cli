@@ -6,7 +6,7 @@ import zipfile
 
 import requests
 
-from .__version__ import version
+from . import __version__ as version
 from .config import *
 
 
