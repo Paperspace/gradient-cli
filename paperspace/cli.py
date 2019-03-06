@@ -1,14 +1,15 @@
 import click
 
 from paperspace import commands
+from paperspace.constants import MULTI_NODE_TYPES
 
 
 class OptionRequiredIfMultinode(click.Option):
     def full_process_value(self, ctx, value):
         value = super(OptionRequiredIfMultinode, self).full_process_value(ctx, value)
 
-        if value is None and ctx.params["workercount"] > 1:
-            msg = "Required if --workerCount > 1"
+        if value is None and ctx.params["experimentTypeId"] in MULTI_NODE_TYPES:
+            msg = "Required if --experimentTypeId is one of: " + ", ".join(*MULTI_NODE_TYPES)
             raise click.MissingParameter(ctx=ctx, param=self, message=msg)
 
         return value
@@ -33,7 +34,8 @@ def experiments():
 
 @experiments.command()
 @click.option("--name", required=True)
-@click.option("--workerCount", "workerCount", required=True, type=int)
+@click.option("--experimentTypeId", "experimentTypeId", type=int)
+@click.option("--workerCount", "workerCount", required=True, type=int, cls=OptionRequiredIfMultinode)
 @click.option("--workerContainer", "workerContainer", cls=OptionRequiredIfMultinode)
 @click.option("--workerMachineType", "workerMachineType", cls=OptionRequiredIfMultinode)
 @click.option("--workerCommand", "workerCommand", cls=OptionRequiredIfMultinode)
@@ -48,7 +50,6 @@ def experiments():
 @click.option("--artifactDirectory", "artifactDirectory")
 @click.option("--clusterId", "clusterId", type=int)
 # @click.option("--experimentEnv", type=dict)
-@click.option("--experimentTypeId", "experimentTypeId", type=int)
 @click.option("--workerContainerUser", "workerContainerUser")
 @click.option("--workerRegistryUsername", "workerRegistryUsername")
 @click.option("--workerRegistryPassword", "workerRegistryPassword")
