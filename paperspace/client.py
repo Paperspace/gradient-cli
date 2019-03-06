@@ -7,10 +7,11 @@ class API(object):
         self.headers = headers or {}
 
     def get_path(self, url):
+        api_url = self.api_url if not self.api_url.endswith("/") else self.api_url[:-1]
         template = "{}{}" if url.startswith("/") else "{}/{}"
-        return template.format(self.api_url, url)
+        return template.format(api_url, url)
 
-    def post(self, url, json=None):
+    def post(self, url, json=None, params=None):
         path = self.get_path(url)
-        response = requests.post(path, json=json, headers=self.headers)
+        response = requests.post(path, json=json, params=params, headers=self.headers)
         return response

@@ -21,7 +21,7 @@ def _log_response(response, success_msg, error_msg):
             logger.log(error_msg)
 
 
-def create_experiments(data=None, api=experiments_api):
-    data = data or {}
-    response = api.post("/experiments", data)
+def create_experiments(json=None, api=experiments_api):
+    json = json or {}
+    response = api.post("/experiments/", json=json, params={"accessToken": config.PAPERSPACE_API_KEY})
     _log_response(response, "Experiment created", "Unknown error while creating experiment")
