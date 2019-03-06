@@ -1,14 +1,13 @@
 import os
 
-class config: pass
+_DEFAULT_PAPERSPACE_API_KEY = ""
+_DEFAULT_CONFIG_HOST = "https://api.paperspace.io"
+_DEFAULT_CONFIG_LOG_HOST = "https://logs.paperspace.io"
+_DEFAULT_CONFIG_EXPERIMENTS_HOST = "https://"  # TODO: fill this
 
-config.PAPERSPACE_API_KEY = ''
-config.CONFIG_HOST = 'https://api.paperspace.io'
-config.CONFIG_LOG_HOST = 'https://logs.paperspace.io'
 
-if 'PAPERSPACE_API_KEY' in os.environ:
-    config.PAPERSPACE_API_KEY = os.environ['PAPERSPACE_API_KEY']
-if 'PAPERSPACE_CONFIG_HOST' in os.environ:
-    config.CONFIG_HOST = os.environ['PAPERSPACE_CONFIG_HOST']
-if 'PAPERSPACE_CONFIG_LOG_HOST' in os.environ:
-    config.CONFIG_LOG_HOST = os.environ['PAPERSPACE_CONFIG_LOG_HOST']
+class config(object):
+    PAPERSPACE_API_KEY = os.environ.get("PAPERSPACE_API_KEY", _DEFAULT_PAPERSPACE_API_KEY)
+    CONFIG_HOST = os.environ.get("PAPERSPACE_CONFIG_HOST", _DEFAULT_CONFIG_HOST)
+    CONFIG_LOG_HOST = os.environ.get("PAPERSPACE_CONFIG_LOG_HOST", _DEFAULT_CONFIG_LOG_HOST)
+    CONFIG_EXPERIMENTS_HOST = os.environ.get("PAPERSPACE_CONFIG_EXPERIMENTS_HOST", _DEFAULT_CONFIG_EXPERIMENTS_HOST)

@@ -1,12 +1,16 @@
-import sys
 import os
+import sys
 
-from .version import version
-from .login import login, logout, set_apikey
+from .cli import cli
 from .jobs import run, print_json_pretty
+from .login import login, logout, set_apikey
+from .version import version
 
 
 def main():
+    if len(sys.argv) >= 2 and sys.argv[1] == 'experiments':
+        cli(sys.argv[1:])
+
     args = sys.argv[:]
     prog = os.path.basename(args.pop(0))
 

@@ -11,9 +11,8 @@ cryptography = {extras = ["security"]}
 botocore = "*"
 six = "*"
 gradient-statsd = "*"
+click = "*"
 
 [dev-packages]
 twine = "*"
 pypandoc = "*"
-pylint = "*"
-hacking = "*"
