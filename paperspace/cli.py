@@ -1,18 +1,6 @@
 import click
 
 from paperspace import commands
-from paperspace.constants import MULTI_NODE_TYPES
-
-
-class OptionRequiredIfMultinode(click.Option):
-    def full_process_value(self, ctx, value):
-        value = super(OptionRequiredIfMultinode, self).full_process_value(ctx, value)
-
-        if value is None and ctx.params["experimentTypeId"] in MULTI_NODE_TYPES:
-            msg = "Required if --experimentTypeId is one of: " + ", ".join(*MULTI_NODE_TYPES)
-            raise click.MissingParameter(ctx=ctx, param=self, message=msg)
-
-        return value
 
 
 def del_if_value_is_none(d):
@@ -32,17 +20,22 @@ def experiments():
     pass
 
 
-@experiments.command()
+@experiments.group()
+def create():
+    pass
+
+
+@create.command()
 @click.option("--name", required=True)
-@click.option("--experimentTypeId", "experimentTypeId", type=int)
-@click.option("--workerCount", "workerCount", required=True, type=int, cls=OptionRequiredIfMultinode)
-@click.option("--workerContainer", "workerContainer", cls=OptionRequiredIfMultinode)
-@click.option("--workerMachineType", "workerMachineType", cls=OptionRequiredIfMultinode)
-@click.option("--workerCommand", "workerCommand", cls=OptionRequiredIfMultinode)
-@click.option("--parameterServerContainer", "parameterServerContainer", cls=OptionRequiredIfMultinode)
-@click.option("--parameterServerMachineType", "parameterServerMachineType", cls=OptionRequiredIfMultinode)
-@click.option("--parameterServerCommand", "parameterServerCommand", cls=OptionRequiredIfMultinode)
-@click.option("--parameterServerCount", "parameterServerCount", type=int, cls=OptionRequiredIfMultinode)
+@click.option("--experimentTypeId", "experimentTypeId", type=int, required=True)
+@click.option("--workerCount", "workerCount", type=int, required=True)
+@click.option("--workerContainer", "workerContainer", required=True)
+@click.option("--workerMachineType", "workerMachineType", required=True)
+@click.option("--workerCommand", "workerCommand", required=True)
+@click.option("--parameterServerContainer", "parameterServerContainer", required=True)
+@click.option("--parameterServerMachineType", "parameterServerMachineType", required=True)
+@click.option("--parameterServerCommand", "parameterServerCommand", required=True)
+@click.option("--parameterServerCount", "parameterServerCount", type=int, required=True)
 @click.option("--ports", type=int)
 @click.option("--workspaceUrl", "workspaceUrl")
 @click.option("--projectHandler", "projectHandler")
@@ -56,6 +49,6 @@ def experiments():
 @click.option("--parameterServerContainerUser", "parameterServerContainerUser")
 @click.option("--parameterServerRegistryContainerUser", "parameterServerRegistryContainerUser")
 @click.option("--parameterServerRegistryPassword", "parameterServerRegistryPassword")
-def create(**kwargs):
+def multinode(**kwargs):
     del_if_value_is_none(kwargs)
     commands.create_experiments(kwargs)
