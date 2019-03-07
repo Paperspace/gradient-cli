@@ -2,7 +2,8 @@ import click
 from six import string_types
 
 
-def log(*messages, error=False):
+def log(*messages, **kwargs):
+    error = kwargs.get("error", False)
     for message in messages:
         click.echo(message, err=error)
 

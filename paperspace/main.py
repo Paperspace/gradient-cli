@@ -150,8 +150,13 @@ def run_usage(prog):
         '    [-]' % prog)
 
 
+def experiments_usage(prog):
+    return "{} experiments <command>   Manage experiments".format(prog)
+
+
 def usage(prog):
     print('usage: %s' % login_usage(prog))
     print('       %s' % apikey_usage(prog))
     print('       %s' % run_usage(prog))
+    print('       %s' % experiments_usage(prog))
     print('       %s version' % prog)

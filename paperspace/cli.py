@@ -1,8 +1,9 @@
+import functools
 import json
 
 import click
 
-from paperspace import commands
+from paperspace import commands, constants
 
 
 class ChoiceType(click.Choice):
@@ -18,8 +19,8 @@ class ChoiceType(click.Choice):
 
 
 EXPERIMENT_TYPES_MAP = {
-    "GRPC": 2,
-    "MPI": 3,
+    "GRPC": constants.EXPERIMENT_TYPE_GRPC_MULTI_NODE_ID,
+    "MPI": constants.EXPERIMENT_TYPE_MPI_MULTI_NODE_ID,
 }
 
 
@@ -50,21 +51,49 @@ def create():
     pass
 
 
-@create.command()
-@click.option(
-    "--name",
-    required=True,
-)
+def common_expepriments_create_options(f):
+    options = [
+        click.option(
+            "--experimentEnv",
+            "experimentEnv",
+            type=json_string,
+        ),
+        click.option(
+            "--clusterId",
+            "clusterId",
+            type=int,
+        ),
+        click.option(
+            "--artifactDirectory",
+            "artifactDirectory",
+        ),
+        click.option(
+            "--workingDirectory",
+            "workingDirectory",
+        ),
+        click.option(
+            "--workspaceUrl",
+            "workspaceUrl",
+        ),
+        click.option(
+            "--ports",
+            type=int,
+        ),
+        click.option(
+            "--name",
+            required=True,
+        ),
+
+    ]
+    return functools.reduce(lambda x, opt: opt(x), options, f)
+
+
+@create.command(name="multinode")
+@common_expepriments_create_options
 @click.option(
     "--experimentTypeId",
     "experimentTypeId",
     type=ChoiceType(EXPERIMENT_TYPES_MAP, case_sensitive=False),
-    required=True,
-)
-@click.option(
-    "--workerCount",
-    "workerCount",
-    type=int,
     required=True,
 )
 @click.option(
@@ -80,6 +109,12 @@ def create():
 @click.option(
     "--workerCommand",
     "workerCommand",
+    required=True,
+)
+@click.option(
+    "--workerCount",
+    "workerCount",
+    type=int,
     required=True,
 )
 @click.option(
@@ -104,34 +139,8 @@ def create():
     required=True,
 )
 @click.option(
-    "--ports",
-    type=int,
-)
-@click.option(
-    "--workspaceUrl",
-    "workspaceUrl",
-)
-@click.option(
     "--projectHandler",
     "projectHandler",
-)
-@click.option(
-    "--workingDirectory",
-    "workingDirectory",
-)
-@click.option(
-    "--artifactDirectory",
-    "artifactDirectory",
-)
-@click.option(
-    "--clusterId",
-    "clusterId",
-    type=int,
-)
-@click.option(
-    "--experimentEnv",
-    "experimentEnv",
-    type=json_string,
 )
 @click.option(
     "--workerContainerUser",
@@ -157,6 +166,43 @@ def create():
     "--parameterServerRegistryPassword",
     "parameterServerRegistryPassword",
 )
-def multinode(**kwargs):
+def multi_node(**kwargs):
+    del_if_value_is_none(kwargs)
+    commands.create_experiments(kwargs)
+
+
+@create.command(name="singlenode")
+@common_expepriments_create_options
+@click.option(
+    "--container",
+    required=True,
+)
+@click.option(
+    "--machineType",
+    "machineType",
+    required=True,
+)
+@click.option(
+    "--command",
+    required=True,
+)
+@click.option(
+    "--count",
+    type=int,
+)
+@click.option(
+    "--containerUser",
+    "containerUser",
+)
+@click.option(
+    "--registryUsername",
+    "registryUsername",
+)
+@click.option(
+    "--registryPassword",
+    "registryPassword",
+)
+def single_node(**kwargs):
+    kwargs["experimentTypeId"] = constants.EXPERIMENT_TYPE_SINGLE_NODE_ID
     del_if_value_is_none(kwargs)
     commands.create_experiments(kwargs)
