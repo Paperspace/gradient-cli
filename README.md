@@ -238,15 +238,20 @@ It is based off the Google docker image `gcr.io/tensorflow/tensorflow:1.5.0-gpu`
 A Dockerfile for building this container image is [here](https://github.com/Paperspace/tensorflow-python/).
 
 
-Create experiment
+Create/create and start experiment
 =================
-To create new experiment use 
+To create new experiment use:
 ```.env
 paperspace-python experiments create [type] [--options]
 ```
 The two available experiment types are `singlenode` and `multinode`.
 
-For a full list of available options run `paperspace experiments [type] --help`. 
+To create and immediately start new experiment use:
+```.env
+paperspace-python experiments createAndStart [type] [--options]
+```
+
+For a full list of available commands run `paperspace experiments --help`. 
 Note that some options are required to create new experiment.
 
 

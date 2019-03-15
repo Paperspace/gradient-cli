@@ -51,20 +51,36 @@ def create():
     pass
 
 
+@experiments.group(name="createAndStart")
+def create_and_start():
+    pass
+
+
 def common_experiments_create_options(f):
     options = [
         click.option(
-            "--projectHandle",
-            "projectHandle",
+            "--name",
+            required=True,
         ),
         click.option(
-            "--projectId",
-            "projectId",
+            "--ports",
             type=int,
         ),
         click.option(
-            "--triggerEventId",
-            "triggerEventId",
+            "--workspaceUrl",
+            "workspaceUrl",
+        ),
+        click.option(
+            "--workingDirectory",
+            "workingDirectory",
+        ),
+        click.option(
+            "--artifactDirectory",
+            "artifactDirectory",
+        ),
+        click.option(
+            "--clusterId",
+            "clusterId",
             type=int,
         ),
         click.option(
@@ -73,113 +89,143 @@ def common_experiments_create_options(f):
             type=json_string,
         ),
         click.option(
-            "--clusterId",
-            "clusterId",
+            "--triggerEventId",
+            "triggerEventId",
             type=int,
         ),
         click.option(
-            "--artifactDirectory",
-            "artifactDirectory",
-        ),
-        click.option(
-            "--workingDirectory",
-            "workingDirectory",
-        ),
-        click.option(
-            "--workspaceUrl",
-            "workspaceUrl",
-        ),
-        click.option(
-            "--ports",
+            "--projectId",
+            "projectId",
             type=int,
         ),
         click.option(
-            "--name",
+            "--projectHandle",
+            "projectHandle",
+        ),
+    ]
+    return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
+
+
+def common_experiment_create_multi_node_options(f):
+    options = [
+        click.option(
+            "--experimentTypeId",
+            "experimentTypeId",
+            type=ChoiceType(MULTI_NODE_EXPERIMENT_TYPES_MAP, case_sensitive=False),
             required=True,
         ),
-
+        click.option(
+            "--workerContainer",
+            "workerContainer",
+            required=True,
+        ),
+        click.option(
+            "--workerMachineType",
+            "workerMachineType",
+            required=True,
+        ),
+        click.option(
+            "--workerCommand",
+            "workerCommand",
+            required=True,
+        ),
+        click.option(
+            "--workerCount",
+            "workerCount",
+            type=int,
+            required=True,
+        ),
+        click.option(
+            "--parameterServerContainer",
+            "parameterServerContainer",
+            required=True,
+        ),
+        click.option(
+            "--parameterServerMachineType",
+            "parameterServerMachineType",
+            required=True,
+        ),
+        click.option(
+            "--parameterServerCommand",
+            "parameterServerCommand",
+            required=True,
+        ),
+        click.option(
+            "--parameterServerCount",
+            "parameterServerCount",
+            type=int,
+            required=True,
+        ),
+        click.option(
+            "--projectHandler",
+            "projectHandler",
+        ),
+        click.option(
+            "--workerContainerUser",
+            "workerContainerUser",
+        ),
+        click.option(
+            "--workerRegistryUsername",
+            "workerRegistryUsername",
+        ),
+        click.option(
+            "--workerRegistryPassword",
+            "workerRegistryPassword",
+        ),
+        click.option(
+            "--parameterServerContainerUser",
+            "parameterServerContainerUser",
+        ),
+        click.option(
+            "--parameterServerRegistryContainerUser",
+            "parameterServerRegistryContainerUser",
+        ),
+        click.option(
+            "--parameterServerRegistryPassword",
+            "parameterServerRegistryPassword",
+        ),
     ]
-    return functools.reduce(lambda x, opt: opt(x), options, f)
+    return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
+
+
+def common_experiments_create_single_node_options(f):
+    options = [
+        click.option(
+            "--container",
+            required=True,
+        ),
+        click.option(
+            "--machineType",
+            "machineType",
+            required=True,
+        ),
+        click.option(
+            "--command",
+            required=True,
+        ),
+        click.option(
+            "--count",
+            type=int,
+        ),
+        click.option(
+            "--containerUser",
+            "containerUser",
+        ),
+        click.option(
+            "--registryUsername",
+            "registryUsername",
+        ),
+        click.option(
+            "--registryPassword",
+            "registryPassword",
+        ),
+    ]
+    return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
 
 @create.command(name="multinode")
 @common_experiments_create_options
-@click.option(
-    "--experimentTypeId",
-    "experimentTypeId",
-    type=ChoiceType(MULTI_NODE_EXPERIMENT_TYPES_MAP, case_sensitive=False),
-    required=True,
-)
-@click.option(
-    "--workerContainer",
-    "workerContainer",
-    required=True,
-)
-@click.option(
-    "--workerMachineType",
-    "workerMachineType",
-    required=True,
-)
-@click.option(
-    "--workerCommand",
-    "workerCommand",
-    required=True,
-)
-@click.option(
-    "--workerCount",
-    "workerCount",
-    type=int,
-    required=True,
-)
-@click.option(
-    "--parameterServerContainer",
-    "parameterServerContainer",
-    required=True,
-)
-@click.option(
-    "--parameterServerMachineType",
-    "parameterServerMachineType",
-    required=True,
-)
-@click.option(
-    "--parameterServerCommand",
-    "parameterServerCommand",
-    required=True,
-)
-@click.option(
-    "--parameterServerCount",
-    "parameterServerCount",
-    type=int,
-    required=True,
-)
-@click.option(
-    "--projectHandler",
-    "projectHandler",
-)
-@click.option(
-    "--workerContainerUser",
-    "workerContainerUser",
-)
-@click.option(
-    "--workerRegistryUsername",
-    "workerRegistryUsername",
-)
-@click.option(
-    "--workerRegistryPassword",
-    "workerRegistryPassword",
-)
-@click.option(
-    "--parameterServerContainerUser",
-    "parameterServerContainerUser",
-)
-@click.option(
-    "--parameterServerRegistryContainerUser",
-    "parameterServerRegistryContainerUser",
-)
-@click.option(
-    "--parameterServerRegistryPassword",
-    "parameterServerRegistryPassword",
-)
+@common_experiment_create_multi_node_options
 def multi_node(**kwargs):
     del_if_value_is_none(kwargs)
     commands.create_experiments(kwargs)
@@ -187,35 +233,24 @@ def multi_node(**kwargs):
 
 @create.command(name="singlenode")
 @common_experiments_create_options
-@click.option(
-    "--container",
-    required=True,
-)
-@click.option(
-    "--machineType",
-    "machineType",
-    required=True,
-)
-@click.option(
-    "--command",
-    required=True,
-)
-@click.option(
-    "--count",
-    type=int,
-)
-@click.option(
-    "--containerUser",
-    "containerUser",
-)
-@click.option(
-    "--registryUsername",
-    "registryUsername",
-)
-@click.option(
-    "--registryPassword",
-    "registryPassword",
-)
+@common_experiments_create_single_node_options
+def single_node(**kwargs):
+    kwargs["experimentTypeId"] = constants.EXPERIMENT_TYPE_SINGLE_NODE_ID
+    del_if_value_is_none(kwargs)
+    commands.create_experiments(kwargs)
+
+
+@create_and_start.command(name="multinode")
+@common_experiments_create_options
+@common_experiment_create_multi_node_options
+def multi_node(**kwargs):
+    del_if_value_is_none(kwargs)
+    commands.create_experiments(kwargs)
+
+
+@create_and_start.command(name="singlenode")
+@common_experiments_create_options
+@common_experiments_create_single_node_options
 def single_node(**kwargs):
     kwargs["experimentTypeId"] = constants.EXPERIMENT_TYPE_SINGLE_NODE_ID
     del_if_value_is_none(kwargs)

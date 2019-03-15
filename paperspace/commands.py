@@ -25,3 +25,9 @@ def create_experiments(json, api=experiments_api):
     response = api.post("/experiments/", json=json)
     logger.debug(response.content)
     _log_response(response, "Experiment created", "Unknown error while creating experiment")
+
+
+def create_and_start_experiments(json, api=experiments_api):
+    response = api.post("/experiments/create_and_start/", json=json)
+    logger.debug(response.content)
+    _log_response(response, "Experiment created", "Unknown error while creating experiment")
