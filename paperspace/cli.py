@@ -18,7 +18,7 @@ class ChoiceType(click.Choice):
         return self.type_map[value]
 
 
-EXPERIMENT_TYPES_MAP = {
+MULTI_NODE_EXPERIMENT_TYPES_MAP = {
     "GRPC": constants.EXPERIMENT_TYPE_GRPC_MULTI_NODE_ID,
     "MPI": constants.EXPERIMENT_TYPE_MPI_MULTI_NODE_ID,
 }
@@ -29,11 +29,11 @@ def json_string(val):
     return json.loads(val)
 
 
-def del_if_value_is_none(d):
+def del_if_value_is_none(dict_):
     """Remove all elements with value == None"""
-    for key, val in list(d.items()):
+    for key, val in list(dict_.items()):
         if val is None:
-            del d[key]
+            del dict_[key]
 
 
 @click.group()
@@ -51,8 +51,22 @@ def create():
     pass
 
 
-def common_expepriments_create_options(f):
+def common_experiments_create_options(f):
     options = [
+        click.option(
+            "--projectHandle",
+            "projectHandle",
+        ),
+        click.option(
+            "--projectId",
+            "projectId",
+            type=int,
+        ),
+        click.option(
+            "--triggerEventId",
+            "triggerEventId",
+            type=int,
+        ),
         click.option(
             "--experimentEnv",
             "experimentEnv",
@@ -89,11 +103,11 @@ def common_expepriments_create_options(f):
 
 
 @create.command(name="multinode")
-@common_expepriments_create_options
+@common_experiments_create_options
 @click.option(
     "--experimentTypeId",
     "experimentTypeId",
-    type=ChoiceType(EXPERIMENT_TYPES_MAP, case_sensitive=False),
+    type=ChoiceType(MULTI_NODE_EXPERIMENT_TYPES_MAP, case_sensitive=False),
     required=True,
 )
 @click.option(
@@ -172,7 +186,7 @@ def multi_node(**kwargs):
 
 
 @create.command(name="singlenode")
-@common_expepriments_create_options
+@common_experiments_create_options
 @click.option(
     "--container",
     required=True,

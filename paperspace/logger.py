@@ -1,6 +1,8 @@
 import click
 from six import string_types
 
+from .config import config
+
 
 def log(*messages, **kwargs):
     error = kwargs.get("error", False)
@@ -26,3 +28,8 @@ def log_error_response(data):
             for v in val:
                 msg = "{}: {}".format(key, str(v))
                 log(msg, error=True)
+
+
+def debug(*messages):
+    if config.DEBUG:
+        log(*messages)

@@ -16,3 +16,4 @@ click = "*"
 [dev-packages]
 twine = "*"
 pypandoc = "*"
+pytest = "*"

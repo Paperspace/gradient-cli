@@ -1,6 +1,6 @@
-from paperspace import config, version, logger
-
+from paperspace import version, logger
 from paperspace.client import API
+from paperspace.config import config
 
 default_headers = {"x-api-key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "paperspace-python",
@@ -22,5 +22,6 @@ def _log_response(response, success_msg, error_msg):
 
 
 def create_experiments(json, api=experiments_api):
-    response = api.post("/experiments/", json=json, params={"accessToken": config.PAPERSPACE_API_KEY})
+    response = api.post("/experiments/", json=json)
+    logger.debug(response.content)
     _log_response(response, "Experiment created", "Unknown error while creating experiment")
