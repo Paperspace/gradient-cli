@@ -14,7 +14,7 @@ class ChoiceType(click.Choice):
         self.type_map = type_map
 
     def convert(self, value, param, ctx):
-        value = super(ChoiceType, self).convert(value, param, ctx)
+        value = super(ChoiceType, self).convert(value, param, ctx).upper()
         return self.type_map[value]
 
 
@@ -101,6 +101,7 @@ def common_experiments_create_options(f):
         click.option(
             "--projectHandle",
             "projectHandle",
+            required=True,
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
@@ -155,10 +156,6 @@ def common_experiment_create_multi_node_options(f):
             "parameterServerCount",
             type=int,
             required=True,
-        ),
-        click.option(
-            "--projectHandler",
-            "projectHandler",
         ),
         click.option(
             "--workerContainerUser",
@@ -226,7 +223,7 @@ def common_experiments_create_single_node_options(f):
 @create.command(name="multinode")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
-def multi_node(**kwargs):
+def create_multi_node(**kwargs):
     del_if_value_is_none(kwargs)
     commands.create_experiments(kwargs)
 
@@ -234,7 +231,7 @@ def multi_node(**kwargs):
 @create.command(name="singlenode")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
-def single_node(**kwargs):
+def create_single_node(**kwargs):
     kwargs["experimentTypeId"] = constants.EXPERIMENT_TYPE_SINGLE_NODE_ID
     del_if_value_is_none(kwargs)
     commands.create_experiments(kwargs)
@@ -243,15 +240,42 @@ def single_node(**kwargs):
 @create_and_start.command(name="multinode")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
-def multi_node(**kwargs):
+def create_and_start_multi_node(**kwargs):
     del_if_value_is_none(kwargs)
-    commands.create_experiments(kwargs)
+    commands.create_and_start_experiments(kwargs)
 
 
 @create_and_start.command(name="singlenode")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
-def single_node(**kwargs):
+def create_and_start_single_node(**kwargs):
     kwargs["experimentTypeId"] = constants.EXPERIMENT_TYPE_SINGLE_NODE_ID
     del_if_value_is_none(kwargs)
-    commands.create_experiments(kwargs)
+    commands.create_and_start_experiments(kwargs)
+
+
+@experiments.command()
+@click.argument("experiment-handle")
+def start(experiment_handle):
+    commands.start_experiment(experiment_handle)
+
+
+@experiments.command()
+@click.argument("experiment-handle")
+def stop(experiment_handle):
+    commands.stop_experiment(experiment_handle)
+
+
+@experiments.command("list")
+def list_experiments():
+    commands.list_experiments()
+
+
+@experiments.command("details")
+@click.argument("experiment-handle")
+def get_experiment_details(experiment_handle):
+    commands.get_experiment_details(experiment_handle)
+
+# TODO: delete experiment - not implemented in the api
+# TODO: modify experiment - not implemented in the api
+# TODO: create experiment template?? What is the difference between experiment and experiment template?

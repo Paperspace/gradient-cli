@@ -1,5 +1,7 @@
 import requests
 
+from paperspace import logger
+
 
 class API(object):
     def __init__(self, api_url, headers=None):
@@ -13,5 +15,21 @@ class API(object):
 
     def post(self, url, json=None, params=None):
         path = self.get_path(url)
+        logger.debug("Sending POST: {}\nto: {}\nwith headers: {}".format(json, path, self.headers))
         response = requests.post(path, json=json, params=params, headers=self.headers)
+        logger.debug("Response content: {}".format(response.content))
+        return response
+
+    def put(self, url):
+        path = self.get_path(url)
+        logger.debug("Sending PUT to {}".format(path))
+        response = requests.put(path, headers=self.headers)
+        logger.debug("Response content: {}".format(response.content))
+        return response
+
+    def get(self, url):
+        path = self.get_path(url)
+        logger.debug("Sending GET to {}".format(path))
+        response = requests.get(path, headers=self.headers)
+        logger.debug("Response content: {}".format(response.content))
         return response

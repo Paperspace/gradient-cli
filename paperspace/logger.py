@@ -21,13 +21,16 @@ def log_error_response(data):
         log(str(error), error=True)
 
     if details:
-        for key, val in details.items():
-            if isinstance(val, string_types):
-                val = [val]
+        if isinstance(details, dict):
+            for key, val in details.items():
+                if isinstance(val, string_types):
+                    val = [val]
 
-            for v in val:
-                msg = "{}: {}".format(key, str(v))
-                log(msg, error=True)
+                for v in val:
+                    msg = "{}: {}".format(key, str(v))
+                    log(msg, error=True)
+        else:
+            log(details)
 
 
 def debug(*messages):
