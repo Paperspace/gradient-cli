@@ -1,5 +1,9 @@
 # Paperspace Python Release Notes
 
+## Release Notes for v0.0.18
+### Fixes 
+* Fix missing import
+
 ## Release Notes for v0.0.16
 
 ### New features
