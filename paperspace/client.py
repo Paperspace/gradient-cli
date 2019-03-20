@@ -22,14 +22,14 @@ class API(object):
 
     def put(self, url):
         path = self.get_path(url)
-        logger.debug("Sending PUT to {}".format(path))
+        logger.debug("Sending PUT to {}\nwith headers: {}".format(path, self.headers))
         response = requests.put(path, headers=self.headers)
         logger.debug("Response content: {}".format(response.content))
         return response
 
     def get(self, url):
         path = self.get_path(url)
-        logger.debug("Sending GET to {}".format(path))
+        logger.debug("Sending GET to {}\nwith headers: {}".format(path, self.headers))
         response = requests.get(path, headers=self.headers)
         logger.debug("Response content: {}".format(response.content))
         return response

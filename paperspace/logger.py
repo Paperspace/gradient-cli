@@ -4,10 +4,9 @@ from six import string_types
 from .config import config
 
 
-def log(*messages, **kwargs):
+def log(message, **kwargs):
     error = kwargs.get("error", False)
-    for message in messages:
-        click.echo(message, err=error)
+    click.echo(message, err=error)
 
 
 def log_error_response(data):
@@ -33,6 +32,6 @@ def log_error_response(data):
             log(details)
 
 
-def debug(*messages):
+def debug(messages):
     if config.DEBUG:
-        log(*messages)
+        log("DEBUG: {}".format(messages))

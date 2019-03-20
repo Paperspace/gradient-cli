@@ -19,8 +19,8 @@ class ChoiceType(click.Choice):
 
 
 MULTI_NODE_EXPERIMENT_TYPES_MAP = {
-    "GRPC": constants.EXPERIMENT_TYPE_GRPC_MULTI_NODE_ID,
-    "MPI": constants.EXPERIMENT_TYPE_MPI_MULTI_NODE_ID,
+    "GRPC": constants.ExperimentType.GRPC_MULTI_NODE,
+    "MPI": constants.ExperimentType.MPI_MULTI_NODE,
 }
 
 
@@ -225,16 +225,16 @@ def common_experiments_create_single_node_options(f):
 @common_experiment_create_multi_node_options
 def create_multi_node(**kwargs):
     del_if_value_is_none(kwargs)
-    commands.create_experiments(kwargs)
+    commands.create_experiment(kwargs)
 
 
 @create.command(name="singlenode")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
 def create_single_node(**kwargs):
-    kwargs["experimentTypeId"] = constants.EXPERIMENT_TYPE_SINGLE_NODE_ID
+    kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
-    commands.create_experiments(kwargs)
+    commands.create_experiment(kwargs)
 
 
 @create_and_start.command(name="multinode")
@@ -242,16 +242,16 @@ def create_single_node(**kwargs):
 @common_experiment_create_multi_node_options
 def create_and_start_multi_node(**kwargs):
     del_if_value_is_none(kwargs)
-    commands.create_and_start_experiments(kwargs)
+    commands.create_and_start_experiment(kwargs)
 
 
 @create_and_start.command(name="singlenode")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
 def create_and_start_single_node(**kwargs):
-    kwargs["experimentTypeId"] = constants.EXPERIMENT_TYPE_SINGLE_NODE_ID
+    kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
-    commands.create_and_start_experiments(kwargs)
+    commands.create_and_start_experiment(kwargs)
 
 
 @experiments.command()

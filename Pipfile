@@ -12,8 +12,10 @@ botocore = "*"
 six = "*"
 gradient-statsd = "*"
 click = "*"
+terminaltables = "*"
 
 [dev-packages]
 twine = "*"
 pypandoc = "*"
 pytest = "*"
+mock = "*"
