@@ -1,5 +1,9 @@
 # Paperspace Python Release Notes
 
+## Release Notes for v0.0.19a
+### New features
+* support for experiments API - creating, starting, listing, etc.
+
 ## Release Notes for v0.0.18
 ### Fixes 
 * Fix missing import

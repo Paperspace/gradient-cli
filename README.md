@@ -1,7 +1,7 @@
 Paperspace Python
 =================
 
-Release 0.0.18
+Release 0.0.19a
 
 See [releasenotes.md](https://github.com/Paperspace/paperspace-python/blob/master/releasenotes.md) for details on the current release, as well as release history.
 
@@ -236,24 +236,6 @@ If no `container` option is specified when using `paperspace run <script.py>` or
 It is based off the Google docker image `gcr.io/tensorflow/tensorflow:1.5.0-gpu` with the addition of support for python3, pip3, and pipenv.
 
 A Dockerfile for building this container image is [here](https://github.com/Paperspace/tensorflow-python/).
-
-
-Create/create and start experiment
-=================
-To create new experiment use:
-```.env
-paperspace-python experiments create [type] [--options]
-```
-The two available experiment types are `singlenode` and `multinode`.
-
-To create and immediately start new experiment use:
-```.env
-paperspace-python experiments createAndStart [type] [--options]
-```
-
-For a full list of available commands run `paperspace experiments --help`. 
-Note that some options are required to create new experiment.
-
 
 Other examples
 ==============

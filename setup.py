@@ -28,6 +28,7 @@ setup(
     author='Paperspace Co.',
     author_email='info@paperspace.com',
     classifiers=[
+        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries',
         'License :: OSI Approved :: ISC License (ISCL)',
