@@ -12,8 +12,9 @@ def log(message, **kwargs):
 def log_error_response(data):
     error = data.get("error")
     details = data.get("details")
+    message = data.get("message")
 
-    if not any((error, details)):
+    if not any((error, details, message)):
         raise ValueError("No error messages found")
 
     if error:
@@ -30,6 +31,9 @@ def log_error_response(data):
                     log(msg, error=True)
         else:
             log(details)
+
+    if message:
+        log(str(message), error=True)
 
 
 def debug(messages):
