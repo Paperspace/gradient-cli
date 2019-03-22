@@ -4,6 +4,7 @@ import json
 import requests
 from six.moves import input
 
+from paperspace import logger
 from .config import *
 from .method import requests_exception_to_error_obj, response_error_check, status_code_to_error_obj
 
@@ -52,6 +53,7 @@ def login(email=None, password=None, apiToken=None):
     try:
         r = requests.request('post', config.CONFIG_HOST + '/users/login',
                              json=params)
+        logger.debug(r.content)
     except requests.exceptions.RequestException as e:
         res = requests_exception_to_error_obj(e)
     else:
