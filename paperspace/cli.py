@@ -104,6 +104,14 @@ def common_experiments_create_options(f):
             "projectHandle",
             required=True,
         ),
+        click.option(
+            "--modelType",
+            "modelType",
+        ),
+        click.option(
+            "--modelPath",
+            "modelPath",
+        ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -181,6 +189,14 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--parameterServerRegistryPassword",
             "parameterServerRegistryPassword",
+        ),
+        click.option(
+            "--modelType",
+            "modelType",
+        ),
+        click.option(
+            "--modelPath",
+            "modelPath",
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)

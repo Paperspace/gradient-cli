@@ -109,6 +109,8 @@ def _make_details_table(experiment):
             ("Worker Machine Type", experiment["templateHistory"]["params"].get("worker_machine_type")),
             ("Working Directory", experiment["templateHistory"]["params"].get("workingDirectory")),
             ("Workspace URL", experiment["templateHistory"]["params"].get("workspaceUrl")),
+            ("Model Type", experiment["templateHistory"]["params"].get("modelType")),
+            ("Model Path", experiment["templateHistory"]["params"].get("modelPath")),
         )
     elif experiment["experimentTypeId"] in (constants.ExperimentType.GRPC_MULTI_NODE,
                                             constants.ExperimentType.MPI_MULTI_NODE):
@@ -121,6 +123,8 @@ def _make_details_table(experiment):
             ("Experiment Env", experiment["templateHistory"]["params"].get("experimentEnv")),
             ("Experiment Type",
              constants.ExperimentType.get_type_str(experiment["templateHistory"]["params"].get("experimentTypeId"))),
+            ("Model Type", experiment["templateHistory"]["params"].get("modelType")),
+            ("Model Path", experiment["templateHistory"]["params"].get("modelPath")),
             ("Parameter Server Command", experiment["templateHistory"]["params"].get("parameter_server_command")),
             ("Parameter Server Container", experiment["templateHistory"]["params"].get("parameter_server_container")),
             ("Parameter Server Count", experiment["templateHistory"]["params"].get("parameter_server_count")),
