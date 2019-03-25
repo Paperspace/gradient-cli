@@ -28,6 +28,7 @@ class TestExperimentsCreateSingleNode(object):
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
+        "--workspaceUrl", "some-workspace",
     ]
     FULL_OPTIONS_COMMAND = [
         "experiments", "create", "singlenode",
@@ -56,6 +57,7 @@ class TestExperimentsCreateSingleNode(object):
         "machineType": u"testType",
         "command": u"testCommand",
         "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
+        "workspaceUrl": u"some-workspace",
     }
     FULL_OPTIONS_REQUEST = {
         "name": u"exp1",
@@ -148,6 +150,7 @@ class TestExperimentsCreateMultiNode(object):
         "--parameterServerCommand", "ls",
         "--parameterServerCount", 2,
         "--workerContainerUser", "usr",
+        "--workspaceUrl", "some-workspace",
     ]
     FULL_OPTIONS_COMMAND = [
         "experiments", "create", "multinode",
@@ -190,6 +193,7 @@ class TestExperimentsCreateMultiNode(object):
         "parameterServerCommand": u"ls",
         "parameterServerCount": 2,
         "workerContainerUser": u"usr",
+        "workspaceUrl": "some-workspace",
     }
     FULL_OPTIONS_REQUEST = {
         "name": u"multinode_mpi",
@@ -262,6 +266,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
+        "--workspaceUrl", "some-workspace",
     ]
     FULL_OPTIONS_COMMAND = [
         "experiments", "createAndStart", "singlenode",
@@ -302,6 +307,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--parameterServerCommand", "ls",
         "--parameterServerCount", 2,
         "--workerContainerUser", "usr",
+        "--workspaceUrl", "some-workspace",
     ]
     FULL_OPTIONS_COMMAND = [
         "experiments", "createAndStart", "multinode",

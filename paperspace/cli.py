@@ -69,6 +69,7 @@ def common_experiments_create_options(f):
         click.option(
             "--workspaceUrl",
             "workspaceUrl",
+            required=True,
         ),
         click.option(
             "--workingDirectory",
