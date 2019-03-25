@@ -81,7 +81,7 @@ def main():
                              'project', 'projectId', 'command', 'workspace', 'dataset', 'registryUsername',
                              'registryPassword', 'workspaceUsername', 'workspacePassword', 'cluster', 'clusterId',
                              'ports', 'isPreemptible', 'useDockerfile', 'buildOnly', 'registryTarget',
-                             'registryTargetUsername', 'registryTargetPassword', 'relDockerfilePath', 'customMetrics']:
+                             'registryTargetUsername', 'registryTargetPassword', 'relDockerfilePath', 'customMetrics', 'modelType', 'modelPath']:
                     if args and not args[0].startswith('--'):
                         params[param] = args.pop(0)
                     else:
