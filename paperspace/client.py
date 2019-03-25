@@ -17,6 +17,7 @@ class API(object):
         path = self.get_path(url)
         logger.debug("Sending POST: {}\nto: {}\nwith headers: {}".format(json, path, self.headers))
         response = requests.post(path, json=json, params=params, headers=self.headers)
+        logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response
 
@@ -24,6 +25,7 @@ class API(object):
         path = self.get_path(url)
         logger.debug("Sending PUT to {}\nwith headers: {}".format(path, self.headers))
         response = requests.put(path, headers=self.headers)
+        logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response
 
@@ -31,5 +33,6 @@ class API(object):
         path = self.get_path(url)
         logger.debug("Sending GET to {}\nwith headers: {}".format(path, self.headers))
         response = requests.get(path, headers=self.headers)
+        logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response

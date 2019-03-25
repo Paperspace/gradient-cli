@@ -1,14 +1,13 @@
 import terminaltables
 
-from paperspace import version, logger, constants
-from paperspace.client import API
+from paperspace import version, logger, constants, client
 from paperspace.config import config
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "paperspace-python",
                    "ps_client_version": version.version}
 
-experiments_api = API(config.CONFIG_EXPERIMENTS_HOST, headers=default_headers)
+experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=default_headers)
 
 
 def _log_response(response, success_msg, error_msg, logger_=logger):
@@ -66,7 +65,7 @@ def stop_experiment(experiment_handle, api=experiments_api):
 def _make_experiments_list_table(experiments):
     data = [("Name", "Handle", "Status")]
     for experiment in experiments:
-        name = experiment["templateHistory"]["params"]["name"]
+        name = experiment["templateHistory"]["params"].get("name")
         handle = experiment["handle"]
         status = constants.ExperimentState.get_state_str(experiment["state"])
         data.append((name, handle, status))
