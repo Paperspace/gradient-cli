@@ -411,7 +411,7 @@ def run(params={}, no_logging=False):
             init = 'init.sh'
         if os.path.exists(init):
             params['extraFiles'].append(init)
-        params['command'] = 'source ' + os.path.basename(init) + '\n' + params['command']
+        params['command'] = '. ' + os.path.basename(init) + '\n' + params['command']
 
     if params.pop('dryrun', None):
         print(params['command'])
