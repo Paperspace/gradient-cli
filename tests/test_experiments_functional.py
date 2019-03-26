@@ -45,7 +45,6 @@ class TestExperimentsCreateSingleNode(object):
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
-        "--count", 2,
         "--containerUser", "conUser",
         "--registryUsername", "userName",
         "--registryPassword", "passwd",
@@ -73,7 +72,6 @@ class TestExperimentsCreateSingleNode(object):
         "container": u"testContainer",
         "machineType": u"testType",
         "command": u"testCommand",
-        "count": 2,
         "containerUser": u"conUser",
         "registryUsername": u"userName",
         "registryPassword": u"passwd",
@@ -283,7 +281,6 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
-        "--count", 2,
         "--containerUser", "conUser",
         "--registryUsername", "userName",
         "--registryPassword", "passwd",
@@ -342,7 +339,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
 
 class TestExperimentDetail(object):
     COMMAND = ["experiments", "details", "experiment-id"]
-    DETAILS_JSON = {
+    MULTI_NODE_DETAILS_JSON = {
         "data": {
             "dtCreated": "2019-03-20T19:56:50.154853+00:00",
             "dtDeleted": None,
@@ -423,7 +420,48 @@ class TestExperimentDetail(object):
         },
         "message": "success"
     }
-    DETAILS_STDOUT = """+-------------------------------+----------------+
+    SINGLE_NODE_RESPONSE_JSON = {
+        "data": {
+            "dtCreated": "2019-03-22T13:22:27.200591+00:00",
+            "dtDeleted": None,
+            "dtFinished": None,
+            "dtModified": "2019-03-22T13:22:27.200591+00:00",
+            "dtProvisioningFinished": None,
+            "dtProvisioningStarted": None,
+            "dtStarted": None,
+            "dtTeardownFinished": None,
+            "dtTeardownStarted": None,
+            "experimentError": None,
+            "experimentTemplateHistoryId": 21814,
+            "experimentTemplateId": 60,
+            "experimentTypeId": 1,
+            "handle": "esro6mbmiulvbl",
+            "id": 21784,
+            "projectHandle": "prq70zy79",
+            "projectId": 612,
+            "started_by_user_id": 1655,
+            "state": 1,
+            "templateHistory": {
+                "dtCreated": "2019-03-22T13:22:26.375543+00:00",
+                "dtDeleted": None,
+                "experimentTemplateId": 60,
+                "id": 21814,
+                "params": {
+                    "experimentTypeId": 1,
+                    "name": "dsfads",
+                    "ports": 5000,
+                    "project_handle": "prq70zy79",
+                    "worker_command": "sadas",
+                    "worker_container": "asd",
+                    "worker_machine_type": "C2"
+                },
+                "triggerEvent": None,
+                "triggerEventId": None
+            }
+        },
+        "message": "success"
+    }
+    MULTI_NODE_DETAILS_STDOUT = """+-------------------------------+----------------+
 | Name                          | multinode_mpi  |
 +-------------------------------+----------------+
 | Handle                        | ew69ls0vy3eto  |
@@ -446,15 +484,39 @@ class TestExperimentDetail(object):
 | Workspace URL                 | wurl           |
 +-------------------------------+----------------+
 """
+    SINGLE_NODE_DETAILS_STDOUT = """+---------------------+----------------+
+| Name                | dsfads         |
++---------------------+----------------+
+| Handle              | esro6mbmiulvbl |
+| State               | created        |
+| Ports               | 5000           |
+| Project Handle      | prq70zy79      |
+| Worker Command      | sadas          |
+| Worker Container    | asd            |
+| Worker Machine Type | C2             |
+| Working Directory   | None           |
+| Workspace URL       | None           |
++---------------------+----------------+
+"""
 
     @mock.patch("paperspace.cli.commands.client.requests.get")
-    def test_should_send_get_request_and_print_experiment_details_in_a_table(self, get_patched):
-        get_patched.return_value = MockResponse(self.DETAILS_JSON, 200, "fake content")
+    def test_should_send_get_request_and_print_single_node_experiment_details_in_a_table(self, get_patched):
+        get_patched.return_value = MockResponse(self.SINGLE_NODE_RESPONSE_JSON, 200, "fake content")
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        assert result.output == self.DETAILS_STDOUT
+        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.cli.commands.client.requests.get")
+    def test_should_send_get_request_and_print_multi_node_experiment_details_in_a_table(self, get_patched):
+        get_patched.return_value = MockResponse(self.MULTI_NODE_DETAILS_JSON, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.MULTI_NODE_DETAILS_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("paperspace.cli.commands.client.requests.get")

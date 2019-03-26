@@ -202,10 +202,6 @@ def common_experiments_create_single_node_options(f):
             required=True,
         ),
         click.option(
-            "--count",
-            type=int,
-        ),
-        click.option(
             "--containerUser",
             "containerUser",
         ),
