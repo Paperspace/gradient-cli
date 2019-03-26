@@ -1,7 +1,10 @@
+import pydoc
+
 import terminaltables
 
 from paperspace import version, logger, constants, client
 from paperspace.config import config
+from paperspace.utils import get_terminal_lines
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "paperspace-python",
@@ -76,7 +79,8 @@ def _make_experiments_list_table(experiments):
 
 
 def list_experiments(api=experiments_api):
-    response = api.get("/experiments/")
+    # TODO: change to limit: -1 when PS-9535 is deployed to production
+    response = api.get("/experiments/", params={"limit": 1000000})
     details = response.content
     if response.ok:
         try:
@@ -86,7 +90,10 @@ def list_experiments(api=experiments_api):
             logger.log("Error parsing response data")
             logger.debug(e)
 
-    _log_response(response, details, "Unknown error while retrieving list of experiments")
+    if response.ok and len(details.splitlines()) > get_terminal_lines():
+        pydoc.pager(details)
+    else:
+        _log_response(response, details, "Unknown error while retrieving list of experiments")
 
 
 def _make_details_table(experiment):

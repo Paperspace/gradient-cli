@@ -12,13 +12,15 @@ def test_should_execute_create_experiment_command_when_cli_singlenode_command_wa
               "--projectHandle testHandle " \
               "--container testContainer " \
               "--machineType testType " \
-              "--command testCommand"
+              "--command testCommand " \
+              "--workspaceUrl wUrl"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
                        "container": u"testContainer",
                        "machineType": u"testType",
                        "command": u"testCommand",
                        "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
+                       "workspaceUrl": "wUrl",
                        }
 
     result = runner.invoke(cli.cli, command.split())
@@ -41,7 +43,8 @@ def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command
               "--parameterServerContainer testParameterServerContainer " \
               "--parameterServerMachineType testParameterServerMachineType " \
               "--parameterServerCommand testParameterServerCommand " \
-              "--parameterServerCount 3"
+              "--parameterServerCount 3 " \
+              "--workspaceUrl wUrl"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
                        "experimentTypeId": constants.ExperimentType.MPI_MULTI_NODE,
@@ -53,6 +56,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command
                        "parameterServerMachineType": u"testParameterServerMachineType",
                        "parameterServerCommand": u"testParameterServerCommand",
                        "parameterServerCount": 3,
+                       "workspaceUrl": "wUrl",
                        }
 
     result = runner.invoke(cli.cli, command.split())
@@ -75,7 +79,8 @@ def test_should_execute_create_experiment_command_when_cli_multinode_grpc_comman
               "--parameterServerContainer testParameterServerContainer " \
               "--parameterServerMachineType testParameterServerMachineType " \
               "--parameterServerCommand testParameterServerCommand " \
-              "--parameterServerCount 3"
+              "--parameterServerCount 3 " \
+              "--workspaceUrl wUrl"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
                        "experimentTypeId": constants.ExperimentType.GRPC_MULTI_NODE,
@@ -87,6 +92,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_grpc_comman
                        "parameterServerMachineType": u"testParameterServerMachineType",
                        "parameterServerCommand": u"testParameterServerCommand",
                        "parameterServerCount": 3,
+                       "workspaceUrl": "wUrl",
                        }
 
     result = runner.invoke(cli.cli, command.split())
@@ -104,13 +110,15 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_sing
               "--projectHandle testHandle " \
               "--container testContainer " \
               "--machineType testType " \
-              "--command testCommand"
+              "--command testCommand " \
+              "--workspaceUrl wUrl"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
                        "container": u"testContainer",
                        "machineType": u"testType",
                        "command": u"testCommand",
                        "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
+                       "workspaceUrl": "wUrl",
                        }
 
     result = runner.invoke(cli.cli, command.split())
@@ -134,7 +142,8 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_mult
               "--parameterServerContainer testParameterServerContainer " \
               "--parameterServerMachineType testParameterServerMachineType " \
               "--parameterServerCommand testParameterServerCommand " \
-              "--parameterServerCount 3"
+              "--parameterServerCount 3 " \
+              "--workspaceUrl wUrl"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
                        "experimentTypeId": constants.ExperimentType.MPI_MULTI_NODE,
@@ -146,6 +155,7 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_mult
                        "parameterServerMachineType": u"testParameterServerMachineType",
                        "parameterServerCommand": u"testParameterServerCommand",
                        "parameterServerCount": 3,
+                       "workspaceUrl": "wUrl",
                        }
 
     result = runner.invoke(cli.cli, command.split())

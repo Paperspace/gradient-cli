@@ -718,6 +718,19 @@ class TestExperimentList(object):
 
         assert result.output == self.DETAILS_STDOUT
 
+    @mock.patch("paperspace.cli.commands.pydoc")
+    @mock.patch("paperspace.cli.commands.client.requests.get")
+    def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
+                                                                                                     pydoc_patched):
+        list_json = {"data": self.LIST_JSON["data"] * 40}
+        get_patched.return_value = MockResponse(list_json, 200, "")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        pydoc_patched.pager.assert_called_once()
+        assert result.exit_code == 0
+
 
 class TestStartExperiment(object):
     COMMAND = ["experiments", "start", "some-handle"]

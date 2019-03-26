@@ -29,10 +29,10 @@ class API(object):
         logger.debug("Response content: {}".format(response.content))
         return response
 
-    def get(self, url):
+    def get(self, url, params=None):
         path = self.get_path(url)
         logger.debug("Sending GET to {}\nwith headers: {}".format(path, self.headers))
-        response = requests.get(path, headers=self.headers)
+        response = requests.get(path, params=params, headers=self.headers)
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response
