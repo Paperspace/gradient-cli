@@ -190,14 +190,6 @@ def common_experiment_create_multi_node_options(f):
             "--parameterServerRegistryPassword",
             "parameterServerRegistryPassword",
         ),
-        click.option(
-            "--modelType",
-            "modelType",
-        ),
-        click.option(
-            "--modelPath",
-            "modelPath",
-        ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
