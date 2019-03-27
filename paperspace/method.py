@@ -1,4 +1,3 @@
-import json
 import subprocess
 import sys
 import tempfile
@@ -6,9 +5,9 @@ import zipfile
 
 import requests
 
-from paperspace.version import version
-from .version import version
+from paperspace import logger
 from .config import *
+from .version import version
 
 
 def zip_to_tmp(files, ignore_files=[]):
@@ -134,11 +133,12 @@ def method(category, method, params):
         if category == 'machines' and method == 'createSingleMachinePublic':
             data = params
             params = None
-        r = requests.request(http_method, config.CONFIG_HOST + path,
-                             headers={'x-api-key': config.PAPERSPACE_API_KEY, 'ps_client_name': 'paperspace-python', 
-                             'ps_client_version' : version},
-                             params=params, data=data, files=files)
-        #pprint(vars(r.request))
+        url = config.CONFIG_HOST + path
+        headers = {'x-api-key': config.PAPERSPACE_API_KEY, 'ps_client_name': 'paperspace-python',
+                   'ps_client_version': version}
+        r = requests.request(http_method, url, headers=headers, params=params, data=data, files=files)
+        logger.debug("{} request sent to: {} with headers: {} params: {} data: {} files: {}"
+                     .format(http_method, url, headers, params, data, files))
     except requests.exceptions.RequestException as e:
         return requests_exception_to_error_obj(e)
 

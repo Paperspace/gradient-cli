@@ -1,5 +1,13 @@
 # Paperspace Python Release Notes
 
+## Release Notes for v0.0.19b
+### New features
+* filtering experiments list with `--projectHandle` 
+* paginating experiments list when does not fit the terminal width
+* added `--modelType` and `--modelPath` to `experiments create`
+### Fixes
+* some minor bug fixes
+
 ## Release Notes for v0.0.19a
 ### New features
 * support for experiments API - creating, starting, listing, etc.

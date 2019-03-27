@@ -1,7 +1,7 @@
 Paperspace Python
 =================
 
-Release 0.0.19a
+Release 0.0.19b0
 
 See [releasenotes.md](https://github.com/Paperspace/paperspace-python/blob/master/releasenotes.md) for details on the current release, as well as release history.
 
@@ -12,7 +12,7 @@ Getting Started
 
 2. Use pip, pipenv, or conda to install the paperspace-python package, e.g.:
 
-    `pip install paperspace`
+    `pip install -U paperspace`
 
 3. Download your api key by executing the following:
 
