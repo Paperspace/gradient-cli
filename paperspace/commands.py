@@ -69,19 +69,27 @@ class ListExperimentsCommand(object):
     def __init__(self, api=experiments_api):
         self.api = api
 
-    def execute(self, project_handle=None):
-        # TODO: change to limit: -1 when PS-9535 is deployed to production
-        params = {"limit": 1000000}  # to list all experiments
-        if project_handle:
-            params["projectHandle[0]"] = project_handle
+    def execute(self, project_handles=None):
+        params = self._get_query_params(project_handles)
         response = self.api.get("/experiments/", params=params)
 
         try:
-            experiments = self._get_experiments_list(response, bool(project_handle))
+            experiments = self._get_experiments_list(response, bool(project_handles))
         except (ValueError, KeyError) as e:
-            logger.log("Error while parsing response data")
+            logger.log("Error while parsing response data: {}".format(e))
         else:
             self._log_experiments_list(experiments)
+
+    @staticmethod
+    def _get_query_params(project_handles):
+        # TODO: change to limit: -1 when PS-9535 is deployed to production
+        # to list all experiments
+        params = {"limit": 1000000}
+        for i, handle in enumerate(project_handles):
+            key = "projectHandle[{}]".format(i)
+            params[key] = handle
+
+        return params
 
     @staticmethod
     def _make_experiments_list_table(experiments):
@@ -103,11 +111,14 @@ class ListExperimentsCommand(object):
         if not response.ok:
             raise ValueError("Unknown error")
 
-        experiments = response.json()["data"]
-        if not filtered:  # If filtering by projectHandle response data has different format
-            return experiments
+        data = response.json()["data"]
+        if not filtered:  # If filtering by projectHandle response data has different format...
+            return data
 
-        experiments = [experiment for experiment in experiments[0]["data"]]
+        experiments = []
+        for project_experiments in data:
+            for experiment in project_experiments["data"]:
+                experiments.append(experiment)
         return experiments
 
     def _log_experiments_list(self, experiments):

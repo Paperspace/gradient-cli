@@ -15,24 +15,24 @@ class API(object):
 
     def post(self, url, json=None, params=None):
         path = self.get_path(url)
-        logger.debug("Sending POST: {}\nto: {}\nwith headers: {}".format(json, path, self.headers))
         response = requests.post(path, json=json, params=params, headers=self.headers)
+        logger.debug("POST request sent to: {} with headers: {}".format(response.url, self.headers))
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response
 
     def put(self, url):
         path = self.get_path(url)
-        logger.debug("Sending PUT to {}\nwith headers: {}".format(path, self.headers))
         response = requests.put(path, headers=self.headers)
+        logger.debug("PUT request sent to: {} with headers: {}".format(response.url, self.headers))
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response
 
     def get(self, url, params=None):
         path = self.get_path(url)
-        logger.debug("Sending GET to {}\nwith headers: {}".format(path, self.headers))
         response = requests.get(path, params=params, headers=self.headers)
+        logger.debug("GET request sent to: {} with headers: {}".format(response.url, self.headers))
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response

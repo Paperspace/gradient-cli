@@ -2,6 +2,7 @@ import mock
 from click.testing import CliRunner
 
 from paperspace import cli, constants, commands
+from tests import example_responses
 
 
 class MockResponse:
@@ -9,6 +10,7 @@ class MockResponse:
         self.json_data = json_data
         self.status_code = status_code
         self.content = content
+        self.url = "example.com"
 
     @property
     def ok(self):
@@ -734,6 +736,27 @@ class TestExperimentList(object):
 
         pydoc_patched.pager.assert_called_once()
         assert result.exit_code == 0
+
+    @mock.patch("paperspace.cli.commands.client.requests.get")
+    def test_should_send_get_request_and_print_list_of_experiments_filtered_with_two_projects(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.LIST_OF_EXPERIMENTS_FILTERED_WITH_TWO_PROJECTS, 200,
+                                                "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, ["experiments", "list", "--projectHandle", "handle1", "-p", "handle2"])
+
+        assert result.output == example_responses.LIST_OF_EXPERIMENTS_FILTERED_WITH_TWO_PROJECTS_STDOUT
+
+    @mock.patch("paperspace.cli.commands.client.requests.get")
+    def test_should_send_get_request_and_print_list_of_experiments_filtered_with_two_projects_but_none_found(
+            self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.LIST_OF_EXPERIMENTS_FILTERED_BUT_NONE_FOUND, 200,
+                                                "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, ["experiments", "list", "--projectHandle", "handle1", "-p", "handle2"])
+
+        assert result.output == "No experiments found\n"
 
 
 class TestStartExperiment(object):
