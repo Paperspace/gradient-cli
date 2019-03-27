@@ -470,6 +470,8 @@ class TestExperimentDetail(object):
 | Cluster ID                    | 2              |
 | Experiment Env                | {'key': 'val'} |
 | Experiment Type               | MPI multi node |
+| Model Type                    | None           |
+| Model Path                    | None           |
 | Parameter Server Command      | ls             |
 | Parameter Server Container    | pscon          |
 | Parameter Server Count        | 2              |
@@ -496,6 +498,8 @@ class TestExperimentDetail(object):
 | Worker Machine Type | C2             |
 | Working Directory   | None           |
 | Workspace URL       | None           |
+| Model Type          | None           |
+| Model Path          | None           |
 +---------------------+----------------+
 """
 
