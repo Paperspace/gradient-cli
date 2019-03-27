@@ -65,35 +65,60 @@ def stop_experiment(experiment_handle, api=experiments_api):
     _log_response(response, "Experiment stopped", "Unknown error while stopping the experiment")
 
 
-def _make_experiments_list_table(experiments):
-    data = [("Name", "Handle", "Status")]
-    for experiment in experiments:
-        name = experiment["templateHistory"]["params"].get("name")
-        handle = experiment["handle"]
-        status = constants.ExperimentState.get_state_str(experiment["state"])
-        data.append((name, handle, status))
+class ListExperimentsCommand(object):
+    def __init__(self, api=experiments_api):
+        self.api = api
 
-    ascii_table = terminaltables.AsciiTable(data)
-    table_string = ascii_table.table
-    return table_string
+    def execute(self, project_handle=None):
+        # TODO: change to limit: -1 when PS-9535 is deployed to production
+        params = {"limit": 1000000}  # to list all experiments
+        if project_handle:
+            params["projectHandle[0]"] = project_handle
+        response = self.api.get("/experiments/", params=params)
 
-
-def list_experiments(api=experiments_api):
-    # TODO: change to limit: -1 when PS-9535 is deployed to production
-    response = api.get("/experiments/", params={"limit": 1000000})
-    details = response.content
-    if response.ok:
         try:
-            experiments = response.json()["data"]
-            details = _make_experiments_list_table(experiments)
+            experiments = self._get_experiments_list(response, bool(project_handle))
         except (ValueError, KeyError) as e:
-            logger.log("Error parsing response data")
-            logger.debug(e)
+            logger.log("Error while parsing response data")
+        else:
+            self._log_experiments_list(experiments)
 
-    if response.ok and len(details.splitlines()) > get_terminal_lines():
-        pydoc.pager(details)
-    else:
-        _log_response(response, details, "Unknown error while retrieving list of experiments")
+    @staticmethod
+    def _make_experiments_list_table(experiments):
+        data = [("Name", "Handle", "Status")]
+        for experiment in experiments:
+            name = experiment["templateHistory"]["params"].get("name")
+            handle = experiment["handle"]
+            status = constants.ExperimentState.get_state_str(experiment["state"])
+            data.append((name, handle, status))
+
+        ascii_table = terminaltables.AsciiTable(data)
+        table_string = ascii_table.table
+        return table_string
+
+    @staticmethod
+    def _get_experiments_list(response, filtered=False):
+        """"""
+
+        if not response.ok:
+            raise ValueError("Unknown error")
+
+        experiments = response.json()["data"]
+        if not filtered:  # If filtering by projectHandle response data has different format
+            return experiments
+
+        experiments = [experiment for experiment in experiments[0]["data"]]
+        return experiments
+
+    def _log_experiments_list(self, experiments):
+        if not experiments:
+            logger.log("No experiments found")
+        else:
+            table_str = self._make_experiments_list_table(experiments)
+            if len(table_str.splitlines()) > get_terminal_lines():
+                pydoc.pager(table_str)
+            else:
+                logger.log(table_str)
 
 
 def _make_details_table(experiment):

@@ -271,9 +271,11 @@ def stop(experiment_handle):
     commands.stop_experiment(experiment_handle)
 
 
+@click.option("--projectHandle", "project_handle")
 @experiments.command("list")
-def list_experiments():
-    commands.list_experiments()
+def list_experiments(project_handle):
+    command = commands.ListExperimentsCommand()
+    command.execute(project_handle)
 
 
 @experiments.command("details")
