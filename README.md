@@ -14,6 +14,10 @@ Getting Started
 
     `pip install -U paperspace`
 
+    To install/update prerelease (Alpha/Beta) version version of paperspace-python, use:
+
+    `pip install -U --pre paperspace`
+
 3. Download your api key by executing the following:
 
     `paperspace-python login`
