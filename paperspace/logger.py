@@ -39,3 +39,14 @@ def log_error_response(data):
 def debug(messages):
     if config.DEBUG:
         log("DEBUG: {}".format(messages))
+
+
+def log_response(response, success_msg, error_msg):
+    if response.ok:
+        log(success_msg)
+    else:
+        try:
+            data = response.json()
+            log_error_response(data)
+        except ValueError:
+            log(error_msg)

@@ -4,7 +4,7 @@ from click.testing import CliRunner
 from paperspace import cli, constants
 
 
-@mock.patch("paperspace.cli.commands")
+@mock.patch("paperspace.cli.experiments_commands")
 def test_should_execute_create_experiment_command_when_cli_singlenode_command_was_executed(commands_patched):
     runner = CliRunner()
     command = "experiments create singlenode " \
@@ -29,7 +29,7 @@ def test_should_execute_create_experiment_command_when_cli_singlenode_command_wa
     commands_patched.create_experiment.assert_called_once_with(expected_kwargs)
 
 
-@mock.patch("paperspace.cli.commands")
+@mock.patch("paperspace.cli.experiments_commands")
 def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command_was_executed(commands_patched):
     runner = CliRunner()
     command = "experiments create multinode " \
@@ -65,7 +65,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command
     commands_patched.create_experiment.assert_called_once_with(expected_kwargs)
 
 
-@mock.patch("paperspace.cli.commands")
+@mock.patch("paperspace.cli.experiments_commands")
 def test_should_execute_create_experiment_command_when_cli_multinode_grpc_command_was_executed(commands_patched):
     runner = CliRunner()
     command = "experiments create multinode " \
@@ -101,7 +101,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_grpc_comman
     commands_patched.create_experiment.assert_called_once_with(expected_kwargs)
 
 
-@mock.patch("paperspace.cli.commands")
+@mock.patch("paperspace.cli.experiments_commands")
 def test_should_execute_create_experiment_command_when_cli_create_and_start_singlenode_command_was_executed(
         commands_patched):
     runner = CliRunner()
@@ -127,7 +127,7 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_sing
     commands_patched.create_and_start_experiment.assert_called_once_with(expected_kwargs)
 
 
-@mock.patch("paperspace.cli.commands")
+@mock.patch("paperspace.cli.experiments_commands")
 def test_should_execute_create_experiment_command_when_cli_create_and_start_multinode_mpi_command_was_executed(
         commands_patched):
     runner = CliRunner()

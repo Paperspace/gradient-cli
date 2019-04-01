@@ -3,7 +3,8 @@ import json
 
 import click
 
-from paperspace import commands, constants
+from paperspace import constants
+from paperspace.commands import experiments as experiments_commands
 
 
 class ChoiceType(click.Choice):
@@ -41,7 +42,7 @@ def cli():
     pass
 
 
-@cli.group()
+@cli.group("experiments")
 def experiments():
     pass
 
@@ -230,7 +231,7 @@ def common_experiments_create_single_node_options(f):
 @common_experiment_create_multi_node_options
 def create_multi_node(**kwargs):
     del_if_value_is_none(kwargs)
-    commands.create_experiment(kwargs)
+    experiments_commands.create_experiment(kwargs)
 
 
 @create.command(name="singlenode")
@@ -239,7 +240,7 @@ def create_multi_node(**kwargs):
 def create_single_node(**kwargs):
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
-    commands.create_experiment(kwargs)
+    experiments_commands.create_experiment(kwargs)
 
 
 @create_and_start.command(name="multinode")
@@ -247,7 +248,7 @@ def create_single_node(**kwargs):
 @common_experiment_create_multi_node_options
 def create_and_start_multi_node(**kwargs):
     del_if_value_is_none(kwargs)
-    commands.create_and_start_experiment(kwargs)
+    experiments_commands.create_and_start_experiment(kwargs)
 
 
 @create_and_start.command(name="singlenode")
@@ -256,32 +257,32 @@ def create_and_start_multi_node(**kwargs):
 def create_and_start_single_node(**kwargs):
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
-    commands.create_and_start_experiment(kwargs)
+    experiments_commands.create_and_start_experiment(kwargs)
 
 
 @experiments.command()
 @click.argument("experiment-handle")
 def start(experiment_handle):
-    commands.start_experiment(experiment_handle)
+    experiments_commands.start_experiment(experiment_handle)
 
 
 @experiments.command()
 @click.argument("experiment-handle")
 def stop(experiment_handle):
-    commands.stop_experiment(experiment_handle)
+    experiments_commands.stop_experiment(experiment_handle)
 
 
-@click.option("--projectHandle", "-p", "project_handles", multiple=True)
 @experiments.command("list")
+@click.option("--projectHandle", "-p", "project_handles", multiple=True)
 def list_experiments(project_handles):
-    command = commands.ListExperimentsCommand()
+    command = experiments_commands.ListExperimentsCommand()
     command.execute(project_handles)
 
 
 @experiments.command("details")
 @click.argument("experiment-handle")
 def get_experiment_details(experiment_handle):
-    commands.get_experiment_details(experiment_handle)
+    experiments_commands.get_experiment_details(experiment_handle)
 
 # TODO: delete experiment - not implemented in the api
 # TODO: modify experiment - not implemented in the api

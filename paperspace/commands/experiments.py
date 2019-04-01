@@ -2,26 +2,14 @@ import pydoc
 
 import terminaltables
 
-from paperspace import version, logger, constants, client
-from paperspace.config import config
+from paperspace import config, version, client, logger, constants
+from paperspace.logger import log_response
 from paperspace.utils import get_terminal_lines
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "paperspace-python",
                    "ps_client_version": version.version}
-
 experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=default_headers)
-
-
-def _log_response(response, success_msg, error_msg, logger_=logger):
-    if response.ok:
-        logger_.log(success_msg)
-    else:
-        try:
-            data = response.json()
-            logger_.log_error_response(data)
-        except ValueError:
-            logger_.log(error_msg)
 
 
 def _log_create_experiment(response, success_msg_template, error_msg, logger_=logger):
@@ -56,13 +44,13 @@ def create_and_start_experiment(json_, api=experiments_api):
 def start_experiment(experiment_handle, api=experiments_api):
     url = "/experiments/{}/start/".format(experiment_handle)
     response = api.put(url)
-    _log_response(response, "Experiment started", "Unknown error while starting the experiment")
+    log_response(response, "Experiment started", "Unknown error while starting the experiment")
 
 
 def stop_experiment(experiment_handle, api=experiments_api):
     url = "/experiments/{}/stop/".format(experiment_handle)
     response = api.put(url)
-    _log_response(response, "Experiment stopped", "Unknown error while stopping the experiment")
+    log_response(response, "Experiment stopped", "Unknown error while stopping the experiment")
 
 
 class ListExperimentsCommand(object):
@@ -195,4 +183,4 @@ def get_experiment_details(experiment_handle, api=experiments_api):
             logger.log("Error parsing response data")
             logger.debug(e)
 
-    _log_response(response, details, "Unknown error while retrieving details of the experiment")
+    log_response(response, details, "Unknown error while retrieving details of the experiment")
