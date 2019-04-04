@@ -11,7 +11,7 @@ default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
 deployments_api = client.API(config.CONFIG_HOST, headers=default_headers)
 
 
-class DeploymentCommandBase(object):
+class _DeploymentCommandBase(object):
     def __init__(self, api=deployments_api, logger_=logger):
         self.api = api
         self.logger = logger_
@@ -34,7 +34,7 @@ class DeploymentCommandBase(object):
                 self.logger.log(error_msg)
 
 
-class CreateDeployment(DeploymentCommandBase):
+class CreateDeploymentCommand(_DeploymentCommandBase):
     def execute(self, kwargs):
         response = self.api.post("/deployments/createDeployment/", json=kwargs)
         self._log_message(response,
@@ -42,7 +42,7 @@ class CreateDeployment(DeploymentCommandBase):
                           "Unknown error during deployment")
 
 
-class ListDeployments(DeploymentCommandBase):
+class ListDeploymentsCommand(_DeploymentCommandBase):
     def execute(self, kwargs):
         json_ = self._get_request_json(kwargs)
         response = self.api.get("/deployments/getDeploymentList/", json=json_)
@@ -98,7 +98,7 @@ class ListDeployments(DeploymentCommandBase):
         return table_string
 
 
-class UpdateModelCommand(DeploymentCommandBase):
+class UpdateModelCommand(_DeploymentCommandBase):
     def execute(self, model_id, kwargs):
         if not kwargs:
             self.logger.log("No parameters to update were given. Use --help for more information.")
@@ -112,7 +112,7 @@ class UpdateModelCommand(DeploymentCommandBase):
                           "Unknown error occurred.")
 
 
-class StartDeployment(DeploymentCommandBase):
+class StartDeploymentCommand(_DeploymentCommandBase):
     def execute(self, model_id):
         json_ = {"id": model_id,
                  "isRunning": True}
@@ -122,7 +122,7 @@ class StartDeployment(DeploymentCommandBase):
                           "Unknown error occurred.")
 
 
-class DeleteDeployment(DeploymentCommandBase):
+class DeleteDeploymentCommand(_DeploymentCommandBase):
     def execute(self, model_id):
         json_ = {"id": model_id,
                  "upd": {"isDeleted": True}}

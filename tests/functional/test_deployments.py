@@ -71,15 +71,15 @@ class TestDeploymentsList(object):
     LIST_WITH_FILTER_REQUEST_JSON = {"filter": {"where": {"and": [{"state": "Stopped"}]}}}
     LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND = {"deploymentList": [], "total": 17, "displayTotal": 0,
                                                                 "runningTotal": 0}
-    DETAILS_STDOUT = """+-------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+
-| Name  | ID              | Endpoint                                                                         | Api Type      | Deployment Type           |
-+-------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+
-| keton | dev61ity7lx232  | https://development-services.paperspace.io/model-serving/dev61ity7lx232:predict  | some_api_type | Tensorflow Serving on K8s |
-| keton | desanw1jptk7woh | https://development-services.paperspace.io/model-serving/desanw1jptk7woh:predict | REST          | Tensorflow Serving on K8s |
-| keton | desfnnrqt1v633v | https://development-services.paperspace.io/model-serving/desfnnrqt1v633v:predict | REST          | Tensorflow Serving on K8s |
-| keton | desdyn55d2e02su | https://development-services.paperspace.io/model-serving/desdyn55d2e02su:predict | REST          | Tensorflow Serving on K8s |
-| keton | des3tmqa3s627o9 | https://development-services.paperspace.io/model-serving/des3tmqa3s627o9:predict | REST          | Tensorflow Serving on K8s |
-+-------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+
+    DETAILS_STDOUT = """+-----------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+
+| Name      | ID              | Endpoint                                                                         | Api Type      | Deployment Type           |
++-----------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+
+| some_name | dev61ity7lx232  | https://development-services.paperspace.io/model-serving/dev61ity7lx232:predict  | some_api_type | Tensorflow Serving on K8s |
+| some_name | desanw1jptk7woh | https://development-services.paperspace.io/model-serving/desanw1jptk7woh:predict | REST          | Tensorflow Serving on K8s |
+| some_name | desfnnrqt1v633v | https://development-services.paperspace.io/model-serving/desfnnrqt1v633v:predict | REST          | Tensorflow Serving on K8s |
+| some_name | desdyn55d2e02su | https://development-services.paperspace.io/model-serving/desdyn55d2e02su:predict | REST          | Tensorflow Serving on K8s |
+| some_name | des3tmqa3s627o9 | https://development-services.paperspace.io/model-serving/des3tmqa3s627o9:predict | REST          | Tensorflow Serving on K8s |
++-----------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+
 """
 
     @mock.patch("paperspace.cli.deployments_commands.client.requests.get")
@@ -127,3 +127,109 @@ class TestDeploymentsList(object):
         result = runner.invoke(cli.cli, self.COMMAND_WITH_FILTER_WITH_STATE)
 
         assert result.output == "No deployments found\n"
+
+
+class TestDeploymentsUpdate(object):
+    URL = "https://api.paperspace.io/deployments/updateDeployment/"
+    COMMAND = [
+        "deployments", "update",
+        "--id", "some_id",
+        "--name", "new_name",
+    ]
+    BASIC_OPTIONS_REQUEST_JSON = {"upd": {"name": u"new_name"}, "id": u"some_id"}
+
+    RESPONSE_JSON_200 = {"upd": {"name": u"asd"}, "id": u"dennaw0wzbvvg3"}
+    EXPECTED_STDOUT = "Deployment model updated.\n"
+
+    RESPONSE_JSON_400 = {"error": {"name": "Error", "status": 400, "message": "Unable to access deployment"}}
+    EXPECTED_STDOUT_WITH_WRONG_ID = "Unable to access deployment\n"
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_update_deployment(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_REQUEST_JSON,
+                                             params=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_update_deployment_used_with_wrong_id(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_400, 400, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_REQUEST_JSON,
+                                             params=None)
+        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_ID
+        assert result.exit_code == 0
+
+
+class TestStartDeployment(object):
+    URL = "https://api.paperspace.io/deployments/updateDeployment/"
+    COMMAND = ["deployments", "start",
+               "--id", "some_id"]
+    REQUEST_JSON = {"isRunning": True, "id": u"some_id"}
+    EXPECTED_STDOUT = "Deployment started\n"
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_deployments_start_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(None, 204, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.REQUEST_JSON,
+                                             params=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+
+class TestDeleteDeployment(object):
+    URL = "https://api.paperspace.io/deployments/updateDeployment/"
+    COMMAND = ["deployments", "delete",
+               "--id", "some_id"]
+
+    REQUEST_JSON = {"upd": {"isDeleted": True}, "id": u"some_id"}
+    EXPECTED_STDOUT = "Deployment deleted.\n"
+
+    RESPONSE_JSON_400 = {"error": {"name": "Error", "status": 400, "message": "Unable to access deployment"}}
+    EXPECTED_STDOUT_WITH_WRONG_ID = "Unable to access deployment\n"
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_deployments_delete_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(None, 204, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.REQUEST_JSON,
+                                             params=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_deployments_delete_used_with_wrong_id(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_400, 400, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.REQUEST_JSON,
+                                             params=None)
+        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_ID
+        assert result.exit_code == 0

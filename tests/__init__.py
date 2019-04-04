@@ -10,4 +10,7 @@ class MockResponse:
         return 200 <= self.status_code <= 299
 
     def json(self):
+        if not self.json_data:
+            raise ValueError("No data")
+
         return self.json_data

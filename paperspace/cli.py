@@ -341,7 +341,7 @@ def deployments():
 )
 def create_deployment(**kwargs):
     del_if_value_is_none(kwargs)
-    command = deployments_commands.CreateDeployment()
+    command = deployments_commands.CreateDeploymentCommand()
     command.execute(kwargs)
 
 
@@ -365,7 +365,7 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
     type=ChoiceType(DEPLOYMENT_STATES_MAP, case_sensitive=False)
 )
 def get_deployments_list(**kwargs):
-    command = deployments_commands.ListDeployments()
+    command = deployments_commands.ListDeploymentsCommand()
     command.execute(kwargs)
 
 
@@ -408,7 +408,7 @@ def update_deployment_model(id=None, **kwargs):
     required=True,
 )
 def start_deployment(id):
-    command = deployments_commands.StartDeployment()
+    command = deployments_commands.StartDeploymentCommand()
     command.execute(id)
 
 
@@ -419,5 +419,5 @@ def start_deployment(id):
     required=True,
 )
 def delete_deployment(id):
-    command = deployments_commands.DeleteDeployment()
+    command = deployments_commands.DeleteDeploymentCommand()
     command.execute(id)
