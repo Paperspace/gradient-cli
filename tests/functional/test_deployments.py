@@ -1,0 +1,129 @@
+import mock
+from click.testing import CliRunner
+
+from paperspace import cli
+from paperspace.commands import deployments as deployments_commands
+from tests import example_responses, MockResponse
+
+EXPECTED_HEADERS = deployments_commands.default_headers
+
+
+class TestDeploymentsCreate(object):
+    URL = "https://api.paperspace.io/deployments/createDeployment/"
+    BASIC_OPTIONS_COMMAND = [
+        "deployments", "create",
+        "--deploymentType", "tfserving",
+        "--modelId", "some_model_id",
+        "--name", "some_name",
+        "--machineType", "HAL9000",
+        "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--instanceCount", "666",
+    ]
+    BASIC_OPTIONS_REQUEST = {
+        "machineType": u"HAL9000",
+        "name": u"some_name",
+        "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "deploymentType": "Tensorflow Serving on K8s",
+        "instanceCount": 666,
+        "modelId": u"some_model_id",
+    }
+    RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
+    EXPECTED_STDOUT = "New deployment created with id: sadkfhlskdjh\n"
+
+    RESPONSE_JSON_404_MODEL_NOT_FOUND = {"error": {"name": "Error", "status": 404, "message": "Unable to find model"}}
+    RESPONSE_CONTENT_404_MODEL_NOT_FOUND = b'{"error":{"name":"Error","status":404,"message":"Unable to find model"}}\n'
+    EXPECTED_STDOUT_MODEL_NOT_FOUND = "Unable to find model\n"
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_create_deployment_with_basic_options(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             params=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_create_wrong_model_id_was_given(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_404_MODEL_NOT_FOUND, 404,
+                                                 self.RESPONSE_CONTENT_404_MODEL_NOT_FOUND)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             params=None)
+        assert result.output == self.EXPECTED_STDOUT_MODEL_NOT_FOUND
+        assert result.exit_code == 0
+
+
+class TestDeploymentsList(object):
+    COMMAND = ["deployments", "list"]
+    LIST_JSON = example_responses.LIST_DEPLOYMENTS
+    COMMAND_WITH_FILTER_WITH_STATE = ["deployments", "list", "--state", "Stopped"]
+    LIST_WITH_FILTER_REQUEST_JSON = {"filter": {"where": {"and": [{"state": "Stopped"}]}}}
+    LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND = {"deploymentList": [], "total": 17, "displayTotal": 0,
+                                                                "runningTotal": 0}
+    DETAILS_STDOUT = """+-------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+
+| Name  | ID              | Endpoint                                                                         | Api Type      | Deployment Type           |
++-------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+
+| keton | dev61ity7lx232  | https://development-services.paperspace.io/model-serving/dev61ity7lx232:predict  | some_api_type | Tensorflow Serving on K8s |
+| keton | desanw1jptk7woh | https://development-services.paperspace.io/model-serving/desanw1jptk7woh:predict | REST          | Tensorflow Serving on K8s |
+| keton | desfnnrqt1v633v | https://development-services.paperspace.io/model-serving/desfnnrqt1v633v:predict | REST          | Tensorflow Serving on K8s |
+| keton | desdyn55d2e02su | https://development-services.paperspace.io/model-serving/desdyn55d2e02su:predict | REST          | Tensorflow Serving on K8s |
+| keton | des3tmqa3s627o9 | https://development-services.paperspace.io/model-serving/des3tmqa3s627o9:predict | REST          | Tensorflow Serving on K8s |
++-------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+
+"""
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.get")
+    def test_should_send_get_request_and_print_list_of_deployments(self, get_patched):
+        get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.DETAILS_STDOUT
+
+    @mock.patch("paperspace.cli.deployments_commands.pydoc")
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.get")
+    def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
+                                                                                                     pydoc_patched):
+        list_json = {"deploymentList": self.LIST_JSON["deploymentList"] * 40}
+        get_patched.return_value = MockResponse(list_json, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        pydoc_patched.pager.assert_called_once()
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.get")
+    def test_should_send_get_request_and_print_list_of_deployments_filtered_by_state(self, get_patched):
+        get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_FILTER_WITH_STATE)
+
+        get_patched.assert_called_with("https://api.paperspace.io/deployments/getDeploymentList/",
+                                       headers=EXPECTED_HEADERS,
+                                       json=self.LIST_WITH_FILTER_REQUEST_JSON,
+                                       params=None)
+        assert result.output == self.DETAILS_STDOUT
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.get")
+    def test_should_send_get_request_and_print_list_of_deployments_filtered_with_state_but_none_found(
+            self, get_patched):
+        get_patched.return_value = MockResponse(self.LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND, 200,
+                                                "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_FILTER_WITH_STATE)
+
+        assert result.output == "No deployments found\n"

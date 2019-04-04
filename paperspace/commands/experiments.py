@@ -54,8 +54,9 @@ def stop_experiment(experiment_handle, api=experiments_api):
 
 
 class ListExperimentsCommand(object):
-    def __init__(self, api=experiments_api):
+    def __init__(self, api=experiments_api, logger_=logger):
         self.api = api
+        self.logger = logger_
 
     def execute(self, project_handles=None):
         params = self._get_query_params(project_handles)
@@ -64,7 +65,7 @@ class ListExperimentsCommand(object):
         try:
             experiments = self._get_experiments_list(response, bool(project_handles))
         except (ValueError, KeyError) as e:
-            logger.log("Error while parsing response data: {}".format(e))
+            self.logger.log("Error while parsing response data: {}".format(e))
         else:
             self._log_experiments_list(experiments)
 
@@ -94,8 +95,6 @@ class ListExperimentsCommand(object):
 
     @staticmethod
     def _get_experiments_list(response, filtered=False):
-        """"""
-
         if not response.ok:
             raise ValueError("Unknown error")
 
@@ -111,13 +110,13 @@ class ListExperimentsCommand(object):
 
     def _log_experiments_list(self, experiments):
         if not experiments:
-            logger.log("No experiments found")
+            self.logger.log("No experiments found")
         else:
             table_str = self._make_experiments_list_table(experiments)
             if len(table_str.splitlines()) > get_terminal_lines():
                 pydoc.pager(table_str)
             else:
-                logger.log(table_str)
+                self.logger.log(table_str)
 
 
 def _make_details_table(experiment):

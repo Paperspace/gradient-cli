@@ -8,7 +8,7 @@ from .version import version
 
 
 def main():
-    if len(sys.argv) >= 2 and sys.argv[1] == 'experiments':
+    if len(sys.argv) >= 2 and sys.argv[1] in ('experiments', 'deployments'):
         cli(sys.argv[1:])
 
     args = sys.argv[:]
@@ -154,9 +154,14 @@ def experiments_usage(prog):
     return "{} experiments <command>   Manage experiments".format(prog)
 
 
+def deployments_usage(prog):
+    return "{} deployments <command>   Manage deployments".format(prog)
+
+
 def usage(prog):
     print('usage: %s' % login_usage(prog))
     print('       %s' % apikey_usage(prog))
     print('       %s' % run_usage(prog))
     print('       %s' % experiments_usage(prog))
+    print('       %s' % deployments_usage(prog))
     print('       %s version' % prog)

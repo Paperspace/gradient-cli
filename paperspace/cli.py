@@ -1,10 +1,11 @@
+import collections
 import functools
 import json
 
 import click
 
 from paperspace import constants
-from paperspace.commands import experiments as experiments_commands
+from paperspace.commands import experiments as experiments_commands, deployments as deployments_commands
 
 
 class ChoiceType(click.Choice):
@@ -19,10 +20,12 @@ class ChoiceType(click.Choice):
         return self.type_map[value]
 
 
-MULTI_NODE_EXPERIMENT_TYPES_MAP = {
-    "GRPC": constants.ExperimentType.GRPC_MULTI_NODE,
-    "MPI": constants.ExperimentType.MPI_MULTI_NODE,
-}
+MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
+    (
+        ("GRPC", constants.ExperimentType.GRPC_MULTI_NODE),
+        ("MPI", constants.ExperimentType.MPI_MULTI_NODE),
+    )
+)
 
 
 def json_string(val):
@@ -284,6 +287,257 @@ def list_experiments(project_handles):
 def get_experiment_details(experiment_handle):
     experiments_commands.get_experiment_details(experiment_handle)
 
+
 # TODO: delete experiment - not implemented in the api
 # TODO: modify experiment - not implemented in the api
 # TODO: create experiment template?? What is the difference between experiment and experiment template?
+
+
+DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
+    (
+        ("TFSERVING", "Tensorflow Serving on K8s"),
+        ("GRADIENT", "Gradient Jobs"),
+    )
+)
+
+
+@cli.group("deployments")
+def deployments():
+    pass
+
+
+@deployments.command("create")
+@click.option(
+    "--deploymentType",
+    "deploymentType",
+    type=ChoiceType(DEPLOYMENT_TYPES_MAP, case_sensitive=False),
+    required=True,
+)
+@click.option(
+    "--modelId",
+    "modelId",
+    required=True,
+)
+@click.option(
+    "--name",
+    "name",
+    required=True,
+)
+@click.option(
+    "--tag",
+    "tag",
+)
+@click.option(
+    "--code",
+    "code"
+)
+@click.option(
+    "--cluster",
+    "cluster",
+)
+@click.option(
+    "--machineType",
+    "machineType",
+    required=True,
+)
+@click.option(
+    "--imageUrl",
+    "imageUrl",
+    required=True,
+)
+@click.option(
+    "--imageUsername",
+    "imageUsername",
+)
+@click.option(
+    "--imagePassword",
+    "imagePassword",
+)
+@click.option(
+    "--workspaceUrl",
+    "workspaceUrl",
+)
+@click.option(
+    "--workspaceUsername",
+    "workspaceUsername",
+)
+@click.option(
+    "--workspacePassword",
+    "workspacePassword",
+)
+@click.option(
+    "--instanceCount",
+    "instanceCount",
+    type=int,
+    required=True,
+)
+@click.option(
+    "--authToken",
+    "authToken",
+)
+@click.option(
+    "--oauthKey",
+    "oauthKey",
+)
+@click.option(
+    "--oauthSecret",
+    "oauthSecret",
+)
+@click.option(
+    "--serviceType",
+    "serviceType",
+)
+@click.option(
+    "--apiType",
+    "apiType",
+)
+@click.option(
+    "--ports",
+    "ports",
+)
+def create_deployment(**kwargs):
+    del_if_value_is_none(kwargs)
+    command = deployments_commands.CreateDeployment()
+    command.execute(kwargs)
+
+
+DEPLOYMENT_STATES_MAP = collections.OrderedDict(
+    (
+        ("BUILDING", "Building"),
+        ("PROVISIONING", "Provisioning"),
+        ("STARTING", "Starting"),
+        ("RUNNING", "Running"),
+        ("STOPPING", "Stopping"),
+        ("STOPPED", "Stopped"),
+        ("ERROR", "Error"),
+    )
+)
+
+
+@deployments.command("list")
+@click.option(
+    "--state",
+    "state",
+    type=ChoiceType(DEPLOYMENT_STATES_MAP, case_sensitive=False)
+)
+def get_deployments_list(**kwargs):
+    command = deployments_commands.ListDeployments()
+    command.execute(kwargs)
+
+
+@deployments.command("update")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+)
+@click.option(
+    "--name",
+    "name",
+)
+@click.option(
+    "--tag",
+    "tag",
+)
+@click.option(
+    "--params",
+    "params",
+)
+@click.option(
+    "--code",
+    "code",
+)
+@click.option(
+    "--cluster",
+    "cluster",
+)
+@click.option(
+    "--machineType",
+    "machineType",
+)
+@click.option(
+    "--imageUrl",
+    "imageUrl",
+)
+@click.option(
+    "--imageUsername",
+    "imageUsername",
+)
+@click.option(
+    "--imagePassword",
+    "imagePassword",
+)
+@click.option(
+    "--workspaceUrl",
+    "workspaceUrl",
+)
+@click.option(
+    "--workspaceUsername",
+    "workspaceUsername",
+)
+@click.option(
+    "--workspacePassword",
+    "workspacePassword",
+)
+@click.option(
+    "--instanceCount",
+    "instanceCount",
+)
+@click.option(
+    "--authToken",
+    "authToken",
+)
+@click.option(
+    "--annotations",
+    "annotations",
+)
+@click.option(
+    "--authToken",
+    "authToken",
+)
+@click.option(
+    "--oauthKey",
+    "oauthKey",
+)
+@click.option(
+    "--oauthSecret",
+    "oauthSecret",
+)
+@click.option(
+    "--serviceType",
+    "serviceType",
+)
+@click.option(
+    "--apiType",
+    "apiType",
+)
+@click.option(
+    "--ports",
+    "ports",
+)
+def update_deployment_model(id=None, **kwargs):
+    del_if_value_is_none(kwargs)
+    command = deployments_commands.UpdateModelCommand()
+    command.execute(id, kwargs)
+
+
+@deployments.command("start")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+)
+def start_deployment(id):
+    command = deployments_commands.StartDeployment()
+    command.execute(id)
+
+
+@deployments.command("delete")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+)
+def delete_deployment(id):
+    command = deployments_commands.DeleteDeployment()
+    command.execute(id)
