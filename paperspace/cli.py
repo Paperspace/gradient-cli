@@ -324,18 +324,6 @@ def deployments():
     required=True,
 )
 @click.option(
-    "--tag",
-    "tag",
-)
-@click.option(
-    "--code",
-    "code"
-)
-@click.option(
-    "--cluster",
-    "cluster",
-)
-@click.option(
     "--machineType",
     "machineType",
     required=True,
@@ -346,54 +334,10 @@ def deployments():
     required=True,
 )
 @click.option(
-    "--imageUsername",
-    "imageUsername",
-)
-@click.option(
-    "--imagePassword",
-    "imagePassword",
-)
-@click.option(
-    "--workspaceUrl",
-    "workspaceUrl",
-)
-@click.option(
-    "--workspaceUsername",
-    "workspaceUsername",
-)
-@click.option(
-    "--workspacePassword",
-    "workspacePassword",
-)
-@click.option(
     "--instanceCount",
     "instanceCount",
     type=int,
     required=True,
-)
-@click.option(
-    "--authToken",
-    "authToken",
-)
-@click.option(
-    "--oauthKey",
-    "oauthKey",
-)
-@click.option(
-    "--oauthSecret",
-    "oauthSecret",
-)
-@click.option(
-    "--serviceType",
-    "serviceType",
-)
-@click.option(
-    "--apiType",
-    "apiType",
-)
-@click.option(
-    "--ports",
-    "ports",
 )
 def create_deployment(**kwargs):
     del_if_value_is_none(kwargs)
@@ -432,24 +376,12 @@ def get_deployments_list(**kwargs):
     required=True,
 )
 @click.option(
+    "--modelId",
+    "modelId",
+)
+@click.option(
     "--name",
     "name",
-)
-@click.option(
-    "--tag",
-    "tag",
-)
-@click.option(
-    "--params",
-    "params",
-)
-@click.option(
-    "--code",
-    "code",
-)
-@click.option(
-    "--cluster",
-    "cluster",
 )
 @click.option(
     "--machineType",
@@ -460,60 +392,8 @@ def get_deployments_list(**kwargs):
     "imageUrl",
 )
 @click.option(
-    "--imageUsername",
-    "imageUsername",
-)
-@click.option(
-    "--imagePassword",
-    "imagePassword",
-)
-@click.option(
-    "--workspaceUrl",
-    "workspaceUrl",
-)
-@click.option(
-    "--workspaceUsername",
-    "workspaceUsername",
-)
-@click.option(
-    "--workspacePassword",
-    "workspacePassword",
-)
-@click.option(
     "--instanceCount",
     "instanceCount",
-)
-@click.option(
-    "--authToken",
-    "authToken",
-)
-@click.option(
-    "--annotations",
-    "annotations",
-)
-@click.option(
-    "--authToken",
-    "authToken",
-)
-@click.option(
-    "--oauthKey",
-    "oauthKey",
-)
-@click.option(
-    "--oauthSecret",
-    "oauthSecret",
-)
-@click.option(
-    "--serviceType",
-    "serviceType",
-)
-@click.option(
-    "--apiType",
-    "apiType",
-)
-@click.option(
-    "--ports",
-    "ports",
 )
 def update_deployment_model(id=None, **kwargs):
     del_if_value_is_none(kwargs)
