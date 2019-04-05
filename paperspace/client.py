@@ -1,12 +1,17 @@
 import requests
 
-from paperspace import logger
+from paperspace import logger, config, version
+
+default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
+                   "ps_client_name": "paperspace-python",
+                   "ps_client_version": version.version}
 
 
 class API(object):
     def __init__(self, api_url, headers=None):
         self.api_url = api_url
-        self.headers = headers or {}
+        headers = headers or default_headers
+        self.headers = headers.copy()
 
     def get_path(self, url):
         api_url = self.api_url if not self.api_url.endswith("/") else self.api_url[:-1]
@@ -36,3 +41,11 @@ class API(object):
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response
+
+    @property
+    def api_key(self):
+        return self.headers.get("X-API-Key")
+
+    @api_key.setter
+    def api_key(self, value):
+        self.headers["X-API-Key"] = value

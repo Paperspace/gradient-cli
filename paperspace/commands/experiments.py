@@ -2,14 +2,11 @@ import pydoc
 
 import terminaltables
 
-from paperspace import config, version, client, logger, constants
+from paperspace import logger, constants, client, config
 from paperspace.logger import log_response
 from paperspace.utils import get_terminal_lines
 
-default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
-                   "ps_client_name": "paperspace-python",
-                   "ps_client_version": version.version}
-experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=default_headers)
+experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
 
 
 def _log_create_experiment(response, success_msg_template, error_msg, logger_=logger):

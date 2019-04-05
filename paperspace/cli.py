@@ -3,7 +3,7 @@ import json
 
 import click
 
-from paperspace import constants
+from paperspace import constants, client, config
 from paperspace.commands import experiments as experiments_commands
 
 
@@ -113,6 +113,10 @@ def common_experiments_create_options(f):
             "--modelPath",
             "modelPath",
         ),
+        click.option(
+            "--apiKey",
+            "api_key",
+        )
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -229,60 +233,100 @@ def common_experiments_create_single_node_options(f):
 @create.command(name="multinode")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
-def create_multi_node(**kwargs):
+def create_multi_node(api_key, **kwargs):
     del_if_value_is_none(kwargs)
-    experiments_commands.create_experiment(kwargs)
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
+    if api_key:
+        experiments_api.api_key = api_key
+    experiments_commands.create_experiment(kwargs, api=experiments_api)
 
 
 @create.command(name="singlenode")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
-def create_single_node(**kwargs):
+def create_single_node(api_key, **kwargs):
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
-    experiments_commands.create_experiment(kwargs)
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
+    if api_key:
+        experiments_api.api_key = api_key
+    experiments_commands.create_experiment(kwargs, api=experiments_api)
 
 
 @create_and_start.command(name="multinode")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
-def create_and_start_multi_node(**kwargs):
+def create_and_start_multi_node(api_key, **kwargs):
     del_if_value_is_none(kwargs)
-    experiments_commands.create_and_start_experiment(kwargs)
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
+    if api_key:
+        experiments_api.api_key = api_key
+    experiments_commands.create_and_start_experiment(kwargs, api=experiments_api)
 
 
 @create_and_start.command(name="singlenode")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
-def create_and_start_single_node(**kwargs):
+def create_and_start_single_node(api_key, **kwargs):
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
-    experiments_commands.create_and_start_experiment(kwargs)
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
+    if api_key:
+        experiments_api.api_key = api_key
+    experiments_commands.create_and_start_experiment(kwargs, api=experiments_api)
 
 
 @experiments.command()
 @click.argument("experiment-handle")
-def start(experiment_handle):
-    experiments_commands.start_experiment(experiment_handle)
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def start(experiment_handle, api_key):
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
+    if api_key:
+        experiments_api.api_key = api_key
+    experiments_commands.start_experiment(experiment_handle, api=experiments_api)
 
 
 @experiments.command()
 @click.argument("experiment-handle")
-def stop(experiment_handle):
-    experiments_commands.stop_experiment(experiment_handle)
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def stop(experiment_handle, api_key):
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
+    if api_key:
+        experiments_api.api_key = api_key
+    experiments_commands.stop_experiment(experiment_handle, api=experiments_api)
 
 
 @experiments.command("list")
 @click.option("--projectHandle", "-p", "project_handles", multiple=True)
-def list_experiments(project_handles):
-    command = experiments_commands.ListExperimentsCommand()
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def list_experiments(project_handles, api_key):
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
+    if api_key:
+        experiments_api.api_key = api_key
+    command = experiments_commands.ListExperimentsCommand(api=experiments_api)
     command.execute(project_handles)
 
 
 @experiments.command("details")
 @click.argument("experiment-handle")
-def get_experiment_details(experiment_handle):
-    experiments_commands.get_experiment_details(experiment_handle)
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def get_experiment_details(experiment_handle, api_key):
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
+    if api_key:
+        experiments_api.api_key = api_key
+    experiments_commands.get_experiment_details(experiment_handle, api=experiments_api)
 
 # TODO: delete experiment - not implemented in the api
 # TODO: modify experiment - not implemented in the api
