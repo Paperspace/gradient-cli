@@ -1,6 +1,7 @@
 import mock
 from click.testing import CliRunner
 
+import paperspace.client
 from paperspace import cli
 from paperspace.commands import deployments as deployments_commands
 from tests import example_responses, MockResponse
@@ -10,6 +11,8 @@ EXPECTED_HEADERS = deployments_commands.default_headers
 
 class TestDeploymentsCreate(object):
     URL = "https://api.paperspace.io/deployments/createDeployment/"
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = paperspace.client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     BASIC_OPTIONS_COMMAND = [
         "deployments", "create",
         "--deploymentType", "tfserving",
@@ -18,6 +21,16 @@ class TestDeploymentsCreate(object):
         "--machineType", "HAL9000",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
+    ]
+    BASIC_OPTIONS_COMMAND_WITH_API_KEY = [
+        "deployments", "create",
+        "--deploymentType", "tfserving",
+        "--modelId", "some_model_id",
+        "--name", "some_name",
+        "--machineType", "HAL9000",
+        "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--instanceCount", "666",
+        "--apiKey", "some_key",
     ]
     BASIC_OPTIONS_REQUEST = {
         "machineType": u"HAL9000",
@@ -49,6 +62,20 @@ class TestDeploymentsCreate(object):
         assert result.exit_code == 0
 
     @mock.patch("paperspace.cli.deployments_commands.client.requests.post")
+    def test_should_send_different_api_key_when_api_key_parameter_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_API_KEY)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             params=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_wrong_model_id_was_given(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_404_MODEL_NOT_FOUND, 404,
                                                  self.RESPONSE_CONTENT_404_MODEL_NOT_FOUND)
@@ -65,8 +92,15 @@ class TestDeploymentsCreate(object):
 
 
 class TestDeploymentsList(object):
+    URL = "https://api.paperspace.io/deployments/getDeploymentList/"
+
     COMMAND = ["deployments", "list"]
     LIST_JSON = example_responses.LIST_DEPLOYMENTS
+
+    COMMAND_WITH_API_KEY = ["deployments", "list", "--apiKey", "some_key"]
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = paperspace.client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
     COMMAND_WITH_FILTER_WITH_STATE = ["deployments", "list", "--state", "Stopped"]
     LIST_WITH_FILTER_REQUEST_JSON = {"filter": {"where": {"and": [{"state": "Stopped"}]}}}
     LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND = {"deploymentList": [], "total": 17, "displayTotal": 0,
@@ -89,6 +123,23 @@ class TestDeploymentsList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=None,
+                                            params=None)
+        assert result.output == self.DETAILS_STDOUT
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.get")
+    def test_should_send_get_request_with_custom_api_key_when_api_key_parameter_was_provided(self, get_patched):
+        get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=None,
+                                            params=None)
         assert result.output == self.DETAILS_STDOUT
 
     @mock.patch("paperspace.cli.deployments_commands.pydoc")
@@ -101,6 +152,10 @@ class TestDeploymentsList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=None,
+                                            params=None)
         pydoc_patched.pager.assert_called_once()
         assert result.exit_code == 0
 
@@ -126,6 +181,10 @@ class TestDeploymentsList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_FILTER_WITH_STATE)
 
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=self.LIST_WITH_FILTER_REQUEST_JSON,
+                                            params=None)
         assert result.output == "No deployments found\n"
 
 
@@ -137,6 +196,15 @@ class TestDeploymentsUpdate(object):
         "--name", "new_name",
     ]
     BASIC_OPTIONS_REQUEST_JSON = {"upd": {"name": u"new_name"}, "id": u"some_id"}
+
+    COMMAND_WITH_API_KEY = [
+        "deployments", "update",
+        "--id", "some_id",
+        "--name", "new_name",
+        "--apiKey", "some_key"
+    ]
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = paperspace.client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_200 = {"upd": {"name": u"asd"}, "id": u"dennaw0wzbvvg3"}
     EXPECTED_STDOUT = "Deployment model updated.\n"
@@ -153,6 +221,20 @@ class TestDeploymentsUpdate(object):
 
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_REQUEST_JSON,
+                                             params=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.post")
+    def test_should_send_proper_data_with_custom_api_key_when_api_key_parameter_was_provided(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.BASIC_OPTIONS_REQUEST_JSON,
                                              params=None)
         assert result.output == self.EXPECTED_STDOUT
@@ -199,9 +281,16 @@ class TestDeleteDeployment(object):
     URL = "https://api.paperspace.io/deployments/updateDeployment/"
     COMMAND = ["deployments", "delete",
                "--id", "some_id"]
-
     REQUEST_JSON = {"upd": {"isDeleted": True}, "id": u"some_id"}
     EXPECTED_STDOUT = "Deployment deleted.\n"
+
+    COMMAND_WITH_API_KEY = [
+        "deployments", "delete",
+        "--id", "some_id",
+        "--apiKey", "some_key",
+    ]
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = paperspace.client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_400 = {"error": {"name": "Error", "status": 400, "message": "Unable to access deployment"}}
     EXPECTED_STDOUT_WITH_WRONG_ID = "Unable to access deployment\n"
@@ -215,6 +304,20 @@ class TestDeleteDeployment(object):
 
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
+                                             json=self.REQUEST_JSON,
+                                             params=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.cli.deployments_commands.client.requests.post")
+    def test_should_send_proper_data_with_custom_api_key_when_api_key_parameter_was_provided(self, post_patched):
+        post_patched.return_value = MockResponse(None, 204, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.REQUEST_JSON,
                                              params=None)
         assert result.output == self.EXPECTED_STDOUT

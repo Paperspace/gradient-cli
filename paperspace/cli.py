@@ -367,9 +367,14 @@ def deployments():
     type=int,
     required=True,
 )
-def create_deployment(**kwargs):
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def create_deployment(api_key=None, **kwargs):
     del_if_value_is_none(kwargs)
-    command = deployments_commands.CreateDeploymentCommand()
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.CreateDeploymentCommand(api=deployments_api)
     command.execute(kwargs)
 
 
@@ -392,8 +397,13 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
     "state",
     type=ChoiceType(DEPLOYMENT_STATES_MAP, case_sensitive=False)
 )
-def get_deployments_list(**kwargs):
-    command = deployments_commands.ListDeploymentsCommand()
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def get_deployments_list(api_key=None, **kwargs):
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.ListDeploymentsCommand(api=deployments_api)
     command.execute(kwargs)
 
 
@@ -423,9 +433,14 @@ def get_deployments_list(**kwargs):
     "--instanceCount",
     "instanceCount",
 )
-def update_deployment_model(id=None, **kwargs):
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def update_deployment_model(id=None, api_key=None, **kwargs):
     del_if_value_is_none(kwargs)
-    command = deployments_commands.UpdateModelCommand()
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.UpdateModelCommand(api=deployments_api)
     command.execute(id, kwargs)
 
 
@@ -435,8 +450,13 @@ def update_deployment_model(id=None, **kwargs):
     "id",
     required=True,
 )
-def start_deployment(id):
-    command = deployments_commands.StartDeploymentCommand()
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def start_deployment(id, api_key=None):
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.StartDeploymentCommand(api=deployments_api)
     command.execute(id)
 
 
@@ -446,6 +466,11 @@ def start_deployment(id):
     "id",
     required=True,
 )
-def delete_deployment(id):
-    command = deployments_commands.DeleteDeploymentCommand()
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def delete_deployment(id, api_key=None):
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.DeleteDeploymentCommand(api=deployments_api)
     command.execute(id)

@@ -3,7 +3,6 @@ from click.testing import CliRunner
 
 import paperspace.client
 from paperspace import cli, constants
-from paperspace.commands import experiments as experiments_commands
 from tests import example_responses, MockResponse
 
 
