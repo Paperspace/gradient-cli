@@ -235,9 +235,7 @@ def common_experiments_create_single_node_options(f):
 @common_experiment_create_multi_node_options
 def create_multi_node(api_key, **kwargs):
     del_if_value_is_none(kwargs)
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
-    if api_key:
-        experiments_api.api_key = api_key
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.create_experiment(kwargs, api=experiments_api)
 
 
@@ -247,9 +245,7 @@ def create_multi_node(api_key, **kwargs):
 def create_single_node(api_key, **kwargs):
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
-    if api_key:
-        experiments_api.api_key = api_key
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.create_experiment(kwargs, api=experiments_api)
 
 
@@ -258,9 +254,7 @@ def create_single_node(api_key, **kwargs):
 @common_experiment_create_multi_node_options
 def create_and_start_multi_node(api_key, **kwargs):
     del_if_value_is_none(kwargs)
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
-    if api_key:
-        experiments_api.api_key = api_key
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.create_and_start_experiment(kwargs, api=experiments_api)
 
 
@@ -270,9 +264,7 @@ def create_and_start_multi_node(api_key, **kwargs):
 def create_and_start_single_node(api_key, **kwargs):
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
-    if api_key:
-        experiments_api.api_key = api_key
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.create_and_start_experiment(kwargs, api=experiments_api)
 
 
@@ -283,9 +275,7 @@ def create_and_start_single_node(api_key, **kwargs):
     "api_key",
 )
 def start(experiment_handle, api_key):
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
-    if api_key:
-        experiments_api.api_key = api_key
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.start_experiment(experiment_handle, api=experiments_api)
 
 
@@ -296,9 +286,7 @@ def start(experiment_handle, api_key):
     "api_key",
 )
 def stop(experiment_handle, api_key):
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
-    if api_key:
-        experiments_api.api_key = api_key
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.stop_experiment(experiment_handle, api=experiments_api)
 
 
@@ -309,9 +297,7 @@ def stop(experiment_handle, api_key):
     "api_key",
 )
 def list_experiments(project_handles, api_key):
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
-    if api_key:
-        experiments_api.api_key = api_key
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.ListExperimentsCommand(api=experiments_api)
     command.execute(project_handles)
 
@@ -323,9 +309,7 @@ def list_experiments(project_handles, api_key):
     "api_key",
 )
 def get_experiment_details(experiment_handle, api_key):
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST)
-    if api_key:
-        experiments_api.api_key = api_key
+    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.get_experiment_details(experiment_handle, api=experiments_api)
 
 # TODO: delete experiment - not implemented in the api
