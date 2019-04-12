@@ -3,23 +3,7 @@ from click.testing import CliRunner
 
 import paperspace.client
 from paperspace import cli, constants
-from paperspace.commands import experiments as experiments_commands
-from tests import example_responses
-
-
-class MockResponse:
-    def __init__(self, json_data, status_code, content):
-        self.json_data = json_data
-        self.status_code = status_code
-        self.content = content
-        self.url = "example.com"
-
-    @property
-    def ok(self):
-        return 200 <= self.status_code <= 299
-
-    def json(self):
-        return self.json_data
+from tests import example_responses, MockResponse
 
 
 class TestExperimentsCreateSingleNode(object):
@@ -531,6 +515,7 @@ class TestExperimentDetail(object):
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
+                                            json=None,
                                             params=None)
 
         assert result.output == self.SINGLE_NODE_DETAILS_STDOUT
@@ -546,6 +531,7 @@ class TestExperimentDetail(object):
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
+                                            json=None,
                                             params=None)
 
         assert result.output == self.MULTI_NODE_DETAILS_STDOUT
@@ -563,6 +549,7 @@ fake content
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
+                                            json=None,
                                             params=None)
 
         assert result.output == g
@@ -758,6 +745,7 @@ class TestExperimentList(object):
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
+                                            json=None,
                                             params={"limit": 1000000})
 
         assert result.output == self.DETAILS_STDOUT
@@ -775,6 +763,7 @@ class TestExperimentList(object):
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
+                                            json=None,
                                             params={"limit": 1000000})
 
         pydoc_patched.pager.assert_called_once()
@@ -790,6 +779,7 @@ class TestExperimentList(object):
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
+                                            json=None,
                                             params={"limit": 1000000,
                                                     "projectHandle[0]": u"handle1",
                                                     "projectHandle[1]": u"handle2"})
@@ -807,6 +797,7 @@ class TestExperimentList(object):
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
+                                            json=None,
                                             params={"limit": 1000000,
                                                     "projectHandle[0]": u"handle1",
                                                     "projectHandle[1]": u"handle2"})
@@ -833,7 +824,9 @@ class TestStartExperiment(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
         put_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS)
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params=None)
 
         assert result.output == self.START_STDOUT
 
@@ -844,6 +837,8 @@ class TestStartExperiment(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
         put_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY)
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=None,
+                                            params=None)
 
         assert result.output == self.START_STDOUT

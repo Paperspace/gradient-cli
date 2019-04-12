@@ -8,7 +8,7 @@ from .version import version
 
 
 def main():
-    if len(sys.argv) >= 2 and sys.argv[1] == 'experiments':
+    if len(sys.argv) >= 2 and sys.argv[1] in ('experiments', 'machines'):
         cli(sys.argv[1:])
 
     args = sys.argv[:]
