@@ -31,7 +31,8 @@ class API(object):
     def post(self, url, json=None, params=None):
         path = self.get_path(url)
         response = requests.post(path, json=json, params=params, headers=self.headers)
-        logger.debug("POST request sent to: {} \n\theaders: {}\n\tjson: {}".format(response.url, self.headers, json))
+        logger.debug("POST request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}"
+                     .format(response.url, self.headers, json, params))
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response
@@ -39,7 +40,8 @@ class API(object):
     def put(self, url, json=None, params=None):
         path = self.get_path(url)
         response = requests.put(path, json=json, params=params, headers=self.headers)
-        logger.debug("PUT request sent to: {} \n\theaders: {}\n\tjson: {}".format(response.url, self.headers, json))
+        logger.debug("PUT request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}"
+                     .format(response.url, self.headers, json, params))
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response
@@ -47,7 +49,8 @@ class API(object):
     def get(self, url, json=None, params=None):
         path = self.get_path(url)
         response = requests.get(path, params=params, headers=self.headers, json=json)
-        logger.debug("GET request sent to: {} \n\theaders: {}\n\tjson: {}".format(response.url, self.headers, json))
+        logger.debug("GET request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}"
+                     .format(response.url, self.headers, json, params))
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response

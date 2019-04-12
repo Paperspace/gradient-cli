@@ -1,5 +1,9 @@
 class MockResponse:
-    def __init__(self, json_data, status_code, content):
+    def __init__(self, json_data=None, status_code=200, content=""):
+        """
+        :type json_data: dict|list
+        :type status_code: int
+        """
         self.json_data = json_data
         self.status_code = status_code
         self.content = content
@@ -10,7 +14,6 @@ class MockResponse:
         return 200 <= self.status_code <= 299
 
     def json(self):
-        if not self.json_data:
-            raise ValueError("No data")
-
+        if self.json_data is None:
+            raise ValueError("No JSON")
         return self.json_data
