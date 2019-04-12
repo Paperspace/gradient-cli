@@ -18,7 +18,10 @@ def log_error_response(data):
         raise ValueError("No error messages found")
 
     if error:
-        log(str(error), error=True)
+        try:
+            log(error["message"], error=True)
+        except (KeyError, TypeError):
+            log(str(error), error=True)
 
     if details:
         if isinstance(details, dict):

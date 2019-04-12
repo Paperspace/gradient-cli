@@ -1,10 +1,11 @@
+import collections
 import functools
 import json
 
 import click
 
 from paperspace import constants, client, config
-from paperspace.commands import experiments as experiments_commands
+from paperspace.commands import experiments as experiments_commands, deployments as deployments_commands
 
 
 class ChoiceType(click.Choice):
@@ -19,10 +20,12 @@ class ChoiceType(click.Choice):
         return self.type_map[value]
 
 
-MULTI_NODE_EXPERIMENT_TYPES_MAP = {
-    "GRPC": constants.ExperimentType.GRPC_MULTI_NODE,
-    "MPI": constants.ExperimentType.MPI_MULTI_NODE,
-}
+MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
+    (
+        ("GRPC", constants.ExperimentType.GRPC_MULTI_NODE),
+        ("MPI", constants.ExperimentType.MPI_MULTI_NODE),
+    )
+)
 
 
 def json_string(val):
@@ -312,6 +315,162 @@ def get_experiment_details(experiment_handle, api_key):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.get_experiment_details(experiment_handle, api=experiments_api)
 
+
 # TODO: delete experiment - not implemented in the api
 # TODO: modify experiment - not implemented in the api
 # TODO: create experiment template?? What is the difference between experiment and experiment template?
+
+
+DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
+    (
+        ("TFSERVING", "Tensorflow Serving on K8s"),
+        ("GRADIENT", "Gradient Jobs"),
+    )
+)
+
+
+@cli.group("deployments")
+def deployments():
+    pass
+
+
+@deployments.command("create")
+@click.option(
+    "--deploymentType",
+    "deploymentType",
+    type=ChoiceType(DEPLOYMENT_TYPES_MAP, case_sensitive=False),
+    required=True,
+)
+@click.option(
+    "--modelId",
+    "modelId",
+    required=True,
+)
+@click.option(
+    "--name",
+    "name",
+    required=True,
+)
+@click.option(
+    "--machineType",
+    "machineType",
+    required=True,
+)
+@click.option(
+    "--imageUrl",
+    "imageUrl",
+    required=True,
+)
+@click.option(
+    "--instanceCount",
+    "instanceCount",
+    type=int,
+    required=True,
+)
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def create_deployment(api_key=None, **kwargs):
+    del_if_value_is_none(kwargs)
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.CreateDeploymentCommand(api=deployments_api)
+    command.execute(kwargs)
+
+
+DEPLOYMENT_STATES_MAP = collections.OrderedDict(
+    (
+        ("BUILDING", "Building"),
+        ("PROVISIONING", "Provisioning"),
+        ("STARTING", "Starting"),
+        ("RUNNING", "Running"),
+        ("STOPPING", "Stopping"),
+        ("STOPPED", "Stopped"),
+        ("ERROR", "Error"),
+    )
+)
+
+
+@deployments.command("list")
+@click.option(
+    "--state",
+    "state",
+    type=ChoiceType(DEPLOYMENT_STATES_MAP, case_sensitive=False)
+)
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def get_deployments_list(api_key=None, **kwargs):
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.ListDeploymentsCommand(api=deployments_api)
+    command.execute(kwargs)
+
+
+@deployments.command("update")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+)
+@click.option(
+    "--modelId",
+    "modelId",
+)
+@click.option(
+    "--name",
+    "name",
+)
+@click.option(
+    "--machineType",
+    "machineType",
+)
+@click.option(
+    "--imageUrl",
+    "imageUrl",
+)
+@click.option(
+    "--instanceCount",
+    "instanceCount",
+)
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def update_deployment_model(id=None, api_key=None, **kwargs):
+    del_if_value_is_none(kwargs)
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.UpdateModelCommand(api=deployments_api)
+    command.execute(id, kwargs)
+
+
+@deployments.command("start")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+)
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def start_deployment(id, api_key=None):
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.StartDeploymentCommand(api=deployments_api)
+    command.execute(id)
+
+
+@deployments.command("delete")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+)
+@click.option(
+    "--apiKey",
+    "api_key",
+)
+def delete_deployment(id, api_key=None):
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.DeleteDeploymentCommand(api=deployments_api)
+    command.execute(id)
