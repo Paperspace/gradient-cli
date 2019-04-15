@@ -18,7 +18,7 @@ class TestDeploymentsCreate(object):
         "--deploymentType", "tfserving",
         "--modelId", "some_model_id",
         "--name", "some_name",
-        "--machineType", "HAL9000",
+        "--machineType", "Air",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
     ]
@@ -27,13 +27,13 @@ class TestDeploymentsCreate(object):
         "--deploymentType", "tfserving",
         "--modelId", "some_model_id",
         "--name", "some_name",
-        "--machineType", "HAL9000",
+        "--machineType", "Air",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
         "--apiKey", "some_key",
     ]
     BASIC_OPTIONS_REQUEST = {
-        "machineType": u"HAL9000",
+        "machineType": u"Air",
         "name": u"some_name",
         "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "deploymentType": "Tensorflow Serving on K8s",

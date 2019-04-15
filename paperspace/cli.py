@@ -353,48 +353,52 @@ DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
 )
 
 
-@cli.group("deployments")
+@cli.group("deployments", help="Manage deployments")
 def deployments():
     pass
 
 
-@deployments.command("create")
+@deployments.command("create", help="Create new deployment")
 @click.option(
     "--deploymentType",
     "deploymentType",
     type=ChoiceType(DEPLOYMENT_TYPES_MAP, case_sensitive=False),
     required=True,
+    help="Model deployment type",
 )
 @click.option(
     "--modelId",
     "modelId",
     required=True,
+    help="ID of a trained model",
 )
 @click.option(
     "--name",
     "name",
     required=True,
+    help="Human-friendly name for new model deployment",
 )
 @click.option(
     "--machineType",
     "machineType",
+    type=click.Choice(constants.MACHINE_TYPES),
     required=True,
+    help="Type of machine for new deployment",
 )
 @click.option(
     "--imageUrl",
     "imageUrl",
     required=True,
+    help="Docker image for model serving",
 )
 @click.option(
     "--instanceCount",
     "instanceCount",
     type=int,
     required=True,
+    help="Number of machine instances",
 )
-@click.option(
-    "--apiKey",
-    "api_key",
-)
+@api_key_option
 def create_deployment(api_key=None, **kwargs):
     del_if_value_is_none(kwargs)
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
@@ -415,16 +419,14 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
 )
 
 
-@deployments.command("list")
+@deployments.command("list", help="List deployments with optional filtering")
 @click.option(
     "--state",
     "state",
-    type=ChoiceType(DEPLOYMENT_STATES_MAP, case_sensitive=False)
+    type=ChoiceType(DEPLOYMENT_STATES_MAP, case_sensitive=False),
+    help="Filter by deployment state",
 )
-@click.option(
-    "--apiKey",
-    "api_key",
-)
+@api_key_option
 def get_deployments_list(api_key=None, **kwargs):
     del_if_value_is_none(kwargs)
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
@@ -432,73 +434,73 @@ def get_deployments_list(api_key=None, **kwargs):
     command.execute(kwargs)
 
 
-@deployments.command("update")
+@deployments.command("update", help="Update deployment properties")
 @click.option(
     "--id",
-    "id",
+    "id_",
     required=True,
+    help="Deployment ID",
 )
 @click.option(
     "--modelId",
     "modelId",
+    help="ID of a trained model",
 )
 @click.option(
     "--name",
     "name",
+    help="Human-friendly name for new model deployment",
 )
 @click.option(
     "--machineType",
     "machineType",
+    help="Type of machine for new deployment",
 )
 @click.option(
     "--imageUrl",
     "imageUrl",
+    help="Docker image for model serving",
 )
 @click.option(
     "--instanceCount",
     "instanceCount",
+    type=int,
+    help="Number of machine instances",
 )
-@click.option(
-    "--apiKey",
-    "api_key",
-)
-def update_deployment_model(id=None, api_key=None, **kwargs):
+@api_key_option
+def update_deployment_model(id_, api_key, **kwargs):
     del_if_value_is_none(kwargs)
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = deployments_commands.UpdateModelCommand(api=deployments_api)
-    command.execute(id, kwargs)
+    command.execute(id_, kwargs)
 
 
-@deployments.command("start")
+@deployments.command("start", help="Start deployment")
 @click.option(
     "--id",
-    "id",
+    "id_",
     required=True,
+    help="Deployment ID",
 )
-@click.option(
-    "--apiKey",
-    "api_key",
-)
-def start_deployment(id, api_key=None):
+@api_key_option
+def start_deployment(id_, api_key=None):
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = deployments_commands.StartDeploymentCommand(api=deployments_api)
-    command.execute(id)
+    command.execute(id_)
 
 
-@deployments.command("delete")
+@deployments.command("delete", help="Delete deployment")
 @click.option(
     "--id",
-    "id",
+    "id_",
     required=True,
+    help="Deployment ID",
 )
-@click.option(
-    "--apiKey",
-    "api_key",
-)
-def delete_deployment(id, api_key=None):
+@api_key_option
+def delete_deployment(id_, api_key=None):
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = deployments_commands.DeleteDeploymentCommand(api=deployments_api)
-    command.execute(id)
+    command.execute(id_)
 
 
 REGIONS_MAP = collections.OrderedDict(
@@ -510,7 +512,7 @@ REGIONS_MAP = collections.OrderedDict(
 )
 
 
-@cli.group("machines")
+@cli.group("machines", help="Manage machines")
 def machines_group():
     pass
 
@@ -874,7 +876,10 @@ def restart_machine(machine_id, api_key):
     command.execute(machine_id)
 
 
-@machines_group.command("show")
+show_machine_details_help = "Show machine information for the machine with the given id."
+
+
+@machines_group.command("show", help=show_machine_details_help)
 @click.option(
     "--machineId",
     "machine_id",
