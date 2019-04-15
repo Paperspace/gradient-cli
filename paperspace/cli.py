@@ -6,7 +6,8 @@ import re
 import click
 
 from paperspace import constants, client, config
-from paperspace.commands import experiments as experiments_commands, deployments as deployments_commands, machines as machines_commands
+from paperspace.commands import experiments as experiments_commands, deployments as deployments_commands, \
+    machines as machines_commands
 
 
 class ChoiceType(click.Choice):
@@ -425,6 +426,7 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
     "api_key",
 )
 def get_deployments_list(api_key=None, **kwargs):
+    del_if_value_is_none(kwargs)
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = deployments_commands.ListDeploymentsCommand(api=deployments_api)
     command.execute(kwargs)
@@ -498,6 +500,7 @@ def delete_deployment(id, api_key=None):
     command = deployments_commands.DeleteDeploymentCommand(api=deployments_api)
     command.execute(id)
 
+
 REGIONS_MAP = collections.OrderedDict(
     (
         ("CA1", constants.Region.CA1),
@@ -512,7 +515,12 @@ def machines_group():
     pass
 
 
-@machines_group.command("availability")
+check_machine_availability_help = "Get machine availability for the given region and machine type. " \
+                                  "Note: availability is only provided for the dedicated GPU machine types. " \
+                                  "Also, not all machine types are available in all regions"
+
+
+@machines_group.command("availability", help=check_machine_availability_help)
 @click.option(
     "--region",
     "region",
@@ -534,7 +542,14 @@ def check_machine_availability(region, machine_type, api_key):
     command.execute(region, machine_type)
 
 
-@machines_group.command("create")
+create_machine_help = "Create a new Paperspace virtual machine. If you are using an individual account, you will " \
+                      "be assigned as the owner of the machine. If you are a team administrator, you must specify " \
+                      "the user that should be assigned to the machine, either by specifing a user id, or by " \
+                      "providing an email address, password, first name and last name for the creation of a new " \
+                      "user on the team."
+
+
+@machines_group.command("create", help=create_machine_help)
 @click.option(
     "--region",
     "region",
@@ -660,7 +675,15 @@ def create_machine(api_key, **kwargs):
     command.execute(kwargs)
 
 
-@machines_group.command("destroy")
+destroy_machine_help = "Destroy the machine with the given id. When this action is performed, the machine is " \
+                       "immediately shut down and marked for deletion from the datacenter. Any snapshots that " \
+                       "were derived from the machine are also deleted. Access to the machine is terminated " \
+                       "immediately and billing for the machine is prorated to the hour. This action can only " \
+                       "be performed by the user who owns the machine, or in the case of a team, the team " \
+                       "administrator."
+
+
+@machines_group.command("destroy", help=destroy_machine_help)
 @click.option(
     "--machineId",
     "machine_id",
@@ -680,7 +703,12 @@ def destroy_machine(machine_id, release_public_ip, api_key):
     command.execute(machine_id, release_public_ip)
 
 
-@machines_group.command("list")
+list_machines_help = "List information about all machines available to either the current authenticated user or " \
+                     "the team, if the user belongs to a team. The list method takes an optional first argument " \
+                     "to limit the returned machine objects."
+
+
+@machines_group.command("list", help=list_machines_help)
 @click.option(
     "--params",
     "params",
@@ -827,10 +855,16 @@ def list_machines(api_key, params, **kwargs):
     command.execute(params or kwargs)
 
 
-@machines_group.command("restart")
+restart_machine_help = "Restart an individual machine. If the machine is already restarting, this action will " \
+                       "request the machine be restarted again. This action can only be performed by the user " \
+                       "who owns the machine"
+
+
+@machines_group.command("restart", help=restart_machine_help)
 @click.option(
     "--machineId",
     "machine_id",
+    help="Id of the machine to restart",
     required=True,
 )
 @api_key_option
@@ -844,6 +878,7 @@ def restart_machine(machine_id, api_key):
 @click.option(
     "--machineId",
     "machine_id",
+    help="Id of the machine to show",
     required=True,
 )
 @api_key_option
@@ -853,60 +888,75 @@ def show_machine_details(machine_id, api_key):
     command.execute(machine_id)
 
 
-@machines_group.command("update")
+update_machine_help = "Update attributes of a machine"
+
+
+@machines_group.command("update", help=update_machine_help)
 @click.option(
     "--machineId",
     "machine_id",
+    help="Id of the machine to update",
     required=True,
 )
 @click.option(
     "--machineName",
     "machineName",
+    help="New name for the machine",
 )
 @click.option(
     "--shutdownTimeoutInHours",
     "shutdownTimeoutInHours",
+    help="Number of hours before machine is shutdown if no one is logged in via the Paperspace client",
     type=int,
 )
 @click.option(
     "--shutdownTimeoutForces",
     "shutdownTimeoutForces",
-    is_flag=True,
-    default=None,  # None is used so it can be filtered with `del_if_value_is_none` when flag was not set
+    help="Force shutdown at shutdown timeout, even if there is a Paperspace client connection",
+    type=bool,
 )
 @click.option(
     "--performAutoSnapshot",
     "performAutoSnapshot",
-    is_flag=True,
-    default=None,  # None is used so it can be filtered with `del_if_value_is_none` when flag was not set
+    help="Perform auto snapshots",
+    type=bool,
 )
 @click.option(
     "--autoSnapshotFrequency",
     "autoSnapshotFrequency",
+    help="One of 'hour', 'day', 'week', or null",
     type=click.Choice(["hour", "day", "week"], case_sensitive=False),
 )
 @click.option(
     "--autoSnapshotSaveCount",
     "autoSnapshotSaveCount",
+    help="Number of snapshots to save",
     type=int,
 )
 @click.option(
     "--dynamicPublicIp",
     "dynamicPublicIp",
-    is_flag=True,
-    default=None,  # None is used so it can be filtered with `del_if_value_is_none` when flag was not set
+    help="If true, assigns a new public ip address on machine start and releases it from the account on machine stop",
+    type=bool,
 )
 @api_key_option
-def update_machine(api_key, **kwargs):
+def update_machine(machine_id, api_key, **kwargs):
+    del_if_value_is_none(kwargs)
     machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.UpdateMachineCommand(api=machines_api)
-    command.execute(kwargs)
+    command.execute(machine_id, kwargs)
 
 
-@machines_group.command("start")
+start_machine_help = "Start up an individual machine. If the machine is already started, this action is a no-op. " \
+                     "If the machine is off, it will be booted up. This action can only be performed by the user " \
+                     "who owns the machine"
+
+
+@machines_group.command("start", help=start_machine_help)
 @click.option(
     "--machineId",
     "machine_id",
+    help="Id of the machine to start",
     required=True,
 )
 @api_key_option
@@ -916,10 +966,16 @@ def start_machine(machine_id, api_key):
     command.execute(machine_id)
 
 
-@machines_group.command("stop")
+stop_machine_help = "Stop an individual machine. If the machine is already stopped or has been shut down, this " \
+                    "action is a no-op. If the machine is running, it will be stopped and any users logged in " \
+                    "will be immediately kicked out. This action can only be performed by the user who owns the machine"
+
+
+@machines_group.command("stop", help=stop_machine_help)
 @click.option(
     "--machineId",
     "machine_id",
+    help="Id of the machine to start",
     required=True,
 )
 @api_key_option
@@ -929,10 +985,15 @@ def stop_machine(machine_id, api_key):
     command.execute(machine_id)
 
 
-@machines_group.command("utilization")
+show_machine_utilization_help = "Get machine utilization data for the machine with the given id. Machine upgrades " \
+                                "are not represented in utilization data"
+
+
+@machines_group.command("utilization", help=show_machine_utilization_help)
 @click.option(
     "--machineId",
     "machine_id",
+    help="Id of the machine to start",
     required=True,
 )
 @click.option(
@@ -948,15 +1009,22 @@ def show_machine_utilization(machine_id, billing_month, api_key):
     command.execute(machine_id, billing_month)
 
 
-@machines_group.command("waitfor")
+wait_for_machine_state_help = "Wait for the machine with the given id to enter a certain machine state. " \
+                              "This action polls the server and returns only when we detect that the machine " \
+                              "has transitioned into the given state."
+
+
+@machines_group.command("waitfor", help=wait_for_machine_state_help)
 @click.option(
     "--machineId",
     "machine_id",
+    help="Id of the machine to start",
     required=True,
 )
 @click.option(
     "--state",
     "state",
+    help="Name of the state to wait for",
     type=click.Choice(["off", "serviceready", "ready"], case_sensitive=False),
     required=True,
 )

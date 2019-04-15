@@ -1257,3 +1257,19 @@ SHOW_MACHINE_RESPONSE = {
         }
     ]
 }
+
+SHOW_MACHINE_UTILIZATION_RESPONSE = {
+    "machineId": "psbtuwfvt",
+    "utilization": {
+        "machineId": "psbtuwfvt",
+        "secondsUsed": 0,
+        "billingMonth": "2019-04",
+        "hourlyRate": 0,
+    },
+    "storageUtilization": {
+        "machineId": "psbtuwfvt",
+        "secondsUsed": 256798.902394,
+        "monthlyRate": "5.00",
+        "billingMonth": "2019-04",
+    },
+}

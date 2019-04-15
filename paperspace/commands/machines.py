@@ -49,11 +49,12 @@ class CreateMachineCommand(CommandBase):
 
 
 class UpdateMachineCommand(CommandBase):
-    def execute(self, kwargs):
-        response = self.api.post("/machines/updateMachinePublic/", json=kwargs)
+    def execute(self, machine_id, kwargs):
+        url = "/machines/{}/updateMachinePublic/".format(machine_id)
+        response = self.api.post(url, json=kwargs)
         self._log_message(response,
-                          "Machine updates with",
-                          "Unknown error while updated machine")
+                          "Machine updated",
+                          "Unknown error while updating machine")
 
 
 class StartMachineCommand(CommandBase):
@@ -201,17 +202,21 @@ class ShowMachineUtilisationCommand(CommandBase):
                   "billingMonth": billing_month}
         response = self.api.get("machines/getUtilization/", params=params)
 
-        if response.ok:
-            machine = response.json()
-            table = self.make_details_table(machine)
-            self.logger.log(table)
+        try:
+            data = response.json()
+            if not response.ok:
+                self.logger.log_error_response(data)
+                return
+        except (ValueError, KeyError) as e:
+            self.logger.log("Error while parsing response data: {}".format(e))
         else:
-            self.logger.log_error_response(response.json())
+            table = self.make_details_table(data)
+            self.logger.log(table)
 
     @staticmethod
     def make_details_table(machine):
         data = (
-            ("ID", machine.get("id")),
+            ("ID", machine.get("machineId")),
             ("Machine Seconds used", machine["utilization"].get("secondsUsed")),
             ("Machine Hourly rate", machine["utilization"].get("hourlyRate")),
             ("Storage Seconds Used", machine["storageUtilization"].get("secondsUsed")),
@@ -229,6 +234,7 @@ class WaitForMachineStateCommand(CommandBase):
                 current_state = self._get_machine_state(machine_id)
             except BadResponse as e:
                 self.logger.log(e)
+                return
             else:
                 if current_state == state:
                     break
@@ -242,6 +248,9 @@ class WaitForMachineStateCommand(CommandBase):
         response = self.api.get("/machines/getMachinePublic/", params=params)
         try:
             json_ = response.json()
+            if not response.ok:
+                self.logger.log_error_response(json_)
+                raise BadResponse("Error while reading machine state")
             state = json_.get("state")
         except (ValueError, AttributeError):
             raise BadResponse("Unknown error while reading machine state")
