@@ -56,6 +56,23 @@ Getting Started
    The script will be run on the Paperspace job cluster node, and its output will be logged locally.
 
 
+Create/create and start experiment
+=================
+To create new experiment use:
+```
+paperspace-python experiments create [type] [--options]
+```
+The two available experiment types are `singlenode` and `multinode`.
+
+To create and immediately start new experiment use:
+```
+paperspace-python experiments createAndStart [type] [--options]
+```
+
+For a full list of available commands run `paperspace experiments --help`. 
+Note that some options are required to create new experiment.
+
+
 Specifying jobs options within a script
 =======================================
 This example shows how a script can specify paperspace jobs options for itself, such as `project` name, `machineType`, and a `container` reference:
