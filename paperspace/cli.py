@@ -84,18 +84,18 @@ def cli():
     pass
 
 
-@cli.group("experiments")
+@cli.group("experiments", help="Manage experiments")
 def experiments():
     pass
 
 
-@experiments.group()
-def create():
+@experiments.group("create", help="Create new experiment")
+def create_experiment():
     pass
 
 
-@experiments.group(name="createAndStart")
-def create_and_start():
+@experiments.group(name="createAndStart", help="Create and start new experiment")
+def create_and_start_experiment():
     pass
 
 
@@ -104,56 +104,68 @@ def common_experiments_create_options(f):
         click.option(
             "--name",
             required=True,
+            help="Name of new experiment",
         ),
         click.option(
             "--ports",
             type=int,
+            help="Port to use in new experiment",
         ),
         click.option(
             "--workspaceUrl",
             "workspaceUrl",
             required=True,
+            help="Project git repository url",
         ),
         click.option(
             "--workingDirectory",
             "workingDirectory",
+            help="Working directory for the experiment",
         ),
         click.option(
             "--artifactDirectory",
             "artifactDirectory",
+            help="Artifacts directory",
         ),
         click.option(
             "--clusterId",
             "clusterId",
             type=int,
+            help="Cluster ID",
         ),
         click.option(
             "--experimentEnv",
             "experimentEnv",
             type=json_string,
+            help="Environment variables in a JSON",
         ),
         click.option(
             "--triggerEventId",
             "triggerEventId",
             type=int,
+            help="Trigger event ID",
         ),
         click.option(
             "--projectId",
             "projectId",
             type=int,
+            help="Project ID",
         ),
         click.option(
             "--projectHandle",
             "projectHandle",
             required=True,
+            help="Project handle",
         ),
         click.option(
             "--modelType",
             "modelType",
+            help="Model type",
         ),
         click.option(
             "--modelPath",
             "modelPath",
+            help="Model path",
         ),
         api_key_option
     ]
@@ -167,72 +179,87 @@ def common_experiment_create_multi_node_options(f):
             "experimentTypeId",
             type=ChoiceType(MULTI_NODE_EXPERIMENT_TYPES_MAP, case_sensitive=False),
             required=True,
+            help="Experiment Type ID",
         ),
         click.option(
             "--workerContainer",
             "workerContainer",
             required=True,
+            help="Worker container",
         ),
         click.option(
             "--workerMachineType",
             "workerMachineType",
             required=True,
+            help="Worker machine type",
         ),
         click.option(
             "--workerCommand",
             "workerCommand",
             required=True,
+            help="Worker command",
         ),
         click.option(
             "--workerCount",
             "workerCount",
             type=int,
             required=True,
+            help="Worker count",
         ),
         click.option(
             "--parameterServerContainer",
             "parameterServerContainer",
             required=True,
+            help="Parameter server container",
         ),
         click.option(
             "--parameterServerMachineType",
             "parameterServerMachineType",
             required=True,
+            help="Parameter server machine type",
         ),
         click.option(
             "--parameterServerCommand",
             "parameterServerCommand",
             required=True,
+            help="Parameter server command",
         ),
         click.option(
             "--parameterServerCount",
             "parameterServerCount",
             type=int,
             required=True,
+            help="Parameter server count",
         ),
         click.option(
             "--workerContainerUser",
             "workerContainerUser",
+            help="Worker container user",
         ),
         click.option(
             "--workerRegistryUsername",
             "workerRegistryUsername",
+            help="Worker registry username",
         ),
         click.option(
             "--workerRegistryPassword",
             "workerRegistryPassword",
+            help="Worker registry password",
         ),
         click.option(
             "--parameterServerContainerUser",
             "parameterServerContainerUser",
+            help="Parameter server container user",
         ),
         click.option(
             "--parameterServerRegistryContainerUser",
             "parameterServerRegistryContainerUser",
+            help="Parameter server registry container user",
         ),
         click.option(
             "--parameterServerRegistryPassword",
             "parameterServerRegistryPassword",
+            help="Parameter server registry password",
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
@@ -243,33 +270,39 @@ def common_experiments_create_single_node_options(f):
         click.option(
             "--container",
             required=True,
+            help="Container",
         ),
         click.option(
             "--machineType",
             "machineType",
             required=True,
+            help="Machine type",
         ),
         click.option(
             "--command",
             required=True,
+            help="Command",
         ),
         click.option(
             "--containerUser",
             "containerUser",
+            help="Container user",
         ),
         click.option(
             "--registryUsername",
             "registryUsername",
+            help="Registry username",
         ),
         click.option(
             "--registryPassword",
             "registryPassword",
+            help="Registry password",
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
 
-@create.command(name="multinode")
+@create_experiment.command(name="multinode", help="Create multi node experiment")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
 def create_multi_node(api_key, **kwargs):
@@ -278,7 +311,7 @@ def create_multi_node(api_key, **kwargs):
     experiments_commands.create_experiment(kwargs, api=experiments_api)
 
 
-@create.command(name="singlenode")
+@create_experiment.command(name="singlenode", help="Create single node experiment")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
 def create_single_node(api_key, **kwargs):
@@ -288,7 +321,7 @@ def create_single_node(api_key, **kwargs):
     experiments_commands.create_experiment(kwargs, api=experiments_api)
 
 
-@create_and_start.command(name="multinode")
+@create_and_start_experiment.command(name="multinode", help="Create and start new multi node experiment")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
 def create_and_start_multi_node(api_key, **kwargs):
@@ -297,7 +330,7 @@ def create_and_start_multi_node(api_key, **kwargs):
     experiments_commands.create_and_start_experiment(kwargs, api=experiments_api)
 
 
-@create_and_start.command(name="singlenode")
+@create_and_start_experiment.command(name="singlenode", help="Create and start new single node experiment")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
 def create_and_start_single_node(api_key, **kwargs):
@@ -307,23 +340,23 @@ def create_and_start_single_node(api_key, **kwargs):
     experiments_commands.create_and_start_experiment(kwargs, api=experiments_api)
 
 
-@experiments.command()
+@experiments.command("start", help="Start experiment")
 @click.argument("experiment-handle")
 @api_key_option
-def start(experiment_handle, api_key):
+def start_experiment(experiment_handle, api_key):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.start_experiment(experiment_handle, api=experiments_api)
 
 
-@experiments.command()
+@experiments.command("stop", help="Stop experiment")
 @click.argument("experiment-handle")
 @api_key_option
-def stop(experiment_handle, api_key):
+def stop_experiment(experiment_handle, api_key):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.stop_experiment(experiment_handle, api=experiments_api)
 
 
-@experiments.command("list")
+@experiments.command("list", help="List experiments")
 @click.option("--projectHandle", "-p", "project_handles", multiple=True)
 @api_key_option
 def list_experiments(project_handles, api_key):
@@ -332,7 +365,7 @@ def list_experiments(project_handles, api_key):
     command.execute(project_handles)
 
 
-@experiments.command("details")
+@experiments.command("details", help="Show detail of an experiment")
 @click.argument("experiment-handle")
 @api_key_option
 def get_experiment_details(experiment_handle, api_key):
