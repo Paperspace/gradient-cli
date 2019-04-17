@@ -1,3 +1,5 @@
+import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -6,7 +8,7 @@ import zipfile
 import requests
 
 from paperspace import logger
-from .config import *
+from .config import config
 from .version import version
 
 

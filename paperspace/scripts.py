@@ -1,4 +1,4 @@
-from .method import *
+from .method import method
 
 def create(params):
     return method('scripts', 'createScript', params)

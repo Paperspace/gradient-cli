@@ -1,11 +1,12 @@
 import getpass
 import json
+import os
 
 import requests
 from six.moves import input
 
 from paperspace import logger
-from .config import *
+from .config import config
 from .method import requests_exception_to_error_obj, response_error_check, status_code_to_error_obj
 
 UNAUTHORIZED_EXTENDED_INFO = '\n\nNote: Please keep in mind that currently you can login only with the email and ' \

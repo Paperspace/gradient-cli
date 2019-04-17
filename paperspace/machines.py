@@ -1,4 +1,8 @@
-from .method import *
+import time
+
+import paperspace
+from .method import method
+
 
 def availability(params):
     return method('machines', 'getAvailability', params)
@@ -51,6 +55,7 @@ def waitfor(params):
             sys.exit(1)
         state = machine['state']
     return machine
+
 
 def update(params):
     return method('machines', 'updateMachinePublic', params)
