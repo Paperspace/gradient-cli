@@ -239,7 +239,7 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--workerRegistryUsername",
             "workerRegistryUsername",
-            help="Worker registry username",
+            help="Worker container registry username",
         ),
         click.option(
             "--workerRegistryPassword",
@@ -281,7 +281,7 @@ def common_experiments_create_single_node_options(f):
         click.option(
             "--command",
             required=True,
-            help="Command",
+            help="Container entrypoint command",
         ),
         click.option(
             "--containerUser",
