@@ -3,6 +3,7 @@ import pydoc
 import terminaltables
 
 from paperspace import config, version, client, logger
+from paperspace.commands import CommandBase
 from paperspace.utils import get_terminal_lines
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
@@ -11,11 +12,7 @@ default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
 deployments_api = client.API(config.CONFIG_HOST, headers=default_headers)
 
 
-class _DeploymentCommandBase(object):
-    def __init__(self, api=deployments_api, logger_=logger):
-        self.api = api
-        self.logger = logger_
-
+class _DeploymentCommandBase(CommandBase):
     def _log_message(self, response, success_msg_template, error_msg):
         if response.ok:
             try:

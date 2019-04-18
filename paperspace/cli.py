@@ -7,7 +7,7 @@ import click
 
 from paperspace import constants, client, config
 from paperspace.commands import experiments as experiments_commands, deployments as deployments_commands, \
-    machines as machines_commands
+    machines as machines_commands, login as login_commands
 
 
 class ChoiceType(click.Choice):
@@ -1071,3 +1071,36 @@ def wait_for_machine_state(machine_id, state, api_key):
     machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.WaitForMachineStateCommand(api=machines_api)
     command.execute(machine_id, state)
+
+
+@cli.command("login", help="Log in with email and password")
+@click.option(
+    "--email",
+    "email",
+    required=True,
+    callback=validate_email,
+    help="Email used to create Paperspace account",
+)
+@click.option(
+    "--password",
+    "password",
+    prompt=True,
+    hide_input=True,
+    help="Password used to create Paperspace account",
+)
+@click.option(
+    "--apiTokenName",
+    "api_token_name",
+    help="Name of api token used to log in",
+)
+def login(email, password, api_token_name):
+    machines_api = client.API(config.CONFIG_HOST)
+    command = login_commands.LogInCommand(api=machines_api)
+    command.execute(email, password, api_token_name)
+
+
+@cli.command("logout", help="Log out / remove apiKey from config file")
+def logout():
+    machines_api = client.API(config.CONFIG_HOST)
+    command = login_commands.LogOutCommand(api=machines_api)
+    command.execute()

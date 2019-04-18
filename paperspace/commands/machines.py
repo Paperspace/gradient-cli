@@ -3,16 +3,12 @@ import time
 
 import terminaltables
 
-from paperspace import logger
+from paperspace.commands import CommandBase
 from paperspace.exceptions import BadResponse
 from paperspace.utils import get_terminal_lines
 
 
-class CommandBase(object):
-    def __init__(self, api=None, logger_=logger):
-        self.api = api
-        self.logger = logger_
-
+class _MachinesCommandBase(CommandBase):
     def _log_message(self, response, success_msg_template, error_msg):
         if response.ok:
             try:
@@ -30,7 +26,7 @@ class CommandBase(object):
                 self.logger.log(error_msg)
 
 
-class CheckAvailabilityCommand(CommandBase):
+class CheckAvailabilityCommand(_MachinesCommandBase):
     def execute(self, region, machine_type):
         params = {"region": region,
                   "machineType": machine_type}
@@ -40,7 +36,7 @@ class CheckAvailabilityCommand(CommandBase):
                           "Unknown error while checking machine availability")
 
 
-class CreateMachineCommand(CommandBase):
+class CreateMachineCommand(_MachinesCommandBase):
     def execute(self, kwargs):
         response = self.api.post("/machines/createSingleMachinePublic/", json=kwargs)
         self._log_message(response,
@@ -48,7 +44,7 @@ class CreateMachineCommand(CommandBase):
                           "Unknown error while creating machine")
 
 
-class UpdateMachineCommand(CommandBase):
+class UpdateMachineCommand(_MachinesCommandBase):
     def execute(self, machine_id, kwargs):
         url = "/machines/{}/updateMachinePublic/".format(machine_id)
         response = self.api.post(url, json=kwargs)
@@ -57,7 +53,7 @@ class UpdateMachineCommand(CommandBase):
                           "Unknown error while updating machine")
 
 
-class StartMachineCommand(CommandBase):
+class StartMachineCommand(_MachinesCommandBase):
     def execute(self, machine_id):
         url = "/machines/{}/start/".format(machine_id)
         response = self.api.post(url)
@@ -66,7 +62,7 @@ class StartMachineCommand(CommandBase):
                           "Unknown error while starting the machine")
 
 
-class StopMachineCommand(CommandBase):
+class StopMachineCommand(_MachinesCommandBase):
     def execute(self, machine_id):
         url = "/machines/{}/stop/".format(machine_id)
         response = self.api.post(url)
@@ -75,7 +71,7 @@ class StopMachineCommand(CommandBase):
                           "Unknown error while stopping the machine")
 
 
-class RestartMachineCommand(CommandBase):
+class RestartMachineCommand(_MachinesCommandBase):
     def execute(self, machine_id):
         url = "/machines/{}/restart/".format(machine_id)
         response = self.api.post(url)
@@ -84,7 +80,7 @@ class RestartMachineCommand(CommandBase):
                           "Unknown error while restarting the machine")
 
 
-class ShowMachineCommand(CommandBase):
+class ShowMachineCommand(_MachinesCommandBase):
     def execute(self, machine_id):
         params = {"machineId": machine_id}
         response = self.api.get("/machines/getMachinePublic/", params=params)
@@ -142,7 +138,7 @@ class ShowMachineCommand(CommandBase):
         return table_string
 
 
-class ListMachinesCommand(CommandBase):
+class ListMachinesCommand(_MachinesCommandBase):
     def execute(self, kwargs):
         json_ = {"params": kwargs} if kwargs else None
         response = self.api.get("/machines/getMachines/", json=json_)
@@ -186,7 +182,7 @@ class ListMachinesCommand(CommandBase):
         return table_string
 
 
-class DestroyMachineCommand(CommandBase):
+class DestroyMachineCommand(_MachinesCommandBase):
     def execute(self, machine_id, release_public_ip):
         json_ = {"releasePublicIp": release_public_ip} if release_public_ip else None
         url = "/machines/{}/destroyMachine/".format(machine_id)
@@ -196,7 +192,7 @@ class DestroyMachineCommand(CommandBase):
                           "Unknown error while destroying the machine")
 
 
-class ShowMachineUtilisationCommand(CommandBase):
+class ShowMachineUtilisationCommand(_MachinesCommandBase):
     def execute(self, machine_id, billing_month):
         params = {"machineId": machine_id,
                   "billingMonth": billing_month}
@@ -227,7 +223,7 @@ class ShowMachineUtilisationCommand(CommandBase):
         return table_string
 
 
-class WaitForMachineStateCommand(CommandBase):
+class WaitForMachineStateCommand(_MachinesCommandBase):
     def execute(self, machine_id, state, interval=5):
         while True:
             try:
