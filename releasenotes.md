@@ -1,6 +1,12 @@
 # Paperspace Python Release Notes
 
-## Release Notes for v0.0.19b
+## Release Notes for 0.1.0a0
+### New features
+* experiments and deployments management
+* --apiKey for all commands for one-time api key overwrite
+* help messages for all commands and parameters
+
+## Release Notes for v0.0.19
 ### New features
 * filtering experiments list with `--projectHandle` 
 * paginating experiments list when does not fit the terminal width
