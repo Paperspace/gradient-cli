@@ -1101,6 +1101,11 @@ def login(email, password, api_token_name):
 
 @cli.command("logout", help="Log out / remove apiKey from config file")
 def logout():
-    machines_api = client.API(config.CONFIG_HOST)
-    command = login_commands.LogOutCommand(api=machines_api)
+    command = login_commands.LogOutCommand()
+    command.execute()
+
+
+@cli.command("version", help="Show the version and exit")
+def version():
+    command = login_commands.ShowVersionCommand()
     command.execute()

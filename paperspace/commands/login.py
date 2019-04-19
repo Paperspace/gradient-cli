@@ -1,5 +1,6 @@
 from paperspace import login, logout
 from paperspace.commands import CommandBase
+from paperspace.version import version
 
 
 class LogInCommand(CommandBase):
@@ -12,3 +13,6 @@ class LogOutCommand(CommandBase):
         logout()
 
 
+class ShowVersionCommand(CommandBase):
+    def execute(self):
+        self.logger.log(version)

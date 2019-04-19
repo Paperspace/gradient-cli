@@ -8,7 +8,7 @@ from .version import version
 
 
 def main():
-    if len(sys.argv) >= 2 and sys.argv[1] in ('experiments', 'deployments', 'machines', 'login', 'logout'):
+    if len(sys.argv) >= 2 and sys.argv[1] in ('experiments', 'deployments', 'machines', 'login', 'logout', 'version'):
         cli(sys.argv[1:])
 
     args = sys.argv[:]
@@ -24,10 +24,6 @@ def main():
 
     if cmd in help_opts:
         usage(prog)
-        sys.exit(0)
-
-    if cmd in ['version', '--version', '-v']:
-        vers(prog)
         sys.exit(0)
 
     if cmd == 'apikey' or cmd == 'apiKey':
