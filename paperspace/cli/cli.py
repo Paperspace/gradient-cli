@@ -6,6 +6,7 @@ import re
 import click
 
 from paperspace import constants, client, config
+from paperspace.cli.jobs.commands import jobs_group
 from paperspace.commands import experiments as experiments_commands, deployments as deployments_commands, \
     machines as machines_commands, login as login_commands
 
@@ -1109,3 +1110,6 @@ def logout():
 def version():
     command = login_commands.ShowVersionCommand()
     command.execute()
+
+
+cli.add_command(jobs_group)

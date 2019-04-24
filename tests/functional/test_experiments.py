@@ -2,7 +2,8 @@ import mock
 from click.testing import CliRunner
 
 import paperspace.client
-from paperspace import cli, constants
+from paperspace import constants
+from paperspace.cli import cli
 from tests import example_responses, MockResponse
 
 
@@ -76,7 +77,7 @@ class TestExperimentsCreateSingleNode(object):
     RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'
     EXPECTED_STDOUT_PROJECT_NOT_FOUND = "Project not found\nhandle: wrong_handle\n"
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
@@ -91,7 +92,7 @@ class TestExperimentsCreateSingleNode(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(self,
                                                                                                         post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
@@ -107,7 +108,7 @@ class TestExperimentsCreateSingleNode(object):
         assert result.exit_code == 0
         assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_wrong_project_handle_was_given(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_404_PROJECT_NOT_FOUND, 404,
                                                  self.RESPONSE_CONTENT_404_PROJECT_NOT_FOUND)
@@ -219,7 +220,7 @@ class TestExperimentsCreateMultiNode(object):
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
     EXPECTED_STDOUT = "New experiment created with handle: sadkfhlskdjh\n"
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
@@ -234,7 +235,7 @@ class TestExperimentsCreateMultiNode(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(self,
                                                                                                         post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
@@ -506,7 +507,7 @@ class TestExperimentDetail(object):
 +---------------------+----------------+
 """
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_get_request_and_print_single_node_experiment_details_in_a_table(self, get_patched):
         get_patched.return_value = MockResponse(self.SINGLE_NODE_RESPONSE_JSON, 200, "fake content")
 
@@ -522,7 +523,7 @@ class TestExperimentDetail(object):
         assert result.exit_code == 0
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_get_request_and_print_multi_node_experiment_details_in_a_table(self, get_patched):
         get_patched.return_value = MockResponse(self.MULTI_NODE_DETAILS_JSON, 200, "fake content")
 
@@ -537,7 +538,7 @@ class TestExperimentDetail(object):
         assert result.output == self.MULTI_NODE_DETAILS_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_get_request_and_print_request_content_when_response_data_was_malformed(self, get_patched):
         get_patched.return_value = MockResponse({}, 200, "fake content")
         g = """Error parsing response data
@@ -736,7 +737,7 @@ class TestExperimentList(object):
 +---------------+---------------+---------+
 """
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -751,8 +752,8 @@ class TestExperimentList(object):
         assert result.output == self.DETAILS_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("paperspace.cli.experiments_commands.pydoc")
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.experiments_commands.pydoc")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
                                                                                                      pydoc_patched):
         list_json = {"data": self.LIST_JSON["data"] * 40}
@@ -769,7 +770,7 @@ class TestExperimentList(object):
         pydoc_patched.pager.assert_called_once()
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments_filtered_with_two_projects(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_OF_EXPERIMENTS_FILTERED_WITH_TWO_PROJECTS, 200,
                                                 "fake content")
@@ -786,7 +787,7 @@ class TestExperimentList(object):
 
         assert result.output == example_responses.LIST_OF_EXPERIMENTS_FILTERED_WITH_TWO_PROJECTS_STDOUT
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments_filtered_with_two_projects_but_none_found(
             self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_OF_EXPERIMENTS_FILTERED_BUT_NONE_FOUND, 200,
@@ -815,7 +816,7 @@ class TestStartExperiment(object):
     RESPONSE_JSON = {"message": "success"}
     START_STDOUT = "Experiment started\n"
 
-    @mock.patch("paperspace.cli.client.requests.put")
+    @mock.patch("paperspace.cli.cli.client.requests.put")
     def test_should_send_put_request_and_print_confirmation(self, put_patched):
         put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
         expected_headers = paperspace.client.default_headers.copy()
@@ -830,7 +831,7 @@ class TestStartExperiment(object):
 
         assert result.output == self.START_STDOUT
 
-    @mock.patch("paperspace.cli.client.requests.put")
+    @mock.patch("paperspace.cli.cli.client.requests.put")
     def test_should_send_put_request_with_changed_api_key_when_api_key_option_was_provided(self, put_patched):
         put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
 

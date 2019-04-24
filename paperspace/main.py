@@ -1,7 +1,7 @@
 import os
 import sys
 
-from .cli import cli
+from paperspace.cli.cli import cli
 from .jobs import run, print_json_pretty
 from .login import set_apikey
 from .version import version

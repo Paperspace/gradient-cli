@@ -1,11 +1,12 @@
 import mock
 from click.testing import CliRunner
 
-from paperspace import cli, constants
+from paperspace import constants
+from paperspace.cli import cli
 
 
-@mock.patch("paperspace.cli.client.API")
-@mock.patch("paperspace.cli.experiments_commands")
+@mock.patch("paperspace.cli.cli.client.API")
+@mock.patch("paperspace.cli.cli.experiments_commands")
 def test_should_execute_create_experiment_command_when_cli_singlenode_command_was_executed(commands_patched,
                                                                                            api_patched):
     api_patched.return_value = mock.MagicMock()
@@ -33,8 +34,8 @@ def test_should_execute_create_experiment_command_when_cli_singlenode_command_wa
     commands_patched.create_experiment.assert_called_once_with(expected_kwargs, api=api_patched())
 
 
-@mock.patch("paperspace.cli.client.API")
-@mock.patch("paperspace.cli.experiments_commands")
+@mock.patch("paperspace.cli.cli.client.API")
+@mock.patch("paperspace.cli.cli.experiments_commands")
 def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command_was_executed(commands_patched,
                                                                                               api_patched):
     api_patched.return_value = mock.MagicMock()
@@ -73,8 +74,8 @@ def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command
     commands_patched.create_experiment.assert_called_once_with(expected_kwargs, api=api_patched())
 
 
-@mock.patch("paperspace.cli.client.API")
-@mock.patch("paperspace.cli.experiments_commands")
+@mock.patch("paperspace.cli.cli.client.API")
+@mock.patch("paperspace.cli.cli.experiments_commands")
 def test_should_execute_create_experiment_command_when_cli_multinode_grpc_command_was_executed(commands_patched,
                                                                                                api_patched):
     api_patched.return_value = mock.MagicMock()
@@ -112,8 +113,8 @@ def test_should_execute_create_experiment_command_when_cli_multinode_grpc_comman
     commands_patched.create_experiment.assert_called_once_with(expected_kwargs, api=api_patched())
 
 
-@mock.patch("paperspace.cli.client.API")
-@mock.patch("paperspace.cli.experiments_commands")
+@mock.patch("paperspace.cli.cli.client.API")
+@mock.patch("paperspace.cli.cli.experiments_commands")
 def test_should_execute_create_experiment_command_when_cli_create_and_start_singlenode_command_was_executed(
         commands_patched, api_patched):
     api_patched.return_value = mock.MagicMock()
@@ -141,8 +142,8 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_sing
     commands_patched.create_and_start_experiment.assert_called_once_with(expected_kwargs, api=api_patched())
 
 
-@mock.patch("paperspace.cli.client.API")
-@mock.patch("paperspace.cli.experiments_commands")
+@mock.patch("paperspace.cli.cli.client.API")
+@mock.patch("paperspace.cli.cli.experiments_commands")
 def test_should_execute_create_experiment_command_when_cli_create_and_start_multinode_mpi_command_was_executed(
         commands_patched, api_patched):
     api_patched.return_value = mock.MagicMock()
