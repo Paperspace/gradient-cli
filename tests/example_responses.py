@@ -1273,3 +1273,192 @@ SHOW_MACHINE_UTILIZATION_RESPONSE = {
         "billingMonth": "2019-04",
     },
 }
+
+
+LIST_PROJECTS_RESPONSE = {
+  "data": [
+    {
+      "name": "test_project",
+      "handle": "prq70zy79",
+      "dtCreated": "2019-03-18T13:24:46.666Z",
+      "dtDeleted": None,
+      "lastJobSeqNum": 2,
+      "repoNodeId": None,
+      "repoName": None,
+      "repoUrl": None,
+      "experiments": {
+        "data": [
+          {
+            "dtCreated": "2019-04-05T15:10:55.692629+00:00",
+            "dtDeleted": None,
+            "dtFinished": None,
+            "dtModified": "2019-04-05T15:10:55.692629+00:00",
+            "dtProvisioningFinished": None,
+            "dtProvisioningStarted": None,
+            "dtStarted": None,
+            "dtTeardownFinished": None,
+            "dtTeardownStarted": None,
+            "experimentError": None,
+            "experimentTemplateHistoryId": 22159,
+            "experimentTemplateId": 60,
+            "experimentTypeId": 1,
+            "handle": "estgcoux8igx32",
+            "id": 22123,
+            "projectHandle": "prq70zy79",
+            "projectId": 612,
+            "started_by_user_id": 1655,
+            "state": 1,
+            "templateHistory": {
+              "dtCreated": "2019-04-05T15:10:54.923725+00:00",
+              "dtDeleted": None,
+              "experimentTemplateId": 60,
+              "id": 22159,
+              "params": {
+                "is_preemptible": False,
+                "name": "dsfads",
+                "ports": 5000,
+                "project_handle": "prq70zy79",
+                "worker_command": "sadas",
+                "worker_container": "asd",
+                "worker_machine_type": "C2",
+                "worker_use_dockerfile": False,
+                "workspaceUrl": "example.com"
+              },
+              "triggerEvent": None,
+              "triggerEventId": None
+            }
+          }
+        ],
+        "meta": {
+          "itemGroup": {
+            "key": "projectHandle",
+            "value": "prq70zy79"
+          },
+          "totalItems": 1
+        }
+      }
+    },
+    {
+      "name": "keton",
+      "handle": "prmr22ve0",
+      "dtCreated": "2019-03-25T14:50:43.202Z",
+      "dtDeleted": None,
+      "lastJobSeqNum": 8,
+      "repoNodeId": None,
+      "repoName": None,
+      "repoUrl": None,
+      "experiments": {
+        "data": [
+          {
+            "dtCreated": "2019-04-02T15:17:03.393886+00:00",
+            "dtDeleted": None,
+            "dtFinished": "2019-04-02T17:02:54.654569+00:00",
+            "dtModified": "2019-04-02T15:17:03.393886+00:00",
+            "dtProvisioningFinished": "2019-04-02T15:17:10.978198+00:00",
+            "dtProvisioningStarted": "2019-04-02T15:17:10.978198+00:00",
+            "dtStarted": "2019-04-02T15:17:10.978198+00:00",
+            "dtTeardownFinished": "2019-04-02T17:02:54.654569+00:00",
+            "dtTeardownStarted": "2019-04-02T17:02:54.654569+00:00",
+            "experimentError": None,
+            "experimentTemplateHistoryId": 22130,
+            "experimentTemplateId": 174,
+            "experimentTypeId": 1,
+            "handle": "ehla1kvbwzaco",
+            "id": 22094,
+            "projectHandle": "prmr22ve0",
+            "projectId": 626,
+            "started_by_user_id": 1655,
+            "state": 5,
+            "templateHistory": {
+              "dtCreated": "2019-04-02T15:17:02.663449+00:00",
+              "dtDeleted": None,
+              "experimentTemplateId": 174,
+              "id": 22130,
+              "params": {
+                "is_preemptible": False,
+                "model_path": "/artifacts",
+                "model_type": "Tensorflow",
+                "name": "Test1",
+                "ports": 5000,
+                "project_handle": "prmr22ve0",
+                "worker_command": "python mnist.py --data_format=channels_last",
+                "worker_container": "tensorflow/tensorflow:1.13.1-py3",
+                "worker_machine_type": "K80",
+                "workspaceUrl": "https://github.com/Paperspace/mnist-sample"
+              },
+              "triggerEvent": None,
+              "triggerEventId": None
+            }
+          }
+        ],
+        "meta": {
+          "itemGroup": {
+            "key": "projectHandle",
+            "value": "prmr22ve0"
+          },
+          "totalItems": 1
+        }
+      }
+    },
+    {
+      "name": "paperspace-python",
+      "handle": "przhbct98",
+      "dtCreated": "2019-04-04T15:12:34.229Z",
+      "dtDeleted": None,
+      "lastJobSeqNum": 3,
+      "repoNodeId": None,
+      "repoName": None,
+      "repoUrl": None,
+      "experiments": {
+        "data": [
+          {
+            "dtCreated": "2019-04-24T10:18:30.523193+00:00",
+            "dtDeleted": None,
+            "dtFinished": "2019-04-24T10:18:43.613748+00:00",
+            "dtModified": "2019-04-24T10:18:30.523193+00:00",
+            "dtProvisioningFinished": "2019-04-24T10:18:35.010792+00:00",
+            "dtProvisioningStarted": "2019-04-24T10:18:35.010792+00:00",
+            "dtStarted": "2019-04-24T10:18:35.010792+00:00",
+            "dtTeardownFinished": "2019-04-24T10:18:43.613748+00:00",
+            "dtTeardownStarted": "2019-04-24T10:18:43.613748+00:00",
+            "experimentError": None,
+            "experimentTemplateHistoryId": 22311,
+            "experimentTemplateId": 186,
+            "experimentTypeId": 1,
+            "handle": "es47og38wzhnuo",
+            "id": 22270,
+            "projectHandle": "przhbct98",
+            "projectId": 649,
+            "started_by_user_id": 1655,
+            "state": 7,
+            "templateHistory": {
+              "dtCreated": "2019-04-24T10:18:30.523193+00:00",
+              "dtDeleted": None,
+              "experimentTemplateId": 186,
+              "id": 22311,
+              "params": {
+                "command": ". test.sh\npython2 hello.py",
+                "container": "paperspace/tensorflow-python",
+                "machineType": "G1",
+                "project": "paperspace-python",
+                "workspaceFileName": "temp.zip"
+              },
+              "triggerEvent": None,
+              "triggerEventId": None
+            }
+          }
+        ],
+        "meta": {
+          "itemGroup": {
+            "key": "projectHandle",
+            "value": "przhbct98"
+          },
+          "totalItems": 1
+        }
+      }
+    }
+  ],
+  "meta": {
+    "totalItems": 3
+  }
+}
