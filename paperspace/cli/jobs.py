@@ -1,7 +1,7 @@
 import click
 
 from paperspace import client, config
-from paperspace.cli import api_key_option
+from paperspace.cli.common import api_key_option
 from paperspace.commands import jobs as jobs_commands
 
 

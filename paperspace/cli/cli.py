@@ -1,28 +1,15 @@
 import collections
 import functools
-import json
-import re
 
 import click
 
 from paperspace import constants, client, config
-from paperspace.cli import api_key_option
-from paperspace.cli.jobs.commands import jobs_group
+from paperspace.cli.common import api_key_option, del_if_value_is_none
+from paperspace.cli.jobs import jobs_group
+from paperspace.cli.types import ChoiceType, json_string
+from paperspace.cli.validators import validate_mutually_exclusive, validate_email
 from paperspace.commands import experiments as experiments_commands, deployments as deployments_commands, \
     machines as machines_commands, login as login_commands
-
-
-class ChoiceType(click.Choice):
-    """Takes a string-keyed map and converts cli-provided parameter to corresponding value"""
-
-    def __init__(self, type_map, case_sensitive=True):
-        super(ChoiceType, self).__init__(tuple(type_map.keys()), case_sensitive=case_sensitive)
-        self.type_map = type_map
-
-    def convert(self, value, param, ctx):
-        value = super(ChoiceType, self).convert(value, param, ctx).upper()
-        return self.type_map[value]
-
 
 MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
     (
@@ -30,48 +17,6 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
         ("MPI", constants.ExperimentType.MPI_MULTI_NODE),
     )
 )
-
-
-class Number(click.ParamType):
-    name = "number"
-
-    def convert(self, value, param, ctx):
-        try:
-            number = int(value)
-        except ValueError:
-            try:
-                number = float(value)
-            except ValueError:
-                self.fail('{} is not a valid number'.format(value), param, ctx)
-
-        return number
-
-
-def json_string(val):
-    """Wraps json.loads so the cli help shows proper option's type name instead of 'LOADS'"""
-    return json.loads(val)
-
-
-def del_if_value_is_none(dict_):
-    """Remove all elements with value == None"""
-    for key, val in list(dict_.items()):
-        if val is None:
-            del dict_[key]
-
-
-def validate_mutually_exclusive(options_1, options_2, error_message):
-    used_option_in_options_1 = any(option is not None for option in options_1)
-    used_option_in_options_2 = any(option is not None for option in options_2)
-    if used_option_in_options_1 and used_option_in_options_2:
-        raise click.UsageError(error_message)
-
-
-def validate_email(ctx, param, value):
-    if value is not None \
-            and not re.match(r"[^@]+@[^@]+\.[^@]+", value):
-        raise click.BadParameter("Bad email address format")
-
-    return value
 
 
 @click.group()
