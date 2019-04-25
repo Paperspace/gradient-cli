@@ -14,13 +14,13 @@ class TestListProjects(object):
     # TODO: change to `REQUEST_JSON = None` or whatever works when PS_API is fixed
     REQUEST_JSON = {'teamId': 666}
     EXPECTED_RESPONSE_JSON = example_responses.LIST_PROJECTS_RESPONSE
-    EXPECTED_STDOUT = """+-----------+-------------------+------------+
-| ID        | Name              | Repository |
-+-----------+-------------------+------------+
-| prq70zy79 | test_project      | None       |
-| prmr22ve0 | keton             | None       |
-| przhbct98 | paperspace-python | None       |
-+-----------+-------------------+------------+
+    EXPECTED_STDOUT = """+-----------+-------------------+------------+--------------------------+
+| ID        | Name              | Repository | Created                  |
++-----------+-------------------+------------+--------------------------+
+| prq70zy79 | test_project      | None       | 2019-03-18T13:24:46.666Z |
+| prmr22ve0 | keton             | None       | 2019-03-25T14:50:43.202Z |
+| przhbct98 | paperspace-python | None       | 2019-04-04T15:12:34.229Z |
++-----------+-------------------+------------+--------------------------+
 """
 
     BASIC_COMMAND_WITH_API_KEY = ["projects", "list", "--apiKey", "some_key"]
