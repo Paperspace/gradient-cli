@@ -1,7 +1,7 @@
 from paperspace.commands import CommandBase
 
 
-class _JobsCommandBase(CommandBase):
+class JobsCommandBase(CommandBase):
     def _log_message(self, response, success_msg_template, error_msg):
         if response.ok:
             try:
@@ -19,10 +19,19 @@ class _JobsCommandBase(CommandBase):
                 self.logger.log(error_msg)
 
 
-class DeleteJobCommand(_JobsCommandBase):
+class DeleteJobCommand(JobsCommandBase):
     def execute(self, job_id):
         url = "/jobs/{}/destroy/".format(job_id)
         response = self.api.post(url)
         self._log_message(response,
                           "Job deleted",
                           "Unknown error while deleting job")
+
+
+class StopJobCommand(JobsCommandBase):
+    def execute(self, job_id):
+        url = "/jobs/{}/stop/".format(job_id)
+        response = self.api.post(url)
+        self._log_message(response,
+                          "Job stopped",
+                          "Unknown error while stopping job")

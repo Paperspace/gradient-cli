@@ -6,6 +6,7 @@ import re
 import click
 
 from paperspace import constants, client, config
+from paperspace.cli import api_key_option
 from paperspace.cli.jobs.commands import jobs_group
 from paperspace.commands import experiments as experiments_commands, deployments as deployments_commands, \
     machines as machines_commands, login as login_commands
@@ -56,13 +57,6 @@ def del_if_value_is_none(dict_):
     for key, val in list(dict_.items()):
         if val is None:
             del dict_[key]
-
-
-api_key_option = click.option(
-    "--apiKey",
-    "api_key",
-    help="API key to use this time only",
-)
 
 
 def validate_mutually_exclusive(options_1, options_2, error_message):
