@@ -26,3 +26,8 @@ class DeleteJobCommand(_JobsCommandBase):
         self._log_message(response,
                           "Job deleted",
                           "Unknown error while deleting job")
+
+
+class CreateJobCommand(_JobsCommandBase):
+    def execute(self, **kwargs):
+        url = "/jobs/create"

@@ -19,3 +19,9 @@ def delete_job(job_id, api_key=None):
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.DeleteJobCommand(api=jobs_api)
     command.execute(job_id)
+
+
+def create_job(api_key=None):
+    jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = jobs_commands.CreateJobCommand(api=jobs_api)
+    command.execute()
