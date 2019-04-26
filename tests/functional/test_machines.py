@@ -87,6 +87,20 @@ class TestMachineAvailability(object):
         assert result.output == "Unknown error while checking machine availability\n"
         assert result.exit_code == 0
 
+    @mock.patch("paperspace.cli.cli.client.requests.get")
+    def test_should_print_valid_error_message_when_no_content_was_received_in_response(self, get_patched):
+        get_patched.return_value = MockResponse(status_code=400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.COMMAND)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS,
+                                       json=None,
+                                       params=self.PARAMS)
+        assert result.output == "Unknown error while checking machine availability\n"
+        assert result.exit_code == 0
+
 
 class TestCreateMachine(object):
     URL = "https://api.paperspace.io/machines/createSingleMachinePublic/"

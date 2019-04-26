@@ -6,6 +6,7 @@ import click
 from paperspace import constants, client, config
 from paperspace.cli.common import api_key_option, del_if_value_is_none
 from paperspace.cli.jobs import jobs_group
+from paperspace.cli.models import models_group
 from paperspace.cli.projects import projects_group
 from paperspace.cli.types import ChoiceType, json_string
 from paperspace.cli.validators import validate_mutually_exclusive, validate_email
@@ -1054,3 +1055,4 @@ def version():
 
 cli.add_command(jobs_group)
 cli.add_command(projects_group)
+cli.add_command(models_group)
