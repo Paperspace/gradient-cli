@@ -56,6 +56,7 @@ class ListExperimentsCommand(object):
         self.logger = logger_
 
     def execute(self, project_handles=None):
+        project_handles = project_handles or []
         params = self._get_query_params(project_handles)
         response = self.api.get("/experiments/", params=params)
 
@@ -68,9 +69,7 @@ class ListExperimentsCommand(object):
 
     @staticmethod
     def _get_query_params(project_handles):
-        # TODO: change to limit: -1 when PS-9535 is deployed to production
-        # to list all experiments
-        params = {"limit": 1000000}
+        params = {"limit": -1}  # so the API sends back full list without pagination
         for i, handle in enumerate(project_handles):
             key = "projectHandle[{}]".format(i)
             params[key] = handle
