@@ -15,21 +15,6 @@ class ChoiceType(click.Choice):
         return self.type_map[value]
 
 
-class Number(click.ParamType):
-    name = "number"
-
-    def convert(self, value, param, ctx):
-        try:
-            number = int(value)
-        except ValueError:
-            try:
-                number = float(value)
-            except ValueError:
-                self.fail('{} is not a valid number'.format(value), param, ctx)
-
-        return number
-
-
 def json_string(val):
     """Wraps json.loads so the cli help shows proper option's type name instead of 'LOADS'"""
     return json.loads(val)

@@ -46,12 +46,13 @@ class ListProjectsCommand(ProjectsCommandBase):
 
     @staticmethod
     def _make_table(projects):
-        data = [("ID", "Name", "Repository")]
+        data = [("ID", "Name", "Repository", "Created")]
         for project in projects:
             id_ = project.get("handle")
             name = project.get("name")
             repo_url = project.get("repoUrl")
-            data.append((id_, name, repo_url))
+            created = project.get("dtCreated")
+            data.append((id_, name, repo_url, created))
 
         ascii_table = terminaltables.AsciiTable(data)
         table_string = ascii_table.table
