@@ -1,11 +1,12 @@
 import click
+from click_didyoumean import DYMGroup
 
 from paperspace import client, config
 from paperspace.cli import common
 from paperspace.commands import models as models_commands
 
 
-@click.group("models", help="Manage models")
+@click.group("models", help="Manage models", cls=DYMGroup)
 def models_group():
     pass
 

@@ -3,6 +3,8 @@ import functools
 
 import click
 
+from click_didyoumean import DYMGroup
+
 from paperspace import constants, client, config
 from paperspace.cli.common import api_key_option, del_if_value_is_none
 from paperspace.cli.jobs import jobs_group
@@ -21,22 +23,22 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
 )
 
 
-@click.group()
+@click.group(cls=DYMGroup)
 def cli():
     pass
 
 
-@cli.group("experiments", help="Manage experiments")
+@cli.group("experiments", help="Manage experiments", cls=DYMGroup)
 def experiments():
     pass
 
 
-@experiments.group("create", help="Create new experiment")
+@experiments.group("create", help="Create new experiment", cls=DYMGroup)
 def create_experiment():
     pass
 
 
-@experiments.group(name="createAndStart", help="Create and start new experiment")
+@experiments.group(name="createAndStart", help="Create and start new experiment", cls=DYMGroup)
 def create_and_start_experiment():
     pass
 
@@ -328,7 +330,7 @@ DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
 )
 
 
-@cli.group("deployments", help="Manage deployments")
+@cli.group("deployments", help="Manage deployments", cls=DYMGroup)
 def deployments():
     pass
 
@@ -497,7 +499,7 @@ REGIONS_MAP = collections.OrderedDict(
 )
 
 
-@cli.group("machines", help="Manage machines")
+@cli.group("machines", help="Manage machines", cls=DYMGroup)
 def machines_group():
     pass
 

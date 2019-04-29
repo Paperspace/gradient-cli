@@ -1,11 +1,12 @@
 import click
+from click_didyoumean import DYMGroup
 
 from paperspace import client, config
 from paperspace.commands import projects as projects_commands
 from . import common
 
 
-@click.group("projects", help="Manage projects")
+@click.group("projects", help="Manage projects", cls=DYMGroup)
 def projects_group():
     pass
 

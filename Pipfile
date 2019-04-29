@@ -13,6 +13,7 @@ six = "*"
 gradient-statsd = "*"
 click = "*"
 terminaltables = "*"
+click-didyoumean = "*"
 
 [dev-packages]
 twine = "*"
