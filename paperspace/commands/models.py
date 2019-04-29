@@ -18,7 +18,7 @@ class ListModelsCommand(CommandBase):
             if not response.ok:
                 self.logger.log_error_response(data)
                 return
-            models = data["modelList"]
+            models = self._get_objects_list(response)
         except (ValueError, KeyError) as e:
             self.logger.log("Error while parsing response data: {}".format(e))
         else:
@@ -32,12 +32,9 @@ class ListModelsCommand(CommandBase):
         json_ = {"filter": {"where": {"and": [filters]}}}
         return json_
 
-    def _get_models_list(self, response):
-        if not response.ok:
-            raise ValueError("Unknown error")
-
+    @staticmethod
+    def _get_objects_list(response):
         data = response.json()["modelList"]
-        self.logger.debug(data)
         return data
 
     def _log_models_list(self, models):

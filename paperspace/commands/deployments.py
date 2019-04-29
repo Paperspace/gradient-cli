@@ -40,25 +40,28 @@ class CreateDeploymentCommand(_DeploymentCommandBase):
 
 
 class ListDeploymentsCommand(_DeploymentCommandBase):
-    def execute(self, kwargs):
-        json_ = self._get_request_json(kwargs)
+    def execute(self, filters=None):
+        json_ = self._get_request_json(filters)
         response = self.api.get("/deployments/getDeploymentList/", json=json_)
 
         try:
-            deployments = self._get_deployments_list(response)
+            data = response.json()
+            if not response.ok:
+                self.logger.log_error_response(data)
+                return
+            models = self._get_deployments_list(response)
         except (ValueError, KeyError) as e:
             self.logger.log("Error while parsing response data: {}".format(e))
         else:
-            self._log_deployments_list(deployments)
+            self._log_deployments_list(models)
 
     @staticmethod
-    def _get_request_json(kwargs):
-        state = kwargs.get("state")
-        if not state:
+    def _get_request_json(filters):
+        if not filters:
             return None
 
-        params = {"filter": {"where": {"and": [{"state": state}]}}}
-        return params
+        json_ = {"filter": {"where": {"and": [filters]}}}
+        return json_
 
     @staticmethod
     def _get_deployments_list(response):
