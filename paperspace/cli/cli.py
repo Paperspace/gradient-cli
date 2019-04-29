@@ -456,7 +456,7 @@ def get_deployments_list(api_key=None, **filters):
 def update_deployment_model(id_, api_key, **kwargs):
     del_if_value_is_none(kwargs)
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
-    command = deployments_commands.UpdateModelCommand(api=deployments_api)
+    command = deployments_commands.UpdateDeploymentCommand(api=deployments_api)
     command.execute(id_, kwargs)
 
 

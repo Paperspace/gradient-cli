@@ -49,11 +49,11 @@ class ListDeploymentsCommand(_DeploymentCommandBase):
             if not response.ok:
                 self.logger.log_error_response(data)
                 return
-            models = self._get_deployments_list(response)
+            deployments = self._get_deployments_list(response)
         except (ValueError, KeyError) as e:
             self.logger.log("Error while parsing response data: {}".format(e))
         else:
-            self._log_deployments_list(models)
+            self._log_deployments_list(deployments)
 
     @staticmethod
     def _get_request_json(filters):
@@ -98,13 +98,13 @@ class ListDeploymentsCommand(_DeploymentCommandBase):
         return table_string
 
 
-class UpdateModelCommand(_DeploymentCommandBase):
-    def execute(self, model_id, kwargs):
+class UpdateDeploymentCommand(_DeploymentCommandBase):
+    def execute(self, deployment_id, kwargs):
         if not kwargs:
             self.logger.log("No parameters to update were given. Use --help for more information.")
             return
 
-        json_ = {"id": model_id,
+        json_ = {"id": deployment_id,
                  "upd": kwargs}
         response = self.api.post("/deployments/updateDeployment/", json=json_)
         self._log_message(response,
@@ -113,8 +113,8 @@ class UpdateModelCommand(_DeploymentCommandBase):
 
 
 class StartDeploymentCommand(_DeploymentCommandBase):
-    def execute(self, model_id):
-        json_ = {"id": model_id,
+    def execute(self, deployment_id):
+        json_ = {"id": deployment_id,
                  "isRunning": True}
         response = self.api.post("/deployments/updateDeployment/", json=json_)
         self._log_message(response,
@@ -123,8 +123,8 @@ class StartDeploymentCommand(_DeploymentCommandBase):
 
 
 class DeleteDeploymentCommand(_DeploymentCommandBase):
-    def execute(self, model_id):
-        json_ = {"id": model_id,
+    def execute(self, deployment_id):
+        json_ = {"id": deployment_id,
                  "upd": {"isDeleted": True}}
         response = self.api.post("/deployments/updateDeployment/", json=json_)
         self._log_message(response,
