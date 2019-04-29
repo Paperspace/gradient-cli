@@ -187,6 +187,20 @@ class TestDeploymentsList(object):
                                             params=None)
         assert result.output == "No deployments found\n"
 
+    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.get")
+    def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
+        get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"},
+                                                400)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=None,
+                                            params=None)
+        assert result.output == "Invalid API token\n"
+
 
 class TestDeploymentsUpdate(object):
     URL = "https://api.paperspace.io/deployments/updateDeployment/"
@@ -264,7 +278,7 @@ class TestStartDeployment(object):
 
     @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_start_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(None, 204, "fake content")
+        post_patched.return_value = MockResponse(status_code=204)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -297,7 +311,7 @@ class TestDeleteDeployment(object):
 
     @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_delete_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(None, 204, "fake content")
+        post_patched.return_value = MockResponse(status_code=204)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -311,7 +325,7 @@ class TestDeleteDeployment(object):
 
     @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
     def test_should_send_proper_data_with_custom_api_key_when_api_key_parameter_was_provided(self, post_patched):
-        post_patched.return_value = MockResponse(None, 204, "fake content")
+        post_patched.return_value = MockResponse(status_code=204)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)

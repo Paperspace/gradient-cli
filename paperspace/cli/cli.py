@@ -1,27 +1,17 @@
 import collections
 import functools
-import json
-import re
 
 import click
 
 from paperspace import constants, client, config
-from paperspace.cli.jobs.commands import jobs_group
+from paperspace.cli.common import api_key_option, del_if_value_is_none
+from paperspace.cli.jobs import jobs_group
+from paperspace.cli.models import models_group
+from paperspace.cli.projects import projects_group
+from paperspace.cli.types import ChoiceType, json_string
+from paperspace.cli.validators import validate_mutually_exclusive, validate_email
 from paperspace.commands import experiments as experiments_commands, deployments as deployments_commands, \
     machines as machines_commands, login as login_commands
-
-
-class ChoiceType(click.Choice):
-    """Takes a string-keyed map and converts cli-provided parameter to corresponding value"""
-
-    def __init__(self, type_map, case_sensitive=True):
-        super(ChoiceType, self).__init__(tuple(type_map.keys()), case_sensitive=case_sensitive)
-        self.type_map = type_map
-
-    def convert(self, value, param, ctx):
-        value = super(ChoiceType, self).convert(value, param, ctx).upper()
-        return self.type_map[value]
-
 
 MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
     (
@@ -29,55 +19,6 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
         ("MPI", constants.ExperimentType.MPI_MULTI_NODE),
     )
 )
-
-
-class Number(click.ParamType):
-    name = "number"
-
-    def convert(self, value, param, ctx):
-        try:
-            number = int(value)
-        except ValueError:
-            try:
-                number = float(value)
-            except ValueError:
-                self.fail('{} is not a valid number'.format(value), param, ctx)
-
-        return number
-
-
-def json_string(val):
-    """Wraps json.loads so the cli help shows proper option's type name instead of 'LOADS'"""
-    return json.loads(val)
-
-
-def del_if_value_is_none(dict_):
-    """Remove all elements with value == None"""
-    for key, val in list(dict_.items()):
-        if val is None:
-            del dict_[key]
-
-
-api_key_option = click.option(
-    "--apiKey",
-    "api_key",
-    help="API key to use this time only",
-)
-
-
-def validate_mutually_exclusive(options_1, options_2, error_message):
-    used_option_in_options_1 = any(option is not None for option in options_1)
-    used_option_in_options_2 = any(option is not None for option in options_2)
-    if used_option_in_options_1 and used_option_in_options_2:
-        raise click.UsageError(error_message)
-
-
-def validate_email(ctx, param, value):
-    if value is not None \
-            and not re.match(r"[^@]+@[^@]+\.[^@]+", value):
-        raise click.BadParameter("Bad email address format")
-
-    return value
 
 
 @click.group()
@@ -471,12 +412,22 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
     type=ChoiceType(DEPLOYMENT_STATES_MAP, case_sensitive=False),
     help="Filter by deployment state",
 )
+@click.option(
+    "--projectId",
+    "projectId",
+    help="Use to filter by project ID",
+)
+@click.option(
+    "--modelId",
+    "modelId",
+    help="Use to filter by project ID",
+)
 @api_key_option
-def get_deployments_list(api_key=None, **kwargs):
-    del_if_value_is_none(kwargs)
+def get_deployments_list(api_key=None, **filters):
+    del_if_value_is_none(filters)
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = deployments_commands.ListDeploymentsCommand(api=deployments_api)
-    command.execute(kwargs)
+    command.execute(filters)
 
 
 @deployments.command("update", help="Update deployment properties")
@@ -516,7 +467,7 @@ def get_deployments_list(api_key=None, **kwargs):
 def update_deployment_model(id_, api_key, **kwargs):
     del_if_value_is_none(kwargs)
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
-    command = deployments_commands.UpdateModelCommand(api=deployments_api)
+    command = deployments_commands.UpdateDeploymentCommand(api=deployments_api)
     command.execute(id_, kwargs)
 
 
@@ -1124,3 +1075,5 @@ def version():
 
 
 cli.add_command(jobs_group)
+cli.add_command(projects_group)
+cli.add_command(models_group)
