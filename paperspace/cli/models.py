@@ -16,6 +16,11 @@ def models_group():
     "experimentId",
     help="Use to filter jobs by experiment ID",
 )
+@click.option(
+    "--projectId",
+    "projectId",
+    help="Use to filter jobs by project ID",
+)
 @common.api_key_option
 def list_jobs(api_key, **filters):
     common.del_if_value_is_none(filters)

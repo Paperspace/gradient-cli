@@ -14,7 +14,11 @@ class ListModelsCommand(CommandBase):
         response = self.api.get("/mlModels/getModelList/", json=json_, params=params)
 
         try:
-            models = self._get_models_list(response)
+            data = response.json()
+            if not response.ok:
+                self.logger.log_error_response(data)
+                return
+            models = data["modelList"]
         except (ValueError, KeyError) as e:
             self.logger.log("Error while parsing response data: {}".format(e))
         else:
@@ -22,11 +26,10 @@ class ListModelsCommand(CommandBase):
 
     @staticmethod
     def _get_request_json(filters):
-        experiment_id = filters.get("experimentId")
-        if not experiment_id:
+        if not filters:
             return None
 
-        json_ = {"filter": {"where": {"and": [{"experimentId": experiment_id}]}}}
+        json_ = {"filter": {"where": {"and": [filters]}}}
         return json_
 
     def _get_models_list(self, response):
@@ -37,11 +40,11 @@ class ListModelsCommand(CommandBase):
         self.logger.debug(data)
         return data
 
-    def _log_models_list(self, model):
-        if not model:
+    def _log_models_list(self, models):
+        if not models:
             self.logger.log("No models found")
         else:
-            table_str = self._make_models_list_table(model)
+            table_str = self._make_models_list_table(models)
             if len(table_str.splitlines()) > get_terminal_lines():
                 pydoc.pager(table_str)
             else:

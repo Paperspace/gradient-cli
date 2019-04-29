@@ -30,6 +30,8 @@ class TestModelsList(object):
 +------+-----------------+------------+------------+---------------+
 """
 
+    EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 401, "message": "No such API token"}
+
     @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON, 200, "fake content")
@@ -88,3 +90,17 @@ class TestModelsList(object):
                                             params={"limit": -1})
 
         assert result.output == "No models found\n"
+
+    @mock.patch("paperspace.cli.cli.client.requests.get")
+    def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
+        get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params={"limit": -1})
+
+        assert result.output == "No such API token\n"
