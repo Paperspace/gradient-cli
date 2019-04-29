@@ -1,41 +1,157 @@
+import os
 import pydoc
+import zipfile
 
+import click
+import progressbar
+import requests
 import terminaltables
+from requests_toolbelt.multipart import encoder
 
 from paperspace import logger, constants, client, config
+from paperspace.commands import CommandBase
+from paperspace.exceptions import PresignedUrlUnreachableException, S3UploadFailedException
 from paperspace.logger import log_response
 from paperspace.utils import get_terminal_lines
+
+# from clint.textui.progress import Bar as ProgressBar
 
 experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
 
 
-def _log_create_experiment(response, success_msg_template, error_msg, logger_=logger):
-    if response.ok:
-        j = response.json()
-        handle = j["handle"]
-        msg = success_msg_template.format(handle)
-        logger_.log(msg)
-    else:
-        try:
-            data = response.json()
-            logger_.log_error_response(data)
-        except ValueError:
-            logger_.log(error_msg)
+class ExperimentCommand(CommandBase):
+    def _log_create_experiment(self, response, success_msg_template, error_msg):
+        if response.ok:
+            j = response.json()
+            handle = j["handle"]
+            msg = success_msg_template.format(handle)
+            self.logger.log(msg)
+        else:
+            try:
+                data = response.json()
+                self.logger.log_error_response(data)
+            except ValueError:
+                self.logger.log(error_msg)
 
 
-def create_experiment(json_, api=experiments_api):
-    response = api.post("/experiments/", json=json_)
+class CreateExperimentCommand(ExperimentCommand):
+    def retrieve_file_paths(self, dirName):
 
-    _log_create_experiment(response,
-                           "New experiment created with handle: {}",
-                           "Unknown error while creating the experiment")
+        # setup file paths variable
+        filePaths = []
+        exclude = ['.git']
+        # Read all directory, subdirectories and file lists
+        for root, dirs, files in os.walk(dirName, topdown=True):
+            dirs[:] = [d for d in dirs if d not in exclude]
+            for filename in files:
+                # Create the full filepath by using os module.
+                filePath = os.path.join(root, filename)
+                filePaths.append(filePath)
+
+        # return all paths
+        return filePaths
+
+    def _zip_workspace(self, workspace_path):
+        if not workspace_path:
+            workspace_path = '.'
+            zip_file_name = os.path.basename(os.getcwd()) + '.zip'
+        else:
+            zip_file_name = os.path.basename(workspace_path) + '.zip'
+
+        zip_file_path = os.path.join(workspace_path, zip_file_name)
+
+        if os.path.exists(zip_file_path):
+            self.logger.log('Removing existing archive')
+            os.remove(zip_file_path)
+
+        file_paths = self.retrieve_file_paths(workspace_path)
+
+        self.logger.log('Creating zip archive: %s' % zip_file_name)
+        zip_file = zipfile.ZipFile(zip_file_path, 'w')
+
+        bar = progressbar.ProgressBar(max_value=len(file_paths))
+
+        with zip_file:
+            i = 0
+            for file in file_paths:
+                i+=1
+                self.logger.debug('Adding %s to archive' % file)
+                zip_file.write(file)
+                bar.update(i)
+        bar.finish()
+        self.logger.log('\nFinished creating archive: %s' % zip_file_name)
+        return zip_file_path
+
+    def _create_callback(self, encoder_obj):
+        bar = progressbar.ProgressBar(max_value=encoder_obj.len)
+
+        def callback(monitor):
+            bar.update(monitor.bytes_read)
+            if monitor.bytes_read == monitor.len:
+                bar.finish()
+        return callback
+
+    def _upload_workspace(self, input_data):
+        workspace_url = input_data.get('workspaceUrl')
+        workspace_path = input_data.get('workspacePath')
+        workspace_archive = input_data.get('workspaceArchive')
+        if (workspace_archive and workspace_path) or (workspace_archive and workspace_url) or (
+                workspace_path and workspace_url):
+            raise click.UsageError("Use either:\n\t--workspaceUrl to point repository URL"
+                                   "\n\t--workspacePath to point on project directory"
+                                   "\n\t--workspaceArchive to point on project ZIP archive"
+                                   "\n or neither to use current directory")
+
+        if workspace_url:
+            return  # nothing to do
+
+        if workspace_archive:
+            archive_path = os.path.abspath(workspace_archive)
+        else:
+            archive_path = self._zip_workspace(workspace_path)
+
+        s3_upload_data = self._get_upload_data(os.path.basename(archive_path))
+
+        self.logger.log('Uploading zipped workspace to S3')
+
+        files = {'file': (archive_path, open(archive_path, 'rb'))}
+        fields = s3_upload_data['fields']
+        fields.update(files)
+
+        s3_encoder = encoder.MultipartEncoder(fields=fields)
+        monitor = encoder.MultipartEncoderMonitor(s3_encoder, callback=self._create_callback(s3_encoder))
+        s3_response = requests.post(s3_upload_data['url'], data=monitor, headers={'Content-Type': monitor.content_type})
+        if not s3_response.ok:
+            raise S3UploadFailedException(s3_response)
+
+        self.logger.log('\nUploading completed')
+        s3_workspace_url = s3_response.headers.get('Location')
+        return s3_workspace_url
+
+    def execute(self, json_):
+        workspace_url = self._upload_workspace(json_)
+        if workspace_url:
+            json_['workspaceUrl'] = workspace_url
+
+        response = self.api.post("/experiments/", json=json_)
+
+        self._log_create_experiment(response,
+                                    "New experiment created with handle: {}",
+                                    "Unknown error while creating the experiment")
+
+    def _get_upload_data(self, file_name):
+        response = self.api.get("/workspace/get_presigned_url", params={'workspaceName': file_name})
+        if response.status_code == 404:
+            raise PresignedUrlUnreachableException
+        return response.json()
 
 
-def create_and_start_experiment(json_, api=experiments_api):
-    response = api.post("/experiments/create_and_start/", json=json_)
-    _log_create_experiment(response,
-                           "New experiment created and started with handle: {}",
-                           "Unknown error while creating/starting the experiment")
+class CreateAndStartExperimentCommand(ExperimentCommand):
+    def execute(self, json_):
+        response = self.api.post("/experiments/create_and_start/", json=json_)
+        self._log_create_experiment(response,
+                                    "New experiment created and started with handle: {}",
+                                    "Unknown error while creating/starting the experiment")
 
 
 def start_experiment(experiment_handle, api=experiments_api):
