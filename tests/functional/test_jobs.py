@@ -39,6 +39,35 @@ class TestListJobs(object):
     RESPONSE_JSON_WHEN_NO_JOBS_WERE_FOUND = []
     EXPECTED_STDOUT_WHEN_NO_JOBS_WERE_FOUND = "No jobs found\n"
 
+    BASIC_COMMAND_WITH_FILTERING = [
+        "jobs", "list",
+        "--project", "some_project_name",
+        "--experimentId", "some_experiment_id",
+    ]
+    EXPECTED_REQUEST_JSON_WITH_FILTERING = {
+        "project": "some_project_name",
+        "experimentId": "some_experiment_id",
+    }
+
+    BASIC_COMMAND_WITH_MUTUALLY_EXCLUSIVE_FILTERS = [
+        "jobs", "list",
+        "--project", "some_project_name",
+        "--projectId", "some_project_id",
+    ]
+    EXPECTED_REQUEST_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS = {
+        "project": "some_project_name",
+        "projectId": "some_project_id",
+    }
+    RESPONSE_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS = {
+        "error": {
+            "name": "Error",
+            "status": 422,
+            "message": "Incompatible parameters: project and projectId cannot both be specified",
+        },
+    }
+    EXPECTED_STDOUT_WHEN_MUTUALLY_EXCLUSIVE_FILTERS = "Incompatible parameters: project and projectId " \
+                                                      "cannot both be specified\n"
+
     @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_jobs_list_was_used(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
@@ -108,4 +137,33 @@ class TestListJobs(object):
                                        json=None,
                                        params=None)
         assert result.output == "Error while parsing response data: No JSON\n"
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.cli.cli.client.requests.get")
+    def test_should_send_valid_post_request_when_jobs_list_was_used_with_filter_options(self, get_patched):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_FILTERING)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS,
+                                       json=self.EXPECTED_REQUEST_JSON_WITH_FILTERING,
+                                       params=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.cli.cli.client.requests.get")
+    def test_should_print_proper_message_when_jobs_list_was_used_with_mutually_exclusive_filters(self, get_patched):
+        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS,
+                                                status_code=422)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_MUTUALLY_EXCLUSIVE_FILTERS)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS,
+                                       json=self.EXPECTED_REQUEST_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS,
+                                       params=None)
+        assert result.output == self.EXPECTED_STDOUT_WHEN_MUTUALLY_EXCLUSIVE_FILTERS
         assert result.exit_code == 0

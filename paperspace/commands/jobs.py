@@ -43,8 +43,9 @@ class StopJobCommand(JobsCommandBase):
 
 
 class ListJobsCommand(JobsCommandBase):
-    def execute(self):
-        response = self.api.get("/jobs/getJobs/", json=None)
+    def execute(self, filters=None):
+        json_ = filters or None
+        response = self.api.get("/jobs/getJobs/", json=json_)
 
         try:
             data = response.json()
