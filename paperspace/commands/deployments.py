@@ -19,7 +19,7 @@ class _DeploymentCommandBase(CommandBase):
                 j = response.json()
                 handle = j["deployment"]
             except (ValueError, KeyError):
-                self.logger.log(success_msg_template)
+                self.logger.error(success_msg_template)
             else:
                 msg = success_msg_template.format(**handle)
                 self.logger.log(msg)
@@ -28,7 +28,7 @@ class _DeploymentCommandBase(CommandBase):
                 data = response.json()
                 self.logger.log_error_response(data)
             except ValueError:
-                self.logger.log(error_msg)
+                self.logger.error(error_msg)
 
 
 class CreateDeploymentCommand(_DeploymentCommandBase):
@@ -51,7 +51,7 @@ class ListDeploymentsCommand(_DeploymentCommandBase):
                 return
             deployments = self._get_deployments_list(response)
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             self._log_deployments_list(deployments)
 
@@ -74,7 +74,7 @@ class ListDeploymentsCommand(_DeploymentCommandBase):
 
     def _log_deployments_list(self, deployments):
         if not deployments:
-            self.logger.log("No deployments found")
+            self.logger.warning("No deployments found")
         else:
             table_str = self._make_deployments_list_table(deployments)
             if len(table_str.splitlines()) > get_terminal_lines():

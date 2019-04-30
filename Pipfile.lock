@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a378eef190e18d970af4d1252ca154525221fa39a667116adf8f08389c842717"
+            "sha256": "a622daedf1f812b7e107f97026073540719f1b4d6616498bb15ea6e3d461e5cd"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -23,19 +23,19 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:882cc4869b47b51dae4b4a900769e72171ff00e0b6bca644b2d7a7ad7378f324",
-                "sha256:cd503a7e7a04f1c14d2801f9727159dfa88c393b4004e98940fa4aa205d920c8"
+                "sha256:679d8084ad40d18908a97c785d614fed554a424924d4ab30e464c16bfe95722b",
+                "sha256:d5ccb985caf4ea522f2fbfe4fbf270cd1e2c0c6d46ea7d13e9cda6bb6c36deb6"
             ],
             "index": "pypi",
-            "version": "==1.9.137"
+            "version": "==1.9.138"
         },
         "botocore": {
             "hashes": [
-                "sha256:0d95794f6b1239c75e2c5f966221bcd4b68020fddb5676f757531eedbb612ed8",
-                "sha256:3213cf48cf2ceee10fc3b93221f2cd1c38521cca7584f547d5c086213cc60f35"
+                "sha256:73bf439ba6d97606f8acbe4e037cc7a6e7a2b83f080b472c37c22d810c7dd8a8",
+                "sha256:ff4171f850cfb221b553f32948b93ea0a8d82e636fe121ff08945f4581c21ad9"
             ],
             "index": "pypi",
-            "version": "==1.12.137"
+            "version": "==1.12.138"
         },
         "certifi": {
             "hashes": [
@@ -98,6 +98,14 @@
             ],
             "index": "pypi",
             "version": "==0.0.3"
+        },
+        "click-help-colors": {
+            "hashes": [
+                "sha256:1012611344706d0da2f8642faa61843118824a54c9950c14f5122518eb01ae6b",
+                "sha256:a5fbdec2e86c6c2bad2529b7a9ab579087cbb0cf62d16fe93f27fe6c297114f7"
+            ],
+            "index": "pypi",
+            "version": "==0.5"
         },
         "cryptography": {
             "extras": [
@@ -350,7 +358,7 @@
                 "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
                 "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
             ],
-            "markers": "python_version < '3.0'",
+            "markers": "python_version < '3.3'",
             "version": "==1.0.2"
         },
         "idna": {

@@ -40,7 +40,22 @@ setup(
     ],
     keywords='paperspace api development library',
     packages=find_packages(exclude=['contrib', 'docs', 'tests', 'old_tests']),
-    install_requires=['requests[security]', 'boto3', 'botocore', 'six', 'gradient-statsd', 'click', 'terminaltables'],
+    install_requires=[
+        'requests[security]',
+        'boto3',
+        'botocore',
+        'six',
+        'gradient-statsd',
+        'click',
+        'terminaltables',
+        'click-didyoumean',
+        'click-help-colors',
+    ],
+    extras_require={
+        ':sys_platform == "win32"': [
+            'colorama',
+        ],
+    },
     entry_points={'console_scripts': [
         'paperspace-python = paperspace.main:main',
     ]},

@@ -4,24 +4,39 @@ from six import string_types
 from .config import config
 
 
-def log(message, **kwargs):
-    error = kwargs.get("error", False)
-    click.echo(message, err=error)
+def _log(message, color=None, err=False):
+    message = str(message)
+    color = color if config.USE_CONSOLE_COLORS else None
+    click.secho(message, fg=color, err=err)
+
+
+def log(message, color=None, err=False):
+    _log(message, color=color, err=err)
+
+
+def error(message):
+    color = "red" if config.USE_CONSOLE_COLORS else None
+    _log(message, color=color, err=True)
+
+
+def warning(message):
+    color = "yellow" if config.USE_CONSOLE_COLORS else None
+    _log(message, color=color)
 
 
 def log_error_response(data):
-    error = data.get("error")
+    error_str = data.get("error")
     details = data.get("details")
     message = data.get("message")
 
-    if not any((error, details, message)):
+    if not any((error_str, details, message)):
         raise ValueError("No error messages found")
 
-    if error:
+    if error_str:
         try:
-            log(error["message"], error=True)
+            error(error_str["message"])
         except (KeyError, TypeError):
-            log(str(error), error=True)
+            error(str(error_str))
 
     if details:
         if isinstance(details, dict):
@@ -31,12 +46,12 @@ def log_error_response(data):
 
                 for v in val:
                     msg = "{}: {}".format(key, str(v))
-                    log(msg, error=True)
+                    error(msg)
         else:
-            log(details)
+            error(details)
 
     if message:
-        log(str(message), error=True)
+        error(str(message))
 
 
 def debug(messages):
@@ -52,4 +67,4 @@ def log_response(response, success_msg, error_msg):
             data = response.json()
             log_error_response(data)
         except ValueError:
-            log(error_msg)
+            error(error_msg)

@@ -14,6 +14,7 @@ gradient-statsd = "*"
 click = "*"
 terminaltables = "*"
 click-didyoumean = "*"
+click-help-colors = "*"
 
 [dev-packages]
 twine = "*"
