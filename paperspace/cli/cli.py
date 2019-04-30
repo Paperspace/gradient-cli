@@ -8,7 +8,7 @@ from paperspace.cli.common import api_key_option, del_if_value_is_none
 from paperspace.cli.jobs import jobs_group
 from paperspace.cli.logs import logs_group
 from paperspace.cli.projects import projects_group
-from paperspace.cli.types import ChoiceType, json_string
+from paperspace.cli.cli_types import ChoiceType, json_string
 from paperspace.cli.validators import validate_mutually_exclusive, validate_email
 from paperspace.commands import experiments as experiments_commands, deployments as deployments_commands, \
     machines as machines_commands, login as login_commands
@@ -1056,3 +1056,7 @@ def version():
 cli.add_command(jobs_group)
 cli.add_command(projects_group)
 cli.add_command(logs_group)
+
+
+if __name__ == '__main__':
+    cli()
