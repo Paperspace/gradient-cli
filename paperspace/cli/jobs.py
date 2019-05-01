@@ -60,3 +60,11 @@ def list_jobs(api_key, **filters):
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.ListJobsCommand(api=jobs_api)
     command.execute(filters)
+
+
+@jobs_group.command("create", help="Create job")
+@common.api_key_option
+def create_job(api_key, **kwargs):
+    jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = jobs_commands.CreateJobCommand(api=jobs_api)
+    command.execute(kwargs)

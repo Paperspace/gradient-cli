@@ -4,6 +4,7 @@ import terminaltables
 
 from paperspace.commands import CommandBase
 from paperspace.utils import get_terminal_lines
+from paperspace.workspace import S3WorkspaceHandler
 
 
 class JobsCommandBase(CommandBase):
@@ -82,3 +83,16 @@ class ListJobsCommand(JobsCommandBase):
         ascii_table = terminaltables.AsciiTable(data)
         table_string = ascii_table.table
         return table_string
+
+
+class CreateJobCommand(JobsCommandBase):
+    def __init__(self, workspace_handler=None, **kwargs):
+        super(CreateJobCommand, self).__init__(**kwargs)
+        self.workspace_handler = workspace_handler or S3WorkspaceHandler(api=self.api, logger=self.logger)
+
+    def execute(self, json_):
+        url = "/jobs/createJob/"
+        response = self.api.post(url, json_)
+        self._log_message(response,
+                          "Job created",
+                          "Unknown error while creating job")
