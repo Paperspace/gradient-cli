@@ -23,7 +23,7 @@ class _MachinesCommandBase(CommandBase):
                 data = response.json()
                 self.logger.log_error_response(data)
             except ValueError:
-                self.logger.log(error_msg)
+                self.logger.error(error_msg)
 
 
 class CheckAvailabilityCommand(_MachinesCommandBase):
@@ -91,7 +91,7 @@ class ShowMachineCommand(_MachinesCommandBase):
                 self.logger.log_error_response(data)
                 return
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             table = self.make_details_table(data)
             self.logger.log(table)
@@ -149,13 +149,13 @@ class ListMachinesCommand(_MachinesCommandBase):
                 self.logger.log_error_response(data)
                 return
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             self._log_machines_list(data)
 
     def _log_machines_list(self, machines):
         if not machines:
-            self.logger.log("No machines found")
+            self.logger.warning("No machines found")
         else:
             table_str = self._make_machines_list_table(machines)
             if len(table_str.splitlines()) > get_terminal_lines():
@@ -204,7 +204,7 @@ class ShowMachineUtilisationCommand(_MachinesCommandBase):
                 self.logger.log_error_response(data)
                 return
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             table = self.make_details_table(data)
             self.logger.log(table)
@@ -229,7 +229,7 @@ class WaitForMachineStateCommand(_MachinesCommandBase):
             try:
                 current_state = self._get_machine_state(machine_id)
             except BadResponseException as e:
-                self.logger.log(e)
+                self.logger.error(e)
                 return
             else:
                 if current_state == state:

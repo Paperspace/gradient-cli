@@ -2,9 +2,8 @@ import pydoc
 
 import terminaltables
 
-from paperspace.utils import get_terminal_lines
-
 from paperspace.commands import CommandBase
+from paperspace.utils import get_terminal_lines
 
 
 class ListModelsCommand(CommandBase):
@@ -20,7 +19,7 @@ class ListModelsCommand(CommandBase):
                 return
             models = self._get_objects_list(response)
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             self._log_models_list(models)
 
@@ -39,7 +38,7 @@ class ListModelsCommand(CommandBase):
 
     def _log_models_list(self, models):
         if not models:
-            self.logger.log("No models found")
+            self.logger.warning("No models found")
         else:
             table_str = self._make_models_list_table(models)
             if len(table_str.splitlines()) > get_terminal_lines():
@@ -61,4 +60,3 @@ class ListModelsCommand(CommandBase):
         ascii_table = terminaltables.AsciiTable(data)
         table_string = ascii_table.table
         return table_string
-

@@ -21,7 +21,7 @@ class JobsCommandBase(CommandBase):
                 data = response.json()
                 self.logger.log_error_response(data)
             except ValueError:
-                self.logger.log(error_msg)
+                self.logger.error(error_msg)
 
 
 class DeleteJobCommand(JobsCommandBase):
@@ -53,13 +53,13 @@ class ListJobsCommand(JobsCommandBase):
                 self.logger.log_error_response(data)
                 return
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             self._log_jobs_list(data)
 
     def _log_jobs_list(self, data):
         if not data:
-            self.logger.log("No jobs found")
+            self.logger.warning("No jobs found")
         else:
             table_str = self._make_table(data)
             if len(table_str.splitlines()) > get_terminal_lines():

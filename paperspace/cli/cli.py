@@ -4,6 +4,7 @@ import functools
 import click
 
 from paperspace import constants, client, config
+from paperspace.cli import common
 from paperspace.cli.common import api_key_option, del_if_value_is_none
 from paperspace.cli.jobs import jobs_group
 from paperspace.cli.models import models_group
@@ -21,22 +22,22 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
 )
 
 
-@click.group()
+@click.group(cls=common.ClickGroup, **config.HELP_COLORS_DICT)
 def cli():
     pass
 
 
-@cli.group("experiments", help="Manage experiments")
+@cli.group("experiments", help="Manage experiments", cls=common.ClickGroup)
 def experiments():
     pass
 
 
-@experiments.group("create", help="Create new experiment")
+@experiments.group("create", help="Create new experiment", cls=common.ClickGroup)
 def create_experiment():
     pass
 
 
-@experiments.group(name="createAndStart", help="Create and start new experiment")
+@experiments.group(name="createAndStart", help="Create and start new experiment", cls=common.ClickGroup)
 def create_and_start_experiment():
     pass
 
@@ -339,7 +340,7 @@ DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
 )
 
 
-@cli.group("deployments", help="Manage deployments")
+@cli.group("deployments", help="Manage deployments", cls=common.ClickGroup)
 def deployments():
     pass
 
@@ -508,7 +509,7 @@ REGIONS_MAP = collections.OrderedDict(
 )
 
 
-@cli.group("machines", help="Manage machines")
+@cli.group("machines", help="Manage machines", cls=common.ClickGroup)
 def machines_group():
     pass
 
@@ -1077,3 +1078,6 @@ def version():
 cli.add_command(jobs_group)
 cli.add_command(projects_group)
 cli.add_command(models_group)
+
+if __name__ == '__main__':
+    cli()
