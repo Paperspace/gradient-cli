@@ -10,5 +10,9 @@ class PresignedUrlUnreachableException(ApplicationException):
     pass
 
 
+class PresignedUrlAccessDeniedException(ApplicationException):
+    pass
+
+
 class S3UploadFailedException(ApplicationException):
     pass

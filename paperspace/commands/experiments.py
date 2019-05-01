@@ -1,6 +1,7 @@
 import os
 import pydoc
 import zipfile
+from collections import OrderedDict
 
 import click
 import progressbar
@@ -10,7 +11,8 @@ from requests_toolbelt.multipart import encoder
 
 from paperspace import logger, constants, client, config
 from paperspace.commands import CommandBase
-from paperspace.exceptions import PresignedUrlUnreachableException, S3UploadFailedException
+from paperspace.exceptions import PresignedUrlUnreachableException, S3UploadFailedException, \
+    PresignedUrlAccessDeniedException
 from paperspace.logger import log_response
 from paperspace.utils import get_terminal_lines
 
@@ -35,21 +37,25 @@ class ExperimentCommand(CommandBase):
 
 
 class CreateExperimentCommand(ExperimentCommand):
-    def retrieve_file_paths(self, dirName):
+    def _retrieve_file_paths(self, dirName):
 
         # setup file paths variable
-        filePaths = []
-        exclude = ['.git']
+        file_paths = {}
+        exclude = ['.git', '.idea', '.pytest_cache']
         # Read all directory, subdirectories and file lists
         for root, dirs, files in os.walk(dirName, topdown=True):
             dirs[:] = [d for d in dirs if d not in exclude]
             for filename in files:
                 # Create the full filepath by using os module.
-                filePath = os.path.join(root, filename)
-                filePaths.append(filePath)
+                relpath = os.path.relpath(root, dirName)
+                if relpath == '.':
+                    file_path = filename
+                else:
+                    file_path = os.path.join(os.path.relpath(root, dirName), filename)
+                file_paths[file_path] = os.path.join(root, filename)
 
         # return all paths
-        return filePaths
+        return file_paths
 
     def _zip_workspace(self, workspace_path):
         if not workspace_path:
@@ -64,7 +70,7 @@ class CreateExperimentCommand(ExperimentCommand):
             self.logger.log('Removing existing archive')
             os.remove(zip_file_path)
 
-        file_paths = self.retrieve_file_paths(workspace_path)
+        file_paths = self._retrieve_file_paths(workspace_path)
 
         self.logger.log('Creating zip archive: %s' % zip_file_name)
         zip_file = zipfile.ZipFile(zip_file_path, 'w')
@@ -73,10 +79,10 @@ class CreateExperimentCommand(ExperimentCommand):
 
         with zip_file:
             i = 0
-            for file in file_paths:
+            for relpath, abspath in file_paths.items():
                 i+=1
-                self.logger.debug('Adding %s to archive' % file)
-                zip_file.write(file)
+                self.logger.debug('Adding %s to archive' % relpath)
+                zip_file.write(abspath, arcname=relpath)
                 bar.update(i)
         bar.finish()
         self.logger.log('\nFinished creating archive: %s' % zip_file_name)
@@ -87,8 +93,6 @@ class CreateExperimentCommand(ExperimentCommand):
 
         def callback(monitor):
             bar.update(monitor.bytes_read)
-            if monitor.bytes_read == monitor.len:
-                bar.finish()
         return callback
 
     def _upload_workspace(self, input_data):
@@ -110,14 +114,15 @@ class CreateExperimentCommand(ExperimentCommand):
         else:
             archive_path = self._zip_workspace(workspace_path)
 
-        s3_upload_data = self._get_upload_data(os.path.basename(archive_path))
+        file_name = os.path.basename(archive_path)
+        s3_upload_data = self._get_upload_data(file_name)
+        bucket_name = s3_upload_data['bucket_name']
 
         self.logger.log('Uploading zipped workspace to S3')
 
         files = {'file': (archive_path, open(archive_path, 'rb'))}
-        fields = s3_upload_data['fields']
+        fields = OrderedDict(s3_upload_data['fields'])
         fields.update(files)
-
         s3_encoder = encoder.MultipartEncoder(fields=fields)
         monitor = encoder.MultipartEncoderMonitor(s3_encoder, callback=self._create_callback(s3_encoder))
         s3_response = requests.post(s3_upload_data['url'], data=monitor, headers={'Content-Type': monitor.content_type})
@@ -125,8 +130,8 @@ class CreateExperimentCommand(ExperimentCommand):
             raise S3UploadFailedException(s3_response)
 
         self.logger.log('\nUploading completed')
-        s3_workspace_url = s3_response.headers.get('Location')
-        return s3_workspace_url
+
+        return 's3://{}/{}'.format(bucket_name, file_name)
 
     def execute(self, json_):
         workspace_url = self._upload_workspace(json_)
@@ -143,6 +148,8 @@ class CreateExperimentCommand(ExperimentCommand):
         response = self.api.get("/workspace/get_presigned_url", params={'workspaceName': file_name})
         if response.status_code == 404:
             raise PresignedUrlUnreachableException
+        if response.status_code == 403:
+            raise PresignedUrlAccessDeniedException
         return response.json()
 
 
