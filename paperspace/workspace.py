@@ -13,8 +13,8 @@ from paperspace.exceptions import S3UploadFailedException, PresignedUrlUnreachab
 
 
 class S3WorkspaceHandler:
-    def __init__(self, api, logger=None):
-        self.api = api
+    def __init__(self, experiments_api, logger=None):
+        self.experiments_api = experiments_api
         self.logger = logger or logging.getLogger()
 
     def _retrieve_file_paths(self, dirName):
@@ -78,13 +78,13 @@ class S3WorkspaceHandler:
 
     def upload_workspace(self, input_data):
         workspace_url = input_data.get('workspaceUrl')
-        workspace_path = input_data.get('workspacePath')
+        workspace_path = input_data.get('workspace')
         workspace_archive = input_data.get('workspaceArchive')
         if (workspace_archive and workspace_path) or (workspace_archive and workspace_url) or (
                 workspace_path and workspace_url):
             raise click.UsageError("Use either:\n\t--workspaceUrl to point repository URL"
-                                   "\n\t--workspacePath to point on project directory"
-                                   "\n\t--workspaceArchive to point on project ZIP archive"
+                                   "\n\t--workspace to point on project directory"
+                                   "\n\t--workspaceArchive to point on project .zip archive"
                                    "\n or neither to use current directory")
 
         if workspace_url:
@@ -115,7 +115,7 @@ class S3WorkspaceHandler:
         return 's3://{}/{}'.format(bucket_name, file_name)
 
     def _get_upload_data(self, file_name):
-        response = self.api.get("/workspace/get_presigned_url", params={'workspaceName': file_name})
+        response = self.experiments_api.get("/workspace/get_presigned_url", params={'workspaceName': file_name})
         if response.status_code == 404:
             raise PresignedUrlUnreachableException
         if response.status_code == 403:

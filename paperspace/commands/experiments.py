@@ -14,7 +14,7 @@ experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.defa
 class ExperimentCommand(CommandBase):
     def __init__(self, workspace_handler=None, **kwargs):
         super(ExperimentCommand, self).__init__(**kwargs)
-        self._workspace_handler = workspace_handler or S3WorkspaceHandler(api=self.api, logger=self.logger)
+        self._workspace_handler = workspace_handler or S3WorkspaceHandler(experiments_api=self.api, logger=self.logger)
 
     def _log_create_experiment(self, response, success_msg_template, error_msg):
         if response.ok:

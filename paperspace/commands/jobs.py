@@ -2,6 +2,7 @@ import pydoc
 
 import terminaltables
 
+from paperspace import config, client
 from paperspace.commands import CommandBase
 from paperspace.utils import get_terminal_lines
 from paperspace.workspace import S3WorkspaceHandler
@@ -88,10 +89,17 @@ class ListJobsCommand(JobsCommandBase):
 class CreateJobCommand(JobsCommandBase):
     def __init__(self, workspace_handler=None, **kwargs):
         super(CreateJobCommand, self).__init__(**kwargs)
-        self.workspace_handler = workspace_handler or S3WorkspaceHandler(api=self.api, logger=self.logger)
+        experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=kwargs.get('api_key'))
+        self._workspace_handler = workspace_handler or S3WorkspaceHandler(experiments_api=experiments_api,
+                                                                          logger=self.logger)
 
     def execute(self, json_):
         url = "/jobs/createJob/"
+
+        workspace_url = self._workspace_handler.upload_workspace(json_)
+        if workspace_url:
+            json_['workspaceFileName'] = workspace_url
+
         response = self.api.post(url, json_)
         self._log_message(response,
                           "Job created",
