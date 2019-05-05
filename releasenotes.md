@@ -1,6 +1,6 @@
 # Paperspace Python Release Notes
 
-## Release Notes for 0.1.0a0
+## Release Notes for 0.1.0
 ### New features
 * experiments and deployments management
 * --apiKey for all commands for one-time api key overwrite

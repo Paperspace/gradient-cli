@@ -4,9 +4,11 @@ import functools
 import click
 
 from paperspace import constants, client, config
+from paperspace.cli import common
 from paperspace.cli.common import api_key_option, del_if_value_is_none
 from paperspace.cli.jobs import jobs_group
 from paperspace.cli.logs import logs_group
+from paperspace.cli.models import models_group
 from paperspace.cli.projects import projects_group
 from paperspace.cli.cli_types import ChoiceType, json_string
 from paperspace.cli.validators import validate_mutually_exclusive, validate_email
@@ -21,22 +23,22 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
 )
 
 
-@click.group()
+@click.group(cls=common.ClickGroup, **config.HELP_COLORS_DICT)
 def cli():
     pass
 
 
-@cli.group("experiments", help="Manage experiments")
+@cli.group("experiments", help="Manage experiments", cls=common.ClickGroup)
 def experiments():
     pass
 
 
-@experiments.group("create", help="Create new experiment")
+@experiments.group("create", help="Create new experiment", cls=common.ClickGroup)
 def create_experiment():
     pass
 
 
-@experiments.group(name="createAndStart", help="Create and start new experiment")
+@experiments.group(name="createAndStart", help="Create and start new experiment", cls=common.ClickGroup)
 def create_and_start_experiment():
     pass
 
@@ -328,7 +330,7 @@ DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
 )
 
 
-@cli.group("deployments", help="Manage deployments")
+@cli.group("deployments", help="Manage deployments", cls=common.ClickGroup)
 def deployments():
     pass
 
@@ -401,12 +403,22 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
     type=ChoiceType(DEPLOYMENT_STATES_MAP, case_sensitive=False),
     help="Filter by deployment state",
 )
+@click.option(
+    "--projectId",
+    "projectId",
+    help="Use to filter by project ID",
+)
+@click.option(
+    "--modelId",
+    "modelId",
+    help="Use to filter by project ID",
+)
 @api_key_option
-def get_deployments_list(api_key=None, **kwargs):
-    del_if_value_is_none(kwargs)
+def get_deployments_list(api_key=None, **filters):
+    del_if_value_is_none(filters)
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = deployments_commands.ListDeploymentsCommand(api=deployments_api)
-    command.execute(kwargs)
+    command.execute(filters)
 
 
 @deployments.command("update", help="Update deployment properties")
@@ -446,7 +458,7 @@ def get_deployments_list(api_key=None, **kwargs):
 def update_deployment_model(id_, api_key, **kwargs):
     del_if_value_is_none(kwargs)
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
-    command = deployments_commands.UpdateModelCommand(api=deployments_api)
+    command = deployments_commands.UpdateDeploymentCommand(api=deployments_api)
     command.execute(id_, kwargs)
 
 
@@ -487,7 +499,7 @@ REGIONS_MAP = collections.OrderedDict(
 )
 
 
-@cli.group("machines", help="Manage machines")
+@cli.group("machines", help="Manage machines", cls=common.ClickGroup)
 def machines_group():
     pass
 
@@ -1055,6 +1067,7 @@ def version():
 
 cli.add_command(jobs_group)
 cli.add_command(projects_group)
+cli.add_command(models_group)
 cli.add_command(logs_group)
 
 

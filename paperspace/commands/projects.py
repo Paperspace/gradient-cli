@@ -30,13 +30,13 @@ class ListProjectsCommand(ProjectsCommandBase):
                 self.logger.log_error_response(data)
                 return
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             self._log_projects_list(data)
 
     def _log_projects_list(self, data):
         if not data.get("data"):
-            self.logger.log("No projects found")
+            self.logger.warning("No projects found")
         else:
             table_str = self._make_table(data["data"])
             if len(table_str.splitlines()) > get_terminal_lines():

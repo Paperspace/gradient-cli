@@ -13,6 +13,8 @@ six = "*"
 gradient-statsd = "*"
 click = "*"
 terminaltables = "*"
+click-didyoumean = "*"
+click-help-colors = "*"
 colorclass = "*"
 tox = "*"
 

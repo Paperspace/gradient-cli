@@ -747,7 +747,7 @@ class TestExperimentList(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
-                                            params={"limit": 1000000})
+                                            params={"limit": -1})
 
         assert result.output == self.DETAILS_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -765,7 +765,7 @@ class TestExperimentList(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
-                                            params={"limit": 1000000})
+                                            params={"limit": -1})
 
         pydoc_patched.pager.assert_called_once()
         assert result.exit_code == 0
@@ -781,7 +781,7 @@ class TestExperimentList(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
-                                            params={"limit": 1000000,
+                                            params={"limit": -1,
                                                     "projectHandle[0]": u"handle1",
                                                     "projectHandle[1]": u"handle2"})
 
@@ -799,7 +799,7 @@ class TestExperimentList(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
-                                            params={"limit": 1000000,
+                                            params={"limit": -1,
                                                     "projectHandle[0]": u"handle1",
                                                     "projectHandle[1]": u"handle2"})
 

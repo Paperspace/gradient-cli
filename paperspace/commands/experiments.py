@@ -20,7 +20,7 @@ def _log_create_experiment(response, success_msg_template, error_msg, logger_=lo
             data = response.json()
             logger_.log_error_response(data)
         except ValueError:
-            logger_.log(error_msg)
+            logger_.error(error_msg)
 
 
 def create_experiment(json_, api=experiments_api):
@@ -56,21 +56,20 @@ class ListExperimentsCommand(object):
         self.logger = logger_
 
     def execute(self, project_handles=None):
+        project_handles = project_handles or []
         params = self._get_query_params(project_handles)
         response = self.api.get("/experiments/", params=params)
 
         try:
             experiments = self._get_experiments_list(response, bool(project_handles))
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             self._log_experiments_list(experiments)
 
     @staticmethod
     def _get_query_params(project_handles):
-        # TODO: change to limit: -1 when PS-9535 is deployed to production
-        # to list all experiments
-        params = {"limit": 1000000}
+        params = {"limit": -1}  # so the API sends back full list without pagination
         for i, handle in enumerate(project_handles):
             key = "projectHandle[{}]".format(i)
             params[key] = handle
@@ -107,7 +106,7 @@ class ListExperimentsCommand(object):
 
     def _log_experiments_list(self, experiments):
         if not experiments:
-            self.logger.log("No experiments found")
+            self.logger.warning("No experiments found")
         else:
             table_str = self._make_experiments_list_table(experiments)
             if len(table_str.splitlines()) > get_terminal_lines():
@@ -176,7 +175,6 @@ def get_experiment_details(experiment_handle, api=experiments_api):
             experiment = response.json()["data"]
             details = _make_details_table(experiment)
         except (ValueError, KeyError) as e:
-            logger.log("Error parsing response data")
-            logger.debug(e)
+            logger.error("Error parsing response data")
 
     log_response(response, details, "Unknown error while retrieving details of the experiment")

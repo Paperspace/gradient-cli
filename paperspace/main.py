@@ -9,7 +9,7 @@ from .version import version
 
 def main():
     if len(sys.argv) >= 2 and sys.argv[1] in ('experiments', 'deployments', 'machines', 'login', 'logout', 'version',
-                                              'projects', 'jobs'):
+                                              'projects', 'jobs', 'models'):
         cli(sys.argv[1:])
 
     args = sys.argv[:]
