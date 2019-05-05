@@ -2908,7 +2908,7 @@ LIST_OF_LOGS_FOR_JOB = [
     }, {
         "line": 2,
         "timestamp": "2019-04-03T15:56:35.458Z",
-        "message": "  File \"generate_figures.py\", line 15, in \u003cmodule\u003e"
+        "message": "  File \"generate_figures.py\", line 15, in <module>"
     }, {
         "line": 3,
         "timestamp": "2019-04-03T15:56:35.458Z",
@@ -2916,7 +2916,7 @@ LIST_OF_LOGS_FOR_JOB = [
     }, {
         "line": 4,
         "timestamp": "2019-04-03T15:56:35.458Z",
-        "message": "  File \"/paperspace/dnnlib/tflib/__init__.py\", line 8, in \u003cmodule\u003e"
+        "message": "  File \"/paperspace/dnnlib/tflib/__init__.py\", line 8, in <module>"
     }, {
         "line": 5,
         "timestamp": "2019-04-03T15:56:35.458Z",
@@ -2924,7 +2924,7 @@ LIST_OF_LOGS_FOR_JOB = [
     }, {
         "line": 6,
         "timestamp": "2019-04-03T15:56:35.458Z",
-        "message": "  File \"/paperspace/dnnlib/tflib/autosummary.py\", line 31, in \u003cmodule\u003e"
+        "message": "  File \"/paperspace/dnnlib/tflib/autosummary.py\", line 31, in <module>"
     }, {
         "line": 7,
         "timestamp": "2019-04-03T15:56:35.458Z",
@@ -2932,15 +2932,15 @@ LIST_OF_LOGS_FOR_JOB = [
     }, {
         "line": 8,
         "timestamp": "2019-04-03T15:56:35.458Z",
-        "message": "  File \"/paperspace/dnnlib/tflib/tfutil.py\", line 34, in \u003cmodule\u003e"
+        "message": "  File \"/paperspace/dnnlib/tflib/tfutil.py\", line 34, in <module>"
     }, {
         "line": 9,
         "timestamp": "2019-04-03T15:56:35.458Z",
-        "message": "    def shape_to_list(shape: Iterable[tf.Dimension]) -\u003e List[Union[int, None]]:"
+        "message": "    def shape_to_list(shape: Iterable[tf.Dimension]) -> List[Union[int, None]]:"
     }, {
         "line": 10,
         "timestamp": "2019-04-03T15:56:35.458Z",
-        "message": "AttributeError: module 'tensorflow' has no attribute 'Dimension'"
+        "message": "AttributeError: module \'tensorflow\' has no attribute \'Dimension\'"
     }, {
         "line": 11,
         "timestamp": "2019-04-03T15:56:46.168Z",
