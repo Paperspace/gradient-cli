@@ -14,8 +14,9 @@ class ListLogsCommand(CommandBase):
     is_logs_complete = False
 
     def execute(self, job_id):
+        table_title = "Job %s logs" % job_id
         table_data = [("LINE", "MESSAGE")]
-        table = terminaltables.AsciiTable(table_data, title=f"Job {job_id} logs")
+        table = terminaltables.AsciiTable(table_data, title=table_title)
 
         while not self.is_logs_complete:
             response = self._get_logs(job_id)

@@ -2247,3 +2247,51 @@ LIST_JOBS_RESPONSE_JSON = [
     "experimentId": "es47og38wzhnuo"
   }
 ]
+
+LIST_OF_LOGS_FOR_JOB = [
+    {
+        "line": 1,
+        "timestamp": "2019-04-03T15:56:35.457Z",
+        "message": "Traceback (most recent call last):"
+    }, {
+        "line": 2,
+        "timestamp": "2019-04-03T15:56:35.458Z",
+        "message": "  File \"generate_figures.py\", line 15, in \u003cmodule\u003e"
+    }, {
+        "line": 3,
+        "timestamp": "2019-04-03T15:56:35.458Z",
+        "message": "    import dnnlib.tflib as tflib"
+    }, {
+        "line": 4,
+        "timestamp": "2019-04-03T15:56:35.458Z",
+        "message": "  File \"/paperspace/dnnlib/tflib/__init__.py\", line 8, in \u003cmodule\u003e"
+    }, {
+        "line": 5,
+        "timestamp": "2019-04-03T15:56:35.458Z",
+        "message": "    from . import autosummary"
+    }, {
+        "line": 6,
+        "timestamp": "2019-04-03T15:56:35.458Z",
+        "message": "  File \"/paperspace/dnnlib/tflib/autosummary.py\", line 31, in \u003cmodule\u003e"
+    }, {
+        "line": 7,
+        "timestamp": "2019-04-03T15:56:35.458Z",
+        "message": "    from . import tfutil"
+    }, {
+        "line": 8,
+        "timestamp": "2019-04-03T15:56:35.458Z",
+        "message": "  File \"/paperspace/dnnlib/tflib/tfutil.py\", line 34, in \u003cmodule\u003e"
+    }, {
+        "line": 9,
+        "timestamp": "2019-04-03T15:56:35.458Z",
+        "message": "    def shape_to_list(shape: Iterable[tf.Dimension]) -\u003e List[Union[int, None]]:"
+    }, {
+        "line": 10,
+        "timestamp": "2019-04-03T15:56:35.458Z",
+        "message": "AttributeError: module 'tensorflow' has no attribute 'Dimension'"
+    }, {
+        "line": 11,
+        "timestamp": "2019-04-03T15:56:46.168Z",
+        "message": "PSEOF"
+    }
+]
