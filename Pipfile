@@ -15,7 +15,6 @@ click = "*"
 terminaltables = "*"
 click-didyoumean = "*"
 click-help-colors = "*"
-colorclass = "*"
 tox = "*"
 
 [dev-packages]

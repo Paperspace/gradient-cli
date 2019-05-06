@@ -1,7 +1,7 @@
 import pydoc
 
 import terminaltables
-from colorclass import Color
+from click import style
 
 from paperspace.commands import CommandBase
 from paperspace.utils import get_terminal_lines
@@ -55,6 +55,6 @@ class ListLogsCommand(CommandBase):
             self.last_line_number = logs[-1].get("line")
 
         for log in logs:
-            table_data.append((Color.colorize("red", log.get("line")), log.get("message")))
+            table_data.append((style(fg="red", text=str(log.get("line"))), log.get("message")))
 
         return table.table

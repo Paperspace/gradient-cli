@@ -50,7 +50,6 @@ setup(
         'terminaltables',
         'click-didyoumean',
         'click-help-colors',
-        'colorclass',
     ],
     extras_require={
         ':sys_platform == "win32"': [
