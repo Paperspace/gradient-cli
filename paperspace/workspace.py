@@ -1,4 +1,3 @@
-import logging
 import os
 import zipfile
 from collections import OrderedDict
@@ -7,6 +6,7 @@ import click
 import progressbar
 import requests
 from requests_toolbelt.multipart import encoder
+from paperspace import logger as default_logger
 
 from paperspace.exceptions import S3UploadFailedException, PresignedUrlUnreachableException, \
     PresignedUrlAccessDeniedException, PresignedUrlConnectionException
@@ -14,11 +14,15 @@ from paperspace.exceptions import S3UploadFailedException, PresignedUrlUnreachab
 
 class S3WorkspaceHandler:
     def __init__(self, experiments_api, logger=None):
+        """
+
+        :param experiments_api: paperspace.client.API
+        :param logger: paperspace.logger
+        """
         self.experiments_api = experiments_api
-        self.logger = logger or logging.getLogger()
+        self.logger = logger or default_logger
 
     def _retrieve_file_paths(self, dirName):
-
         # setup file paths variable
         file_paths = {}
         exclude = ['.git', '.idea', '.pytest_cache']
@@ -97,23 +101,31 @@ class S3WorkspaceHandler:
 
         file_name = os.path.basename(archive_path)
         project_handle = input_data['projectHandle']
+
         s3_upload_data = self._get_upload_data(file_name, project_handle)
+
         bucket_name = s3_upload_data['bucket_name']
+        s3_object_path = s3_upload_data['fields']['key']
 
         self.logger.log('Uploading zipped workspace to S3')
 
-        files = {'file': (archive_path, open(archive_path, 'rb'))}
-        fields = OrderedDict(s3_upload_data['fields'])
-        fields.update(files)
-        s3_encoder = encoder.MultipartEncoder(fields=fields)
-        monitor = encoder.MultipartEncoderMonitor(s3_encoder, callback=self._create_callback(s3_encoder))
-        s3_response = requests.post(s3_upload_data['url'], data=monitor, headers={'Content-Type': monitor.content_type})
-        if not s3_response.ok:
-            raise S3UploadFailedException(s3_response)
+        self._upload(archive_path, s3_upload_data)
 
         self.logger.log('\nUploading completed')
 
-        return 's3://{}/{}'.format(bucket_name, file_name)
+        return 's3://{}/{}'.format(bucket_name, s3_object_path)
+
+    def _upload(self, archive_path, s3_upload_data):
+        files = {'file': (archive_path, open(archive_path, 'rb'))}
+        fields = OrderedDict(s3_upload_data['fields'])
+        fields.update(files)
+
+        s3_encoder = encoder.MultipartEncoder(fields=fields)
+        monitor = encoder.MultipartEncoderMonitor(s3_encoder, callback=self._create_callback(s3_encoder))
+        s3_response = requests.post(s3_upload_data['url'], data=monitor, headers={'Content-Type': monitor.content_type})
+        self.logger.debug("S3 upload response: {}".format(s3_response.headers))
+        if not s3_response.ok:
+            raise S3UploadFailedException(s3_response)
 
     def _get_upload_data(self, file_name, project_handle):
         response = self.experiments_api.get("/workspace/get_presigned_url",
