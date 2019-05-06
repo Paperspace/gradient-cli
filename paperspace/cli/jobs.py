@@ -60,3 +60,16 @@ def list_jobs(api_key, **filters):
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.ListJobsCommand(api=jobs_api)
     command.execute(filters)
+
+
+@jobs_group.command("log", help="List job logs")
+@click.option(
+    "--jobId",
+    "job_id",
+    required=True
+)
+@common.api_key_option
+def list_logs(job_id, api_key=None):
+    logs_api = client.API(config.CONFIG_LOG_HOST, api_key=api_key)
+    command = jobs_commands.JobLogsCommand(api=logs_api)
+    command.execute(job_id)
