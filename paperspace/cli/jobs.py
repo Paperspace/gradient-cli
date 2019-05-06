@@ -2,10 +2,11 @@ import click
 
 from paperspace import client, config
 from paperspace.cli import common
+from paperspace.cli.cli import cli
 from paperspace.commands import jobs as jobs_commands
 
 
-@click.group("jobs", help="Manage gradient jobs", cls=common.ClickGroup)
+@cli.group("jobs", help="Manage gradient jobs", cls=common.ClickGroup)
 def jobs_group():
     pass
 
