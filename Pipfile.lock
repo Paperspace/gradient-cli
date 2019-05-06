@@ -107,12 +107,6 @@
             "index": "pypi",
             "version": "==0.5"
         },
-        "colorclass": {
-            "hashes": [
-                "sha256:b05c2a348dfc1aff2d502527d78a5b7b7e2f85da94a96c5081210d8e9ee8e18b"
-            ],
-            "version": "==2.2.0"
-        },
         "cryptography": {
             "extras": [
                 "security"
