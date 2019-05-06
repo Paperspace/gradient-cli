@@ -15,6 +15,7 @@ click = "*"
 terminaltables = "*"
 click-didyoumean = "*"
 click-help-colors = "*"
+tox = "*"
 
 [dev-packages]
 twine = "*"
