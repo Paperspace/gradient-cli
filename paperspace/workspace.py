@@ -96,7 +96,8 @@ class S3WorkspaceHandler:
             archive_path = self._zip_workspace(workspace_path)
 
         file_name = os.path.basename(archive_path)
-        s3_upload_data = self._get_upload_data(file_name)
+        project_handle = input_data['projectHandle']
+        s3_upload_data = self._get_upload_data(file_name, project_handle)
         bucket_name = s3_upload_data['bucket_name']
 
         self.logger.log('Uploading zipped workspace to S3')
@@ -114,8 +115,9 @@ class S3WorkspaceHandler:
 
         return 's3://{}/{}'.format(bucket_name, file_name)
 
-    def _get_upload_data(self, file_name):
-        response = self.experiments_api.get("/workspace/get_presigned_url", params={'workspaceName': file_name})
+    def _get_upload_data(self, file_name, project_handle):
+        response = self.experiments_api.get("/workspace/get_presigned_url",
+                                            params={'workspaceName': file_name, 'projectHandle': project_handle})
         if response.status_code == 404:
             raise PresignedUrlUnreachableException
         if response.status_code == 403:
