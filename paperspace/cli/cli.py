@@ -48,7 +48,6 @@ def common_experiments_create_options(f):
         ),
         click.option(
             "--ports",
-            type=int,
             help="Port to use in new experiment",
         ),
         click.option(
@@ -82,7 +81,6 @@ def common_experiments_create_options(f):
         click.option(
             "--clusterId",
             "clusterId",
-            type=int,
             help="Cluster ID",
         ),
         click.option(
@@ -92,15 +90,8 @@ def common_experiments_create_options(f):
             help="Environment variables in a JSON",
         ),
         click.option(
-            "--triggerEventId",
-            "triggerEventId",
-            type=int,
-            help="Trigger event ID",
-        ),
-        click.option(
             "--projectId",
             "projectId",
-            type=int,
             help="Project ID",
         ),
         click.option(
