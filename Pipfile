@@ -17,7 +17,7 @@ click = "*"
 terminaltables = "*"
 click-didyoumean = "*"
 click-help-colors = "*"
-tox = "*"
+colorama = "*"
 
 
 [dev-packages]
@@ -26,3 +26,4 @@ pypandoc = "*"
 pytest = "*"
 mock = "*"
 coverage = "*"
+tox = "*"
