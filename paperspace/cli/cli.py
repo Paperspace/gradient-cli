@@ -53,19 +53,16 @@ def common_experiments_create_options(f):
         click.option(
             "--workspace",
             "workspace",
-            required=False,
             help="Path to workspace directory",
         ),
         click.option(
             "--workspaceArchive",
             "workspaceArchive",
-            required=False,
             help="Path to workspace .zip archive",
         ),
         click.option(
             "--workspaceUrl",
             "workspaceUrl",
-            required=False,
             help="Project git repository url",
         ),
         click.option(
