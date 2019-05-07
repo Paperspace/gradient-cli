@@ -57,7 +57,8 @@ class TestDeploymentsCreate(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -71,7 +72,8 @@ class TestDeploymentsCreate(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.BASIC_OPTIONS_REQUEST,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -86,7 +88,8 @@ class TestDeploymentsCreate(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT_MODEL_NOT_FOUND
         assert result.exit_code == 0
 
@@ -236,7 +239,8 @@ class TestDeploymentsUpdate(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST_JSON,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -250,7 +254,8 @@ class TestDeploymentsUpdate(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.BASIC_OPTIONS_REQUEST_JSON,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -264,7 +269,8 @@ class TestDeploymentsUpdate(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST_JSON,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_ID
         assert result.exit_code == 0
 
@@ -286,7 +292,8 @@ class TestStartDeployment(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -319,7 +326,8 @@ class TestDeleteDeployment(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -333,7 +341,8 @@ class TestDeleteDeployment(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.REQUEST_JSON,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -347,6 +356,7 @@ class TestDeleteDeployment(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_ID
         assert result.exit_code == 0

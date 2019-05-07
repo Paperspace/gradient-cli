@@ -8,8 +8,8 @@ import requests
 from requests_toolbelt.multipart import encoder
 from paperspace import logger as default_logger
 
-from paperspace.exceptions import S3UploadFailedException, PresignedUrlUnreachableException, \
-    PresignedUrlAccessDeniedException, PresignedUrlConnectionException, ProjectAccessDeniedException
+from paperspace.exceptions import S3UploadFailedError, PresignedUrlUnreachableError, \
+    PresignedUrlAccessDeniedError, PresignedUrlConnectionError, ProjectAccessDeniedError
 
 
 class S3WorkspaceHandler:
@@ -22,23 +22,23 @@ class S3WorkspaceHandler:
         self.experiments_api = experiments_api
         self.logger = logger or default_logger
 
-    def _retrieve_file_paths(self, dirName):
+    @staticmethod
+    def _retrieve_file_paths(dir_name):
         # setup file paths variable
         file_paths = {}
         exclude = ['.git', '.idea', '.pytest_cache']
         # Read all directory, subdirectories and file lists
-        for root, dirs, files in os.walk(dirName, topdown=True):
+        for root, dirs, files in os.walk(dir_name, topdown=True):
             dirs[:] = [d for d in dirs if d not in exclude]
             for filename in files:
                 # Create the full filepath by using os module.
-                relpath = os.path.relpath(root, dirName)
+                relpath = os.path.relpath(root, dir_name)
                 if relpath == '.':
                     file_path = filename
                 else:
-                    file_path = os.path.join(os.path.relpath(root, dirName), filename)
+                    file_path = os.path.join(os.path.relpath(root, dir_name), filename)
                 file_paths[file_path] = os.path.join(root, filename)
 
-        # return all paths
         return file_paths
 
     def _zip_workspace(self, workspace_path):
@@ -72,7 +72,8 @@ class S3WorkspaceHandler:
         self.logger.log('\nFinished creating archive: %s' % zip_file_name)
         return zip_file_path
 
-    def _create_callback(self, encoder_obj):
+    @staticmethod
+    def _create_callback(encoder_obj):
         bar = progressbar.ProgressBar(max_value=encoder_obj.len)
 
         def callback(monitor):
@@ -116,7 +117,7 @@ class S3WorkspaceHandler:
         return 's3://{}/{}'.format(bucket_name, s3_object_path)
 
     def _upload(self, archive_path, s3_upload_data):
-        files = {'file': (archive_path, open(archive_path, 'rb'))}
+        files = self._get_files_dict(archive_path)
         fields = OrderedDict(s3_upload_data['fields'])
         fields.update(files)
 
@@ -125,17 +126,21 @@ class S3WorkspaceHandler:
         s3_response = requests.post(s3_upload_data['url'], data=monitor, headers={'Content-Type': monitor.content_type})
         self.logger.debug("S3 upload response: {}".format(s3_response.headers))
         if not s3_response.ok:
-            raise S3UploadFailedException(s3_response)
+            raise S3UploadFailedError(s3_response)
+
+    def _get_files_dict(self, archive_path):
+        files = {'file': (archive_path, open(archive_path, 'rb'))}
+        return files
 
     def _get_upload_data(self, file_name, project_handle):
         response = self.experiments_api.get("/workspace/get_presigned_url",
                                             params={'workspaceName': file_name, 'projectHandle': project_handle})
         if response.status_code == 401:
-            raise ProjectAccessDeniedException(project_handle)
+            raise ProjectAccessDeniedError(project_handle)
         if response.status_code == 403:
-            raise PresignedUrlAccessDeniedException
+            raise PresignedUrlAccessDeniedError
         if response.status_code == 404:
-            raise PresignedUrlUnreachableException
+            raise PresignedUrlUnreachableError
         if not response.ok:
-            raise PresignedUrlConnectionException(response.reason)
+            raise PresignedUrlConnectionError(response.reason)
         return response.json()

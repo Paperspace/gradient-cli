@@ -1,26 +1,26 @@
-class ApplicationException(Exception):
+class ApplicationError(Exception):
     pass
 
 
-class BadResponseException(ApplicationException):
+class BadResponseError(ApplicationError):
     pass
 
 
-class PresignedUrlUnreachableException(ApplicationException):
+class PresignedUrlUnreachableError(ApplicationError):
     pass
 
 
-class ProjectAccessDeniedException(ApplicationException):
+class ProjectAccessDeniedError(ApplicationError):
     pass
 
 
-class PresignedUrlAccessDeniedException(ApplicationException):
+class PresignedUrlAccessDeniedError(ApplicationError):
     pass
 
 
-class PresignedUrlConnectionException(ApplicationException):
+class PresignedUrlConnectionError(ApplicationError):
     pass
 
 
-class S3UploadFailedException(ApplicationException):
+class S3UploadFailedError(ApplicationError):
     pass

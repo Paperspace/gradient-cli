@@ -6,8 +6,8 @@ from paperspace.cli import cli
 
 
 @mock.patch("paperspace.cli.cli.client.API")
-@mock.patch("paperspace.cli.cli.experiments_commands")
-def test_should_execute_create_experiment_command_when_cli_singlenode_command_was_executed(commands_patched,
+@mock.patch("paperspace.commands.experiments.CreateExperimentCommand.execute")
+def test_should_execute_create_experiment_command_when_cli_singlenode_command_was_executed(command_patched,
                                                                                            api_patched):
     api_patched.return_value = mock.MagicMock()
     runner = CliRunner()
@@ -31,12 +31,12 @@ def test_should_execute_create_experiment_command_when_cli_singlenode_command_wa
     result = runner.invoke(cli.cli, command.split())
 
     assert result.exit_code == 0
-    commands_patched.create_experiment.assert_called_once_with(expected_kwargs, api=api_patched())
+    command_patched.assert_called_once_with(expected_kwargs)
 
 
 @mock.patch("paperspace.cli.cli.client.API")
-@mock.patch("paperspace.cli.cli.experiments_commands")
-def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command_was_executed(commands_patched,
+@mock.patch("paperspace.commands.experiments.CreateExperimentCommand.execute")
+def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command_was_executed(command_patched,
                                                                                               api_patched):
     api_patched.return_value = mock.MagicMock()
     runner = CliRunner()
@@ -71,12 +71,12 @@ def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command
     result = runner.invoke(cli.cli, command.split())
 
     assert result.exit_code == 0
-    commands_patched.create_experiment.assert_called_once_with(expected_kwargs, api=api_patched())
+    command_patched.assert_called_once_with(expected_kwargs)
 
 
 @mock.patch("paperspace.cli.cli.client.API")
-@mock.patch("paperspace.cli.cli.experiments_commands")
-def test_should_execute_create_experiment_command_when_cli_multinode_grpc_command_was_executed(commands_patched,
+@mock.patch("paperspace.commands.experiments.CreateExperimentCommand.execute")
+def test_should_execute_create_experiment_command_when_cli_multinode_grpc_command_was_executed(command_patched,
                                                                                                api_patched):
     api_patched.return_value = mock.MagicMock()
     runner = CliRunner()
@@ -110,13 +110,13 @@ def test_should_execute_create_experiment_command_when_cli_multinode_grpc_comman
     result = runner.invoke(cli.cli, command.split())
 
     assert result.exit_code == 0
-    commands_patched.create_experiment.assert_called_once_with(expected_kwargs, api=api_patched())
+    command_patched.assert_called_once_with(expected_kwargs)
 
 
 @mock.patch("paperspace.cli.cli.client.API")
-@mock.patch("paperspace.cli.cli.experiments_commands")
+@mock.patch("paperspace.commands.experiments.CreateAndStartExperimentCommand.execute")
 def test_should_execute_create_experiment_command_when_cli_create_and_start_singlenode_command_was_executed(
-        commands_patched, api_patched):
+        command_patched, api_patched):
     api_patched.return_value = mock.MagicMock()
     runner = CliRunner()
     command = "experiments createAndStart singlenode " \
@@ -139,13 +139,13 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_sing
     result = runner.invoke(cli.cli, command.split())
 
     assert result.exit_code == 0
-    commands_patched.create_and_start_experiment.assert_called_once_with(expected_kwargs, api=api_patched())
+    command_patched.assert_called_once_with(expected_kwargs)
 
 
 @mock.patch("paperspace.cli.cli.client.API")
-@mock.patch("paperspace.cli.cli.experiments_commands")
+@mock.patch("paperspace.commands.experiments.CreateAndStartExperimentCommand.execute")
 def test_should_execute_create_experiment_command_when_cli_create_and_start_multinode_mpi_command_was_executed(
-        commands_patched, api_patched):
+        command_patched, api_patched):
     api_patched.return_value = mock.MagicMock()
     runner = CliRunner()
     command = "experiments createAndStart multinode " \
@@ -178,4 +178,4 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_mult
     result = runner.invoke(cli.cli, command.split())
 
     assert result.exit_code == 0
-    commands_patched.create_and_start_experiment.assert_called_once_with(expected_kwargs, api=api_patched())
+    command_patched.assert_called_once_with(expected_kwargs)
