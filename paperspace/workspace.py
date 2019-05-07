@@ -9,7 +9,7 @@ from requests_toolbelt.multipart import encoder
 from paperspace import logger as default_logger
 
 from paperspace.exceptions import S3UploadFailedException, PresignedUrlUnreachableException, \
-    PresignedUrlAccessDeniedException, PresignedUrlConnectionException
+    PresignedUrlAccessDeniedException, PresignedUrlConnectionException, ProjectAccessDeniedException
 
 
 class S3WorkspaceHandler:
@@ -130,10 +130,12 @@ class S3WorkspaceHandler:
     def _get_upload_data(self, file_name, project_handle):
         response = self.experiments_api.get("/workspace/get_presigned_url",
                                             params={'workspaceName': file_name, 'projectHandle': project_handle})
-        if response.status_code == 404:
-            raise PresignedUrlUnreachableException
+        if response.status_code == 401:
+            raise ProjectAccessDeniedException(project_handle)
         if response.status_code == 403:
             raise PresignedUrlAccessDeniedException
+        if response.status_code == 404:
+            raise PresignedUrlUnreachableException
         if not response.ok:
             raise PresignedUrlConnectionException(response.reason)
         return response.json()

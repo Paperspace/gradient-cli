@@ -10,6 +10,10 @@ class PresignedUrlUnreachableException(ApplicationException):
     pass
 
 
+class ProjectAccessDeniedException(ApplicationException):
+    pass
+
+
 class PresignedUrlAccessDeniedException(ApplicationException):
     pass
 
