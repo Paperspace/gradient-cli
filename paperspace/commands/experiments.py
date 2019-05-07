@@ -79,7 +79,12 @@ class ListExperimentsCommand(object):
         response = self.api.get("/experiments/", params=params)
 
         try:
-            experiments = self._get_experiments_list(response, bool(project_handles))
+            data = response.json()
+            if not response.ok:
+                self.logger.log_error_response(data)
+                return
+
+            experiments = self._get_experiments_list(data, bool(project_handles))
         except (ValueError, KeyError) as e:
             self.logger.error("Error while parsing response data: {}".format(e))
         else:
@@ -108,16 +113,12 @@ class ListExperimentsCommand(object):
         return table_string
 
     @staticmethod
-    def _get_experiments_list(response, filtered=False):
-        if not response.ok:
-            raise ValueError("Unknown error")
-
-        data = response.json()["data"]
+    def _get_experiments_list(data, filtered=False):
         if not filtered:  # If filtering by projectHandle response data has different format...
-            return data
+            return data["data"]
 
         experiments = []
-        for project_experiments in data:
+        for project_experiments in data["data"]:
             for experiment in project_experiments["data"]:
                 experiments.append(experiment)
         return experiments

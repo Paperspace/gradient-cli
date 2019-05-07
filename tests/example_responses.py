@@ -1,3 +1,169 @@
+LIST_OF_EXPERIMENTS_RESPONSE_JSON = {
+    "data": [
+        {
+            "dtCreated": "2019-03-21T07:47:05.616096+00:00",
+            "dtDeleted": None,
+            "dtFinished": None,
+            "dtModified": "2019-03-21T07:47:05.616096+00:00",
+            "dtProvisioningFinished": None,
+            "dtProvisioningStarted": None,
+            "dtStarted": None,
+            "dtTeardownFinished": None,
+            "dtTeardownStarted": None,
+            "experimentError": None,
+            "experimentTemplateHistoryId": 6315,
+            "experimentTemplateId": 60,
+            "experimentTypeId": 1,
+            "handle": "ea2lfbbpdyzsq",
+            "id": 6292,
+            "projectHandle": "prq70zy79",
+            "projectId": 612,
+            "started_by_user_id": 1,
+            "state": 1,
+            "templateHistory": {
+                "dtCreated": "2019-03-21T07:47:04.925852+00:00",
+                "dtDeleted": None,
+                "experimentTemplateId": 60,
+                "id": 6315,
+                "params": {
+                    "experimentTypeId": 1,
+                    "name": "dsfads",
+                    "ports": 5000,
+                    "project_handle": "prq70zy79",
+                    "worker_command": "sadas",
+                    "worker_container": "asd",
+                    "worker_machine_type": "sadas"
+                },
+                "triggerEvent": None,
+                "triggerEventId": None
+            }
+        },
+        {
+            "dtCreated": "2019-03-21T07:46:57.706055+00:00",
+            "dtDeleted": None,
+            "dtFinished": None,
+            "dtModified": "2019-03-21T07:46:57.706055+00:00",
+            "dtProvisioningFinished": None,
+            "dtProvisioningStarted": None,
+            "dtStarted": None,
+            "dtTeardownFinished": None,
+            "dtTeardownStarted": None,
+            "experimentError": None,
+            "experimentTemplateHistoryId": 6314,
+            "experimentTemplateId": 60,
+            "experimentTypeId": 1,
+            "handle": "em6btk2vtb7it",
+            "id": 6291,
+            "projectHandle": "prq70zy79",
+            "projectId": 612,
+            "started_by_user_id": 1,
+            "state": 1,
+            "templateHistory": {
+                "dtCreated": "2019-03-21T07:46:56.949590+00:00",
+                "dtDeleted": None,
+                "experimentTemplateId": 60,
+                "id": 6314,
+                "params": {
+                    "experimentTypeId": 1,
+                    "name": "dsfads",
+                    "ports": 5000,
+                    "project_handle": "prq70zy79",
+                    "worker_command": "sadas",
+                    "worker_container": "asd",
+                    "worker_machine_type": "sadas"
+                },
+                "triggerEvent": None,
+                "triggerEventId": None
+            }
+        },
+        {
+            "dtCreated": "2019-03-20T19:56:50.154853+00:00",
+            "dtDeleted": None,
+            "dtFinished": None,
+            "dtModified": "2019-03-20T19:56:50.154853+00:00",
+            "dtProvisioningFinished": None,
+            "dtProvisioningStarted": None,
+            "dtStarted": None,
+            "dtTeardownFinished": None,
+            "dtTeardownStarted": None,
+            "experimentError": None,
+            "experimentTemplateHistoryId": 6297,
+            "experimentTemplateId": 60,
+            "experimentTypeId": 3,
+            "handle": "ew69ls0vy3eto",
+            "id": 6286,
+            "projectHandle": "prq70zy79",
+            "projectId": 612,
+            "started_by_user_id": 1,
+            "state": 1,
+            "templateHistory": {
+                "dtCreated": "2019-03-20T19:56:49.427354+00:00",
+                "dtDeleted": None,
+                "experimentTemplateId": 60,
+                "id": 6297,
+                "params": {
+                    "artifactDirectory": "/artdir",
+                    "clusterId": 2,
+                    "experimentEnv": {
+                        "key": "val"
+                    },
+                    "experimentTypeId": 3,
+                    "name": "multinode_mpi",
+                    "parameter_server_command": "ls",
+                    "parameter_server_container": "pscon",
+                    "parameter_server_container_user": "pscuser",
+                    "parameter_server_count": 2,
+                    "parameter_server_machine_type": "psmtype",
+                    "parameter_server_registry_password": "psrpass",
+                    "parameter_server_registry_username": "psrcus",
+                    "ports": 3456,
+                    "project_handle": "prq70zy79",
+                    "project_id": 34,
+                    "trigger_event_id": 12,
+                    "worker_command": "wcom",
+                    "worker_container": "wcon",
+                    "worker_container_user": "usr",
+                    "worker_count": 2,
+                    "worker_machine_type": "mty",
+                    "worker_registry_password": "rpass",
+                    "worker_registry_username": "rusr",
+                    "workingDirectory": "/dir",
+                    "workspaceUrl": "wurl"
+                },
+                "triggerEvent": {
+                    "dtCreated": "2019-03-11T14:47:57+00:00",
+                    "eventData": {
+                        "author": {
+                            "email": "bluckey@paperspace.com",
+                            "login": "ultrabluewolf",
+                            "name": "Britney Luckey"
+                        },
+                        "branch": "feature/test-1",
+                        "message": "Update readme #2",
+                        "repo_node_id": "MDEwOlJlcG9zaXRvcnkxNzQ3MjI3NDc=",
+                        "sender": {
+                            "id": 4633049,
+                            "login": "ultrabluewolf"
+                        },
+                        "sha": "daa117a00cd1e0e9b1b55695031e698a560cca29",
+                        "timestamp": "2019-03-11T10:47:57-04:00"
+                    },
+                    "id": 12,
+                    "type": "github"
+                },
+                "triggerEventId": 12
+            }
+        }
+    ],
+    "message": "success",
+    "meta": {
+        "filter": [],
+        "limit": 11,
+        "offset": 0,
+        "totalItems": 27
+    }
+}
+
 LIST_OF_EXPERIMENTS_FILTERED_WITH_TWO_PROJECTS = {
     "data": [
         {
