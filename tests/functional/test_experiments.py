@@ -30,7 +30,6 @@ class TestExperimentsCreateSingleNode(object):
         "--artifactDirectory", "/artifact/dir/",
         "--clusterId", 42,
         "--experimentEnv", '{"key":"val"}',
-        "--triggerEventId", 45678,
         "--projectId", 987654,
         "--projectHandle", "testHandle",
         "--container", "testContainer",
@@ -58,7 +57,6 @@ class TestExperimentsCreateSingleNode(object):
         "artifactDirectory": u"/artifact/dir/",
         "clusterId": 42,
         "experimentEnv": {u"key": u"val"},
-        "triggerEventId": 45678,
         "projectId": 987654,
         "projectHandle": u"testHandle",
         "container": u"testContainer",
@@ -154,7 +152,6 @@ class TestExperimentsCreateMultiNode(object):
         "--artifactDirectory", "/artdir",
         "--clusterId", 2,
         "--experimentEnv", '{"key":"val"}',
-        "--triggerEventId", 12,
         "--projectId", 34,
         "--projectHandle", "prq70zy79",
         "--experimentTypeId", "MPI",
@@ -197,7 +194,6 @@ class TestExperimentsCreateMultiNode(object):
         "artifactDirectory": u"/artdir",
         "clusterId": 2,
         "experimentEnv": {"key": "val"},
-        "triggerEventId": 12,
         "projectId": 34,
         "projectHandle": u"prq70zy79",
         "experimentTypeId": 3,
@@ -271,7 +267,6 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--artifactDirectory", "/artifact/dir/",
         "--clusterId", 42,
         "--experimentEnv", '{"key":"val"}',
-        "--triggerEventId", 45678,
         "--projectId", 987654,
         "--projectHandle", "testHandle",
         "--container", "testContainer",
@@ -312,7 +307,6 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--artifactDirectory", "/artdir",
         "--clusterId", 2,
         "--experimentEnv", '{"key":"val"}',
-        "--triggerEventId", 12,
         "--projectId", 34,
         "--projectHandle", "prq70zy79",
         "--experimentTypeId", "MPI",
@@ -419,7 +413,6 @@ class TestExperimentDetail(object):
                     "id": 12,
                     "type": "github"
                 },
-                "triggerEventId": 12
             }
         },
         "message": "success"
