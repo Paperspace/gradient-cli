@@ -1,14 +1,15 @@
 import os
 import sys
 
-from .cli import cli
+from .cli.cli import cli
 from .jobs import run, print_json_pretty
-from .login import login, logout, set_apikey
+from .login import set_apikey
 from .version import version
 
 
 def main():
-    if len(sys.argv) >= 2 and sys.argv[1] in ('experiments', 'deployments', 'machines'):
+    if len(sys.argv) >= 2 and sys.argv[1] in ('experiments', 'deployments', 'machines', 'login', 'logout', 'version',
+                                              'projects', 'jobs', 'models'):
         cli(sys.argv[1:])
 
     args = sys.argv[:]
@@ -25,39 +26,6 @@ def main():
     if cmd in help_opts:
         usage(prog)
         sys.exit(0)
-
-    if cmd in ['version', '--version', '-v']:
-        vers(prog)
-        sys.exit(0)
-
-    if cmd == 'login':
-        email = None
-        password = None
-        apiToken = None
-        while args:
-            opt = args.pop(0)
-            if opt in help_opts:
-                print('usage: %s' % login_usage(prog))
-                sys.exit(0)
-            elif opt == '--email':
-                email = args.pop(0) if args else None
-            elif opt == '--password':
-                password = args.pop(0) if args else None
-            elif opt == '--apiToken':
-                apiToken = args.pop(0) if args else None
-            elif not email:
-                email = opt
-            elif not password:
-                password = opt
-            elif not apiToken:
-                apiToken = opt
-        return not login(email, password, apiToken)
-
-    if cmd == 'logout':
-        if args:
-            print('usage: %s logout' % prog)
-            sys.exit(not (args[0] in help_opts))
-        return not logout()
 
     if cmd == 'apikey' or cmd == 'apiKey':
         if not args or args[0] in help_opts:

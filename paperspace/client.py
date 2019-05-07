@@ -28,9 +28,9 @@ class API(object):
         template = "{}{}" if url.startswith("/") else "{}/{}"
         return template.format(api_url, url)
 
-    def post(self, url, json=None, params=None):
+    def post(self, url, json=None, params=None, files=None):
         path = self.get_path(url)
-        response = requests.post(path, json=json, params=params, headers=self.headers)
+        response = requests.post(path, json=json, params=params, headers=self.headers, files=files)
         logger.debug("POST request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}"
                      .format(response.url, self.headers, json, params))
         logger.debug("Response status code: {}".format(response.status_code))

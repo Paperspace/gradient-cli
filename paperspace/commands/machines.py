@@ -3,16 +3,12 @@ import time
 
 import terminaltables
 
-from paperspace import logger
-from paperspace.exceptions import BadResponse
+from paperspace.commands import CommandBase
+from paperspace.exceptions import BadResponseError
 from paperspace.utils import get_terminal_lines
 
 
-class CommandBase(object):
-    def __init__(self, api=None, logger_=logger):
-        self.api = api
-        self.logger = logger_
-
+class _MachinesCommandBase(CommandBase):
     def _log_message(self, response, success_msg_template, error_msg):
         if response.ok:
             try:
@@ -27,10 +23,10 @@ class CommandBase(object):
                 data = response.json()
                 self.logger.log_error_response(data)
             except ValueError:
-                self.logger.log(error_msg)
+                self.logger.error(error_msg)
 
 
-class CheckAvailabilityCommand(CommandBase):
+class CheckAvailabilityCommand(_MachinesCommandBase):
     def execute(self, region, machine_type):
         params = {"region": region,
                   "machineType": machine_type}
@@ -40,7 +36,7 @@ class CheckAvailabilityCommand(CommandBase):
                           "Unknown error while checking machine availability")
 
 
-class CreateMachineCommand(CommandBase):
+class CreateMachineCommand(_MachinesCommandBase):
     def execute(self, kwargs):
         response = self.api.post("/machines/createSingleMachinePublic/", json=kwargs)
         self._log_message(response,
@@ -48,7 +44,7 @@ class CreateMachineCommand(CommandBase):
                           "Unknown error while creating machine")
 
 
-class UpdateMachineCommand(CommandBase):
+class UpdateMachineCommand(_MachinesCommandBase):
     def execute(self, machine_id, kwargs):
         url = "/machines/{}/updateMachinePublic/".format(machine_id)
         response = self.api.post(url, json=kwargs)
@@ -57,7 +53,7 @@ class UpdateMachineCommand(CommandBase):
                           "Unknown error while updating machine")
 
 
-class StartMachineCommand(CommandBase):
+class StartMachineCommand(_MachinesCommandBase):
     def execute(self, machine_id):
         url = "/machines/{}/start/".format(machine_id)
         response = self.api.post(url)
@@ -66,7 +62,7 @@ class StartMachineCommand(CommandBase):
                           "Unknown error while starting the machine")
 
 
-class StopMachineCommand(CommandBase):
+class StopMachineCommand(_MachinesCommandBase):
     def execute(self, machine_id):
         url = "/machines/{}/stop/".format(machine_id)
         response = self.api.post(url)
@@ -75,7 +71,7 @@ class StopMachineCommand(CommandBase):
                           "Unknown error while stopping the machine")
 
 
-class RestartMachineCommand(CommandBase):
+class RestartMachineCommand(_MachinesCommandBase):
     def execute(self, machine_id):
         url = "/machines/{}/restart/".format(machine_id)
         response = self.api.post(url)
@@ -84,7 +80,7 @@ class RestartMachineCommand(CommandBase):
                           "Unknown error while restarting the machine")
 
 
-class ShowMachineCommand(CommandBase):
+class ShowMachineCommand(_MachinesCommandBase):
     def execute(self, machine_id):
         params = {"machineId": machine_id}
         response = self.api.get("/machines/getMachinePublic/", params=params)
@@ -95,7 +91,7 @@ class ShowMachineCommand(CommandBase):
                 self.logger.log_error_response(data)
                 return
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             table = self.make_details_table(data)
             self.logger.log(table)
@@ -142,7 +138,7 @@ class ShowMachineCommand(CommandBase):
         return table_string
 
 
-class ListMachinesCommand(CommandBase):
+class ListMachinesCommand(_MachinesCommandBase):
     def execute(self, kwargs):
         json_ = {"params": kwargs} if kwargs else None
         response = self.api.get("/machines/getMachines/", json=json_)
@@ -153,13 +149,13 @@ class ListMachinesCommand(CommandBase):
                 self.logger.log_error_response(data)
                 return
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             self._log_machines_list(data)
 
     def _log_machines_list(self, machines):
         if not machines:
-            self.logger.log("No machines found")
+            self.logger.warning("No machines found")
         else:
             table_str = self._make_machines_list_table(machines)
             if len(table_str.splitlines()) > get_terminal_lines():
@@ -186,7 +182,7 @@ class ListMachinesCommand(CommandBase):
         return table_string
 
 
-class DestroyMachineCommand(CommandBase):
+class DestroyMachineCommand(_MachinesCommandBase):
     def execute(self, machine_id, release_public_ip):
         json_ = {"releasePublicIp": release_public_ip} if release_public_ip else None
         url = "/machines/{}/destroyMachine/".format(machine_id)
@@ -196,7 +192,7 @@ class DestroyMachineCommand(CommandBase):
                           "Unknown error while destroying the machine")
 
 
-class ShowMachineUtilisationCommand(CommandBase):
+class ShowMachineUtilisationCommand(_MachinesCommandBase):
     def execute(self, machine_id, billing_month):
         params = {"machineId": machine_id,
                   "billingMonth": billing_month}
@@ -208,7 +204,7 @@ class ShowMachineUtilisationCommand(CommandBase):
                 self.logger.log_error_response(data)
                 return
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             table = self.make_details_table(data)
             self.logger.log(table)
@@ -227,13 +223,13 @@ class ShowMachineUtilisationCommand(CommandBase):
         return table_string
 
 
-class WaitForMachineStateCommand(CommandBase):
+class WaitForMachineStateCommand(_MachinesCommandBase):
     def execute(self, machine_id, state, interval=5):
         while True:
             try:
                 current_state = self._get_machine_state(machine_id)
-            except BadResponse as e:
-                self.logger.log(e)
+            except BadResponseError as e:
+                self.logger.error(e)
                 return
             else:
                 if current_state == state:
@@ -250,8 +246,8 @@ class WaitForMachineStateCommand(CommandBase):
             json_ = response.json()
             if not response.ok:
                 self.logger.log_error_response(json_)
-                raise BadResponse("Error while reading machine state")
+                raise BadResponseError("Error while reading machine state")
             state = json_.get("state")
         except (ValueError, AttributeError):
-            raise BadResponse("Unknown error while reading machine state")
+            raise BadResponseError("Unknown error while reading machine state")
         return state

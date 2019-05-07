@@ -3,39 +3,57 @@ import pydoc
 import terminaltables
 
 from paperspace import logger, constants, client, config
+from paperspace.commands import CommandBase
+from paperspace.workspace import S3WorkspaceHandler
 from paperspace.logger import log_response
 from paperspace.utils import get_terminal_lines
 
 experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
 
 
-def _log_create_experiment(response, success_msg_template, error_msg, logger_=logger):
-    if response.ok:
-        j = response.json()
-        handle = j["handle"]
-        msg = success_msg_template.format(handle)
-        logger_.log(msg)
-    else:
-        try:
-            data = response.json()
-            logger_.log_error_response(data)
-        except ValueError:
-            logger_.log(error_msg)
+class ExperimentCommand(CommandBase):
+    def __init__(self, workspace_handler=None, **kwargs):
+        super(ExperimentCommand, self).__init__(**kwargs)
+        self._workspace_handler = workspace_handler or S3WorkspaceHandler(experiments_api=self.api, logger=self.logger)
+
+    def _log_create_experiment(self, response, success_msg_template, error_msg):
+        if response.ok:
+            j = response.json()
+            handle = j["handle"]
+            msg = success_msg_template.format(handle)
+            self.logger.log(msg)
+        else:
+            try:
+                data = response.json()
+                self.logger.log_error_response(data)
+            except ValueError:
+                self.logger.error(error_msg)
 
 
-def create_experiment(json_, api=experiments_api):
-    response = api.post("/experiments/", json=json_)
+class CreateExperimentCommand(ExperimentCommand):
 
-    _log_create_experiment(response,
-                           "New experiment created with handle: {}",
-                           "Unknown error while creating the experiment")
+    def execute(self, json_):
+        workspace_url = self._workspace_handler.upload_workspace(json_)
+        if workspace_url:
+            json_['workspaceUrl'] = workspace_url
+
+        response = self.api.post("/experiments/", json=json_)
+
+        self._log_create_experiment(response,
+                                    "New experiment created with handle: {}",
+                                    "Unknown error while creating the experiment")
 
 
-def create_and_start_experiment(json_, api=experiments_api):
-    response = api.post("/experiments/create_and_start/", json=json_)
-    _log_create_experiment(response,
-                           "New experiment created and started with handle: {}",
-                           "Unknown error while creating/starting the experiment")
+class CreateAndStartExperimentCommand(ExperimentCommand):
+    def execute(self, json_):
+        workspace_url = self._workspace_handler.upload_workspace(json_)
+        if workspace_url:
+            json_['workspaceUrl'] = workspace_url
+
+        response = self.api.post("/experiments/create_and_start/", json=json_)
+        self._log_create_experiment(response,
+                                    "New experiment created and started with handle: {}",
+                                    "Unknown error while creating/starting the experiment")
 
 
 def start_experiment(experiment_handle, api=experiments_api):
@@ -56,21 +74,25 @@ class ListExperimentsCommand(object):
         self.logger = logger_
 
     def execute(self, project_handles=None):
+        project_handles = project_handles or []
         params = self._get_query_params(project_handles)
         response = self.api.get("/experiments/", params=params)
 
         try:
-            experiments = self._get_experiments_list(response, bool(project_handles))
+            data = response.json()
+            if not response.ok:
+                self.logger.log_error_response(data)
+                return
+
+            experiments = self._get_experiments_list(data, bool(project_handles))
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             self._log_experiments_list(experiments)
 
     @staticmethod
     def _get_query_params(project_handles):
-        # TODO: change to limit: -1 when PS-9535 is deployed to production
-        # to list all experiments
-        params = {"limit": 1000000}
+        params = {"limit": -1}  # so the API sends back full list without pagination
         for i, handle in enumerate(project_handles):
             key = "projectHandle[{}]".format(i)
             params[key] = handle
@@ -91,23 +113,19 @@ class ListExperimentsCommand(object):
         return table_string
 
     @staticmethod
-    def _get_experiments_list(response, filtered=False):
-        if not response.ok:
-            raise ValueError("Unknown error")
-
-        data = response.json()["data"]
+    def _get_experiments_list(data, filtered=False):
         if not filtered:  # If filtering by projectHandle response data has different format...
-            return data
+            return data["data"]
 
         experiments = []
-        for project_experiments in data:
+        for project_experiments in data["data"]:
             for experiment in project_experiments["data"]:
                 experiments.append(experiment)
         return experiments
 
     def _log_experiments_list(self, experiments):
         if not experiments:
-            self.logger.log("No experiments found")
+            self.logger.warning("No experiments found")
         else:
             table_str = self._make_experiments_list_table(experiments)
             if len(table_str.splitlines()) > get_terminal_lines():
@@ -176,7 +194,6 @@ def get_experiment_details(experiment_handle, api=experiments_api):
             experiment = response.json()["data"]
             details = _make_details_table(experiment)
         except (ValueError, KeyError) as e:
-            logger.log("Error parsing response data")
-            logger.debug(e)
+            logger.error("Error parsing response data")
 
     log_response(response, details, "Unknown error while retrieving details of the experiment")

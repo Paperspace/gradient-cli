@@ -3,6 +3,7 @@ import pydoc
 import terminaltables
 
 from paperspace import config, version, client, logger
+from paperspace.commands import CommandBase
 from paperspace.utils import get_terminal_lines
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
@@ -11,18 +12,14 @@ default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
 deployments_api = client.API(config.CONFIG_HOST, headers=default_headers)
 
 
-class _DeploymentCommandBase(object):
-    def __init__(self, api=deployments_api, logger_=logger):
-        self.api = api
-        self.logger = logger_
-
+class _DeploymentCommandBase(CommandBase):
     def _log_message(self, response, success_msg_template, error_msg):
         if response.ok:
             try:
                 j = response.json()
                 handle = j["deployment"]
             except (ValueError, KeyError):
-                self.logger.log(success_msg_template)
+                self.logger.error(success_msg_template)
             else:
                 msg = success_msg_template.format(**handle)
                 self.logger.log(msg)
@@ -31,7 +28,7 @@ class _DeploymentCommandBase(object):
                 data = response.json()
                 self.logger.log_error_response(data)
             except ValueError:
-                self.logger.log(error_msg)
+                self.logger.error(error_msg)
 
 
 class CreateDeploymentCommand(_DeploymentCommandBase):
@@ -43,25 +40,28 @@ class CreateDeploymentCommand(_DeploymentCommandBase):
 
 
 class ListDeploymentsCommand(_DeploymentCommandBase):
-    def execute(self, kwargs):
-        json_ = self._get_request_json(kwargs)
+    def execute(self, filters=None):
+        json_ = self._get_request_json(filters)
         response = self.api.get("/deployments/getDeploymentList/", json=json_)
 
         try:
+            data = response.json()
+            if not response.ok:
+                self.logger.log_error_response(data)
+                return
             deployments = self._get_deployments_list(response)
         except (ValueError, KeyError) as e:
-            self.logger.log("Error while parsing response data: {}".format(e))
+            self.logger.error("Error while parsing response data: {}".format(e))
         else:
             self._log_deployments_list(deployments)
 
     @staticmethod
-    def _get_request_json(kwargs):
-        state = kwargs.get("state")
-        if not state:
+    def _get_request_json(filters):
+        if not filters:
             return None
 
-        params = {"filter": {"where": {"and": [{"state": state}]}}}
-        return params
+        json_ = {"filter": {"where": {"and": [filters]}}}
+        return json_
 
     @staticmethod
     def _get_deployments_list(response):
@@ -74,7 +74,7 @@ class ListDeploymentsCommand(_DeploymentCommandBase):
 
     def _log_deployments_list(self, deployments):
         if not deployments:
-            self.logger.log("No deployments found")
+            self.logger.warning("No deployments found")
         else:
             table_str = self._make_deployments_list_table(deployments)
             if len(table_str.splitlines()) > get_terminal_lines():
@@ -98,13 +98,13 @@ class ListDeploymentsCommand(_DeploymentCommandBase):
         return table_string
 
 
-class UpdateModelCommand(_DeploymentCommandBase):
-    def execute(self, model_id, kwargs):
+class UpdateDeploymentCommand(_DeploymentCommandBase):
+    def execute(self, deployment_id, kwargs):
         if not kwargs:
             self.logger.log("No parameters to update were given. Use --help for more information.")
             return
 
-        json_ = {"id": model_id,
+        json_ = {"id": deployment_id,
                  "upd": kwargs}
         response = self.api.post("/deployments/updateDeployment/", json=json_)
         self._log_message(response,
@@ -113,8 +113,8 @@ class UpdateModelCommand(_DeploymentCommandBase):
 
 
 class StartDeploymentCommand(_DeploymentCommandBase):
-    def execute(self, model_id):
-        json_ = {"id": model_id,
+    def execute(self, deployment_id):
+        json_ = {"id": deployment_id,
                  "isRunning": True}
         response = self.api.post("/deployments/updateDeployment/", json=json_)
         self._log_message(response,
@@ -123,8 +123,8 @@ class StartDeploymentCommand(_DeploymentCommandBase):
 
 
 class DeleteDeploymentCommand(_DeploymentCommandBase):
-    def execute(self, model_id):
-        json_ = {"id": model_id,
+    def execute(self, deployment_id):
+        json_ = {"id": deployment_id,
                  "upd": {"isDeleted": True}}
         response = self.api.post("/deployments/updateDeployment/", json=json_)
         self._log_message(response,

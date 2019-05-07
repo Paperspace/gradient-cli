@@ -2,7 +2,7 @@ import mock
 from click.testing import CliRunner
 
 import paperspace.client
-from paperspace import cli
+from paperspace.cli import cli
 from tests import MockResponse, example_responses
 
 
@@ -30,7 +30,7 @@ class TestMachineAvailability(object):
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_get_request_and_print_valid_message_when_availability_command_was_used(self, get_patched):
         get_patched.return_value = MockResponse(self.RESPONSE_JSON, 200)
 
@@ -44,7 +44,7 @@ class TestMachineAvailability(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, get_patched):
         get_patched.return_value = MockResponse(self.RESPONSE_JSON, 200)
 
@@ -58,7 +58,7 @@ class TestMachineAvailability(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_print_valid_error_message_when_availability_command_was_used_with_invalid_api_token(self,
                                                                                                         get_patched):
         get_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
@@ -73,7 +73,21 @@ class TestMachineAvailability(object):
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
+    def test_should_print_valid_error_message_when_no_content_was_received_in_response(self, get_patched):
+        get_patched.return_value = MockResponse(status_code=400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.COMMAND)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS,
+                                       json=None,
+                                       params=self.PARAMS)
+        assert result.output == "Unknown error while checking machine availability\n"
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_print_valid_error_message_when_no_content_was_received_in_response(self, get_patched):
         get_patched.return_value = MockResponse(status_code=400)
 
@@ -178,7 +192,7 @@ class TestCreateMachine(object):
         "--email", "some@email.com",
     ]
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_valid_post_request_when_machine_create_was_used_with_requested_options(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
 
@@ -188,11 +202,12 @@ class TestCreateMachine(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
-                                       params=None)
+                                       params=None,
+                                       files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_valid_post_request_when_machine_create_was_used_with_all_options(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
 
@@ -202,11 +217,12 @@ class TestCreateMachine(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.ALL_COMMANDS_REQUEST_JSON,
-                                       params=None)
+                                       params=None,
+                                       files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
 
@@ -216,11 +232,12 @@ class TestCreateMachine(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=self.REQUEST_JSON,
-                                       params=None)
+                                       params=None,
+                                       files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_error_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
 
@@ -230,11 +247,12 @@ class TestCreateMachine(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
-                                       params=None)
+                                       params=None,
+                                       files=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_error_message_when_wrong_template_id_was_used(self, get_patched):
         get_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_TEMPLATE_ID, 400)
 
@@ -244,11 +262,12 @@ class TestCreateMachine(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
-                                       params=None)
+                                       params=None,
+                                       files=None)
         assert result.output == "templateId not found\n"
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_error_message_when_no_content_was_received_in_response(self, get_patched):
         get_patched.return_value = MockResponse(status_code=400)
 
@@ -258,11 +277,12 @@ class TestCreateMachine(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
-                                       params=None)
+                                       params=None,
+                                       files=None)
         assert result.output == "Unknown error while creating machine\n"
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_error_message_when_mutually_exclusive_options_were_used(self, get_patched):
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_MUTUALLY_EXCLUSIVE_OPTIONS_USED)
@@ -309,7 +329,7 @@ class TestDestroyMachine(object):
     }
     EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND = "Not found. Please contact support@paperspace.com for help.\n"
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_valid_post_request_when_machines_destroy_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
@@ -319,11 +339,12 @@ class TestDestroyMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_valid_post_request_when_machines_destroy_was_used_with_all_options(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
@@ -333,11 +354,12 @@ class TestDestroyMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=self.ALL_COMMANDS_REQUEST_JSON,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_valid_post_request_when_machines_destroy_was_used_with_api_key_option(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
@@ -347,11 +369,12 @@ class TestDestroyMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_valid_post_request_when_machines_destroy_was_used_with_wrong_api_key(self, post_patched):
         post_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
@@ -361,11 +384,12 @@ class TestDestroyMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_error_message_when_machine_with_given_id_was_not_found(self, post_patched):
         post_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_404_MACHINE_NOT_FOUND,
                                                  status_code=400)
@@ -376,11 +400,12 @@ class TestDestroyMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_error_message_when_error_status_code_received_but_no_content_was_provided(self, post_patched):
         post_patched.return_value = MockResponse(status_code=400)
 
@@ -390,7 +415,8 @@ class TestDestroyMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == "Unknown error while destroying the machine\n"
         assert result.exit_code == 0
 
@@ -489,7 +515,7 @@ class TestListMachines(object):
         "--name", "some_name",
     ]
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_machines_list_was_used(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -503,7 +529,7 @@ class TestListMachines(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_when_all_options_were_used(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -517,7 +543,7 @@ class TestListMachines(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_when_params_option_was_used(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -531,7 +557,7 @@ class TestListMachines(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_when_machines_list_was_used_with_api_key_option(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -545,7 +571,7 @@ class TestListMachines(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_when_machines_list_was_used_with_wrong_api_key(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
@@ -559,7 +585,7 @@ class TestListMachines(object):
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_print_error_message_when_no_machine_was_not_found(self, get_patched):
         get_patched.return_value = MockResponse(json_data=[], status_code=200)
 
@@ -573,7 +599,7 @@ class TestListMachines(object):
         assert result.output == self.EXPECTED_STDOUT_WHEN_NO_MACHINES_WERE_FOUND
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_print_error_message_when_error_status_code_received_but_no_content_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(status_code=400)
 
@@ -587,7 +613,7 @@ class TestListMachines(object):
         assert result.output == "Error while parsing response data: No JSON\n"
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_print_error_message_when_params_option_was_used_with_mutually_exclusive_option(self, get_patched):
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_MUTUALLY_EXCLUSIVE_OPTIONS)
@@ -626,7 +652,7 @@ class TestRestartMachine(object):
     }
     EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND = "Not found. Please contact support@paperspace.com for help.\n"
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_get_request_and_print_valid_message_when_restart_command_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
@@ -636,11 +662,12 @@ class TestRestartMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
@@ -650,11 +677,12 @@ class TestRestartMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_valid_error_message_when_start_command_was_used_with_invalid_api_token(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
@@ -664,11 +692,12 @@ class TestRestartMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_valid_error_message_when_no_content_was_received_in_response(self, post_patched):
         post_patched.return_value = MockResponse(status_code=400)
 
@@ -678,11 +707,12 @@ class TestRestartMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == "Unknown error while restarting the machine\n"
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_error_message_when_machine_with_given_id_was_not_found(self, post_patched):
         post_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_404_MACHINE_NOT_FOUND,
                                                  status_code=400)
@@ -693,7 +723,8 @@ class TestRestartMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
         assert result.exit_code == 0
 
@@ -757,7 +788,7 @@ class TestShowMachine(object):
     }
     EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND = "Machine not found\n"
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_machines_list_was_used(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -771,7 +802,7 @@ class TestShowMachine(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_when_machines_list_was_used_with_api_key_option(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -785,7 +816,7 @@ class TestShowMachine(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_when_machines_list_was_used_with_wrong_api_key(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
@@ -799,7 +830,7 @@ class TestShowMachine(object):
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_print_error_message_when_machine_was_not_found(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WHEN_MACHINE_WAS_NOT_FOUND,
                                                 status_code=404)
@@ -814,7 +845,7 @@ class TestShowMachine(object):
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_print_error_message_when_error_status_code_received_but_no_content_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(status_code=400)
 
@@ -858,7 +889,7 @@ class TestStartMachine(object):
     }
     EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND = "Not found. Please contact support@paperspace.com for help.\n"
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_get_request_and_print_valid_message_when_start_command_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
@@ -868,11 +899,12 @@ class TestStartMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
@@ -882,11 +914,12 @@ class TestStartMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_valid_error_message_when_start_command_was_used_with_invalid_api_token(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
@@ -896,11 +929,12 @@ class TestStartMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_valid_error_message_when_no_content_was_received_in_response(self, post_patched):
         post_patched.return_value = MockResponse(status_code=400)
 
@@ -910,11 +944,12 @@ class TestStartMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == "Unknown error while starting the machine\n"
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_error_message_when_machine_with_given_id_was_not_found(self, post_patched):
         post_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_404_MACHINE_NOT_FOUND,
                                                  status_code=400)
@@ -925,7 +960,8 @@ class TestStartMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
         assert result.exit_code == 0
 
@@ -959,7 +995,7 @@ class TestStopMachine(object):
     }
     EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND = "Not found. Please contact support@paperspace.com for help.\n"
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_get_request_and_print_valid_message_when_stop_command_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
@@ -969,11 +1005,12 @@ class TestStopMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
@@ -983,11 +1020,12 @@ class TestStopMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_valid_error_message_when_stop_command_was_used_with_invalid_api_token(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
@@ -997,11 +1035,12 @@ class TestStopMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_valid_error_message_when_no_content_was_received_in_response(self, post_patched):
         post_patched.return_value = MockResponse(status_code=400)
 
@@ -1011,11 +1050,12 @@ class TestStopMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == "Unknown error while stopping the machine\n"
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_error_message_when_machine_with_given_id_was_not_found(self, post_patched):
         post_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_404_MACHINE_NOT_FOUND,
                                                  status_code=400)
@@ -1026,7 +1066,8 @@ class TestStopMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
         assert result.exit_code == 0
 
@@ -1077,7 +1118,7 @@ class TestUpdateMachine(object):
 
     RESPONSE_JSON_WITH_WRONG_MACHINE_ID = {"error": {"name": "Error", "status": 404, "message": "Not found"}}
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_valid_post_request_when_machine_create_was_used_with_requested_options(self, get_patched):
         get_patched.return_value = MockResponse({}, 200)
 
@@ -1087,11 +1128,12 @@ class TestUpdateMachine(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
-                                       params=None)
+                                       params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_valid_post_request_when_machine_create_was_used_with_all_options(self, get_patched):
         get_patched.return_value = MockResponse({}, 200)
 
@@ -1101,11 +1143,12 @@ class TestUpdateMachine(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.ALL_COMMANDS_REQUEST_JSON,
-                                       params=None)
+                                       params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
 
@@ -1115,11 +1158,12 @@ class TestUpdateMachine(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=self.REQUEST_JSON,
-                                       params=None)
+                                       params=None,
+                                        files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_error_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
 
@@ -1129,11 +1173,12 @@ class TestUpdateMachine(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
-                                       params=None)
+                                       params=None,
+                                       files=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_error_message_when_wrong_machine_id_was_used(self, get_patched):
         get_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_MACHINE_ID, 400)
 
@@ -1143,11 +1188,12 @@ class TestUpdateMachine(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
-                                       params=None)
+                                       params=None,
+                                        files=None)
         assert result.output == "Not found\n"
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.post")
+    @mock.patch("paperspace.cli.cli.client.requests.post")
     def test_should_print_error_message_when_no_content_was_received_in_response(self, get_patched):
         get_patched.return_value = MockResponse(status_code=400)
 
@@ -1157,7 +1203,8 @@ class TestUpdateMachine(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
-                                       params=None)
+                                       params=None,
+                                       files=None)
         assert result.output == "Unknown error while updating machine\n"
         assert result.exit_code == 0
 
@@ -1203,7 +1250,7 @@ class TestShowMachineUtilization(object):
     }
     EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND = "Machine not found\n"
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_machines_utilizaation_was_used(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -1217,7 +1264,7 @@ class TestShowMachineUtilization(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_when_machines_utilization_was_used_with_api_key_option(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -1231,7 +1278,7 @@ class TestShowMachineUtilization(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_when_machines_utilization_was_used_with_wrong_api_key(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
@@ -1245,7 +1292,7 @@ class TestShowMachineUtilization(object):
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_print_error_message_when_machine_was_not_found(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WHEN_MACHINE_WAS_NOT_FOUND,
                                                 status_code=404)
@@ -1260,7 +1307,7 @@ class TestShowMachineUtilization(object):
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_print_error_message_when_error_status_code_received_but_no_content_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(status_code=400)
 
@@ -1308,7 +1355,7 @@ class TestWaitForMachine(object):
     }
     EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND = "Machine not found\nError while reading machine state\n"
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_machines_waitfor_was_used(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -1322,7 +1369,7 @@ class TestWaitForMachine(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_when_machines_waitfor_was_used_with_api_key_option(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -1336,7 +1383,7 @@ class TestWaitForMachine(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_send_valid_post_request_when_machines_waitfor_was_used_with_wrong_api_key(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
@@ -1350,7 +1397,7 @@ class TestWaitForMachine(object):
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_print_error_message_when_machine_was_not_found(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WHEN_MACHINE_WAS_NOT_FOUND,
                                                 status_code=404)
@@ -1365,7 +1412,7 @@ class TestWaitForMachine(object):
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.client.requests.get")
+    @mock.patch("paperspace.cli.cli.client.requests.get")
     def test_should_print_error_message_when_error_status_code_received_but_no_content_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(status_code=400)
 
