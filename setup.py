@@ -51,6 +51,8 @@ setup(
         'click-didyoumean',
         'click-help-colors',
         'colorama',
+        'requests-toolbelt',
+        'progressbar2'
     ],
     entry_points={'console_scripts': [
         'paperspace-python = paperspace.main:main',

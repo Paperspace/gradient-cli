@@ -51,9 +51,18 @@ def common_experiments_create_options(f):
             help="Port to use in new experiment",
         ),
         click.option(
+            "--workspace",
+            "workspace",
+            help="Path to workspace directory",
+        ),
+        click.option(
+            "--workspaceArchive",
+            "workspaceArchive",
+            help="Path to workspace .zip archive",
+        ),
+        click.option(
             "--workspaceUrl",
             "workspaceUrl",
-            required=True,
             help="Project git repository url",
         ),
         click.option(
@@ -239,7 +248,8 @@ def common_experiments_create_single_node_options(f):
 def create_multi_node(api_key, **kwargs):
     del_if_value_is_none(kwargs)
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    experiments_commands.create_experiment(kwargs, api=experiments_api)
+    command = experiments_commands.CreateExperimentCommand(api=experiments_api)
+    command.execute(kwargs)
 
 
 @create_experiment.command(name="singlenode", help="Create single node experiment")
@@ -249,7 +259,8 @@ def create_single_node(api_key, **kwargs):
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    experiments_commands.create_experiment(kwargs, api=experiments_api)
+    command = experiments_commands.CreateExperimentCommand(api=experiments_api)
+    command.execute(kwargs)
 
 
 @create_and_start_experiment.command(name="multinode", help="Create and start new multi node experiment")
@@ -258,7 +269,8 @@ def create_single_node(api_key, **kwargs):
 def create_and_start_multi_node(api_key, **kwargs):
     del_if_value_is_none(kwargs)
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    experiments_commands.create_and_start_experiment(kwargs, api=experiments_api)
+    command = experiments_commands.CreateAndStartExperimentCommand(api=experiments_api)
+    command.execute(kwargs)
 
 
 @create_and_start_experiment.command(name="singlenode", help="Create and start new single node experiment")
@@ -268,7 +280,8 @@ def create_and_start_single_node(api_key, **kwargs):
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    experiments_commands.create_and_start_experiment(kwargs, api=experiments_api)
+    command = experiments_commands.CreateAndStartExperimentCommand(api=experiments_api)
+    command.execute(kwargs)
 
 
 @experiments.command("start", help="Start experiment")

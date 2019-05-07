@@ -3,39 +3,57 @@ import pydoc
 import terminaltables
 
 from paperspace import logger, constants, client, config
+from paperspace.commands import CommandBase
+from paperspace.workspace import S3WorkspaceHandler
 from paperspace.logger import log_response
 from paperspace.utils import get_terminal_lines
 
 experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
 
 
-def _log_create_experiment(response, success_msg_template, error_msg, logger_=logger):
-    if response.ok:
-        j = response.json()
-        handle = j["handle"]
-        msg = success_msg_template.format(handle)
-        logger_.log(msg)
-    else:
-        try:
-            data = response.json()
-            logger_.log_error_response(data)
-        except ValueError:
-            logger_.error(error_msg)
+class ExperimentCommand(CommandBase):
+    def __init__(self, workspace_handler=None, **kwargs):
+        super(ExperimentCommand, self).__init__(**kwargs)
+        self._workspace_handler = workspace_handler or S3WorkspaceHandler(experiments_api=self.api, logger=self.logger)
+
+    def _log_create_experiment(self, response, success_msg_template, error_msg):
+        if response.ok:
+            j = response.json()
+            handle = j["handle"]
+            msg = success_msg_template.format(handle)
+            self.logger.log(msg)
+        else:
+            try:
+                data = response.json()
+                self.logger.log_error_response(data)
+            except ValueError:
+                self.logger.error(error_msg)
 
 
-def create_experiment(json_, api=experiments_api):
-    response = api.post("/experiments/", json=json_)
+class CreateExperimentCommand(ExperimentCommand):
 
-    _log_create_experiment(response,
-                           "New experiment created with handle: {}",
-                           "Unknown error while creating the experiment")
+    def execute(self, json_):
+        workspace_url = self._workspace_handler.upload_workspace(json_)
+        if workspace_url:
+            json_['workspaceUrl'] = workspace_url
+
+        response = self.api.post("/experiments/", json=json_)
+
+        self._log_create_experiment(response,
+                                    "New experiment created with handle: {}",
+                                    "Unknown error while creating the experiment")
 
 
-def create_and_start_experiment(json_, api=experiments_api):
-    response = api.post("/experiments/create_and_start/", json=json_)
-    _log_create_experiment(response,
-                           "New experiment created and started with handle: {}",
-                           "Unknown error while creating/starting the experiment")
+class CreateAndStartExperimentCommand(ExperimentCommand):
+    def execute(self, json_):
+        workspace_url = self._workspace_handler.upload_workspace(json_)
+        if workspace_url:
+            json_['workspaceUrl'] = workspace_url
+
+        response = self.api.post("/experiments/create_and_start/", json=json_)
+        self._log_create_experiment(response,
+                                    "New experiment created and started with handle: {}",
+                                    "Unknown error while creating/starting the experiment")
 
 
 def start_experiment(experiment_handle, api=experiments_api):

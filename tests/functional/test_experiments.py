@@ -86,7 +86,8 @@ class TestExperimentsCreateSingleNode(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -101,7 +102,8 @@ class TestExperimentsCreateSingleNode(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
         assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
@@ -117,7 +119,8 @@ class TestExperimentsCreateSingleNode(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT_PROJECT_NOT_FOUND
         assert result.exit_code == 0
 
@@ -227,7 +230,8 @@ class TestExperimentsCreateMultiNode(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -242,7 +246,8 @@ class TestExperimentsCreateMultiNode(object):
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
-                                             params=None)
+                                             params=None,
+                                             files=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 

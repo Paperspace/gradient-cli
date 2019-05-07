@@ -4,7 +4,7 @@ import time
 import terminaltables
 
 from paperspace.commands import CommandBase
-from paperspace.exceptions import BadResponse
+from paperspace.exceptions import BadResponseError
 from paperspace.utils import get_terminal_lines
 
 
@@ -228,7 +228,7 @@ class WaitForMachineStateCommand(_MachinesCommandBase):
         while True:
             try:
                 current_state = self._get_machine_state(machine_id)
-            except BadResponse as e:
+            except BadResponseError as e:
                 self.logger.error(e)
                 return
             else:
@@ -246,8 +246,8 @@ class WaitForMachineStateCommand(_MachinesCommandBase):
             json_ = response.json()
             if not response.ok:
                 self.logger.log_error_response(json_)
-                raise BadResponse("Error while reading machine state")
+                raise BadResponseError("Error while reading machine state")
             state = json_.get("state")
         except (ValueError, AttributeError):
-            raise BadResponse("Unknown error while reading machine state")
+            raise BadResponseError("Unknown error while reading machine state")
         return state

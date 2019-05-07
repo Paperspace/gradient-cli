@@ -6,6 +6,8 @@ verify_ssl = true
 [packages]
 e1839a8 = {path = ".",editable = true}
 requests = {extras = ["security"]}
+requests-toolbelt = "*"
+progressbar2 = "*"
 cryptography = {extras = ["security"]}
 "boto3" = "*"
 botocore = "*"
@@ -16,6 +18,7 @@ terminaltables = "*"
 click-didyoumean = "*"
 click-help-colors = "*"
 colorama = "*"
+
 
 [dev-packages]
 twine = "*"
