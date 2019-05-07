@@ -1,5 +1,13 @@
 # Paperspace Python Release Notes
 
+# Release Notes for 0.2.0a
+### New features
+* partial support for managing jobs, models and projects
+* filtering deployments list by project ID and model ID
+* reading logs of experiments and jobs
+### Fixes
+* handling error response when listing experiments
+
 ## Release Notes for 0.1.0
 ### New features
 * experiments and deployments management
