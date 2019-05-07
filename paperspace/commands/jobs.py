@@ -153,7 +153,7 @@ class CreateJobCommand(JobsCommandBase):
         workspace_url = self._workspace_handler.upload_workspace(json_)
         if workspace_url:
             json_['workspaceFileName'] = workspace_url
-
+        json_['projectId'] = json_.get('projectId', json_.get('projectHandle'))
         response = self.api.post(url, json_)
         self._log_message(response,
                           "Job created",
