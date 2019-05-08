@@ -9,12 +9,17 @@ from paperspace.workspace import S3WorkspaceHandler
 
 MOCK_BUCKET_NAME = 'bucket_name'
 MOCK_OBJECT_KEY = 'object_key'
-
 mock_upload_data = {
-    'bucket_name': MOCK_BUCKET_NAME,
-    'fields': {
-        'key': MOCK_OBJECT_KEY
+        "bucket_name": MOCK_BUCKET_NAME,
+        "fields": {
+            "key": MOCK_OBJECT_KEY
+        }
     }
+
+
+mock_upload_response = {
+    "message": "success",
+    "data": mock_upload_data
 }
 
 
@@ -95,7 +100,7 @@ class TestWorkspace(object):
 
     def test_return_json_with_presigned_url_response(self):
         mock_response = mock.MagicMock()
-        mock_response.json.return_value = mock_upload_data
+        mock_response.json.return_value = mock_upload_response
 
         workspace_handler = S3WorkspaceHandler(mock.MagicMock(), mock.MagicMock())
         workspace_handler.experiments_api.get.return_value = mock_response
