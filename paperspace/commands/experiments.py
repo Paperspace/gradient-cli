@@ -19,8 +19,8 @@ class ExperimentCommand(CommandBase):
     def _log_create_experiment(self, response, success_msg_template, error_msg):
         if response.ok:
             j = response.json()
-            handle = j["handle"]
-            msg = success_msg_template.format(handle)
+            id_ = j["handle"]
+            msg = success_msg_template.format(id_)
             self.logger.log(msg)
         else:
             try:
@@ -40,7 +40,7 @@ class CreateExperimentCommand(ExperimentCommand):
         response = self.api.post("/experiments/", json=json_)
 
         self._log_create_experiment(response,
-                                    "New experiment created with handle: {}",
+                                    "New experiment created with ID: {}",
                                     "Unknown error while creating the experiment")
 
 
@@ -52,18 +52,18 @@ class CreateAndStartExperimentCommand(ExperimentCommand):
 
         response = self.api.post("/experiments/create_and_start/", json=json_)
         self._log_create_experiment(response,
-                                    "New experiment created and started with handle: {}",
+                                    "New experiment created and started with ID: {}",
                                     "Unknown error while creating/starting the experiment")
 
 
-def start_experiment(experiment_handle, api=experiments_api):
-    url = "/experiments/{}/start/".format(experiment_handle)
+def start_experiment(experiment_id, api=experiments_api):
+    url = "/experiments/{}/start/".format(experiment_id)
     response = api.put(url)
     log_response(response, "Experiment started", "Unknown error while starting the experiment")
 
 
-def stop_experiment(experiment_handle, api=experiments_api):
-    url = "/experiments/{}/stop/".format(experiment_handle)
+def stop_experiment(experiment_id, api=experiments_api):
+    url = "/experiments/{}/stop/".format(experiment_id)
     response = api.put(url)
     log_response(response, "Experiment stopped", "Unknown error while stopping the experiment")
 
@@ -73,9 +73,9 @@ class ListExperimentsCommand(object):
         self.api = api
         self.logger = logger_
 
-    def execute(self, project_handles=None):
-        project_handles = project_handles or []
-        params = self._get_query_params(project_handles)
+    def execute(self, project_ids=None):
+        project_ids = project_ids or []
+        params = self._get_query_params(project_ids)
         response = self.api.get("/experiments/", params=params)
 
         try:
@@ -84,24 +84,24 @@ class ListExperimentsCommand(object):
                 self.logger.log_error_response(data)
                 return
 
-            experiments = self._get_experiments_list(data, bool(project_handles))
+            experiments = self._get_experiments_list(data, bool(project_ids))
         except (ValueError, KeyError) as e:
             self.logger.error("Error while parsing response data: {}".format(e))
         else:
             self._log_experiments_list(experiments)
 
     @staticmethod
-    def _get_query_params(project_handles):
+    def _get_query_params(project_ids):
         params = {"limit": -1}  # so the API sends back full list without pagination
-        for i, handle in enumerate(project_handles):
+        for i, experiment_id in enumerate(project_ids):
             key = "projectHandle[{}]".format(i)
-            params[key] = handle
+            params[key] = experiment_id
 
         return params
 
     @staticmethod
     def _make_experiments_list_table(experiments):
-        data = [("Name", "Handle", "Status")]
+        data = [("Name", "ID", "Status")]
         for experiment in experiments:
             name = experiment["templateHistory"]["params"].get("name")
             handle = experiment["handle"]
@@ -114,7 +114,7 @@ class ListExperimentsCommand(object):
 
     @staticmethod
     def _get_experiments_list(data, filtered=False):
-        if not filtered:  # If filtering by projectHandle response data has different format...
+        if not filtered:  # If filtering by project ID response data has different format...
             return data["data"]
 
         experiments = []
@@ -138,10 +138,10 @@ def _make_details_table(experiment):
     if experiment["experimentTypeId"] == constants.ExperimentType.SINGLE_NODE:
         data = (
             ("Name", experiment["templateHistory"]["params"].get("name")),
-            ("Handle", experiment.get("handle")),
+            ("ID", experiment.get("handle")),
             ("State", constants.ExperimentState.get_state_str(experiment.get("state"))),
             ("Ports", experiment["templateHistory"]["params"].get("ports")),
-            ("Project Handle", experiment["templateHistory"]["params"].get("project_handle")),
+            ("Project ID", experiment["templateHistory"]["params"].get("project_handle")),
             ("Worker Command", experiment["templateHistory"]["params"].get("worker_command")),
             ("Worker Container", experiment["templateHistory"]["params"].get("worker_container")),
             ("Worker Machine Type", experiment["templateHistory"]["params"].get("worker_machine_type")),
@@ -154,7 +154,7 @@ def _make_details_table(experiment):
                                             constants.ExperimentType.MPI_MULTI_NODE):
         data = (
             ("Name", experiment["templateHistory"]["params"].get("name")),
-            ("Handle", experiment.get("handle")),
+            ("ID", experiment.get("handle")),
             ("State", constants.ExperimentState.get_state_str(experiment.get("state"))),
             ("Artifact directory", experiment["templateHistory"]["params"].get("artifactDirectory")),
             ("Cluster ID", experiment["templateHistory"]["params"].get("clusterId")),
@@ -169,7 +169,7 @@ def _make_details_table(experiment):
             ("Parameter Server Machine Type",
              experiment["templateHistory"]["params"].get("parameter_server_machine_type")),
             ("Ports", experiment["templateHistory"]["params"].get("ports")),
-            ("Project Handle", experiment["templateHistory"]["params"].get("project_handle")),
+            ("Project ID", experiment["templateHistory"]["params"].get("project_handle")),
             ("Worker Command", experiment["templateHistory"]["params"].get("worker_command")),
             ("Worker Container", experiment["templateHistory"]["params"].get("worker_container")),
             ("Worker Count", experiment["templateHistory"]["params"].get("worker_count")),
@@ -185,8 +185,8 @@ def _make_details_table(experiment):
     return table_string
 
 
-def get_experiment_details(experiment_handle, api=experiments_api):
-    url = "/experiments/{}/".format(experiment_handle)
+def get_experiment_details(experiment_id, api=experiments_api):
+    url = "/experiments/{}/".format(experiment_id)
     response = api.get(url)
     details = response.content
     if response.ok:
