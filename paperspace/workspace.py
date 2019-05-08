@@ -9,7 +9,8 @@ from requests_toolbelt.multipart import encoder
 from paperspace import logger as default_logger
 
 from paperspace.exceptions import S3UploadFailedError, PresignedUrlUnreachableError, \
-    PresignedUrlAccessDeniedError, PresignedUrlConnectionError, ProjectAccessDeniedError
+    PresignedUrlAccessDeniedError, PresignedUrlConnectionError, ProjectAccessDeniedError, \
+    PresignedUrlMalformedResponseError, PresignedUrlError
 
 
 class S3WorkspaceHandler:
@@ -143,4 +144,13 @@ class S3WorkspaceHandler:
             raise PresignedUrlUnreachableError
         if not response.ok:
             raise PresignedUrlConnectionError(response.reason)
-        return response.json()
+
+        response_content = response.json()
+        try:
+            response_message = response_content['message']
+            response_data = response_content['data']
+        except KeyError:
+            raise PresignedUrlMalformedResponseError(response_data)
+        if response_message != 'success':
+            raise PresignedUrlError(response)
+        return response_data

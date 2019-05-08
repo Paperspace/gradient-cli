@@ -22,5 +22,13 @@ class PresignedUrlConnectionError(ApplicationError):
     pass
 
 
+class PresignedUrlMalformedResponseError(ApplicationError):
+    pass
+
+
+class PresignedUrlError(ApplicationError):
+    pass
+
+
 class S3UploadFailedError(ApplicationError):
     pass
