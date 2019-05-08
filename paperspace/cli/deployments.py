@@ -1,0 +1,177 @@
+import collections
+
+import click
+
+from paperspace import constants, client, config
+from paperspace.cli.cli import cli
+from paperspace.cli.cli_types import ChoiceType
+from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGroup
+from paperspace.commands import deployments as deployments_commands
+
+
+@cli.group("deployments", help="Manage deployments", cls=ClickGroup)
+def deployments():
+    pass
+
+
+DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
+    (
+        ("TFSERVING", "Tensorflow Serving on K8s"),
+        ("GRADIENT", "Gradient Jobs"),
+    )
+)
+
+
+@deployments.command("create", help="Create new deployment")
+@click.option(
+    "--deploymentType",
+    "deploymentType",
+    type=ChoiceType(DEPLOYMENT_TYPES_MAP, case_sensitive=False),
+    required=True,
+    help="Model deployment type",
+)
+@click.option(
+    "--modelId",
+    "modelId",
+    required=True,
+    help="ID of a trained model",
+)
+@click.option(
+    "--name",
+    "name",
+    required=True,
+    help="Human-friendly name for new model deployment",
+)
+@click.option(
+    "--machineType",
+    "machineType",
+    type=click.Choice(constants.MACHINE_TYPES),
+    required=True,
+    help="Type of machine for new deployment",
+)
+@click.option(
+    "--imageUrl",
+    "imageUrl",
+    required=True,
+    help="Docker image for model serving",
+)
+@click.option(
+    "--instanceCount",
+    "instanceCount",
+    type=int,
+    required=True,
+    help="Number of machine instances",
+)
+@api_key_option
+def create_deployment(api_key=None, **kwargs):
+    del_if_value_is_none(kwargs)
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.CreateDeploymentCommand(api=deployments_api)
+    command.execute(kwargs)
+
+
+DEPLOYMENT_STATES_MAP = collections.OrderedDict(
+    (
+        ("BUILDING", "Building"),
+        ("PROVISIONING", "Provisioning"),
+        ("STARTING", "Starting"),
+        ("RUNNING", "Running"),
+        ("STOPPING", "Stopping"),
+        ("STOPPED", "Stopped"),
+        ("ERROR", "Error"),
+    )
+)
+
+
+@deployments.command("list", help="List deployments with optional filtering")
+@click.option(
+    "--state",
+    "state",
+    type=ChoiceType(DEPLOYMENT_STATES_MAP, case_sensitive=False),
+    help="Filter by deployment state",
+)
+@click.option(
+    "--projectId",
+    "projectId",
+    help="Use to filter by project ID",
+)
+@click.option(
+    "--modelId",
+    "modelId",
+    help="Use to filter by project ID",
+)
+@api_key_option
+def get_deployments_list(api_key=None, **filters):
+    del_if_value_is_none(filters)
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.ListDeploymentsCommand(api=deployments_api)
+    command.execute(filters)
+
+
+@deployments.command("update", help="Update deployment properties")
+@click.option(
+    "--id",
+    "id_",
+    required=True,
+    help="Deployment ID",
+)
+@click.option(
+    "--modelId",
+    "modelId",
+    help="ID of a trained model",
+)
+@click.option(
+    "--name",
+    "name",
+    help="Human-friendly name for new model deployment",
+)
+@click.option(
+    "--machineType",
+    "machineType",
+    help="Type of machine for new deployment",
+)
+@click.option(
+    "--imageUrl",
+    "imageUrl",
+    help="Docker image for model serving",
+)
+@click.option(
+    "--instanceCount",
+    "instanceCount",
+    type=int,
+    help="Number of machine instances",
+)
+@api_key_option
+def update_deployment_model(id_, api_key, **kwargs):
+    del_if_value_is_none(kwargs)
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.UpdateDeploymentCommand(api=deployments_api)
+    command.execute(id_, kwargs)
+
+
+@deployments.command("start", help="Start deployment")
+@click.option(
+    "--id",
+    "id_",
+    required=True,
+    help="Deployment ID",
+)
+@api_key_option
+def start_deployment(id_, api_key=None):
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.StartDeploymentCommand(api=deployments_api)
+    command.execute(id_)
+
+
+@deployments.command("delete", help="Delete deployment")
+@click.option(
+    "--id",
+    "id_",
+    required=True,
+    help="Deployment ID",
+)
+@api_key_option
+def delete_deployment(id_, api_key=None):
+    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = deployments_commands.DeleteDeploymentCommand(api=deployments_api)
+    command.execute(id_)

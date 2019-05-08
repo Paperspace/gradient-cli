@@ -47,7 +47,7 @@ class TestDeploymentsCreate(object):
     RESPONSE_CONTENT_404_MODEL_NOT_FOUND = b'{"error":{"name":"Error","status":404,"message":"Unable to find model"}}\n'
     EXPECTED_STDOUT_MODEL_NOT_FOUND = "Unable to find model\n"
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_deployment_with_basic_options(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
 
@@ -62,7 +62,7 @@ class TestDeploymentsCreate(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.post")
     def test_should_send_different_api_key_when_api_key_parameter_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
 
@@ -77,7 +77,7 @@ class TestDeploymentsCreate(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_wrong_model_id_was_given(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_404_MODEL_NOT_FOUND, 404,
                                                  self.RESPONSE_CONTENT_404_MODEL_NOT_FOUND)
@@ -119,7 +119,7 @@ class TestDeploymentsList(object):
 +-----------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+
 """
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.get")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -132,7 +132,7 @@ class TestDeploymentsList(object):
                                             params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.get")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.get")
     def test_should_send_get_request_with_custom_api_key_when_api_key_parameter_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -145,8 +145,8 @@ class TestDeploymentsList(object):
                                             params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.pydoc")
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.get")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.pydoc")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.get")
     def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
                                                                                                      pydoc_patched):
         list_json = {"deploymentList": self.LIST_JSON["deploymentList"] * 40}
@@ -162,7 +162,7 @@ class TestDeploymentsList(object):
         pydoc_patched.pager.assert_called_once()
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.get")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments_filtered_by_state(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -175,7 +175,7 @@ class TestDeploymentsList(object):
                                        params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.get")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments_filtered_with_state_but_none_found(
             self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND, 200,
@@ -190,7 +190,7 @@ class TestDeploymentsList(object):
                                             params=None)
         assert result.output == "No deployments found\n"
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.get")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"},
                                                 400)
@@ -229,7 +229,7 @@ class TestDeploymentsUpdate(object):
     RESPONSE_JSON_400 = {"error": {"name": "Error", "status": 400, "message": "Unable to access deployment"}}
     EXPECTED_STDOUT_WITH_WRONG_ID = "Unable to access deployment\n"
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_update_deployment(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
 
@@ -244,7 +244,7 @@ class TestDeploymentsUpdate(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.post")
     def test_should_send_proper_data_with_custom_api_key_when_api_key_parameter_was_provided(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
 
@@ -259,7 +259,7 @@ class TestDeploymentsUpdate(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_update_deployment_used_with_wrong_id(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_400, 400, "fake content")
 
@@ -282,7 +282,7 @@ class TestStartDeployment(object):
     REQUEST_JSON = {"isRunning": True, "id": u"some_id"}
     EXPECTED_STDOUT = "Deployment started\n"
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_start_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=204)
 
@@ -316,7 +316,7 @@ class TestDeleteDeployment(object):
     RESPONSE_JSON_400 = {"error": {"name": "Error", "status": 400, "message": "Unable to access deployment"}}
     EXPECTED_STDOUT_WITH_WRONG_ID = "Unable to access deployment\n"
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_delete_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=204)
 
@@ -331,7 +331,7 @@ class TestDeleteDeployment(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.post")
     def test_should_send_proper_data_with_custom_api_key_when_api_key_parameter_was_provided(self, post_patched):
         post_patched.return_value = MockResponse(status_code=204)
 
@@ -346,7 +346,7 @@ class TestDeleteDeployment(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.cli.deployments_commands.client.requests.post")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_delete_used_with_wrong_id(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_400, 400, "fake content")
 

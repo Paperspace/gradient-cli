@@ -5,7 +5,7 @@ from paperspace import constants
 from paperspace.cli import cli
 
 
-@mock.patch("paperspace.cli.cli.client.API")
+@mock.patch("paperspace.client.API")
 @mock.patch("paperspace.commands.experiments.CreateExperimentCommand.execute")
 def test_should_execute_create_experiment_command_when_cli_singlenode_command_was_executed(command_patched,
                                                                                            api_patched):
@@ -34,7 +34,7 @@ def test_should_execute_create_experiment_command_when_cli_singlenode_command_wa
     command_patched.assert_called_once_with(expected_kwargs)
 
 
-@mock.patch("paperspace.cli.cli.client.API")
+@mock.patch("paperspace.client.API")
 @mock.patch("paperspace.commands.experiments.CreateExperimentCommand.execute")
 def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command_was_executed(command_patched,
                                                                                               api_patched):
@@ -74,7 +74,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command
     command_patched.assert_called_once_with(expected_kwargs)
 
 
-@mock.patch("paperspace.cli.cli.client.API")
+@mock.patch("paperspace.client.API")
 @mock.patch("paperspace.commands.experiments.CreateExperimentCommand.execute")
 def test_should_execute_create_experiment_command_when_cli_multinode_grpc_command_was_executed(command_patched,
                                                                                                api_patched):
@@ -113,7 +113,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_grpc_comman
     command_patched.assert_called_once_with(expected_kwargs)
 
 
-@mock.patch("paperspace.cli.cli.client.API")
+@mock.patch("paperspace.client.API")
 @mock.patch("paperspace.commands.experiments.CreateAndStartExperimentCommand.execute")
 def test_should_execute_create_experiment_command_when_cli_create_and_start_singlenode_command_was_executed(
         command_patched, api_patched):
@@ -142,7 +142,7 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_sing
     command_patched.assert_called_once_with(expected_kwargs)
 
 
-@mock.patch("paperspace.cli.cli.client.API")
+@mock.patch("paperspace.client.API")
 @mock.patch("paperspace.commands.experiments.CreateAndStartExperimentCommand.execute")
 def test_should_execute_create_experiment_command_when_cli_create_and_start_multinode_mpi_command_was_executed(
         command_patched, api_patched):

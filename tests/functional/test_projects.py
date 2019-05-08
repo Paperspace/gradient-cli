@@ -33,7 +33,7 @@ class TestListProjects(object):
     RESPONSE_JSON_WHEN_NO_PROJECTS_WERE_FOUND = {"data": [], "meta": {"totalItems": 0}}
     EXPECTED_STDOUT_WHEN_NO_PROJECTS_WERE_FOUND = "No projects found\n"
 
-    @mock.patch("paperspace.cli.cli.client.requests.get")
+    @mock.patch("paperspace.client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_projects_list_was_used(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -47,7 +47,7 @@ class TestListProjects(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.cli.client.requests.get")
+    @mock.patch("paperspace.client.requests.get")
     def test_should_send_valid_post_request_when_projects_list_was_used_with_api_key_option(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -61,7 +61,7 @@ class TestListProjects(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.cli.client.requests.get")
+    @mock.patch("paperspace.client.requests.get")
     def test_should_send_valid_post_request_when_projects_list_was_used_with_wrong_api_key(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
@@ -75,7 +75,7 @@ class TestListProjects(object):
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.cli.client.requests.get")
+    @mock.patch("paperspace.client.requests.get")
     def test_should_print_error_message_when_no_project_was_not_found(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WHEN_NO_PROJECTS_WERE_FOUND,
                                                 status_code=200)
@@ -90,7 +90,7 @@ class TestListProjects(object):
         assert result.output == self.EXPECTED_STDOUT_WHEN_NO_PROJECTS_WERE_FOUND
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.cli.cli.client.requests.get")
+    @mock.patch("paperspace.client.requests.get")
     def test_should_print_error_message_when_error_status_code_received_but_no_content_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(status_code=400)
 

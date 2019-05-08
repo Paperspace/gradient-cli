@@ -32,7 +32,7 @@ class TestModelsList(object):
 
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 401, "message": "No such API token"}
 
-    @mock.patch("paperspace.cli.cli.client.requests.get")
+    @mock.patch("paperspace.client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON, 200, "fake content")
 
@@ -47,7 +47,7 @@ class TestModelsList(object):
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("paperspace.cli.cli.client.requests.get")
+    @mock.patch("paperspace.client.requests.get")
     def test_should_replate_api_key_in_headers_when_api_key_parameter_was_used(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON, 200, "fake content")
 
@@ -62,7 +62,7 @@ class TestModelsList(object):
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("paperspace.cli.cli.client.requests.get")
+    @mock.patch("paperspace.client.requests.get")
     def test_should_send_get_request_and_print_list_of_models_filtered_experiment_id(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON, 200)
 
@@ -76,7 +76,7 @@ class TestModelsList(object):
 
         assert result.output == self.EXPECTED_STDOUT
 
-    @mock.patch("paperspace.cli.cli.client.requests.get")
+    @mock.patch("paperspace.client.requests.get")
     def test_should_send_get_request_and_print_proper_message_when_no_models_were_found(
             self, get_patched):
         get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND, 200)
@@ -91,7 +91,7 @@ class TestModelsList(object):
 
         assert result.output == "No models found\n"
 
-    @mock.patch("paperspace.cli.cli.client.requests.get")
+    @mock.patch("paperspace.client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
 

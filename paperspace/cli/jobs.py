@@ -3,12 +3,12 @@ import click
 from paperspace import client, config
 from paperspace.cli import common
 from paperspace.cli.cli_types import json_string
-from paperspace.cli.common import del_if_value_is_none
+from paperspace.cli.common import del_if_value_is_none, ClickGroup
 from paperspace.cli.cli import cli
 from paperspace.commands import jobs as jobs_commands
 
 
-@cli.group("jobs", help="Manage gradient jobs", cls=common.ClickGroup)
+@cli.group("jobs", help="Manage gradient jobs", cls=ClickGroup)
 def jobs_group():
     pass
 
