@@ -13,7 +13,7 @@ def test_should_execute_create_experiment_command_when_cli_singlenode_command_wa
     runner = CliRunner()
     command = "experiments create singlenode " \
               "--name exp1 " \
-              "--projectHandle testHandle " \
+              "--projectId testHandle " \
               "--container testContainer " \
               "--machineType testType " \
               "--command testCommand " \
@@ -42,7 +42,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command
     runner = CliRunner()
     command = "experiments create multinode " \
               "--name exp1 " \
-              "--projectHandle testHandle " \
+              "--projectId testHandle " \
               "--experimentTypeId MPI " \
               "--workerContainer testWorkerContainer " \
               "--workerMachineType testWorkerMachineType " \
@@ -82,7 +82,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_grpc_comman
     runner = CliRunner()
     command = "experiments create multinode " \
               "--name exp1 " \
-              "--projectHandle testHandle " \
+              "--projectId testHandle " \
               "--experimentTypeId GRPC " \
               "--workerContainer testWorkerContainer " \
               "--workerMachineType testWorkerMachineType " \
@@ -121,7 +121,7 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_sing
     runner = CliRunner()
     command = "experiments createAndStart singlenode " \
               "--name exp1 " \
-              "--projectHandle testHandle " \
+              "--projectId testHandle " \
               "--container testContainer " \
               "--machineType testType " \
               "--command testCommand " \
@@ -150,7 +150,7 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_mult
     runner = CliRunner()
     command = "experiments createAndStart multinode " \
               "--name exp1 " \
-              "--projectHandle testHandle " \
+              "--projectId testHandle " \
               "--experimentTypeId MPI " \
               "--workerContainer testWorkerContainer " \
               "--workerMachineType testWorkerMachineType " \

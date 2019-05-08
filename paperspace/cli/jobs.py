@@ -81,7 +81,7 @@ def list_jobs(api_key, **filters):
 @click.option("--useDockerfile", "useDockerfile", help="Flag: using Dockerfile")
 @click.option("--isPreemptible", "isPreemptible", help="Flag: isPreemptible")
 @click.option("--project", "project", help="Project name")
-@click.option("--projectHandle", "--projectId", "projectHandle", help="Project handle", required=True)
+@click.option("--projectId", "projectHandle", help="Project ID", required=True)
 @click.option("--startedByUserId", "startedByUserId", help="User ID")
 @click.option("--relDockerfilePath", "relDockerfilePath", help="Relative path to Dockerfile")
 @click.option("--registryUsername", "registryUsername", help="Docker registry username")
