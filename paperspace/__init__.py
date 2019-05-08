@@ -1,14 +1,12 @@
 from gradient_statsd import Client as StatsdClient
 
-from . import jobs
-from . import machines
-from . import networks
-from . import scripts
-from . import templates
-from . import users
 from .config import config
-from .jobs import run
 from .login import login, logout
-from .method import print_json_pretty
+from .utils import print_json_pretty
+from .cli.cli import cli as _cli_entry_point
 
-_ = StatsdClient  # to keep import save from "Optimize Imports", auto code cleanup, etc.
+_ = StatsdClient  # to keep import safe from "Optimize Imports", auto code cleanup, etc.
+
+
+def main():
+    _cli_entry_point()

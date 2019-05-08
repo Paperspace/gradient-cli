@@ -9,8 +9,6 @@ requests = {extras = ["security"]}
 requests-toolbelt = "*"
 progressbar2 = "*"
 cryptography = {extras = ["security"]}
-"boto3" = "*"
-botocore = "*"
 six = "*"
 gradient-statsd = "*"
 click = "*"
