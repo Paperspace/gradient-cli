@@ -909,7 +909,7 @@ LIST_OF_EXPERIMENTS_FILTERED_WITH_TWO_PROJECTS = {
 }
 
 LIST_OF_EXPERIMENTS_FILTERED_WITH_TWO_PROJECTS_STDOUT = """+--------+----------------+---------+
-| Name   | Handle         | Status  |
+| Name   | ID             | Status  |
 +--------+----------------+---------+
 | dsfads | esj8mcpaayh5kx | failed  |
 | dsfads | estun7jhqta8sm | failed  |

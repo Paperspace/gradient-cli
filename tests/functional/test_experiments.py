@@ -15,7 +15,7 @@ class TestExperimentsCreateSingleNode(object):
     BASIC_OPTIONS_COMMAND = [
         "experiments", "create", "singlenode",
         "--name", "exp1",
-        "--projectHandle", "testHandle",
+        "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
@@ -30,8 +30,7 @@ class TestExperimentsCreateSingleNode(object):
         "--artifactDirectory", "/artifact/dir/",
         "--clusterId", 42,
         "--experimentEnv", '{"key":"val"}',
-        "--projectId", 987654,
-        "--projectHandle", "testHandle",
+        "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
@@ -57,7 +56,6 @@ class TestExperimentsCreateSingleNode(object):
         "artifactDirectory": u"/artifact/dir/",
         "clusterId": 42,
         "experimentEnv": {u"key": u"val"},
-        "projectId": 987654,
         "projectHandle": u"testHandle",
         "container": u"testContainer",
         "machineType": u"testType",
@@ -69,7 +67,7 @@ class TestExperimentsCreateSingleNode(object):
     }
     RESPONSE_JSON_200 = {"handle": "sadkfhlskdjh", "message": "success"}
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
-    EXPECTED_STDOUT = "New experiment created with handle: sadkfhlskdjh\n"
+    EXPECTED_STDOUT = "New experiment created with ID: sadkfhlskdjh\n"
 
     RESPONSE_JSON_404_PROJECT_NOT_FOUND = {"details": {"handle": "wrong_handle"}, "error": "Project not found"}
     RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'
@@ -109,7 +107,7 @@ class TestExperimentsCreateSingleNode(object):
         assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
 
     @mock.patch("paperspace.client.requests.post")
-    def test_should_send_proper_data_and_print_message_when_create_wrong_project_handle_was_given(self, post_patched):
+    def test_should_send_proper_data_and_print_message_when_create_wrong_project_id_was_given(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_404_PROJECT_NOT_FOUND, 404,
                                                  self.RESPONSE_CONTENT_404_PROJECT_NOT_FOUND)
 
@@ -133,7 +131,7 @@ class TestExperimentsCreateMultiNode(object):
     BASIC_OPTIONS_COMMAND = [
         "experiments", "create", "multinode",
         "--name", "multinode_mpi",
-        "--projectHandle", "prq70zy79",
+        "--projectId", "prq70zy79",
         "--experimentTypeId", "GRPC",
         "--workerContainer", "wcon",
         "--workerMachineType", "mty",
@@ -155,8 +153,7 @@ class TestExperimentsCreateMultiNode(object):
         "--artifactDirectory", "/artdir",
         "--clusterId", 2,
         "--experimentEnv", '{"key":"val"}',
-        "--projectId", 34,
-        "--projectHandle", "prq70zy79",
+        "--projectId", "prq70zy79",
         "--experimentTypeId", "MPI",
         "--workerContainer", "wcon",
         "--workerMachineType", "mty",
@@ -197,8 +194,7 @@ class TestExperimentsCreateMultiNode(object):
         "artifactDirectory": u"/artdir",
         "clusterId": 2,
         "experimentEnv": {"key": "val"},
-        "projectId": 34,
-        "projectHandle": u"prq70zy79",
+        "projectHandle": "prq70zy79",
         "experimentTypeId": 3,
         "workerContainer": u"wcon",
         "workerMachineType": u"mty",
@@ -217,7 +213,7 @@ class TestExperimentsCreateMultiNode(object):
     }
     RESPONSE_JSON_200 = {"handle": "sadkfhlskdjh", "message": "success"}
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
-    EXPECTED_STDOUT = "New experiment created with handle: sadkfhlskdjh\n"
+    EXPECTED_STDOUT = "New experiment created with ID: sadkfhlskdjh\n"
 
     @mock.patch("paperspace.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
@@ -257,7 +253,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     BASIC_OPTIONS_COMMAND = [
         "experiments", "createAndStart", "singlenode",
         "--name", "exp1",
-        "--projectHandle", "testHandle",
+        "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
@@ -273,7 +269,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--clusterId", 42,
         "--experimentEnv", '{"key":"val"}',
         "--projectId", 987654,
-        "--projectHandle", "testHandle",
+        "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
@@ -282,7 +278,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--registryPassword", "passwd",
         "--apiKey", "some_key",
     ]
-    EXPECTED_STDOUT = "New experiment created and started with handle: sadkfhlskdjh\n"
+    EXPECTED_STDOUT = "New experiment created and started with ID: sadkfhlskdjh\n"
 
 
 class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
@@ -290,7 +286,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
     BASIC_OPTIONS_COMMAND = [
         "experiments", "createAndStart", "multinode",
         "--name", "multinode_mpi",
-        "--projectHandle", "prq70zy79",
+        "--projectId", "prq70zy79",
         "--experimentTypeId", "GRPC",
         "--workerContainer", "wcon",
         "--workerMachineType", "mty",
@@ -313,7 +309,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--clusterId", 2,
         "--experimentEnv", '{"key":"val"}',
         "--projectId", 34,
-        "--projectHandle", "prq70zy79",
+        "--projectId", "prq70zy79",
         "--experimentTypeId", "MPI",
         "--workerContainer", "wcon",
         "--workerMachineType", "mty",
@@ -331,7 +327,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--parameterServerRegistryPassword", "psrpass",
         "--apiKey", "some_key",
     ]
-    EXPECTED_STDOUT = "New experiment created and started with handle: sadkfhlskdjh\n"
+    EXPECTED_STDOUT = "New experiment created and started with ID: sadkfhlskdjh\n"
 
 
 class TestExperimentDetail(object):
@@ -466,7 +462,7 @@ class TestExperimentDetail(object):
     MULTI_NODE_DETAILS_STDOUT = """+-------------------------------+----------------+
 | Name                          | multinode_mpi  |
 +-------------------------------+----------------+
-| Handle                        | ew69ls0vy3eto  |
+| ID                            | ew69ls0vy3eto  |
 | State                         | created        |
 | Artifact directory            | /artdir        |
 | Cluster ID                    | 2              |
@@ -479,7 +475,7 @@ class TestExperimentDetail(object):
 | Parameter Server Count        | 2              |
 | Parameter Server Machine Type | psmtype        |
 | Ports                         | 3456           |
-| Project Handle                | prq70zy79      |
+| Project ID                    | prq70zy79      |
 | Worker Command                | wcom           |
 | Worker Container              | wcon           |
 | Worker Count                  | 2              |
@@ -491,10 +487,10 @@ class TestExperimentDetail(object):
     SINGLE_NODE_DETAILS_STDOUT = """+---------------------+----------------+
 | Name                | dsfads         |
 +---------------------+----------------+
-| Handle              | esro6mbmiulvbl |
+| ID                  | esro6mbmiulvbl |
 | State               | created        |
 | Ports               | 5000           |
-| Project Handle      | prq70zy79      |
+| Project ID          | prq70zy79      |
 | Worker Command      | sadas          |
 | Worker Container    | asd            |
 | Worker Machine Type | C2             |
@@ -563,7 +559,7 @@ class TestExperimentList(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     LIST_JSON = example_responses.LIST_OF_EXPERIMENTS_RESPONSE_JSON
     DETAILS_STDOUT = """+---------------+---------------+---------+
-| Name          | Handle        | Status  |
+| Name          | ID            | Status  |
 +---------------+---------------+---------+
 | dsfads        | ea2lfbbpdyzsq | created |
 | dsfads        | em6btk2vtb7it | created |
@@ -612,7 +608,7 @@ class TestExperimentList(object):
                                                 "fake content")
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, ["experiments", "list", "--projectHandle", "handle1", "-p", "handle2"])
+        result = runner.invoke(cli.cli, ["experiments", "list", "--projectId", "handle1", "-p", "handle2"])
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
@@ -630,7 +626,7 @@ class TestExperimentList(object):
                                                 "fake content")
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, ["experiments", "list", "--projectHandle", "handle1", "-p", "handle2"])
+        result = runner.invoke(cli.cli, ["experiments", "list", "--projectId", "handle1", "-p", "handle2"])
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
@@ -659,12 +655,12 @@ class TestExperimentList(object):
 
 
 class TestStartExperiment(object):
-    URL = "https://services.paperspace.io/experiments/v1/experiments/some-handle/start/"
-    COMMAND = ["experiments", "start", "some-handle"]
+    URL = "https://services.paperspace.io/experiments/v1/experiments/some-id/start/"
+    COMMAND = ["experiments", "start", "some-id"]
     EXPECTED_HEADERS = paperspace.client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = paperspace.client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-    COMMAND_WITH_API_KEY = ["experiments", "start", "some-handle", "--apiKey", "some_key"]
+    COMMAND_WITH_API_KEY = ["experiments", "start", "some-id", "--apiKey", "some_key"]
     RESPONSE_JSON = {"message": "success"}
     START_STDOUT = "Experiment started\n"
 

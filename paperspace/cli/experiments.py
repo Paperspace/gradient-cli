@@ -81,14 +81,9 @@ def common_experiments_create_options(f):
         ),
         click.option(
             "--projectId",
-            "projectId",
-            help="Project ID",
-        ),
-        click.option(
-            "--projectHandle",
             "projectHandle",
             required=True,
-            help="Project handle",
+            help="Project ID",
         ),
         click.option(
             "--modelType",
@@ -278,33 +273,33 @@ def create_and_start_single_node(api_key, **kwargs):
 
 
 @experiments.command("start", help="Start experiment")
-@click.argument("experiment-handle")
+@click.argument("experiment-id")
 @api_key_option
-def start_experiment(experiment_handle, api_key):
+def start_experiment(experiment_id, api_key):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    experiments_commands.start_experiment(experiment_handle, api=experiments_api)
+    experiments_commands.start_experiment(experiment_id, api=experiments_api)
 
 
 @experiments.command("stop", help="Stop experiment")
-@click.argument("experiment-handle")
+@click.argument("experiment-id")
 @api_key_option
-def stop_experiment(experiment_handle, api_key):
+def stop_experiment(experiment_id, api_key):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    experiments_commands.stop_experiment(experiment_handle, api=experiments_api)
+    experiments_commands.stop_experiment(experiment_id, api=experiments_api)
 
 
 @experiments.command("list", help="List experiments")
-@click.option("--projectHandle", "-p", "project_handles", multiple=True)
+@click.option("--projectId", "-p", "project_ids", multiple=True)
 @api_key_option
-def list_experiments(project_handles, api_key):
+def list_experiments(project_ids, api_key):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.ListExperimentsCommand(api=experiments_api)
-    command.execute(project_handles)
+    command.execute(project_ids)
 
 
 @experiments.command("details", help="Show detail of an experiment")
-@click.argument("experiment-handle")
+@click.argument("experiment-id")
 @api_key_option
-def get_experiment_details(experiment_handle, api_key):
+def get_experiment_details(experiment_id, api_key):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    experiments_commands.get_experiment_details(experiment_handle, api=experiments_api)
+    experiments_commands.get_experiment_details(experiment_id, api=experiments_api)
