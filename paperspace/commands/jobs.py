@@ -158,3 +158,13 @@ class CreateJobCommand(JobsCommandBase):
         self._log_message(response,
                           "Job created",
                           "Unknown error while creating job")
+
+
+class ArtifactsDestroyCommand(JobsCommandBase):
+    def execute(self, job_id, files=None):
+        url = '/jobs/{}/artifactsDestroy'.format(job_id)
+        params = None
+        if files:
+            params = {'files': files}
+        response = self.api.post(url, params=params)
+        self._log_message(response, "Artifacts destroyed", "Unknown error while destroying artifacts")
