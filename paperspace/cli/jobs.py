@@ -1,10 +1,9 @@
 import click
 
 from paperspace import client, config
-from paperspace.cli import common
-from paperspace.cli.cli_types import json_string
-from paperspace.cli.common import del_if_value_is_none, ClickGroup
 from paperspace.cli.cli import cli
+from paperspace.cli.cli_types import json_string
+from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGroup
 from paperspace.commands import jobs as jobs_commands
 
 
@@ -20,7 +19,7 @@ def jobs_group():
     required=True,
     help="Delete job with given ID",
 )
-@common.api_key_option
+@api_key_option
 def delete_job(job_id, api_key=None):
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.DeleteJobCommand(api=jobs_api)
@@ -34,7 +33,7 @@ def delete_job(job_id, api_key=None):
     required=True,
     help="Stop job with given ID",
 )
-@common.api_key_option
+@api_key_option
 def stop_job(job_id, api_key=None):
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.StopJobCommand(api=jobs_api)
@@ -57,9 +56,9 @@ def stop_job(job_id, api_key=None):
     "experimentId",
     help="Use to filter jobs by experiment ID",
 )
-@common.api_key_option
+@api_key_option
 def list_jobs(api_key, **filters):
-    common.del_if_value_is_none(filters)
+    del_if_value_is_none(filters)
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.ListJobsCommand(api=jobs_api)
     command.execute(filters)
@@ -86,7 +85,7 @@ def list_jobs(api_key, **filters):
 @click.option("--relDockerfilePath", "relDockerfilePath", help="Relative path to Dockerfile")
 @click.option("--registryUsername", "registryUsername", help="Docker registry username")
 @click.option("--registryPassword", "registryPassword", help="Docker registry password")
-@common.api_key_option
+@api_key_option
 def create_job(api_key, **kwargs):
     del_if_value_is_none(kwargs)
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
@@ -100,7 +99,7 @@ def create_job(api_key, **kwargs):
     "job_id",
     required=True
 )
-@common.api_key_option
+@api_key_option
 def list_logs(job_id, api_key=None):
     logs_api = client.API(config.CONFIG_LOG_HOST, api_key=api_key)
     command = jobs_commands.JobLogsCommand(api=logs_api)
@@ -110,7 +109,7 @@ def list_logs(job_id, api_key=None):
 @jobs_group.command("artifactsDestroy", help="Destroy job's artifacts")
 @click.argument("job_id")
 @click.option("--files", "files")
-@common.api_key_option
+@api_key_option
 def destroy_artifacts(job_id, api_key=None, files=None):
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.ArtifactsDestroyCommand(api=jobs_api)
