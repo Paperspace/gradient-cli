@@ -1,15 +1,22 @@
 import mock
 from click.testing import CliRunner
 
-import paperspace
 from paperspace.cli import cli
 from paperspace.client import default_headers
 from tests import example_responses, MockResponse
 
 
-class TestListJobs(object):
-    URL = "https://api.paperspace.io/jobs/getJobs/"
+class TestJobs(object):
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
+
     EXPECTED_HEADERS = default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+
+class TestListJobs(TestJobs):
+    URL = "https://api.paperspace.io/jobs/getJobs/"
     BASIC_COMMAND = ["jobs", "list"]
     EXPECTED_RESPONSE_JSON = example_responses.LIST_JOBS_RESPONSE_JSON
     EXPECTED_STDOUT = """+----------------+---------------------------+-------------------+----------------+--------------+--------------------------+
@@ -30,11 +37,6 @@ class TestListJobs(object):
 """
 
     BASIC_COMMAND_WITH_API_KEY = ["jobs", "list", "--apiKey", "some_key"]
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = paperspace.client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
-    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
 
     RESPONSE_JSON_WHEN_NO_JOBS_WERE_FOUND = []
     EXPECTED_STDOUT_WHEN_NO_JOBS_WERE_FOUND = "No jobs found\n"
@@ -169,11 +171,8 @@ class TestListJobs(object):
         assert result.exit_code == 0
 
 
-class TestJobLogs(object):
+class TestJobLogs(TestJobs):
     URL = "https://logs.paperspace.io/jobs/logs?jobId=some_job_id&line=0"
-    EXPECTED_HEADERS = default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_RESPONSE_JSON = example_responses.LIST_OF_LOGS_FOR_JOB
@@ -256,4 +255,36 @@ Error: Missing option "--jobId".
                                        json=None,
                                        params=None)
         assert result.output == "Error while parsing response data: No JSON\n"
+        assert result.exit_code == 0
+
+
+class TestJobArtifactsCommands(TestJobs):
+    runner = CliRunner()
+    URL = "https://api.paperspace.io"
+
+    @mock.patch("paperspace.client.requests.post")
+    def test_should_send_valid_post_request_when_destroying_artifacts_with_files_specified(self, post_patched):
+        post_patched.return_value = MockResponse(status_code=200)
+        job_id = 'some_job_id'
+        file_names = 'some_file_names'
+        result = self.runner.invoke(cli.cli, ['jobs', 'artifactsDestroy', job_id, '--files', file_names, "--apiKey", "some_key"])
+
+        post_patched.assert_called_with('{}/jobs/{}/artifactsDestroy'.format(self.URL, job_id),
+                                        files=None,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=None,
+                                        params={'files': file_names})
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.client.requests.post")
+    def test_should_send_valid_post_request_when_destroying_artifacts_without_files_specified(self, post_patched):
+        post_patched.return_value = MockResponse(status_code=200)
+        job_id = 'some_job_id'
+        result = self.runner.invoke(cli.cli, ['jobs', 'artifactsDestroy', job_id, "--apiKey", "some_key"])
+
+        post_patched.assert_called_with('{}/jobs/{}/artifactsDestroy'.format(self.URL, job_id),
+                                        files=None,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=None,
+                                        params=None)
         assert result.exit_code == 0
