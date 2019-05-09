@@ -55,4 +55,11 @@ setup(
     entry_points={'console_scripts': [
         'paperspace-python = paperspace:main',
     ]},
+    extras_require={
+        "dev": [
+            'tox',
+            'pytest',
+            'mock',
+        ],
+    },
 )
