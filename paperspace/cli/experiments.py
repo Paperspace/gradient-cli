@@ -294,7 +294,7 @@ def stop_experiment(experiment_id, api_key):
 def list_experiments(project_ids, api_key):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.ListExperimentsCommand(api=experiments_api)
-    command.execute(project_ids)
+    command.execute(project_ids=project_ids)
 
 
 @experiments.command("details", help="Show detail of an experiment")

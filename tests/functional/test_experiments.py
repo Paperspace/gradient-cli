@@ -584,7 +584,7 @@ class TestExperimentList(object):
         assert result.output == self.DETAILS_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("paperspace.cli.experiments.experiments_commands.pydoc")
+    @mock.patch("paperspace.cli.experiments.experiments_commands.common.pydoc")
     @mock.patch("paperspace.client.requests.get")
     def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
                                                                                                      pydoc_patched):
@@ -635,7 +635,7 @@ class TestExperimentList(object):
                                                     "projectHandle[0]": u"handle1",
                                                     "projectHandle[1]": u"handle2"})
 
-        assert result.output == "No experiments found\n"
+        assert result.output == "No data found\n"
 
     @mock.patch("paperspace.client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):

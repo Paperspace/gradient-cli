@@ -3,15 +3,15 @@ import pydoc
 import terminaltables
 
 from paperspace import logger, constants, client, config
-from paperspace.commands import CommandBase
 from paperspace.workspace import S3WorkspaceHandler
 from paperspace.logger import log_response
 from paperspace.utils import get_terminal_lines
+from . import common
 
 experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
 
 
-class ExperimentCommand(CommandBase):
+class ExperimentCommand(common.CommandBase):
     def __init__(self, workspace_handler=None, **kwargs):
         super(ExperimentCommand, self).__init__(**kwargs)
         self._workspace_handler = workspace_handler or S3WorkspaceHandler(experiments_api=self.api, logger=self.logger)
@@ -68,39 +68,23 @@ def stop_experiment(experiment_id, api=experiments_api):
     log_response(response, "Experiment stopped", "Unknown error while stopping the experiment")
 
 
-class ListExperimentsCommand(object):
-    def __init__(self, api=experiments_api, logger_=logger):
-        self.api = api
-        self.logger = logger_
+class ListExperimentsCommand(common.ListCommand):
+    @property
+    def request_url(self):
+        return "/experiments/"
 
-    def execute(self, project_ids=None):
-        project_ids = project_ids or []
-        params = self._get_query_params(project_ids)
-        response = self.api.get("/experiments/", params=params)
-
-        try:
-            data = response.json()
-            if not response.ok:
-                self.logger.log_error_response(data)
-                return
-
-            experiments = self._get_experiments_list(data, bool(project_ids))
-        except (ValueError, KeyError) as e:
-            self.logger.error("Error while parsing response data: {}".format(e))
-        else:
-            self._log_experiments_list(experiments)
-
-    @staticmethod
-    def _get_query_params(project_ids):
+    def _get_request_params(self, kwargs):
         params = {"limit": -1}  # so the API sends back full list without pagination
-        for i, experiment_id in enumerate(project_ids):
-            key = "projectHandle[{}]".format(i)
-            params[key] = experiment_id
+
+        project_ids = kwargs.get("project_ids")
+        if project_ids:
+            for i, experiment_id in enumerate(project_ids):
+                key = "projectHandle[{}]".format(i)
+                params[key] = experiment_id
 
         return params
 
-    @staticmethod
-    def _make_experiments_list_table(experiments):
+    def _get_table_data(self, experiments):
         data = [("Name", "ID", "Status")]
         for experiment in experiments:
             name = experiment["templateHistory"]["params"].get("name")
@@ -108,12 +92,12 @@ class ListExperimentsCommand(object):
             status = constants.ExperimentState.get_state_str(experiment["state"])
             data.append((name, handle, status))
 
-        ascii_table = terminaltables.AsciiTable(data)
-        table_string = ascii_table.table
-        return table_string
+        return data
 
-    @staticmethod
-    def _get_experiments_list(data, filtered=False):
+    def _get_objects(self, response, kwargs):
+        data = super(ListExperimentsCommand, self)._get_objects(response, kwargs)
+
+        filtered = bool(kwargs.get("project_ids"))
         if not filtered:  # If filtering by project ID response data has different format...
             return data["data"]
 
@@ -122,16 +106,6 @@ class ListExperimentsCommand(object):
             for experiment in project_experiments["data"]:
                 experiments.append(experiment)
         return experiments
-
-    def _log_experiments_list(self, experiments):
-        if not experiments:
-            self.logger.warning("No experiments found")
-        else:
-            table_str = self._make_experiments_list_table(experiments)
-            if len(table_str.splitlines()) > get_terminal_lines():
-                pydoc.pager(table_str)
-            else:
-                self.logger.log(table_str)
 
 
 def _make_details_table(experiment):

@@ -89,7 +89,7 @@ class TestModelsList(object):
                                             json=None,
                                             params={"limit": -1})
 
-        assert result.output == "No models found\n"
+        assert result.output == "No data found\n"
 
     @mock.patch("paperspace.client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):

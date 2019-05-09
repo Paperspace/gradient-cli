@@ -27,4 +27,4 @@ def list_models(api_key, **filters):
     common.del_if_value_is_none(filters)
     models_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = models_commands.ListModelsCommand(api=models_api)
-    command.execute(filters)
+    command.execute(filters=filters)

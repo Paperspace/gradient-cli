@@ -37,7 +37,7 @@ class TestListJobs(object):
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
 
     RESPONSE_JSON_WHEN_NO_JOBS_WERE_FOUND = []
-    EXPECTED_STDOUT_WHEN_NO_JOBS_WERE_FOUND = "No jobs found\n"
+    EXPECTED_STDOUT_WHEN_NO_JOBS_WERE_FOUND = "No data found\n"
 
     BASIC_COMMAND_WITH_FILTERING = [
         "jobs", "list",

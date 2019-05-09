@@ -145,7 +145,7 @@ class TestDeploymentsList(object):
                                             params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("paperspace.cli.deployments.deployments_commands.pydoc")
+    @mock.patch("paperspace.cli.deployments.deployments_commands.common.pydoc")
     @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.get")
     def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
                                                                                                      pydoc_patched):
@@ -188,7 +188,7 @@ class TestDeploymentsList(object):
                                             headers=EXPECTED_HEADERS,
                                             json=self.LIST_WITH_FILTER_REQUEST_JSON,
                                             params=None)
-        assert result.output == "No deployments found\n"
+        assert result.output == "No data found\n"
 
     @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):

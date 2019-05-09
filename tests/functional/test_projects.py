@@ -31,7 +31,7 @@ class TestListProjects(object):
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
 
     RESPONSE_JSON_WHEN_NO_PROJECTS_WERE_FOUND = {"data": [], "meta": {"totalItems": 0}}
-    EXPECTED_STDOUT_WHEN_NO_PROJECTS_WERE_FOUND = "No projects found\n"
+    EXPECTED_STDOUT_WHEN_NO_PROJECTS_WERE_FOUND = "No data found\n"
 
     @mock.patch("paperspace.client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_projects_list_was_used(self, get_patched):
