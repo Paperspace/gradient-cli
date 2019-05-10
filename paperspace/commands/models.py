@@ -1,4 +1,4 @@
-from . import common
+from paperspace.commands import common
 
 
 class ListModelsCommand(common.ListCommand):

@@ -1,7 +1,7 @@
 from paperspace import client, config
 from paperspace.cli.cli import cli
 from paperspace.commands import projects as projects_commands
-from . import common
+from paperspace.cli import common
 
 
 @cli.group("projects", help="Manage projects", cls=common.ClickGroup)

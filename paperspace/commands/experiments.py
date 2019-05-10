@@ -3,7 +3,7 @@ import terminaltables
 from paperspace import logger, constants, client, config
 from paperspace.logger import log_response
 from paperspace.workspace import S3WorkspaceHandler
-from . import common
+from paperspace.commands import common
 
 experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
 

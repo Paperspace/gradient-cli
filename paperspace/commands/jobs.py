@@ -6,7 +6,7 @@ from click import style
 from paperspace import config, client
 from paperspace.utils import get_terminal_lines
 from paperspace.workspace import S3WorkspaceHandler
-from . import common
+from paperspace.commands import common
 
 
 class JobsCommandBase(common.CommandBase):

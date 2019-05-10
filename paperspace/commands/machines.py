@@ -1,11 +1,9 @@
-import pydoc
 import time
 
 import terminaltables
 
+from paperspace.commands import common
 from paperspace.exceptions import BadResponseError
-from paperspace.utils import get_terminal_lines
-from . import common
 
 
 class _MachinesCommandBase(common.CommandBase):

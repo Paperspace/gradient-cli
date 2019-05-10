@@ -1,5 +1,5 @@
 from paperspace import config, version, client
-from . import common
+from paperspace.commands import common
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "paperspace-python",
