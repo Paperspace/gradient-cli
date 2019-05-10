@@ -7,7 +7,7 @@ from six.moves import input
 
 from paperspace import logger
 from .config import config
-from .method import requests_exception_to_error_obj, response_error_check, status_code_to_error_obj
+from paperspace.utils import response_error_check, requests_exception_to_error_obj, status_code_to_error_obj
 
 UNAUTHORIZED_EXTENDED_INFO = '\n\nNote: Please keep in mind that currently you can login only with the email and ' \
                              'password from your Paperspace account. If you\'re using AD, SAML or GitHub ' \
