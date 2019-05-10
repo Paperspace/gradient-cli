@@ -4,13 +4,12 @@ import terminaltables
 from click import style
 
 from paperspace import config, client
-from paperspace.commands.common import CommandBase
 from paperspace.utils import get_terminal_lines
 from paperspace.workspace import S3WorkspaceHandler
 from . import common
 
 
-class JobsCommandBase(CommandBase):
+class JobsCommandBase(common.CommandBase):
     def _log_message(self, response, success_msg_template, error_msg):
         if response.ok:
             try:
@@ -70,7 +69,7 @@ class ListJobsCommand(common.ListCommand):
         return data
 
 
-class JobLogsCommand(CommandBase):
+class JobLogsCommand(common.CommandBase):
     last_line_number = 0
     base_url = "/jobs/logs?jobId={}&line={}"
 

@@ -1,8 +1,5 @@
-import terminaltables
-
 from paperspace import config, version, client
-from paperspace.commands import common
-from paperspace.commands.common import CommandBase
+from . import common
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "paperspace-python",
@@ -10,7 +7,7 @@ default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
 deployments_api = client.API(config.CONFIG_HOST, headers=default_headers)
 
 
-class _DeploymentCommandBase(CommandBase):
+class _DeploymentCommandBase(common.CommandBase):
     def _log_message(self, response, success_msg_template, error_msg):
         if response.ok:
             try:

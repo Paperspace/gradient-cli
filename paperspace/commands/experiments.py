@@ -1,11 +1,8 @@
-import pydoc
-
 import terminaltables
 
 from paperspace import logger, constants, client, config
-from paperspace.workspace import S3WorkspaceHandler
 from paperspace.logger import log_response
-from paperspace.utils import get_terminal_lines
+from paperspace.workspace import S3WorkspaceHandler
 from . import common
 
 experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
