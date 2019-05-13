@@ -21,6 +21,8 @@ DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
     )
 )
 
+DEPLOYMENT_MACHINE_TYPES = ("G1", "G6", "G12",
+    "K80", "P100", "V100")
 
 @deployments.command("create", help="Create new deployment")
 @click.option(
@@ -45,7 +47,7 @@ DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
 @click.option(
     "--machineType",
     "machineType",
-    type=click.Choice(constants.MACHINE_TYPES),
+    type=click.Choice(DEPLOYMENT_MACHINE_TYPES),
     required=True,
     help="Type of machine for new deployment",
 )
