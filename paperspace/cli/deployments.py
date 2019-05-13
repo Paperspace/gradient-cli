@@ -110,47 +110,6 @@ def get_deployments_list(api_key=None, **filters):
     command.execute(filters=filters)
 
 
-@deployments.command("update", help="Update deployment properties")
-@click.option(
-    "--id",
-    "id_",
-    required=True,
-    help="Deployment ID",
-)
-@click.option(
-    "--modelId",
-    "modelId",
-    help="ID of a trained model",
-)
-@click.option(
-    "--name",
-    "name",
-    help="Human-friendly name for new model deployment",
-)
-@click.option(
-    "--machineType",
-    "machineType",
-    help="Type of machine for new deployment",
-)
-@click.option(
-    "--imageUrl",
-    "imageUrl",
-    help="Docker image for model serving",
-)
-@click.option(
-    "--instanceCount",
-    "instanceCount",
-    type=int,
-    help="Number of machine instances",
-)
-@api_key_option
-def update_deployment_model(id_, api_key, **kwargs):
-    del_if_value_is_none(kwargs)
-    deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
-    command = deployments_commands.UpdateDeploymentCommand(api=deployments_api)
-    command.execute(id_, kwargs)
-
-
 @deployments.command("start", help="Start deployment")
 @click.option(
     "--id",

@@ -65,20 +65,6 @@ class ListDeploymentsCommand(common.ListCommand):
         return data
 
 
-class UpdateDeploymentCommand(_DeploymentCommandBase):
-    def execute(self, deployment_id, kwargs):
-        if not kwargs:
-            self.logger.log("No parameters to update were given. Use --help for more information.")
-            return
-
-        json_ = {"id": deployment_id,
-                 "upd": kwargs}
-        response = self.api.post("/deployments/updateDeployment/", json=json_)
-        self._log_message(response,
-                          "Deployment model updated.",
-                          "Unknown error occurred.")
-
-
 class StartDeploymentCommand(_DeploymentCommandBase):
     def execute(self, deployment_id):
         json_ = {"id": deployment_id,
