@@ -8,9 +8,10 @@ from paperspace.commands import CommandBase
 from paperspace.exceptions import BadResponseError
 from paperspace.utils import get_terminal_lines
 from paperspace.workspace import S3WorkspaceHandler
+from paperspace.commands import common
 
 
-class JobsCommandBase(CommandBase):
+class JobsCommandBase(common.CommandBase):
     def _log_message(self, response, success_msg_template, error_msg):
         if response.ok:
             try:
@@ -46,33 +47,17 @@ class StopJobCommand(JobsCommandBase):
                           "Unknown error while stopping job")
 
 
-class ListJobsCommand(JobsCommandBase):
-    def execute(self, filters=None):
+class ListJobsCommand(common.ListCommand):
+    @property
+    def request_url(self):
+        return "/jobs/getJobs/"
+
+    def _get_request_json(self, kwargs):
+        filters = kwargs.get("filters")
         json_ = filters or None
-        response = self.api.get("/jobs/getJobs/", json=json_)
+        return json_
 
-        try:
-            data = response.json()
-            if not response.ok:
-                self.logger.log_error_response(data)
-                return
-        except (ValueError, KeyError) as e:
-            self.logger.error("Error while parsing response data: {}".format(e))
-        else:
-            self._log_jobs_list(data)
-
-    def _log_jobs_list(self, data):
-        if not data:
-            self.logger.warning("No jobs found")
-        else:
-            table_str = self._make_table(data)
-            if len(table_str.splitlines()) > get_terminal_lines():
-                pydoc.pager(table_str)
-            else:
-                self.logger.log(table_str)
-
-    @staticmethod
-    def _make_table(jobs):
+    def _get_table_data(self, jobs):
         data = [("ID", "Name", "Project", "Cluster", "Machine Type", "Created")]
         for job in jobs:
             id_ = job.get("id")
@@ -83,12 +68,10 @@ class ListJobsCommand(JobsCommandBase):
             created = job.get("dtCreated")
             data.append((id_, name, project, cluster, machine_type, created))
 
-        ascii_table = terminaltables.AsciiTable(data)
-        table_string = ascii_table.table
-        return table_string
+        return data
 
 
-class JobLogsCommand(CommandBase):
+class JobLogsCommand(common.CommandBase):
     last_line_number = 0
     base_url = "/jobs/logs?jobId={}&line={}"
 

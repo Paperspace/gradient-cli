@@ -1,14 +1,12 @@
-import pydoc
 import time
 
 import terminaltables
 
-from paperspace.commands import CommandBase
+from paperspace.commands import common
 from paperspace.exceptions import BadResponseError
-from paperspace.utils import get_terminal_lines
 
 
-class _MachinesCommandBase(CommandBase):
+class _MachinesCommandBase(common.CommandBase):
     def _log_message(self, response, success_msg_template, error_msg):
         if response.ok:
             try:
@@ -138,33 +136,17 @@ class ShowMachineCommand(_MachinesCommandBase):
         return table_string
 
 
-class ListMachinesCommand(_MachinesCommandBase):
-    def execute(self, kwargs):
-        json_ = {"params": kwargs} if kwargs else None
-        response = self.api.get("/machines/getMachines/", json=json_)
+class ListMachinesCommand(common.ListCommand):
+    @property
+    def request_url(self):
+        return "/machines/getMachines/"
 
-        try:
-            data = response.json()
-            if not response.ok:
-                self.logger.log_error_response(data)
-                return
-        except (ValueError, KeyError) as e:
-            self.logger.error("Error while parsing response data: {}".format(e))
-        else:
-            self._log_machines_list(data)
+    def _get_request_json(self, kwargs):
+        filters = kwargs.get("filters")
+        json_ = {"params": filters} if filters else None
+        return json_
 
-    def _log_machines_list(self, machines):
-        if not machines:
-            self.logger.warning("No machines found")
-        else:
-            table_str = self._make_machines_list_table(machines)
-            if len(table_str.splitlines()) > get_terminal_lines():
-                pydoc.pager(table_str)
-            else:
-                self.logger.log(table_str)
-
-    @staticmethod
-    def _make_machines_list_table(machines):
+    def _get_table_data(self, machines):
         data = [("ID", "Name", "OS", "CPU", "GPU", "RAM", "State", "Region")]
         for machine in machines:
             id_ = machine.get("id")
@@ -177,9 +159,7 @@ class ListMachinesCommand(_MachinesCommandBase):
             region = machine.get("region")
             data.append((id_, name, os_, cpus, gpu, ram, state, region))
 
-        ascii_table = terminaltables.AsciiTable(data)
-        table_string = ascii_table.table
-        return table_string
+        return data
 
 
 class DestroyMachineCommand(_MachinesCommandBase):

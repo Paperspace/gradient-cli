@@ -1,5 +1,5 @@
 from paperspace import login, logout
-from paperspace.commands import CommandBase
+from paperspace.commands.common import CommandBase
 from paperspace.version import version
 
 

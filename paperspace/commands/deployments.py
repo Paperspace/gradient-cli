@@ -1,10 +1,5 @@
-import pydoc
-
-import terminaltables
-
-from paperspace import config, version, client, logger
-from paperspace.commands import CommandBase
-from paperspace.utils import get_terminal_lines
+from paperspace import config, version, client
+from paperspace.commands import common
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "paperspace-python",
@@ -12,7 +7,7 @@ default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
 deployments_api = client.API(config.CONFIG_HOST, headers=default_headers)
 
 
-class _DeploymentCommandBase(CommandBase):
+class _DeploymentCommandBase(common.CommandBase):
     def _log_message(self, response, success_msg_template, error_msg):
         if response.ok:
             try:
@@ -39,51 +34,25 @@ class CreateDeploymentCommand(_DeploymentCommandBase):
                           "Unknown error during deployment")
 
 
-class ListDeploymentsCommand(_DeploymentCommandBase):
-    def execute(self, filters=None):
-        json_ = self._get_request_json(filters)
-        response = self.api.get("/deployments/getDeploymentList/", json=json_)
+class ListDeploymentsCommand(common.ListCommand):
+    @property
+    def request_url(self):
+        return "/deployments/getDeploymentList/"
 
-        try:
-            data = response.json()
-            if not response.ok:
-                self.logger.log_error_response(data)
-                return
-            deployments = self._get_deployments_list(response)
-        except (ValueError, KeyError) as e:
-            self.logger.error("Error while parsing response data: {}".format(e))
-        else:
-            self._log_deployments_list(deployments)
-
-    @staticmethod
-    def _get_request_json(filters):
+    def _get_request_json(self, kwargs):
+        filters = kwargs.get("filters")
         if not filters:
             return None
 
         json_ = {"filter": {"where": {"and": [filters]}}}
         return json_
 
-    @staticmethod
-    def _get_deployments_list(response):
-        if not response.ok:
-            raise ValueError("Unknown error")
+    def _get_objects(self, response, kwargs):
+        data = super(ListDeploymentsCommand, self)._get_objects(response, kwargs)
+        objects = data["deploymentList"]
+        return objects
 
-        data = response.json()["deploymentList"]
-        logger.debug(data)
-        return data
-
-    def _log_deployments_list(self, deployments):
-        if not deployments:
-            self.logger.warning("No deployments found")
-        else:
-            table_str = self._make_deployments_list_table(deployments)
-            if len(table_str.splitlines()) > get_terminal_lines():
-                pydoc.pager(table_str)
-            else:
-                self.logger.log(table_str)
-
-    @staticmethod
-    def _make_deployments_list_table(deployments):
+    def _get_table_data(self, deployments):
         data = [("Name", "ID", "Endpoint", "Api Type", "Deployment Type")]
         for deployment in deployments:
             name = deployment.get("name")
@@ -93,9 +62,7 @@ class ListDeploymentsCommand(_DeploymentCommandBase):
             deployment_type = deployment.get("deploymentType")
             data.append((name, id_, endpoint, api_type, deployment_type))
 
-        ascii_table = terminaltables.AsciiTable(data)
-        table_string = ascii_table.table
-        return table_string
+        return data
 
 
 class UpdateDeploymentCommand(_DeploymentCommandBase):

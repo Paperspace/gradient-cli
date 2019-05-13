@@ -42,8 +42,6 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests', 'old_tests']),
     install_requires=[
         'requests[security]',
-        'boto3',
-        'botocore',
         'six',
         'gradient-statsd',
         'click',
@@ -52,10 +50,10 @@ setup(
         'click-help-colors',
         'colorama',
         'requests-toolbelt',
-        'progressbar2'
+        'progressbar2',
     ],
     entry_points={'console_scripts': [
-        'paperspace-python = paperspace.main:main',
+        'paperspace-python = paperspace:main',
     ]},
     extras_require={
         "dev": [

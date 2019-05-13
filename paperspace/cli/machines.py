@@ -360,7 +360,8 @@ def list_machines(api_key, params, **kwargs):
 
     machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.ListMachinesCommand(api=machines_api)
-    command.execute(params or kwargs)
+    filters = params or kwargs
+    command.execute(filters=filters)
 
 
 restart_machine_help = "Restart an individual machine. If the machine is already restarting, this action will " \

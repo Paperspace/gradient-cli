@@ -39,7 +39,7 @@ class TestListJobs(TestJobs):
     BASIC_COMMAND_WITH_API_KEY = ["jobs", "list", "--apiKey", "some_key"]
 
     RESPONSE_JSON_WHEN_NO_JOBS_WERE_FOUND = []
-    EXPECTED_STDOUT_WHEN_NO_JOBS_WERE_FOUND = "No jobs found\n"
+    EXPECTED_STDOUT_WHEN_NO_JOBS_WERE_FOUND = "No data found\n"
 
     BASIC_COMMAND_WITH_FILTERING = [
         "jobs", "list",

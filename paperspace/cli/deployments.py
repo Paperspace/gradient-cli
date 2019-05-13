@@ -105,7 +105,7 @@ def get_deployments_list(api_key=None, **filters):
     del_if_value_is_none(filters)
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = deployments_commands.ListDeploymentsCommand(api=deployments_api)
-    command.execute(filters)
+    command.execute(filters=filters)
 
 
 @deployments.command("update", help="Update deployment properties")

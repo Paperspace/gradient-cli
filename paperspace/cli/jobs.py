@@ -61,7 +61,7 @@ def list_jobs(api_key, **filters):
     del_if_value_is_none(filters)
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.ListJobsCommand(api=jobs_api)
-    command.execute(filters)
+    command.execute(filters=filters)
 
 
 @jobs_group.command("create", help="Create job")

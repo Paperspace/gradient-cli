@@ -507,7 +507,7 @@ class TestListMachines(object):
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
 
-    EXPECTED_STDOUT_WHEN_NO_MACHINES_WERE_FOUND = "No machines found\n"
+    EXPECTED_STDOUT_WHEN_NO_MACHINES_WERE_FOUND = "No data found\n"
 
     COMMAND_WITH_MUTUALLY_EXCLUSIVE_OPTIONS = [
         "machines", "list",
