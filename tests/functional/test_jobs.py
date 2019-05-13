@@ -265,26 +265,38 @@ class TestJobArtifactsCommands(TestJobs):
     @mock.patch("paperspace.client.requests.post")
     def test_should_send_valid_post_request_when_destroying_artifacts_with_files_specified(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
-        job_id = 'some_job_id'
-        file_names = 'some_file_names'
-        result = self.runner.invoke(cli.cli, ['jobs', 'artifactsDestroy', job_id, '--files', file_names, "--apiKey", "some_key"])
+        job_id = "some_job_id"
+        file_names = "some_file_names"
+        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--files", file_names, "--apiKey", "some_key"])
 
-        post_patched.assert_called_with('{}/jobs/{}/artifactsDestroy'.format(self.URL, job_id),
+        post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy".format(self.URL, job_id),
                                         files=None,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
-                                        params={'files': file_names})
+                                        params={"files": file_names})
         assert result.exit_code == 0
 
     @mock.patch("paperspace.client.requests.post")
     def test_should_send_valid_post_request_when_destroying_artifacts_without_files_specified(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
-        job_id = 'some_job_id'
-        result = self.runner.invoke(cli.cli, ['jobs', 'artifactsDestroy', job_id, "--apiKey", "some_key"])
+        job_id = "some_job_id"
+        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--apiKey", "some_key"])
 
-        post_patched.assert_called_with('{}/jobs/{}/artifactsDestroy'.format(self.URL, job_id),
+        post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy".format(self.URL, job_id),
                                         files=None,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None)
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.client.requests.get")
+    def test_should_send_send_valid_get_request_and_receive_json_response(self, get_patched):
+        get_patched.return_value = MockResponse(status_code=200)
+        job_id = "some_job_id"
+        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "get", job_id, "--apiKey", "some_key"])
+
+        get_patched.assert_called_with("{}/jobs/artifactsGet".format(self.URL),
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params={"jobId": job_id})
         assert result.exit_code == 0

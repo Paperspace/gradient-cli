@@ -5,6 +5,7 @@ from click import style
 
 from paperspace import config, client
 from paperspace.commands import CommandBase
+from paperspace.exceptions import BadResponseError
 from paperspace.utils import get_terminal_lines
 from paperspace.workspace import S3WorkspaceHandler
 
@@ -168,3 +169,22 @@ class ArtifactsDestroyCommand(JobsCommandBase):
             params = {'files': files}
         response = self.api.post(url, params=params)
         self._log_message(response, "Artifacts destroyed", "Unknown error while destroying artifacts")
+
+
+class ArtifactsGetCommand(JobsCommandBase):
+    def execute(self, job_id):
+        url = '/jobs/artifactsGet'
+        response = self.api.get(url, params={'jobId': job_id})
+
+        self._log_artifacts(response)
+
+    def _log_artifacts(self, response):
+        try:
+            artifacts_json = response.json()
+            if response.ok:
+                self._print_dict_recursive(artifacts_json)
+            else:
+                raise BadResponseError(
+                    '{}: {}'.format(artifacts_json['error']['status'], artifacts_json['error']['message']))
+        except (ValueError, KeyError, BadResponseError) as e:
+            self.logger.error("Error occurred while getting artifacts: {}".format(str(e)))

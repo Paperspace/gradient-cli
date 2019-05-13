@@ -106,7 +106,12 @@ def list_logs(job_id, api_key=None):
     command.execute(job_id)
 
 
-@jobs_group.command("artifactsDestroy", help="Destroy job's artifacts")
+@jobs_group.group("artifacts", help="Manage jobs' artifacts", cls=ClickGroup)
+def artifacts():
+    pass
+
+
+@artifacts.command("destroy", help="Destroy job's artifacts")
 @click.argument("job_id")
 @click.option("--files", "files")
 @api_key_option
@@ -114,3 +119,12 @@ def destroy_artifacts(job_id, api_key=None, files=None):
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.ArtifactsDestroyCommand(api=jobs_api)
     command.execute(job_id, files=files)
+
+
+@artifacts.command("get", help="Get job's artifacts")
+@click.argument("job_id")
+@api_key_option
+def get_artifacts(job_id, api_key=None):
+    jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    command = jobs_commands.ArtifactsGetCommand(api=jobs_api)
+    command.execute(job_id)
