@@ -3293,3 +3293,49 @@ LIST_HYPERPARAMETERS_RESPONSE_JSON = {
         "totalItems": 15
     }
 }
+
+HYPERPARAMETERS_DETAILS_RESPONSE_JSON = {
+    "data": {
+        "dtCreated": "2019-05-13T10:57:32.828135+00:00",
+        "dtDeleted": None,
+        "dtFinished": None,
+        "dtModified": "2019-05-13T10:57:32.828135+00:00",
+        "dtProvisioningFinished": None,
+        "dtProvisioningStarted": None,
+        "dtStarted": None,
+        "dtTeardownFinished": None,
+        "dtTeardownStarted": None,
+        "experimentError": None,
+        "experimentTemplateHistoryId": 45973,
+        "experimentTemplateId": 8,
+        "experimentTypeId": 4,
+        "handle": "ess6t3fjs2hb1g",
+        "id": 45966,
+        "projectHandle": "pr4yxj956",
+        "projectId": 14898,
+        "started_by_user_id": 199654,
+        "state": 1,
+        "templateHistory": {
+            "dtCreated": "2019-05-13T10:57:31.592657+00:00",
+            "dtDeleted": None,
+            "experimentTemplateId": 8,
+            "id": 45973,
+            "params": {
+                "is_preemptible": False,
+                "name": "some_name",
+                "ports": 5000,
+                "project_handle": "pr4yxj956",
+                "tuning_command": "some command",
+                "worker_command": "some worker command",
+                "worker_container": "some_container",
+                "worker_count": 1,
+                "worker_machine_type": "k80",
+                "worker_use_dockerfile": False,
+                "workspaceUrl": "none"
+            },
+            "triggerEvent": None,
+            "triggerEventId": None
+        }
+    },
+    "message": "success"
+}

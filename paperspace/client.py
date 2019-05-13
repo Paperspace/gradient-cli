@@ -54,3 +54,12 @@ class API(object):
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response
+
+    def delete(self, url, json=None, params=None):
+        path = self.get_path(url)
+        response = requests.delete(path, params=params, headers=self.headers, json=json)
+        logger.debug("DELETE request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}"
+                     .format(response.url, self.headers, json, params))
+        logger.debug("Response status code: {}".format(response.status_code))
+        logger.debug("Response content: {}".format(response.content))
+        return response
