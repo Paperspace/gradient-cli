@@ -228,15 +228,15 @@ class TestStartDeployment(object):
         assert result.exit_code == 0
 
 
-class TestDeleteDeployment(object):
+class TestStopDeployment(object):
     URL = "https://api.paperspace.io/deployments/updateDeployment/"
-    COMMAND = ["deployments", "delete",
+    COMMAND = ["deployments", "stop",
                "--id", "some_id"]
-    REQUEST_JSON = {"upd": {"isDeleted": True}, "id": u"some_id"}
-    EXPECTED_STDOUT = "Deployment deleted.\n"
+    REQUEST_JSON = {"isRunning": False, "id": u"some_id"}
+    EXPECTED_STDOUT = "Deployment stopped\n"
 
     COMMAND_WITH_API_KEY = [
-        "deployments", "delete",
+        "deployments", "stop",
         "--id", "some_id",
         "--apiKey", "some_key",
     ]
@@ -247,7 +247,7 @@ class TestDeleteDeployment(object):
     EXPECTED_STDOUT_WITH_WRONG_ID = "Unable to access deployment\n"
 
     @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.post")
-    def test_should_send_proper_data_and_print_message_when_deployments_delete_was_used(self, post_patched):
+    def test_should_send_proper_data_and_print_message_when_deployments_stop_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=204)
 
         runner = CliRunner()
@@ -277,7 +277,7 @@ class TestDeleteDeployment(object):
         assert result.exit_code == 0
 
     @mock.patch("paperspace.cli.deployments.deployments_commands.client.requests.post")
-    def test_should_send_proper_data_and_print_message_when_deployments_delete_used_with_wrong_id(self, post_patched):
+    def test_should_send_proper_data_and_print_message_when_deployments_stop_used_with_wrong_id(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_400, 400, "fake content")
 
         runner = CliRunner()

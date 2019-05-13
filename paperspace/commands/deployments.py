@@ -74,12 +74,11 @@ class StartDeploymentCommand(_DeploymentCommandBase):
                           "Deployment started",
                           "Unknown error occurred.")
 
-
-class DeleteDeploymentCommand(_DeploymentCommandBase):
+class StopDeploymentCommand(_DeploymentCommandBase):
     def execute(self, deployment_id):
         json_ = {"id": deployment_id,
-                 "upd": {"isDeleted": True}}
+                 "isRunning": False}
         response = self.api.post("/deployments/updateDeployment/", json=json_)
         self._log_message(response,
-                          "Deployment deleted.",
+                          "Deployment stopped",
                           "Unknown error occurred.")

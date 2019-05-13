@@ -124,7 +124,7 @@ def start_deployment(id_, api_key=None):
     command.execute(id_)
 
 
-@deployments.command("delete", help="Delete deployment")
+@deployments.command("stop", help="Stop deployment")
 @click.option(
     "--id",
     "id_",
@@ -132,7 +132,7 @@ def start_deployment(id_, api_key=None):
     help="Deployment ID",
 )
 @api_key_option
-def delete_deployment(id_, api_key=None):
+def stop_deployment(id_, api_key=None):
     deployments_api = client.API(config.CONFIG_HOST, api_key=api_key)
-    command = deployments_commands.DeleteDeploymentCommand(api=deployments_api)
+    command = deployments_commands.StopDeploymentCommand(api=deployments_api)
     command.execute(id_)
