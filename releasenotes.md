@@ -1,6 +1,7 @@
 # Paperspace Python Release Notes
 
 # Release Notes for 0.2.0a1
+### New features
 * colorful error and help messages
 * removed `paperspace-python run` command
 
