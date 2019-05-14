@@ -1,6 +1,10 @@
 # Paperspace Python Release Notes
 
-# Release Notes for 0.2.0a
+# Release Notes for 0.2.0a1
+* colorful error and help messages
+* removed `paperspace-python run` command
+
+# Release Notes for 0.2.0a0
 ### New features
 * partial support for managing jobs, models and projects
 * filtering deployments list by project ID and model ID
