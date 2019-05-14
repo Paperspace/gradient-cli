@@ -21,22 +21,16 @@ class TestBaseClass(object):
         logger_.log = log_to_var
 
         input_dict = {
-            "foo": "bar",
-            "baz": {
-                "foo2": "bar2",
-                'baz2': {
-                    "foo3": "bar3"
+            "foo": {
+                'bar': {
+                    "baz": "faz"
                 }
             }
         }
         expected_string = """foo:
-  bar
-baz:
-  baz2:
-    foo3:
-      bar3
-  foo2:
-    bar2
+  bar:
+    baz:
+      faz
 """
 
         command = CommandBase(logger_=logger_)
