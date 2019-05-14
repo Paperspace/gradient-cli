@@ -1,4 +1,5 @@
 import mock
+import pytest
 from click.testing import CliRunner
 
 from paperspace.cli import cli
@@ -267,7 +268,8 @@ class TestJobArtifactsCommands(TestJobs):
         post_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
         file_names = "some_file_names"
-        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--files", file_names, "--apiKey", "some_key"])
+        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--files", file_names, "--apiKey",
+                                              "some_key"])
 
         post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy".format(self.URL, job_id),
                                         files=None,
@@ -299,4 +301,42 @@ class TestJobArtifactsCommands(TestJobs):
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params={"jobId": job_id})
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.client.requests.get")
+    def test_should_send_valid_get_request_with_all_parameters_for_a_list_of_artifacts(self, get_patched):
+        get_patched.return_value = MockResponse(status_code=200)
+        job_id = "some_job_id"
+        result = self.runner.invoke(cli.cli,
+                                    ["jobs", "artifacts", "list", job_id, "--apiKey", "some_key", "--size", "--links",
+                                     "--files", "foo"])
+
+        get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params={"jobId": job_id,
+                                               "size": True,
+                                               "links": True,
+                                               "files": "foo"})
+        assert result.exit_code == 0
+
+    @mock.patch("paperspace.client.requests.get")
+    @pytest.mark.parametrize('option,param', [("--size", "size"),
+                                              ("-s", "size"),
+                                              ("--links", "links"),
+                                              ("-l", "links")])
+    def test_should_send_valid_get_request_with_valid_param_for_a_list_of_artifacts_for_both_formats_of_param(self,
+                                                                                                              get_patched,
+                                                                                                              option,
+                                                                                                              param):
+        get_patched.return_value = MockResponse(status_code=200)
+        job_id = "some_job_id"
+        result = self.runner.invoke(cli.cli,
+                                    ["jobs", "artifacts", "list", job_id, "--apiKey", "some_key"] + [option])
+
+        get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params={"jobId": job_id,
+                                               param: True})
         assert result.exit_code == 0
