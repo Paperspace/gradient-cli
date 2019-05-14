@@ -24,6 +24,7 @@ setup(
     version=version,
     description='Paperspace Python',
     long_description=long_description,
+    long_description_content_type="text/markdown",
     url='https://github.com/paperspace/paperspace-python',
     author='Paperspace Co.',
     author_email='info@paperspace.com',
