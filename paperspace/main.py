@@ -1,6 +1,8 @@
 import os
 import sys
 
+import click
+
 from .cli import cli
 from .jobs import run, print_json_pretty
 from .login import login, logout, set_apikey
@@ -66,6 +68,9 @@ def main():
         return not set_apikey(args[0])
 
     if cmd == 'run':
+        click.echo("Deprecation warning: 'paperspace-python run' command is deprecated "
+                   "and will be removed in next release\n")
+
         if not args or args[0] in help_opts:
             print('run usage: %s' % run_usage(prog))
             sys.exit(not args)
