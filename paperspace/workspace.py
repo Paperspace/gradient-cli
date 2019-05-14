@@ -6,8 +6,8 @@ import click
 import progressbar
 import requests
 from requests_toolbelt.multipart import encoder
-from paperspace import logger as default_logger
 
+from paperspace import logger as default_logger
 from paperspace.exceptions import S3UploadFailedError, PresignedUrlUnreachableError, \
     PresignedUrlAccessDeniedError, PresignedUrlConnectionError, ProjectAccessDeniedError, \
     PresignedUrlMalformedResponseError, PresignedUrlError
@@ -24,10 +24,11 @@ class S3WorkspaceHandler:
         self.logger = logger or default_logger
 
     @staticmethod
-    def _retrieve_file_paths(dir_name):
+    def _retrieve_file_paths(dir_name, ignored_files=''):
         # setup file paths variable
         file_paths = {}
-        exclude = ['.git', '.idea', '.pytest_cache']
+        ignored_files = ignored_files.split(',')
+        exclude = ['.git', '.idea', '.pytest_cache'] + ignored_files
         # Read all directory, subdirectories and file lists
         for root, dirs, files in os.walk(dir_name, topdown=True):
             dirs[:] = [d for d in dirs if d not in exclude]
@@ -38,11 +39,12 @@ class S3WorkspaceHandler:
                     file_path = filename
                 else:
                     file_path = os.path.join(os.path.relpath(root, dir_name), filename)
-                file_paths[file_path] = os.path.join(root, filename)
+                if file_path not in ignored_files:
+                    file_paths[file_path] = os.path.join(root, filename)
 
         return file_paths
 
-    def _zip_workspace(self, workspace_path):
+    def _zip_workspace(self, workspace_path, ignore_files):
         if not workspace_path:
             workspace_path = '.'
             zip_file_name = os.path.basename(os.getcwd()) + '.zip'
@@ -54,8 +56,7 @@ class S3WorkspaceHandler:
         if os.path.exists(zip_file_path):
             self.logger.log('Removing existing archive')
             os.remove(zip_file_path)
-
-        file_paths = self._retrieve_file_paths(workspace_path)
+        file_paths = self._retrieve_file_paths(workspace_path, ignore_files)
 
         self.logger.log('Creating zip archive: %s' % zip_file_name)
         zip_file = zipfile.ZipFile(zip_file_path, 'w')
@@ -86,6 +87,8 @@ class S3WorkspaceHandler:
         workspace_url = input_data.get('workspaceUrl')
         workspace_path = input_data.get('workspace')
         workspace_archive = input_data.get('workspaceArchive')
+        ignore_files = input_data.get('ignore_files')
+
         if (workspace_archive and workspace_path) or (workspace_archive and workspace_url) or (
                 workspace_path and workspace_url):
             raise click.UsageError("Use either:\n\t--workspaceUrl to point repository URL"
@@ -96,10 +99,13 @@ class S3WorkspaceHandler:
         if workspace_url:
             return  # nothing to do
 
+        # That's nasty amf. Should be removed as soon it won't be necessary by PS_API (meaning ASAP)
+        if workspace_path == 'none':
+            return 'none'
         if workspace_archive:
             archive_path = os.path.abspath(workspace_archive)
         else:
-            archive_path = self._zip_workspace(workspace_path)
+            archive_path = self._zip_workspace(workspace_path, ignore_files)
 
         file_name = os.path.basename(archive_path)
         project_handle = input_data['projectHandle']

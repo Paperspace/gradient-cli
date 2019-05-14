@@ -59,6 +59,11 @@ def common_experiments_create_options(f):
             help="Project git repository url",
         ),
         click.option(
+            "--ignoreFiles",
+            "ignore_files",
+            help="Ignore certain files from uploading"
+        ),
+        click.option(
             "--workingDirectory",
             "workingDirectory",
             help="Working directory for the experiment",
