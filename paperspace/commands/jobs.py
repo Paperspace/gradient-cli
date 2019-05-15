@@ -4,9 +4,10 @@ import terminaltables
 from click import style
 
 from paperspace import config, client
+from paperspace.commands import common
+from paperspace.exceptions import BadResponseError
 from paperspace.utils import get_terminal_lines
 from paperspace.workspace import S3WorkspaceHandler
-from paperspace.commands import common
 
 
 class JobsCommandBase(common.CommandBase):
@@ -140,3 +141,76 @@ class CreateJobCommand(JobsCommandBase):
         self._log_message(response,
                           "Job created",
                           "Unknown error while creating job")
+
+
+class ArtifactsDestroyCommand(JobsCommandBase):
+    def execute(self, job_id, files=None):
+        url = '/jobs/{}/artifactsDestroy'.format(job_id)
+        params = None
+        if files:
+            params = {'files': files}
+        response = self.api.post(url, params=params)
+        self._log_message(response, "Artifacts destroyed", "Unknown error while destroying artifacts")
+
+
+class ArtifactsGetCommand(JobsCommandBase):
+    def execute(self, job_id):
+        url = '/jobs/artifactsGet'
+        response = self.api.get(url, params={'jobId': job_id})
+
+        self._log_artifacts(response)
+
+    def _log_artifacts(self, response):
+        try:
+            artifacts_json = response.json()
+            if response.ok:
+                self._print_dict_recursive(artifacts_json)
+            else:
+                raise BadResponseError(
+                    '{}: {}'.format(artifacts_json['error']['status'], artifacts_json['error']['message']))
+        except (ValueError, KeyError, BadResponseError) as e:
+            self.logger.error("Error occurred while getting artifacts: {}".format(str(e)))
+
+
+class ArtifactsListCommand(common.ListCommand):
+    kwargs = {}
+
+    def execute(self, **kwargs):
+        self.kwargs = kwargs
+        return super(ArtifactsListCommand, self).execute(**kwargs)
+
+    @property
+    def request_url(self):
+        return '/jobs/artifactsList'
+
+    def _get_request_params(self, kwargs):
+        params = {'jobId': kwargs['job_id']}
+
+        files = kwargs.get('files')
+        if files:
+            params['files'] = files
+        size = kwargs.get('size', False)
+        if size:
+            params['size'] = size
+        links = kwargs.get('links', False)
+        if links:
+            params['links'] = links
+
+        return params
+
+    def _get_table_data(self, artifacts):
+        columns = ['Files']
+        if self.kwargs.get('size'):
+            columns.append('Size (in bytes)')
+        if self.kwargs.get('links'):
+            columns.append('URL')
+
+        data = [tuple(columns)]
+        for artifact in artifacts:
+            row = [artifact.get('file')]
+            if 'size' in artifact.keys():
+                row.append(artifact['size'])
+            if 'url' in artifact.keys():
+                row.append(artifact['url'])
+            data.append(tuple(row))
+        return data
