@@ -99,7 +99,7 @@ class S3WorkspaceHandler:
         if workspace_url:
             return  # nothing to do
 
-        # That's nasty amf. Should be removed as soon it won't be necessary by PS_API (meaning ASAP)
+        # Should be removed as soon it won't be necessary by PS_API
         if workspace_path == 'none':
             return 'none'
         if workspace_archive:
