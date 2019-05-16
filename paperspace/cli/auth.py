@@ -1,25 +1,26 @@
 import click
 
-from paperspace import client, config
+from paperspace import logger
 from paperspace.cli import common
 from paperspace.cli.cli import cli
-from paperspace.cli.validators import validate_email
 from paperspace.commands import login as login_commands
 
+LOGIN_DEPRECATION_MESSAGE = """The login command is currently disabled for logging in with `--email` and `--password`.
 
-@cli.command("login", help="Log in with email and password")
+Instead, obtain an API Key from https://www.paperspace.com/console/account/api and then use the `apiKey` command to store your API Key.
+
+Visit the docs @ https://docs.paperspace.com for more info!"""
+
+
+@cli.command("login", help=LOGIN_DEPRECATION_MESSAGE, hidden=True)
 @click.option(
     "--email",
     "email",
-    required=True,
-    callback=validate_email,
     help="Email used to create Paperspace account",
 )
 @click.option(
     "--password",
     "password",
-    prompt=True,
-    hide_input=True,
     help="Password used to create Paperspace account",
 )
 @click.option(
@@ -27,10 +28,8 @@ from paperspace.commands import login as login_commands
     "api_token_name",
     help="Name of api token used to log in",
 )
-def login(email, password, api_token_name):
-    machines_api = client.API(config.CONFIG_HOST)
-    command = login_commands.LogInCommand(api=machines_api)
-    command.execute(email, password, api_token_name)
+def login(**kwargs):
+    logger.warning(LOGIN_DEPRECATION_MESSAGE)
 
 
 @cli.command("logout", help="Log out / remove apiKey from config file")
