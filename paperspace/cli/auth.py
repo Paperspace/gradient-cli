@@ -5,9 +5,11 @@ from paperspace.cli import common
 from paperspace.cli.cli import cli
 from paperspace.commands import login as login_commands
 
-LOGIN_DEPRECATION_MESSAGE = """The login command is currently disabled for logging in with `--email` and `--password`.
+LOGIN_DEPRECATION_MESSAGE = """The login command is currently disabled for logging in using `--email` and `--password`.
 
-Instead, obtain an API Key from https://www.paperspace.com/console/account/api and then use the `apiKey` command to store your API Key.
+Instead, obtain an API Key from https://www.paperspace.com/console/account/api.
+
+Then use the `apiKey` command to save your API Key locally.
 
 Visit the docs @ https://docs.paperspace.com for more info!"""
 
@@ -39,7 +41,7 @@ def logout():
 
 
 @cli.command("apiKey", help="Save your api key")
-@click.argument("api_key", required=False, callback=common.prompt_for_secret("API Key: "))
+@click.argument("api_key", required=False, callback=common.prompt_for_secret("Enter your API Key: "))
 def save_api_key(api_key):
     command = login_commands.SetApiKeyCommand()
     command.execute(api_key)
