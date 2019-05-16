@@ -44,4 +44,5 @@ def logout():
 @click.argument("api_key", required=False, callback=common.prompt_for_secret("Enter your API Key: "))
 def save_api_key(api_key):
     command = login_commands.SetApiKeyCommand()
+    api_key = api_key.strip()
     command.execute(api_key)
