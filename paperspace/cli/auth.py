@@ -36,3 +36,10 @@ def login(email, password, api_token_name):
 def logout():
     command = login_commands.LogOutCommand()
     command.execute()
+
+
+@cli.command("apiKey", help="Save your api key")
+@click.argument("api_key")
+def save_api_key(api_key):
+    command = login_commands.SetApiKeyCommand()
+    command.execute(api_key)
