@@ -29,7 +29,7 @@ class S3WorkspaceHandler:
         file_paths = {}
 
         exclude = ['.git', '.idea', '.pytest_cache']
-        if ignored_files is not None:
+        if ignored_files:
             exclude += ignored_files.split(',')
 
         # Read all directory, subdirectories and file lists
