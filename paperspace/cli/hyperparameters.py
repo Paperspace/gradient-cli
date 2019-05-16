@@ -90,7 +90,7 @@ def create_and_start_hyperparameter(api_key, **hyperparameter):
 
 @hyperparameters_group.command("list", help="List hyperparameters")
 @common.api_key_option
-def create_hyperparameter(api_key):
+def list_hyperparameters(api_key):
     hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = hyperparameters_commands.ListHyperparametersCommand(api=hyperparameters_api)
     command.execute()
@@ -130,7 +130,7 @@ def get_hyperparameter_details(api_key, id_):
     required=True,
 )
 @common.api_key_option
-def get_hyperparameter_details(api_key, id_):
+def start_hyperparameter_tuning(api_key, id_):
     hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = hyperparameters_commands.HyperparameterStartCommand(api=hyperparameters_api)
     command.execute(id_)
