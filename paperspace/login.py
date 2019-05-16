@@ -125,7 +125,7 @@ def set_apikey(apikey):
         json.dump(config_data, outfile, indent=2, sort_keys=True)
         outfile.write('\n')
 
-    logger.log("Successfully added API Key to {}. You're ready to go!".format(config_path))
+    logger.log("Successfully added your API Key to {}. You're ready to go!".format(config_path))
 
     return True
 

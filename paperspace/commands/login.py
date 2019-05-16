@@ -19,6 +19,10 @@ class ShowVersionCommand(CommandBase):
         self.logger.log(version)
 
 
-class SetApiKeyCommand(object):
+class SetApiKeyCommand(CommandBase):
     def execute(self, api_key):
+        if not api_key:
+            self.logger.error("API Key cannot be empty.")
+            return
+
         set_apikey(api_key)
