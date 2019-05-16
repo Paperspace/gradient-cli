@@ -372,6 +372,105 @@ class TestCreateAndStartHyperparameters(object):
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
 
+class TestStartHyperparameters(object):
+    URL = "https://services.paperspace.io/experiments/v1/hyperopt/e0ucpl6adyfgg/start/"
+    COMMAND = [
+        "hyperparameters", "start",
+        "--id", "e0ucpl6adyfgg",
+    ]
+
+    EXPECTED_HEADERS = paperspace.client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = paperspace.client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+    EXPECTED_RESPONSE = {"message": "success"}
+    EXPECTED_STDOUT = "Hyperparameter tuning started\n"
+
+    EXPECTED_RESPONSE_JSON_WITH_ERROR = {"error": "Could not find cluster meeting requirements"}
+    EXPECTED_STDOUT_WHEN_ERROR_RECEIVED = "Could not find cluster meeting requirements\n"
+
+    COMMAND_WITH_API_KEY_PARAMETER_USED = [
+        "hyperparameters", "start",
+        "--id", "e0ucpl6adyfgg",
+        "--apiKey", "some_key",
+    ]
+    EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
+    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Forbidden\nIncorrect API Key provided\n"
+
+    @mock.patch("paperspace.client.requests.put")
+    def test_should_send_get_request_and_print_proper_message_when_start_command_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE, 201)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=None,
+                                             params=None)
+
+        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("paperspace.client.requests.put")
+    def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE, 201)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=None,
+                                             params=None)
+
+        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("paperspace.client.requests.put")
+    def test_should_print_proper_message_when_error_message_received(self, put_patched):
+        put_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WITH_ERROR, 400)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        put_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params=None)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_ERROR_RECEIVED
+
+    @mock.patch("paperspace.client.requests.put")
+    def test_should_print_proper_message_when_wrong_api_key_was_used(self, put_patched):
+        put_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 403)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        put_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params=None)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("paperspace.client.requests.put")
+    def test_should_send_request_and_print_proper_message_when_error_code_returned_without_json_data(self, put_patched):
+        put_patched.return_value = MockResponse(status_code=500)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        put_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params=None)
+
+        assert result.output == "Unknown error while starting hyperparameter tuning\n"
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+
 class TestHyperparametersList(object):
     URL = "https://services.paperspace.io/experiments/v1/hyperopt/"
     COMMAND = ["hyperparameters", "list"]
