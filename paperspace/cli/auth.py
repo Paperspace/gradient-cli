@@ -1,6 +1,7 @@
 import click
 
 from paperspace import client, config
+from paperspace.cli import common
 from paperspace.cli.cli import cli
 from paperspace.cli.validators import validate_email
 from paperspace.commands import login as login_commands
@@ -39,7 +40,7 @@ def logout():
 
 
 @cli.command("apiKey", help="Save your api key")
-@click.argument("api_key")
+@click.argument("api_key", required=False, callback=common.prompt_for_secret("API Key: "))
 def save_api_key(api_key):
     command = login_commands.SetApiKeyCommand()
     command.execute(api_key)
