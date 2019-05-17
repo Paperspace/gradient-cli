@@ -1,5 +1,15 @@
 # Paperspace Python Release Notes
 
+# Release Notes for 0.2.0a2
+### New features
+* partial support for hyperparameter tuning
+* prompt for apiKey if not provided
+* deprecate `login` command
+* `--ignoreFiles` option for `experiments create`
+* `--ignoreFiles` and `--workspace none` options for `jobs create`
+### Fixes
+* restore apiKey command
+
 # Release Notes for 0.2.0a1
 ### New features
 * colorful error and help messages
