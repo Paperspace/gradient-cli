@@ -22,7 +22,7 @@ DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
 )
 
 DEPLOYMENT_MACHINE_TYPES = ("G1", "G6", "G12",
-    "K80", "P100", "V100")
+    "K80", "P100", "GV100")
 
 @deployments.command("create", help="Create new deployment")
 @click.option(
