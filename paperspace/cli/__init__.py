@@ -5,6 +5,7 @@ from click._compat import get_text_stderr
 import paperspace.cli.auth
 import paperspace.cli.deployments
 import paperspace.cli.experiments
+import paperspace.cli.hyperparameters
 import paperspace.cli.jobs
 import paperspace.cli.machines
 import paperspace.cli.models

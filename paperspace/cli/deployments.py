@@ -100,7 +100,7 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
 @click.option(
     "--modelId",
     "modelId",
-    help="Use to filter by project ID",
+    help="Use to filter by model ID",
 )
 @api_key_option
 def get_deployments_list(api_key=None, **filters):

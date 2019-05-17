@@ -30,26 +30,35 @@ class API(object):
 
     def post(self, url, json=None, params=None, files=None):
         path = self.get_path(url)
-        response = requests.post(path, json=json, params=params, headers=self.headers, files=files)
         logger.debug("POST request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}"
-                     .format(response.url, self.headers, json, params))
+                     .format(path, self.headers, json, params))
+        response = requests.post(path, json=json, params=params, headers=self.headers, files=files)
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response
 
     def put(self, url, json=None, params=None):
         path = self.get_path(url)
-        response = requests.put(path, json=json, params=params, headers=self.headers)
         logger.debug("PUT request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}"
-                     .format(response.url, self.headers, json, params))
+                     .format(path, self.headers, json, params))
+        response = requests.put(path, json=json, params=params, headers=self.headers)
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response
 
     def get(self, url, json=None, params=None):
         path = self.get_path(url)
-        response = requests.get(path, params=params, headers=self.headers, json=json)
         logger.debug("GET request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}"
+                     .format(path, self.headers, json, params))
+        response = requests.get(path, params=params, headers=self.headers, json=json)
+        logger.debug("Response status code: {}".format(response.status_code))
+        logger.debug("Response content: {}".format(response.content))
+        return response
+
+    def delete(self, url, json=None, params=None):
+        path = self.get_path(url)
+        response = requests.delete(path, params=params, headers=self.headers, json=json)
+        logger.debug("DELETE request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}"
                      .format(response.url, self.headers, json, params))
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))

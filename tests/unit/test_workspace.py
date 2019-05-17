@@ -10,12 +10,11 @@ from paperspace.workspace import S3WorkspaceHandler
 MOCK_BUCKET_NAME = 'bucket_name'
 MOCK_OBJECT_KEY = 'object_key'
 mock_upload_data = {
-        "bucket_name": MOCK_BUCKET_NAME,
-        "fields": {
-            "key": MOCK_OBJECT_KEY
-        }
+    "bucket_name": MOCK_BUCKET_NAME,
+    "fields": {
+        "key": MOCK_OBJECT_KEY
     }
-
+}
 
 mock_upload_response = {
     "message": "success",
