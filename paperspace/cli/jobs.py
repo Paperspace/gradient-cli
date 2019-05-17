@@ -94,17 +94,35 @@ def create_job(api_key, **kwargs):
     command.execute(kwargs)
 
 
-@jobs_group.command("log", help="List job logs")
+@jobs_group.command("logs", help="List job logs")
 @click.option(
     "--jobId",
     "job_id",
     required=True
 )
+@click.option(
+    "--line",
+    "line",
+    required=False,
+    default=0
+)
+@click.option(
+    "--limit",
+    "limit",
+    required=False,
+    default=10000
+)
+@click.option(
+    "--follow",
+    "follow",
+    required=False,
+    default=False
+)
 @api_key_option
-def list_logs(job_id, api_key=None):
+def list_logs(job_id, line, limit, follow, api_key=None):
     logs_api = client.API(config.CONFIG_LOG_HOST, api_key=api_key)
     command = jobs_commands.JobLogsCommand(api=logs_api)
-    command.execute(job_id)
+    command.execute(job_id, line, limit, follow)
 
 
 @jobs_group.group("artifacts", help="Manage jobs' artifacts", cls=ClickGroup)

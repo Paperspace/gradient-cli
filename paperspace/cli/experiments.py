@@ -308,3 +308,34 @@ def list_experiments(project_ids, api_key):
 def get_experiment_details(experiment_id, api_key):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.get_experiment_details(experiment_id, api=experiments_api)
+
+
+@experiments.command("logs", help="List experiment logs")
+@click.option(
+    "--experimentId",
+    "experiment_id",
+    required=True
+)
+@click.option(
+    "--line",
+    "line",
+    required=False,
+    default=0
+)
+@click.option(
+    "--limit",
+    "limit",
+    required=False,
+    default=10000
+)
+@click.option(
+    "--follow",
+    "follow",
+    required=False,
+    default=False
+)
+@api_key_option
+def list_logs(experiment_id, line, limit, follow, api_key=None):
+    logs_api = client.API(config.CONFIG_LOG_HOST, api_key=api_key)
+    command = experiments_commands.ExperimentLogsCommand(api=logs_api)
+    command.execute(experiment_id, line, limit, follow)

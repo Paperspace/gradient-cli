@@ -72,17 +72,18 @@ class ListJobsCommand(common.ListCommand):
 
 class JobLogsCommand(common.CommandBase):
     last_line_number = 0
-    base_url = "/jobs/logs?jobId={}&line={}"
+    base_url = "/jobs/logs?jobId={}&line={}&limit={}"
 
     is_logs_complete = False
 
-    def execute(self, job_id):
+    def execute(self, job_id, line, limit, follow):
+        self.last_line_number = line
         table_title = "Job %s logs" % job_id
         table_data = [("LINE", "MESSAGE")]
         table = terminaltables.AsciiTable(table_data, title=table_title)
 
         while not self.is_logs_complete:
-            response = self._get_logs(job_id)
+            response = self._get_logs(job_id, self.last_line_number, limit)
 
             try:
                 data = response.json()
@@ -97,8 +98,11 @@ class JobLogsCommand(common.CommandBase):
             else:
                 self._log_logs_list(data, table, table_data)
 
-    def _get_logs(self, job_id):
-        url = self.base_url.format(job_id, self.last_line_number)
+            if not follow:
+                self.is_logs_complete = True
+
+    def _get_logs(self, job_id, line, limit):
+        url = self.base_url.format(job_id, line, limit)
         return self.api.get(url)
 
     def _log_logs_list(self, data, table, table_data):
