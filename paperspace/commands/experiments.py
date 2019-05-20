@@ -55,6 +55,9 @@ class CreateAndStartExperimentCommand(ExperimentCommand):
         self._log_create_experiment(response,
                                     "New experiment created and started with ID: {}",
                                     "Unknown error while creating/starting the experiment")
+        if response.ok:
+            return response.json()
+        return None
 
 
 def start_experiment(experiment_id, api=experiments_api):
@@ -182,16 +185,17 @@ class ExperimentLogsCommand(common.CommandBase):
     is_logs_complete = False
 
     def execute(self, experiment_id, line, limit, follow):
+        if follow:
+            self.logger.log("Awaiting logs...")
+
         self.last_line_number = line
         table_title = "Experiment %s logs" % experiment_id
-        table_data = [("LINE", "MESSAGE")]
+        table_data = [("JOB ID", "LINE", "MESSAGE")]
         table = terminaltables.AsciiTable(table_data, title=table_title)
 
         while not self.is_logs_complete:
-            print ("follow " + str(follow))
             response = self._get_logs(experiment_id, self.last_line_number, limit)
 
-            print ("got data")
             try:
                 data = response.json()
                 if not response.ok:
@@ -203,11 +207,8 @@ class ExperimentLogsCommand(common.CommandBase):
                 self.logger.log("Error while parsing response data: {}".format(e))
                 return
             else:
-                print ("parsed data")
-                self._log_logs_list(data, table, table_data)
-                print ("logged data")
+                self._log_logs_list(data, table, table_data, follow)
 
-            print ("follow " + follow)
             if not follow:
                 self.is_logs_complete = True
 
@@ -220,15 +221,25 @@ class ExperimentLogsCommand(common.CommandBase):
         };
         return self.api.get(self.other_url, params=params)
 
-    def _log_logs_list(self, data, table, table_data):
+    def _log_logs_list(self, data, table, table_data, follow):
         if not data:
             self.logger.log("No Logs found")
         else:
-            table_str = self._make_table(data, table, table_data)
-            if len(table_str.splitlines()) > get_terminal_lines():
-                pydoc.pager(table_str)
+            if follow:
+                # TODO track number of jobs seen to look for PSEOF
+                if data[-1].get("message") == "PSEOF":
+                    self.is_logs_complete = True
+                else:
+                    self.last_line_number = data[-1].get("line")
+                for log in data:
+                    log_str = "{}\t{}\t{}"
+                    self.logger.log(log_str.format(style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
             else:
-                self.logger.log(table_str)
+                table_str = self._make_table(data, table, table_data)
+                if len(table_str.splitlines()) > get_terminal_lines():
+                    pydoc.pager(table_str)
+                else:
+                    self.logger.log(table_str)
 
     def _make_table(self, logs, table, table_data):
         if logs[-1].get("message") == "PSEOF":
