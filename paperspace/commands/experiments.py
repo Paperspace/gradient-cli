@@ -179,8 +179,7 @@ def get_experiment_details(experiment_id, api=experiments_api):
 
 class ExperimentLogsCommand(common.CommandBase):
     last_line_number = 0
-    base_url = "/jobs/logs?experimentId={}&line={}&limit={}"
-    other_url = "/jobs/logs"
+    base_url = "/jobs/logs"
 
     is_logs_complete = False
 
@@ -213,13 +212,12 @@ class ExperimentLogsCommand(common.CommandBase):
                 self.is_logs_complete = True
 
     def _get_logs(self, experiment_id, line, limit):
-        url = self.base_url.format(experiment_id, line, limit)
         params = {
             'experimentId': experiment_id,
             'line': line,
             'limit': limit
         };
-        return self.api.get(self.other_url, params=params)
+        return self.api.get(self.base_url, params=params)
 
     def _log_logs_list(self, data, table, table_data, follow):
         if not data:

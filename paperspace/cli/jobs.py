@@ -87,11 +87,14 @@ def list_jobs(api_key, **filters):
 @click.option("--registryUsername", "registryUsername", help="Docker registry username")
 @click.option("--registryPassword", "registryPassword", help="Docker registry password")
 @api_key_option
-def create_job(api_key, **kwargs):
+@click.pass_context
+def create_job(ctx, api_key, **kwargs):
     del_if_value_is_none(kwargs)
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.CreateJobCommand(api=jobs_api)
-    command.execute(kwargs)
+    job = command.execute(kwargs)
+    if job is not None:
+        ctx.invoke(list_logs, job_id=job["handle"], line=0, limit=100, follow=True, api_key=api_key)
 
 
 @jobs_group.command("logs", help="List job logs")
