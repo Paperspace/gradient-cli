@@ -235,6 +235,13 @@ def common_experiments_create_single_node_options(f):
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
 
+show_logs_option = click.option(
+    "--logs/--no-logs",
+    "show_logs",
+    default=False,
+)
+
+
 @create_experiment.command(name="multinode", help="Create multi node experiment")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
@@ -259,38 +266,42 @@ def create_single_node(api_key, **kwargs):
 @create_and_start_experiment.command(name="multinode", help="Create and start new multi node experiment")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
+@show_logs_option
 @click.pass_context
-def create_and_start_multi_node(ctx, api_key, **kwargs):
+def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
     del_if_value_is_none(kwargs)
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.CreateAndStartExperimentCommand(api=experiments_api)
     experiment = command.execute(kwargs)
-    if experiment is not None:
+    if experiment is not None and show_logs is True:
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
 
 
 @create_and_start_experiment.command(name="singlenode", help="Create and start new single node experiment")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
+@show_logs_option
 @click.pass_context
-def create_and_start_single_node(ctx, api_key, **kwargs):
+def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.CreateAndStartExperimentCommand(api=experiments_api)
     experiment = command.execute(kwargs)
-    if experiment is not None:
+    if experiment is not None and show_logs is True:
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
 
 
 @experiments.command("start", help="Start experiment")
 @click.argument("experiment-id")
 @api_key_option
+@show_logs_option
 @click.pass_context
-def start_experiment(ctx, experiment_id, api_key):
+def start_experiment(ctx, experiment_id, show_logs, api_key):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.start_experiment(experiment_id, api=experiments_api)
-    ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
+    if show_logs is True:
+        ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
 
 @experiments.command("stop", help="Stop experiment")

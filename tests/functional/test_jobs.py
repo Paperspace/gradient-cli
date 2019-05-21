@@ -173,12 +173,13 @@ class TestListJobs(TestJobs):
 
 
 class TestJobLogs(TestJobs):
-    URL = "https://logs.paperspace.io/jobs/logs?jobId=some_job_id&line=0&limit=10000"
+    URL = "https://logs.paperspace.io/jobs/logs"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_RESPONSE_JSON = example_responses.LIST_OF_LOGS_FOR_JOB
     BASIC_COMMAND_WITHOUT_PARAMETERS = ["jobs", "logs"]
     BASIC_COMMAND = ["jobs", "logs", "--jobId", "some_job_id", "--apiKey", "some_key"]
+    BASIC_COMMAND_PARAMS = {"jobId": "some_job_id", "line": 0, "limit": 10000}
 
     EXPECTED_STDOUT_WITHOUT_PARAMETERS = """Usage: cli jobs logs [OPTIONS]
 Try "cli jobs logs --help" for help.
@@ -225,7 +226,7 @@ Error: Missing option "--jobId".
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.BASIC_COMMAND_PARAMS)
 
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
@@ -240,7 +241,7 @@ Error: Missing option "--jobId".
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.BASIC_COMMAND_PARAMS)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
@@ -254,7 +255,7 @@ Error: Missing option "--jobId".
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.BASIC_COMMAND_PARAMS)
         assert result.output == "Error while parsing response data: No JSON\n"
         assert result.exit_code == 0
 
