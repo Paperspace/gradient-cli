@@ -58,7 +58,8 @@ class TestDeploymentsCreate(object):
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -73,7 +74,8 @@ class TestDeploymentsCreate(object):
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -89,7 +91,8 @@ class TestDeploymentsCreate(object):
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
         assert result.output == self.EXPECTED_STDOUT_MODEL_NOT_FOUND
         assert result.exit_code == 0
 
@@ -223,7 +226,8 @@ class TestStartDeployment(object):
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -257,7 +261,8 @@ class TestStopDeployment(object):
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -272,7 +277,8 @@ class TestStopDeployment(object):
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -287,6 +293,7 @@ class TestStopDeployment(object):
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_ID
         assert result.exit_code == 0

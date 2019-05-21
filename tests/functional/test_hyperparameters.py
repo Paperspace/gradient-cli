@@ -102,7 +102,8 @@ class TestCreateHyperparameters(object):
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
 
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -119,7 +120,8 @@ class TestCreateHyperparameters(object):
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
 
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -135,7 +137,8 @@ class TestCreateHyperparameters(object):
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
 
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -151,7 +154,8 @@ class TestCreateHyperparameters(object):
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_ERROR_RECEIVED
 
@@ -166,7 +170,8 @@ class TestCreateHyperparameters(object):
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -183,7 +188,8 @@ class TestCreateHyperparameters(object):
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
 
         assert result.output == "Unknown error while creating hyperparameter\n"
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -285,7 +291,8 @@ class TestCreateAndStartHyperparameters(object):
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
 
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -302,7 +309,8 @@ class TestCreateAndStartHyperparameters(object):
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
 
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -318,7 +326,8 @@ class TestCreateAndStartHyperparameters(object):
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
 
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -334,7 +343,8 @@ class TestCreateAndStartHyperparameters(object):
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_ERROR_RECEIVED
 
@@ -349,7 +359,8 @@ class TestCreateAndStartHyperparameters(object):
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -366,7 +377,8 @@ class TestCreateAndStartHyperparameters(object):
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
-                                             files=None)
+                                             files=None,
+                                             data=None)
 
         assert result.output == "Unknown error while creating hyperparameter\n"
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
