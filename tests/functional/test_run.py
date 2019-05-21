@@ -15,8 +15,10 @@ class TestRunCommand(object):
 
     @mock.patch("paperspace.client.requests.post")
     @mock.patch("paperspace.workspace.WorkspaceHandler._zip_workspace")
-    def test_run_simple_file_with_args(self, workspace_zip_patched, post_patched):
-        workspace_zip_patched.return_value = '/dev/random'
+    @mock.patch("paperspace.commands.jobs.CreateJobCommand._get_files_dict")
+    def test_run_simple_file_with_args(self, get_files_patched, workspace_zip_patched, post_patched):
+        get_files_patched.return_value = mock.MagicMock()
+        workspace_zip_patched.return_value = '/foo/bar'
         post_patched.return_value = MockResponse(status_code=200)
 
         runner = CliRunner()
@@ -28,7 +30,7 @@ class TestRunCommand(object):
         })
         post_patched.assert_called_with(self.url,
                                         params={'name': u'test', 'projectId': u'projectId',
-                                                'workspaceFileName': 'random',
+                                                'workspaceFileName': 'bar',
                                                 'command': 'python2 myscript.py a b',
                                                 'projectHandle': u'projectId',
                                                 'container': u'paperspace/tensorflow-python'},
@@ -38,9 +40,7 @@ class TestRunCommand(object):
                                         json=None)
 
     @mock.patch("paperspace.client.requests.post")
-    @mock.patch("paperspace.workspace.WorkspaceHandler._zip_workspace")
-    def test_run_python_command_with_args_and_no_workspace(self, workspace_zip_patched, post_patched):
-        workspace_zip_patched.return_value = '/dev/random'
+    def test_run_python_command_with_args_and_no_workspace(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
         runner = CliRunner()
@@ -53,6 +53,30 @@ class TestRunCommand(object):
                                                 'workspaceFileName': 'none',
                                                 'workspace': 'none',
                                                 'command': 'python2 -c print(foo)',
+                                                'projectHandle': u'projectId',
+                                                'container': u'paperspace/tensorflow-python'},
+                                        data=None,
+                                        files=None,
+                                        headers=expected_headers,
+                                        json=None)
+
+    @mock.patch("paperspace.client.requests.post")
+    @mock.patch("paperspace.workspace.WorkspaceHandler._zip_workspace")
+    def test_run_shell_command_with_args_with_s3_workspace(self, workspace_zip_patched, post_patched):
+        workspace_zip_patched.return_value = '/foo/bar'
+        post_patched.return_value = MockResponse(status_code=200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli,
+                               [self.command_name] + self.common_commands + ["-s", "echo foo", "--workspaceUrl",
+                                                                             "s3://bucket/object"])
+
+        expected_headers = self.headers.copy()
+        post_patched.assert_called_with(self.url,
+                                        params={'name': u'test', 'projectId': u'projectId',
+                                                'workspaceFileName': 's3://bucket/object',
+                                                'workspaceUrl': 's3://bucket/object',
+                                                'command': 'echo foo',
                                                 'projectHandle': u'projectId',
                                                 'container': u'paperspace/tensorflow-python'},
                                         data=None,

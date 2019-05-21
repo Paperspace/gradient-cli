@@ -3,11 +3,10 @@ import pydoc
 import terminaltables
 from click import style
 
-from paperspace import config, client
 from paperspace.commands import common
 from paperspace.exceptions import BadResponseError
 from paperspace.utils import get_terminal_lines
-from paperspace.workspace import S3WorkspaceHandler, WorkspaceHandler
+from paperspace.workspace import WorkspaceHandler
 
 
 class JobsCommandBase(common.CommandBase):
@@ -137,7 +136,7 @@ class CreateJobCommand(JobsCommandBase):
                 archive_basename = self._workspace_handler.archive_basename
                 json_["workspaceFileName"] = archive_basename
                 self.api.headers["Content-Type"] = "multipart/form-data"
-                files = {"file": open(workspace_url, "rb")}
+                files = self._get_files_dict(workspace_url)
             else:
                 json_["workspaceFileName"] = workspace_url
 
@@ -147,6 +146,11 @@ class CreateJobCommand(JobsCommandBase):
         self._log_message(response,
                           "Job created",
                           "Unknown error while creating job")
+
+    @staticmethod
+    def _get_files_dict(workspace_url):
+        files = {"file": open(workspace_url, "rb")}
+        return files
 
     @staticmethod
     def set_project(json_):

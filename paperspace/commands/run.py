@@ -32,12 +32,19 @@ class RunCommand(object):
         return script_name
 
     def _create_command(self, mode, script, python_version=None):
+        command_parts = []
         executor = self._get_executor(mode, python_version)
+        if executor:
+            command_parts.append(executor)
+
         script_name = self._clear_script_name(script[0], mode)
-        command_parts = [executor, script_name]
+        if script_name:
+            command_parts.append(script_name)
+
         script_params = ' '.join(script[1:])
         if script_params:
             command_parts.append(script_params)
+
         command = ' '.join(command_parts)
         return command
 

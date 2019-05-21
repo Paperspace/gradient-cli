@@ -101,11 +101,12 @@ class WorkspaceHandler(object):
         ignore_files = input_data.get('ignore_files')
 
         if workspace_url:
-            return  # nothing to do
+            return workspace_url  # nothing to do
 
         # Should be removed as soon it won't be necessary by PS_API
         if workspace_path == 'none':
-            return 'none'
+            return workspace_path
+
         if workspace_archive:
             archive_path = os.path.abspath(workspace_archive)
         else:
@@ -142,10 +143,10 @@ class S3WorkspaceHandler(WorkspaceHandler):
         self.experiments_api = experiments_api
 
     def handle(self, input_data):
-        archive_path = super(S3WorkspaceHandler, self).handle(input_data)
-        if archive_path in ['none', None]:
-            return archive_path
-
+        workspace = super(S3WorkspaceHandler, self).handle(input_data)
+        if not self.archive_path:
+            return workspace
+        archive_path = workspace
         file_name = os.path.basename(archive_path)
         project_handle = input_data['projectHandle']
 
