@@ -10,6 +10,7 @@ import paperspace.cli.jobs
 import paperspace.cli.machines
 import paperspace.cli.models
 import paperspace.cli.projects
+import paperspace.cli.run
 
 
 def show(self, file=None):

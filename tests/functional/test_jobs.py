@@ -275,7 +275,8 @@ class TestJobArtifactsCommands(TestJobs):
                                         files=None,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
-                                        params={"files": file_names})
+                                        params={"files": file_names},
+                                        data=None)
         assert result.exit_code == 0
 
     @mock.patch("paperspace.client.requests.post")
@@ -288,7 +289,8 @@ class TestJobArtifactsCommands(TestJobs):
                                         files=None,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
-                                        params=None)
+                                        params=None,
+                                        data=None)
         assert result.exit_code == 0
 
     @mock.patch("paperspace.client.requests.get")

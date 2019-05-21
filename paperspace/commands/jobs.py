@@ -7,7 +7,7 @@ from paperspace import config, client
 from paperspace.commands import common
 from paperspace.exceptions import BadResponseError
 from paperspace.utils import get_terminal_lines
-from paperspace.workspace import S3WorkspaceHandler
+from paperspace.workspace import S3WorkspaceHandler, WorkspaceHandler
 
 
 class JobsCommandBase(common.CommandBase):
@@ -126,21 +126,42 @@ class JobLogsCommand(common.CommandBase):
 class CreateJobCommand(JobsCommandBase):
     def __init__(self, workspace_handler=None, **kwargs):
         super(CreateJobCommand, self).__init__(**kwargs)
-        experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=kwargs.get('api_key'))
-        self._workspace_handler = workspace_handler or S3WorkspaceHandler(experiments_api=experiments_api,
-                                                                          logger=self.logger)
+        # experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=kwargs.get('api_key'))
+        self._workspace_handler = workspace_handler or WorkspaceHandler(logger=self.logger)
 
     def execute(self, json_):
         url = "/jobs/createJob/"
-
-        workspace_url = self._workspace_handler.upload_workspace(json_)
+        files = None
+        workspace_url = self._workspace_handler.handle(json_)
         if workspace_url:
-            json_['workspaceFileName'] = workspace_url
-        json_['projectId'] = json_.get('projectId', json_.get('projectHandle'))
-        response = self.api.post(url, json_)
+            if self._workspace_handler.archive_path:
+                archive_basename = self._workspace_handler.archive_basename
+                json_["workspaceFileName"] = archive_basename
+                # json_["file"] = open(workspace_url, "rb")
+                # monitor = MultipartEncoder(json_).get_monitor()
+                # # s3_encoder = encoder.MultipartEncoder(fields={"file": open(workspace_url, "rb")})
+                # # monitor = encoder.MultipartEncoderMonitor(s3_encoder, callback=self._create_callback(s3_encoder))
+                # self.api.headers["Content-Type"] = monitor.content_type
+                self.api.headers["Content-Type"] = "multipart/form-data"
+                # data = monitor
+                files = {"file": open(workspace_url, "rb")}
+            else:
+                json_["workspaceFileName"] = workspace_url
+
+        self.set_project(json_)
+
+        response = self.api.post(url, params=json_, files=files)
         self._log_message(response,
                           "Job created",
                           "Unknown error while creating job")
+
+    @staticmethod
+    def set_project(json_):
+        project_id = json_.get("projectId", json_.get("projectHandle"))
+        if not project_id:
+            json_["project"] = "paperspace-python"
+        else:
+            json_["projectId"] = project_id
 
 
 class ArtifactsDestroyCommand(JobsCommandBase):

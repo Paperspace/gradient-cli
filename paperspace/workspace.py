@@ -13,15 +13,34 @@ from paperspace.exceptions import S3UploadFailedError, PresignedUrlUnreachableEr
     PresignedUrlMalformedResponseError, PresignedUrlError
 
 
-class S3WorkspaceHandler:
-    def __init__(self, experiments_api, logger=None):
+class MultipartEncoder(object):
+    def __init__(self, fields):
+        s3_encoder = encoder.MultipartEncoder(fields=fields)
+        self.monitor = encoder.MultipartEncoderMonitor(s3_encoder, callback=self._create_callback(s3_encoder))
+
+    def get_monitor(self):
+        return self.monitor
+
+    @staticmethod
+    def _create_callback(encoder_obj):
+        bar = progressbar.ProgressBar(max_value=encoder_obj.len)
+
+        def callback(monitor):
+            bar.update(monitor.bytes_read)
+
+        return callback
+
+
+class WorkspaceHandler(object):
+    def __init__(self, logger=None):
         """
 
         :param experiments_api: paperspace.client.API
         :param logger: paperspace.logger
         """
-        self.experiments_api = experiments_api
         self.logger = logger or default_logger
+        self.archive_path = None
+        self.archive_basename = None
 
     @staticmethod
     def _retrieve_file_paths(dir_name, ignored_files=None):
@@ -77,20 +96,26 @@ class S3WorkspaceHandler:
         self.logger.log('\nFinished creating archive: %s' % zip_file_name)
         return zip_file_path
 
+    def handle(self, input_data):
+        workspace_archive, workspace_path, workspace_url = self._validate_input(input_data)
+        ignore_files = input_data.get('ignore_files')
+
+        if workspace_url:
+            return  # nothing to do
+
+        if workspace_archive:
+            archive_path = os.path.abspath(workspace_archive)
+        else:
+            archive_path = self._zip_workspace(workspace_path, ignore_files)
+        self.archive_path = archive_path
+        self.archive_basename = os.path.basename(archive_path)
+        return archive_path
+
     @staticmethod
-    def _create_callback(encoder_obj):
-        bar = progressbar.ProgressBar(max_value=encoder_obj.len)
-
-        def callback(monitor):
-            bar.update(monitor.bytes_read)
-
-        return callback
-
-    def upload_workspace(self, input_data):
+    def _validate_input(input_data):
         workspace_url = input_data.get('workspaceUrl')
         workspace_path = input_data.get('workspace')
         workspace_archive = input_data.get('workspaceArchive')
-        ignore_files = input_data.get('ignore_files')
 
         if (workspace_archive and workspace_path) or (workspace_archive and workspace_url) or (
                 workspace_path and workspace_url):
@@ -98,6 +123,22 @@ class S3WorkspaceHandler:
                                    "\n\t--workspace to point on project directory"
                                    "\n\t--workspaceArchive to point on project .zip archive"
                                    "\n or neither to use current directory")
+        return workspace_archive, workspace_path, workspace_url
+
+
+class S3WorkspaceHandler(WorkspaceHandler):
+    def __init__(self, experiments_api, logger=None):
+        """
+
+        :param experiments_api: paperspace.client.API
+        :param logger: paperspace.logger
+        """
+        super(S3WorkspaceHandler, self).__init__(logger=logger)
+        self.experiments_api = experiments_api
+
+    def handle(self, input_data):
+        workspace_archive, workspace_path, workspace_url = self._validate_input(input_data)
+        ignore_files = input_data.get('ignore_files')
 
         if workspace_url:
             return  # nothing to do
@@ -133,8 +174,7 @@ class S3WorkspaceHandler:
         fields = OrderedDict(s3_upload_data['fields'])
         fields.update(files)
 
-        s3_encoder = encoder.MultipartEncoder(fields=fields)
-        monitor = encoder.MultipartEncoderMonitor(s3_encoder, callback=self._create_callback(s3_encoder))
+        monitor = MultipartEncoder(fields).get_monitor()
         s3_response = requests.post(s3_upload_data['url'], data=monitor, headers={'Content-Type': monitor.content_type})
         self.logger.debug("S3 upload response: {}".format(s3_response.headers))
         if not s3_response.ok:

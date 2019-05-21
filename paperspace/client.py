@@ -28,11 +28,11 @@ class API(object):
         template = "{}{}" if url.startswith("/") else "{}/{}"
         return template.format(api_url, url)
 
-    def post(self, url, json=None, params=None, files=None):
+    def post(self, url, json=None, params=None, files=None, data=None):
         path = self.get_path(url)
-        logger.debug("POST request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}"
-                     .format(path, self.headers, json, params))
-        response = requests.post(path, json=json, params=params, headers=self.headers, files=files)
+        logger.debug("POST request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}\n\tdata: {}"
+                     .format(path, self.headers, json, params, data))
+        response = requests.post(path, json=json, params=params, headers=self.headers, files=files, data=data)
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))
         return response

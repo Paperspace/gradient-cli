@@ -24,7 +24,7 @@ mock_upload_response = {
 
 @pytest.fixture
 def workspace_handler():
-    s3_workspace_handler = S3WorkspaceHandler(mock.MagicMock(), mock.MagicMock())
+    s3_workspace_handler = S3WorkspaceHandler(mock.MagicMock(), logger=mock.MagicMock())
     s3_workspace_handler._upload = mock.MagicMock()
     s3_workspace_handler._get_upload_data = mock.MagicMock()
     s3_workspace_handler._get_upload_data.return_value = mock_upload_data
@@ -41,10 +41,10 @@ class TestWorkspace(object):
     def test_raise_exception_when_more_than_one_workspace_provided(self, params, workspace_handler):
         workspace_handler = S3WorkspaceHandler(mock.MagicMock, mock.MagicMock)
         with pytest.raises(click.UsageError):
-            workspace_handler.upload_workspace(params)
+            workspace_handler.handle(params)
 
     def test_dont_upload_if_archive_url_provided(self, workspace_handler):
-        workspace_handler.upload_workspace({'workspaceUrl': 'foo'})
+        workspace_handler.handle({'workspaceUrl': 'foo'})
 
         workspace_handler._upload.assert_not_called()
 
@@ -54,7 +54,7 @@ class TestWorkspace(object):
         workspace_handler._zip_workspace = mock.MagicMock()
         workspace_handler._zip_workspace.return_value = archive_name
 
-        response_url = workspace_handler.upload_workspace({'projectHandle': 'foo'})
+        response_url = workspace_handler.handle({'projectHandle': 'foo'})
 
         workspace_handler._zip_workspace.assert_called_once()
         workspace_handler._upload.assert_called_once()
@@ -67,7 +67,7 @@ class TestWorkspace(object):
         workspace_handler._zip_workspace = mock.MagicMock()
         workspace_handler._zip_workspace.return_value = archive_name
 
-        response_url = workspace_handler.upload_workspace({'projectHandle': 'foo', 'workspace': 'foo/bar'})
+        response_url = workspace_handler.handle({'projectHandle': 'foo', 'workspace': 'foo/bar'})
 
         workspace_handler._zip_workspace.assert_called_once()
         workspace_handler._upload.assert_called_once()
@@ -77,7 +77,7 @@ class TestWorkspace(object):
     def test_dont_zip_files_and_receive_s3_response_when_workspace_archive_provided(self, workspace_handler):
         workspace_handler._zip_workspace = mock.MagicMock()
 
-        response_url = workspace_handler.upload_workspace({'projectHandle': 'foo', 'workspaceArchive': 'foo.zip'})
+        response_url = workspace_handler.handle({'projectHandle': 'foo', 'workspaceArchive': 'foo.zip'})
 
         workspace_handler._zip_workspace.assert_not_called()
         workspace_handler._upload.assert_called_once()
