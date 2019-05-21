@@ -1,3 +1,5 @@
+import sys
+
 import mock
 from click.testing import CliRunner
 
@@ -31,7 +33,7 @@ class TestRunCommand(object):
         post_patched.assert_called_with(self.url,
                                         params={'name': u'test', 'projectId': u'projectId',
                                                 'workspaceFileName': 'bar',
-                                                'command': 'python2 myscript.py a b',
+                                                'command': 'python{} myscript.py a b'.format(str(sys.version_info[0])),
                                                 'projectHandle': u'projectId',
                                                 'container': u'paperspace/tensorflow-python'},
                                         data=None,
@@ -52,7 +54,7 @@ class TestRunCommand(object):
                                         params={'name': u'test', 'projectId': u'projectId',
                                                 'workspaceFileName': 'none',
                                                 'workspace': 'none',
-                                                'command': 'python2 -c print(foo)',
+                                                'command': 'python{} -c print(foo)'.format(str(sys.version_info[0])),
                                                 'projectHandle': u'projectId',
                                                 'container': u'paperspace/tensorflow-python'},
                                         data=None,
