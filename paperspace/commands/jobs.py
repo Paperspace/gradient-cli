@@ -126,7 +126,6 @@ class JobLogsCommand(common.CommandBase):
 class CreateJobCommand(JobsCommandBase):
     def __init__(self, workspace_handler=None, **kwargs):
         super(CreateJobCommand, self).__init__(**kwargs)
-        # experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=kwargs.get('api_key'))
         self._workspace_handler = workspace_handler or WorkspaceHandler(logger=self.logger)
 
     def execute(self, json_):
@@ -137,13 +136,7 @@ class CreateJobCommand(JobsCommandBase):
             if self._workspace_handler.archive_path:
                 archive_basename = self._workspace_handler.archive_basename
                 json_["workspaceFileName"] = archive_basename
-                # json_["file"] = open(workspace_url, "rb")
-                # monitor = MultipartEncoder(json_).get_monitor()
-                # # s3_encoder = encoder.MultipartEncoder(fields={"file": open(workspace_url, "rb")})
-                # # monitor = encoder.MultipartEncoderMonitor(s3_encoder, callback=self._create_callback(s3_encoder))
-                # self.api.headers["Content-Type"] = monitor.content_type
                 self.api.headers["Content-Type"] = "multipart/form-data"
-                # data = monitor
                 files = {"file": open(workspace_url, "rb")}
             else:
                 json_["workspaceFileName"] = workspace_url

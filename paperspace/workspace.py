@@ -103,9 +103,14 @@ class WorkspaceHandler(object):
         if workspace_url:
             return  # nothing to do
 
+        # Should be removed as soon it won't be necessary by PS_API
+        if workspace_path == 'none':
+            return 'none'
         if workspace_archive:
             archive_path = os.path.abspath(workspace_archive)
         else:
+            self.logger.log('Archiving your working directory for upload as your experiment workspace...'
+             '(See https://docs.paperspace.com/gradient/experiments/run-experiments for more information.)')
             archive_path = self._zip_workspace(workspace_path, ignore_files)
         self.archive_path = archive_path
         self.archive_basename = os.path.basename(archive_path)
@@ -137,21 +142,9 @@ class S3WorkspaceHandler(WorkspaceHandler):
         self.experiments_api = experiments_api
 
     def handle(self, input_data):
-        workspace_archive, workspace_path, workspace_url = self._validate_input(input_data)
-        ignore_files = input_data.get('ignore_files')
-
-        if workspace_url:
-            return  # nothing to do
-
-        # Should be removed as soon it won't be necessary by PS_API
-        if workspace_path == 'none':
-            return 'none'
-        if workspace_archive:
-            archive_path = os.path.abspath(workspace_archive)
-        else:
-            self.logger.log('Archiving your working directory for upload as your experiment workspace...'
-             '(See https://docs.paperspace.com/gradient/experiments/run-experiments for more information.)')
-            archive_path = self._zip_workspace(workspace_path, ignore_files)
+        archive_path = super(S3WorkspaceHandler, self).handle(input_data)
+        if archive_path in ['none', None]:
+            return archive_path
 
         file_name = os.path.basename(archive_path)
         project_handle = input_data['projectHandle']

@@ -37,4 +37,25 @@ class TestRunCommand(object):
                                         headers=expected_headers,
                                         json=None)
 
+    @mock.patch("paperspace.client.requests.post")
+    @mock.patch("paperspace.workspace.WorkspaceHandler._zip_workspace")
+    def test_run_python_command_with_args_and_no_workspace(self, workspace_zip_patched, post_patched):
+        workspace_zip_patched.return_value = '/dev/random'
+        post_patched.return_value = MockResponse(status_code=200)
 
+        runner = CliRunner()
+        result = runner.invoke(cli.cli,
+                               [self.command_name] + self.common_commands + ["-c", "print(foo)", "--workspace", "none"])
+
+        expected_headers = self.headers.copy()
+        post_patched.assert_called_with(self.url,
+                                        params={'name': u'test', 'projectId': u'projectId',
+                                                'workspaceFileName': 'none',
+                                                'workspace': 'none',
+                                                'command': 'python2 -c print(foo)',
+                                                'projectHandle': u'projectId',
+                                                'container': u'paperspace/tensorflow-python'},
+                                        data=None,
+                                        files=None,
+                                        headers=expected_headers,
+                                        json=None)
