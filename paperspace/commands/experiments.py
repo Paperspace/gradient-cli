@@ -106,7 +106,7 @@ class ListExperimentsCommand(common.ListCommand):
 
 
 def _make_details_table(experiment):
-    if experiment["experimentTypeId"] == constants.ExperimentType.SINGLE_NODE:
+    if experiment["experimentType"] == constants.ExperimentType.SINGLE_NODE:
         data = (
             ("Name", experiment["templateHistory"]["params"].get("name")),
             ("ID", experiment.get("handle")),
@@ -121,7 +121,7 @@ def _make_details_table(experiment):
             ("Model Type", experiment["templateHistory"]["params"].get("modelType")),
             ("Model Path", experiment["templateHistory"]["params"].get("modelPath")),
         )
-    elif experiment["experimentTypeId"] in (constants.ExperimentType.GRPC_MULTI_NODE,
+    elif experiment["experimentType"] in (constants.ExperimentType.GRPC_MULTI_NODE,
                                             constants.ExperimentType.MPI_MULTI_NODE):
         data = (
             ("Name", experiment["templateHistory"]["params"].get("name")),
@@ -131,7 +131,7 @@ def _make_details_table(experiment):
             ("Cluster ID", experiment["templateHistory"]["params"].get("clusterId")),
             ("Experiment Env", experiment["templateHistory"]["params"].get("experimentEnv")),
             ("Experiment Type",
-             constants.ExperimentType.get_type_str(experiment["templateHistory"]["params"].get("experimentTypeId"))),
+             constants.ExperimentType.get_type_str(experiment["templateHistory"]["params"].get("experimentType"))),
             ("Model Type", experiment["templateHistory"]["params"].get("modelType")),
             ("Model Path", experiment["templateHistory"]["params"].get("modelPath")),
             ("Parameter Server Command", experiment["templateHistory"]["params"].get("parameter_server_command")),
@@ -149,7 +149,7 @@ def _make_details_table(experiment):
             ("Workspace URL", experiment["templateHistory"]["params"].get("workspaceUrl")),
         )
     else:
-        raise ValueError("Wrong experiment type: {}".format(experiment["experimentTypeId"]))
+        raise ValueError("Wrong experiment type: {}".format(experiment["experimentType"]))
 
     ascii_table = terminaltables.AsciiTable(data)
     table_string = ascii_table.table

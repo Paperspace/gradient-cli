@@ -24,7 +24,7 @@ def test_should_execute_create_experiment_command_when_cli_singlenode_command_wa
                        "container": u"testContainer",
                        "machineType": u"testType",
                        "command": u"testCommand",
-                       "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
+                       "experimentType": constants.ExperimentType.SINGLE_NODE,
                        "workspaceUrl": "wUrl",
                        }
 
@@ -43,7 +43,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command
     command = "experiments create multinode " \
               "--name exp1 " \
               "--projectId testHandle " \
-              "--experimentTypeId MPI " \
+              "--experimentType MPI " \
               "--workerContainer testWorkerContainer " \
               "--workerMachineType testWorkerMachineType " \
               "--workerCommand testWorkerCommand " \
@@ -56,7 +56,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command
               "--apiKey some_key"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
-                       "experimentTypeId": constants.ExperimentType.MPI_MULTI_NODE,
+                       "experimentType": constants.ExperimentType.MPI_MULTI_NODE,
                        "workerContainer": u"testWorkerContainer",
                        "workerMachineType": u"testWorkerMachineType",
                        "workerCommand": u"testWorkerCommand",
@@ -83,7 +83,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_grpc_comman
     command = "experiments create multinode " \
               "--name exp1 " \
               "--projectId testHandle " \
-              "--experimentTypeId GRPC " \
+              "--experimentType GRPC " \
               "--workerContainer testWorkerContainer " \
               "--workerMachineType testWorkerMachineType " \
               "--workerCommand testWorkerCommand " \
@@ -95,7 +95,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_grpc_comman
               "--workspaceUrl wUrl"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
-                       "experimentTypeId": constants.ExperimentType.GRPC_MULTI_NODE,
+                       "experimentType": constants.ExperimentType.GRPC_MULTI_NODE,
                        "workerContainer": u"testWorkerContainer",
                        "workerMachineType": u"testWorkerMachineType",
                        "workerCommand": u"testWorkerCommand",
@@ -132,7 +132,7 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_sing
                        "container": u"testContainer",
                        "machineType": u"testType",
                        "command": u"testCommand",
-                       "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
+                       "experimentType": constants.ExperimentType.SINGLE_NODE,
                        "workspaceUrl": "wUrl",
                        }
 
@@ -151,7 +151,7 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_mult
     command = "experiments createAndStart multinode " \
               "--name exp1 " \
               "--projectId testHandle " \
-              "--experimentTypeId MPI " \
+              "--experimentType MPI " \
               "--workerContainer testWorkerContainer " \
               "--workerMachineType testWorkerMachineType " \
               "--workerCommand testWorkerCommand " \
@@ -163,7 +163,7 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_mult
               "--workspaceUrl wUrl"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
-                       "experimentTypeId": constants.ExperimentType.MPI_MULTI_NODE,
+                       "experimentType": constants.ExperimentType.MPI_MULTI_NODE,
                        "workerContainer": u"testWorkerContainer",
                        "workerMachineType": u"testWorkerMachineType",
                        "workerCommand": u"testWorkerCommand",
