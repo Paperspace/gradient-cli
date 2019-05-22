@@ -273,7 +273,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.CreateAndStartExperimentCommand(api=experiments_api)
     experiment = command.execute(kwargs)
-    if experiment is not None and show_logs is True:
+    if experiment and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
 
 
@@ -288,7 +288,7 @@ def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.CreateAndStartExperimentCommand(api=experiments_api)
     experiment = command.execute(kwargs)
-    if experiment is not None and show_logs is True:
+    if experiment and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
 
 
@@ -300,7 +300,7 @@ def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
 def start_experiment(ctx, experiment_id, show_logs, api_key):
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.start_experiment(experiment_id, api=experiments_api)
-    if show_logs is True:
+    if show_logs:
         ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
 

@@ -221,23 +221,23 @@ class ExperimentLogsCommand(common.CommandBase):
 
     def _log_logs_list(self, data, table, table_data, follow):
         if not data:
-            self.logger.log("No Logs found")
-        else:
-            if follow:
-                # TODO track number of jobs seen to look for PSEOF
-                if data[-1].get("message") == "PSEOF":
-                    self.is_logs_complete = True
-                else:
-                    self.last_line_number = data[-1].get("line")
-                for log in data:
-                    log_str = "{}\t{}\t{}"
-                    self.logger.log(log_str.format(style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
+            self.logger.log("No logs found")
+            return
+        if follow:
+            # TODO track number of jobs seen to look for PSEOF
+            if data[-1].get("message") == "PSEOF":
+                self.is_logs_complete = True
             else:
-                table_str = self._make_table(data, table, table_data)
-                if len(table_str.splitlines()) > get_terminal_lines():
-                    pydoc.pager(table_str)
-                else:
-                    self.logger.log(table_str)
+                self.last_line_number = data[-1].get("line")
+            for log in data:
+                log_str = "{}\t{}\t{}"
+                self.logger.log(log_str.format(style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
+        else:
+            table_str = self._make_table(data, table, table_data)
+            if len(table_str.splitlines()) > get_terminal_lines():
+                pydoc.pager(table_str)
+            else:
+                self.logger.log(table_str)
 
     def _make_table(self, logs, table, table_data):
         if logs[-1].get("message") == "PSEOF":
