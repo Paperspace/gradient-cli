@@ -1,8 +1,11 @@
 import click
+import click_completion
 
 from paperspace import config
 from paperspace.cli import common
 from paperspace.commands import login as login_commands
+
+click_completion.init()
 
 
 @click.group(cls=common.ClickGroup, **config.HELP_COLORS_DICT)

@@ -104,3 +104,5 @@ ENV/
 .vscode/*
 
 .idea
+paperspace-python.zip
+*.env

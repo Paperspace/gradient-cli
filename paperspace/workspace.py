@@ -24,11 +24,14 @@ class S3WorkspaceHandler:
         self.logger = logger or default_logger
 
     @staticmethod
-    def _retrieve_file_paths(dir_name, ignored_files=''):
+    def _retrieve_file_paths(dir_name, ignored_files=None):
         # setup file paths variable
         file_paths = {}
-        ignored_files = ignored_files.split(',')
-        exclude = ['.git', '.idea', '.pytest_cache'] + ignored_files
+
+        exclude = ['.git', '.idea', '.pytest_cache']
+        if ignored_files:
+            exclude += ignored_files.split(',')
+
         # Read all directory, subdirectories and file lists
         for root, dirs, files in os.walk(dir_name, topdown=True):
             dirs[:] = [d for d in dirs if d not in exclude]
@@ -39,7 +42,7 @@ class S3WorkspaceHandler:
                     file_path = filename
                 else:
                     file_path = os.path.join(os.path.relpath(root, dir_name), filename)
-                if file_path not in ignored_files:
+                if file_path not in exclude:
                     file_paths[file_path] = os.path.join(root, filename)
 
         return file_paths
@@ -105,6 +108,8 @@ class S3WorkspaceHandler:
         if workspace_archive:
             archive_path = os.path.abspath(workspace_archive)
         else:
+            self.logger.log('Archiving your working directory for upload as your experiment workspace...'
+             '(See https://docs.paperspace.com/gradient/experiments/run-experiments for more information.)')
             archive_path = self._zip_workspace(workspace_path, ignore_files)
 
         file_name = os.path.basename(archive_path)
