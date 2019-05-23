@@ -49,6 +49,7 @@ setup(
         'terminaltables',
         'click-didyoumean',
         'click-help-colors',
+        'click-completion',
         'colorama',
         'requests-toolbelt',
         'progressbar2',

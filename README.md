@@ -17,8 +17,20 @@ Getting Started
     To install/update prerelease (Alpha/Beta) version version of paperspace-python, use:
 
     `pip install -U --pre paperspace`
+3. Enable autocomplete:
+    
+    Add following to your `.bashrc` (or `.zshrc`) to enable autocomplete anytime you activate your shell.
+     
+    `eval $(_PAPERSPACE_PYTHON_COMPLETE=source paperspace-python)`
+    
+    For other shell (eg. `zsh` or `fish`), use proper version of `source` (`source_zsh` and `source-fish` respectively)
+     
+     Alternatively, you can create activation script by:
+     
+     `(_PAPERSPACE_PYTHON_COMPLETE=source paperspace-python > ~/paperspace_complete.sh`
 
-3. Download your api key by executing the following:
+    More: https://click.palletsprojects.com/en/7.x/bashcomplete/
+4. Download your api key by executing the following:
 
     `paperspace-python login`
 
@@ -33,7 +45,7 @@ Getting Started
 
     `paperspace-python logout`
 
-4. Run the sample script hello.py using Python:
+5. Run the sample script hello.py using Python:
 
     `python hello.py`
 
@@ -49,7 +61,7 @@ Getting Started
 
    Note: the source is modified before transfer to the job cluster in order to remove imported `paperspace` references.
 
-5. Use paperspace-python to run a python script remotely:
+6. Use paperspace-python to run a python script remotely:
 
     `paperspace-python run myscript.py`
 
