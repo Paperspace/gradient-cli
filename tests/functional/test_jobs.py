@@ -16,6 +16,29 @@ class TestJobs(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
 
+class TestJobsAlias(object):
+    expected_help = """Usage: cli %s [OPTIONS] COMMAND [ARGS]...
+
+  Manage gradient jobs
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  artifacts  Manage jobs' artifacts
+  create     Create job
+  delete     Delete job
+  list       List jobs with optional filtering
+  log        List job logs
+  stop       Stop running job
+"""
+    @pytest.mark.parametrize("group_name", ("jobs", "job"))
+    def test_alias_help(self, group_name):
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, [group_name])
+        assert result.output == self.expected_help % group_name
+
+
 class TestListJobs(TestJobs):
     URL = "https://api.paperspace.io/jobs/getJobs/"
     BASIC_COMMAND = ["jobs", "list"]
