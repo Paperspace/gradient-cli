@@ -29,7 +29,7 @@ Commands:
   create     Create job
   delete     Delete job
   list       List jobs with optional filtering
-  log        List job logs
+  logs       List job logs
   stop       Stop running job
 """
     @pytest.mark.parametrize("group_name", ("jobs", "job"))
