@@ -9,7 +9,7 @@ from paperspace.cli.common import ClickGroup
 from paperspace.commands import hyperparameters as hyperparameters_commands
 
 
-@cli.group("hyperparameters", help="Manage hyperparameters", cls=ClickGroup)
+@cli.group(["hyperparameters", "hyperparameter"], help="Manage hyperparameters", cls=ClickGroup)
 def hyperparameters_group():
     pass
 
