@@ -26,8 +26,10 @@ class MultipartEncoder(object):
         bar = progressbar.ProgressBar(max_value=encoder_obj.len)
 
         def callback(monitor):
-            bar.update(monitor.bytes_read)
-
+            if monitor.bytes_read == bar.max_value:
+                bar.finish()
+            else:
+                bar.update(monitor.bytes_read)
         return callback
 
 

@@ -6,7 +6,7 @@ from click import style
 from paperspace.commands import common
 from paperspace.exceptions import BadResponseError
 from paperspace.utils import get_terminal_lines
-from paperspace.workspace import WorkspaceHandler
+from paperspace.workspace import WorkspaceHandler, MultipartEncoder
 
 
 class JobsCommandBase(common.CommandBase):
@@ -130,32 +130,40 @@ class CreateJobCommand(JobsCommandBase):
 
     def execute(self, json_):
         url = "/jobs/createJob/"
-        files = None
+        data = None
+        self.set_project(json_)
+
         workspace_url = self._workspace_handler.handle(json_)
         if workspace_url:
             if self._workspace_handler.archive_path:
-                archive_basename = self._workspace_handler.archive_basename
-                json_["workspaceFileName"] = archive_basename
-                self.api.headers["Content-Type"] = "multipart/form-data"
-                files = {"file": open(workspace_url, "rb")}
+                data = self._get_multipart_data(json_)
             else:
-                json_["workspaceFileName"] = workspace_url
-
-        self.set_project(json_)
+                data["workspaceFileName"] = workspace_url
 
         self.logger.log("Creating job...")
-        response = self.api.post(url, params=json_, files=files)
+        response = self.api.post(url, params=json_, data=data)
         self._log_message(response,
-                          "Job created",
+                          "Job created - ID: {id}",
                           "Unknown error while creating job")
+
+    def _get_multipart_data(self, json_):
+        archive_basename = self._workspace_handler.archive_basename
+        json_["workspaceFileName"] = archive_basename
+        job_data = {'file': (archive_basename, open(self._workspace_handler.archive_path, 'rb'), 'text/plain')}
+        monitor = MultipartEncoder(job_data).get_monitor()
+        self.api.headers["Content-Type"] = monitor.content_type
+        data = monitor
+        return data
 
     @staticmethod
     def set_project(json_):
-        project_id = json_.get("projectId", json_.get("projectHandle"))
-        if not project_id:
-            json_["project"] = "paperspace-python"
+        if json_.get("projectId"):
+            return
+
+        if json_.get("projectHandle"):
+            json_["projectId"] = json_.pop("projectHandle")
         else:
-            json_["projectId"] = project_id
+            json_["project"] = "paperspace-python"
 
 
 class ArtifactsDestroyCommand(JobsCommandBase):
