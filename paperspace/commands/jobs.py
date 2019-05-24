@@ -3,11 +3,10 @@ import pydoc
 import terminaltables
 from click import style
 
-from paperspace import config, client
 from paperspace.commands import common
 from paperspace.exceptions import BadResponseError
 from paperspace.utils import get_terminal_lines
-from paperspace.workspace import S3WorkspaceHandler, WorkspaceHandler
+from paperspace.workspace import WorkspaceHandler
 
 
 class JobsCommandBase(common.CommandBase):
@@ -144,6 +143,7 @@ class CreateJobCommand(JobsCommandBase):
 
         self.set_project(json_)
 
+        self.logger.log("Creating job...")
         response = self.api.post(url, params=json_, files=files)
         self._log_message(response,
                           "Job created",
