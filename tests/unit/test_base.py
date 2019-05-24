@@ -1,9 +1,8 @@
 from collections import OrderedDict
 
 import mock
-import pytest
 
-from paperspace.commands import CommandBase
+from paperspace.commands.common import CommandBase
 
 output_response = ""
 
