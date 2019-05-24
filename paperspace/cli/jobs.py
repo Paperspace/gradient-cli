@@ -87,24 +87,45 @@ def list_jobs(api_key, **filters):
 @click.option("--registryUsername", "registryUsername", help="Docker registry username")
 @click.option("--registryPassword", "registryPassword", help="Docker registry password")
 @api_key_option
-def create_job(api_key, **kwargs):
+@click.pass_context
+def create_job(ctx, api_key, **kwargs):
     del_if_value_is_none(kwargs)
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.CreateJobCommand(api=jobs_api)
-    command.execute(kwargs)
+    job = command.execute(kwargs)
+    if job is not None:
+        ctx.invoke(list_logs, job_id=job["handle"], line=0, limit=100, follow=True, api_key=api_key)
 
 
-@jobs_group.command("log", help="List job logs")
+@jobs_group.command("logs", help="List job logs")
 @click.option(
     "--jobId",
     "job_id",
     required=True
 )
+@click.option(
+    "--line",
+    "line",
+    required=False,
+    default=0
+)
+@click.option(
+    "--limit",
+    "limit",
+    required=False,
+    default=10000
+)
+@click.option(
+    "--follow",
+    "follow",
+    required=False,
+    default=False
+)
 @api_key_option
-def list_logs(job_id, api_key=None):
+def list_logs(job_id, line, limit, follow, api_key=None):
     logs_api = client.API(config.CONFIG_LOG_HOST, api_key=api_key)
     command = jobs_commands.JobLogsCommand(api=logs_api)
-    command.execute(job_id)
+    command.execute(job_id, line, limit, follow)
 
 
 @jobs_group.group("artifacts", help="Manage jobs' artifacts", cls=ClickGroup)

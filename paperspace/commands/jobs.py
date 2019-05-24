@@ -72,17 +72,21 @@ class ListJobsCommand(common.ListCommand):
 
 class JobLogsCommand(common.CommandBase):
     last_line_number = 0
-    base_url = "/jobs/logs?jobId={}&line={}"
+    base_url = "/jobs/logs"
 
     is_logs_complete = False
 
-    def execute(self, job_id):
+    def execute(self, job_id, line, limit, follow):
+        if follow:
+            self.logger.log("Awaiting logs...")
+
+        self.last_line_number = line
         table_title = "Job %s logs" % job_id
         table_data = [("LINE", "MESSAGE")]
         table = terminaltables.AsciiTable(table_data, title=table_title)
 
         while not self.is_logs_complete:
-            response = self._get_logs(job_id)
+            response = self._get_logs(job_id, self.last_line_number, limit)
 
             try:
                 data = response.json()
@@ -95,15 +99,31 @@ class JobLogsCommand(common.CommandBase):
                 self.logger.log("Error while parsing response data: {}".format(e))
                 return
             else:
-                self._log_logs_list(data, table, table_data)
+                self._log_logs_list(data, table, table_data, follow)
 
-    def _get_logs(self, job_id):
-        url = self.base_url.format(job_id, self.last_line_number)
-        return self.api.get(url)
+            if not follow:
+                self.is_logs_complete = True
 
-    def _log_logs_list(self, data, table, table_data):
+    def _get_logs(self, job_id, line, limit):
+        params = {
+            'jobId': job_id,
+            'line': line,
+            'limit': limit
+        };
+        return self.api.get(self.base_url, params=params)
+
+    def _log_logs_list(self, data, table, table_data, follow):
         if not data:
             self.logger.log("No Logs found")
+            return
+        if follow:
+            if data[-1].get("message") == "PSEOF":
+                self.is_logs_complete = True
+            else:
+                self.last_line_number = data[-1].get("line")
+            for log in data:
+                log_str = "{}\t{}\t{}"
+                self.logger.log(log_str.format(style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
         else:
             table_str = self._make_table(data, table, table_data)
             if len(table_str.splitlines()) > get_terminal_lines():
