@@ -16,6 +16,29 @@ class TestJobs(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
 
+class TestJobsAlias(object):
+    expected_help = """Usage: cli %s [OPTIONS] COMMAND [ARGS]...
+
+  Manage gradient jobs
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  artifacts  Manage jobs' artifacts
+  create     Create job
+  delete     Delete job
+  list       List jobs with optional filtering
+  logs       List job logs
+  stop       Stop running job
+"""
+    @pytest.mark.parametrize("group_name", ("jobs", "job"))
+    def test_alias_help(self, group_name):
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, [group_name])
+        assert result.output == self.expected_help % group_name
+
+
 class TestListJobs(TestJobs):
     URL = "https://api.paperspace.io/jobs/getJobs/"
     BASIC_COMMAND = ["jobs", "list"]
@@ -173,15 +196,16 @@ class TestListJobs(TestJobs):
 
 
 class TestJobLogs(TestJobs):
-    URL = "https://logs.paperspace.io/jobs/logs?jobId=some_job_id&line=0"
+    URL = "https://logs.paperspace.io/jobs/logs"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_RESPONSE_JSON = example_responses.LIST_OF_LOGS_FOR_JOB
-    BASIC_COMMAND_WITHOUT_PARAMETERS = ["jobs", "log"]
-    BASIC_COMMAND = ["jobs", "log", "--jobId", "some_job_id", "--apiKey", "some_key"]
+    BASIC_COMMAND_WITHOUT_PARAMETERS = ["jobs", "logs"]
+    BASIC_COMMAND = ["jobs", "logs", "--jobId", "some_job_id", "--apiKey", "some_key"]
+    BASIC_COMMAND_PARAMS = {"jobId": "some_job_id", "line": 0, "limit": 10000}
 
-    EXPECTED_STDOUT_WITHOUT_PARAMETERS = """Usage: cli jobs log [OPTIONS]
-Try "cli jobs log --help" for help.
+    EXPECTED_STDOUT_WITHOUT_PARAMETERS = """Usage: cli jobs logs [OPTIONS]
+Try "cli jobs logs --help" for help.
 
 Error: Missing option "--jobId".
 """
@@ -225,7 +249,7 @@ Error: Missing option "--jobId".
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.BASIC_COMMAND_PARAMS)
 
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
@@ -240,7 +264,7 @@ Error: Missing option "--jobId".
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.BASIC_COMMAND_PARAMS)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
@@ -254,7 +278,7 @@ Error: Missing option "--jobId".
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.BASIC_COMMAND_PARAMS)
         assert result.output == "Error while parsing response data: No JSON\n"
         assert result.exit_code == 0
 

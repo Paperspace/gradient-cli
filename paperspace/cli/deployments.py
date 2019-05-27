@@ -2,14 +2,14 @@ import collections
 
 import click
 
-from paperspace import constants, client, config
+from paperspace import client, config
 from paperspace.cli.cli import cli
 from paperspace.cli.cli_types import ChoiceType
 from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGroup
 from paperspace.commands import deployments as deployments_commands
 
 
-@cli.group("deployments", help="Manage deployments", cls=ClickGroup)
+@cli.group("deployments", alias='deployment', help="Manage deployments", cls=ClickGroup)
 def deployments():
     pass
 
@@ -22,7 +22,8 @@ DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
 )
 
 DEPLOYMENT_MACHINE_TYPES = ("G1", "G6", "G12",
-    "K80", "P100", "V100")
+                            "K80", "P100", "GV100")
+
 
 @deployments.command("create", help="Create new deployment")
 @click.option(

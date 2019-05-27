@@ -1,9 +1,13 @@
+import pydoc
+
 import terminaltables
+from click import style
 
 from paperspace import logger, constants, client, config
 from paperspace.logger import log_response
-from paperspace.workspace import S3WorkspaceHandler
 from paperspace.commands import common
+from paperspace.utils import get_terminal_lines
+from paperspace.workspace import S3WorkspaceHandler
 
 experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
 
@@ -51,6 +55,9 @@ class CreateAndStartExperimentCommand(ExperimentCommand):
         self._log_create_experiment(response,
                                     "New experiment created and started with ID: {}",
                                     "Unknown error while creating/starting the experiment")
+        if response.ok:
+            return response.json()
+        return None
 
 
 def start_experiment(experiment_id, api=experiments_api):
@@ -168,3 +175,77 @@ def get_experiment_details(experiment_id, api=experiments_api):
             logger.error("Error parsing response data")
 
     log_response(response, details, "Unknown error while retrieving details of the experiment")
+
+
+class ExperimentLogsCommand(common.CommandBase):
+    last_line_number = 0
+    base_url = "/jobs/logs"
+
+    is_logs_complete = False
+
+    def execute(self, experiment_id, line, limit, follow):
+        if follow:
+            self.logger.log("Awaiting logs...")
+
+        self.last_line_number = line
+        table_title = "Experiment %s logs" % experiment_id
+        table_data = [("JOB ID", "LINE", "MESSAGE")]
+        table = terminaltables.AsciiTable(table_data, title=table_title)
+
+        while not self.is_logs_complete:
+            response = self._get_logs(experiment_id, self.last_line_number, limit)
+
+            try:
+                data = response.json()
+                if not response.ok:
+                    self.logger.log_error_response(data)
+                    return
+            except (ValueError, KeyError) as e:
+                if response.status_code == 204:
+                    continue
+                self.logger.log("Error while parsing response data: {}".format(e))
+                return
+            else:
+                self._log_logs_list(data, table, table_data, follow)
+
+            if not follow:
+                self.is_logs_complete = True
+
+    def _get_logs(self, experiment_id, line, limit):
+        params = {
+            'experimentId': experiment_id,
+            'line': line,
+            'limit': limit
+        };
+        return self.api.get(self.base_url, params=params)
+
+    def _log_logs_list(self, data, table, table_data, follow):
+        if not data:
+            self.logger.log("No logs found")
+            return
+        if follow:
+            # TODO track number of jobs seen to look for PSEOF
+            if data[-1].get("message") == "PSEOF":
+                self.is_logs_complete = True
+            else:
+                self.last_line_number = data[-1].get("line")
+            for log in data:
+                log_str = "{}\t{}\t{}"
+                self.logger.log(log_str.format(style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
+        else:
+            table_str = self._make_table(data, table, table_data)
+            if len(table_str.splitlines()) > get_terminal_lines():
+                pydoc.pager(table_str)
+            else:
+                self.logger.log(table_str)
+
+    def _make_table(self, logs, table, table_data):
+        if logs[-1].get("message") == "PSEOF":
+            self.is_logs_complete = True
+        else:
+            self.last_line_number = logs[-1].get("line")
+
+        for log in logs:
+            table_data.append((style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
+
+        return table.table
