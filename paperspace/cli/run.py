@@ -3,13 +3,14 @@ import click
 from paperspace import client, config
 from paperspace.cli import common
 from paperspace.cli.cli import cli
-from paperspace.cli.common import del_if_value_is_none
+from paperspace.cli.common import del_if_value_is_none, deprecated
 from paperspace.cli.jobs import common_jobs_create_options
 from paperspace.commands.run import RunCommand
 from paperspace.constants import RunMode
 
 
-@cli.command("new-run")
+@deprecated
+@cli.command("run", help="Run script or command on remote cluster")
 @click.option("-c", "--python-command", "mode", flag_value=RunMode.RUN_MODE_PYTHON_COMMAND)
 @click.option("-m", "--module", "mode", flag_value=RunMode.RUN_MODE_PYTHON_MODULE)
 @click.option("-s", "--shell", "mode", flag_value=RunMode.RUN_MODE_SHELL_COMMAND)
