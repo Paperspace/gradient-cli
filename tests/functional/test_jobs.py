@@ -407,6 +407,7 @@ class TestJobsCreate(object):
         "machineType": u"testType",
         "command": u"testCommand",
         "workspaceUrl": u"some-workspace",
+        "workspaceFileName": u"some-workspace",
     }
     FULL_OPTIONS_REQUEST = {
         "name": u"exp1",

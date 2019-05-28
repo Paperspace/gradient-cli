@@ -17,27 +17,32 @@ class TestRunCommand(object):
 
     @mock.patch("paperspace.client.requests.post")
     @mock.patch("paperspace.workspace.WorkspaceHandler._zip_workspace")
+    @mock.patch("paperspace.workspace.MultipartEncoder.get_monitor")
     @mock.patch("paperspace.commands.jobs.CreateJobCommand._get_files_dict")
-    def test_run_simple_file_with_args(self, get_files_patched, workspace_zip_patched, post_patched):
+    def test_run_simple_file_with_args(self, get_files_patched, get_moniror_patched, workspace_zip_patched, post_patched):
         get_files_patched.return_value = mock.MagicMock()
         workspace_zip_patched.return_value = '/foo/bar'
         post_patched.return_value = MockResponse(status_code=200)
+
+        mock_monitor = mock.MagicMock()
+        mock_monitor.content_type = "mock/multipart"
+
+        get_moniror_patched.return_value = mock_monitor
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, [self.command_name] + self.common_commands + ["/myscript.py", "a", "b"])
 
         expected_headers = self.headers.copy()
         expected_headers.update({
-            'Content-Type': "multipart/form-data"
+            'Content-Type': "mock/multipart"
         })
         post_patched.assert_called_with(self.url,
                                         params={'name': u'test', 'projectId': u'projectId',
                                                 'workspaceFileName': 'bar',
                                                 'command': 'python{} myscript.py a b'.format(str(sys.version_info[0])),
-                                                'projectHandle': u'projectId',
                                                 'container': u'paperspace/tensorflow-python'},
-                                        data=None,
-                                        files=mock.ANY,
+                                        data=mock.ANY,
+                                        files=None,
                                         headers=expected_headers,
                                         json=None)
 
@@ -55,7 +60,6 @@ class TestRunCommand(object):
                                                 'workspaceFileName': 'none',
                                                 'workspace': 'none',
                                                 'command': 'python{} -c print(foo)'.format(str(sys.version_info[0])),
-                                                'projectHandle': u'projectId',
                                                 'container': u'paperspace/tensorflow-python'},
                                         data=None,
                                         files=None,
@@ -79,7 +83,6 @@ class TestRunCommand(object):
                                                 'workspaceFileName': 's3://bucket/object',
                                                 'workspaceUrl': 's3://bucket/object',
                                                 'command': 'echo foo',
-                                                'projectHandle': u'projectId',
                                                 'container': u'paperspace/tensorflow-python'},
                                         data=None,
                                         files=None,

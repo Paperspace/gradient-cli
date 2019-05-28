@@ -157,7 +157,7 @@ class CreateJobCommand(JobsCommandBase):
             if self._workspace_handler.archive_path:
                 data = self._get_multipart_data(json_)
             else:
-                data["workspaceFileName"] = workspace_url
+                json_["workspaceFileName"] = workspace_url
 
         self.logger.log("Creating job...")
         response = self.api.post(url, params=json_, data=data)
@@ -168,11 +168,15 @@ class CreateJobCommand(JobsCommandBase):
     def _get_multipart_data(self, json_):
         archive_basename = self._workspace_handler.archive_basename
         json_["workspaceFileName"] = archive_basename
-        job_data = {'file': (archive_basename, open(self._workspace_handler.archive_path, 'rb'), 'text/plain')}
+        job_data = self._get_files_dict(archive_basename)
         monitor = MultipartEncoder(job_data).get_monitor()
         self.api.headers["Content-Type"] = monitor.content_type
         data = monitor
         return data
+
+    def _get_files_dict(self, archive_basename):
+        job_data = {'file': (archive_basename, open(self._workspace_handler.archive_path, 'rb'), 'text/plain')}
+        return job_data
 
     @staticmethod
     def set_project(json_):

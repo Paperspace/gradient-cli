@@ -30,6 +30,7 @@ class MultipartEncoder(object):
                 bar.finish()
             else:
                 bar.update(monitor.bytes_read)
+
         return callback
 
 
@@ -103,7 +104,7 @@ class WorkspaceHandler(object):
         ignore_files = input_data.get('ignore_files')
 
         if workspace_url:
-            return  # nothing to do
+            return workspace_url  # nothing to do
 
         # Should be removed as soon it won't be necessary by PS_API
         if workspace_path == 'none':
@@ -112,7 +113,7 @@ class WorkspaceHandler(object):
             archive_path = os.path.abspath(workspace_archive)
         else:
             self.logger.log('Archiving your working directory for upload as your experiment workspace...'
-             '(See https://docs.paperspace.com/gradient/experiments/run-experiments for more information.)')
+                            '(See https://docs.paperspace.com/gradient/experiments/run-experiments for more information.)')
             archive_path = self._zip_workspace(workspace_path, ignore_files)
         self.archive_path = archive_path
         self.archive_basename = os.path.basename(archive_path)
