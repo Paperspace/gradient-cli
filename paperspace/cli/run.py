@@ -9,7 +9,7 @@ from paperspace.commands.run import RunCommand
 from paperspace.constants import RunMode
 
 
-@deprecated
+@deprecated(version="0.6.0")
 @cli.command("run", help="Run script or command on remote cluster")
 @click.option("-c", "--python-command", "mode", flag_value=RunMode.RUN_MODE_PYTHON_COMMAND)
 @click.option("-m", "--module", "mode", flag_value=RunMode.RUN_MODE_PYTHON_MODULE)

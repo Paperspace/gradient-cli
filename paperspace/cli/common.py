@@ -53,7 +53,7 @@ def prompt_for_secret(prompt):
     return callback_fun
 
 
-def deprecated(f, version="1.0.0"):
+def deprecated(version="1.0.0"):
     deprecated_invoke_notice = """DeprecatedWarning: \nWARNING: This command will not be included in version %s .
 For more information, please see:
 
@@ -64,7 +64,7 @@ If you depend on functionality not listed there, please file an issue.""" % vers
         click.echo(click.style(deprecated_invoke_notice, fg='red'), err=True)
         super(type(self), self).invoke(ctx)
 
-    def decorator():
+    def decorator(f):
         f.invoke = functools.partial(new_invoke, f)
 
-    return decorator()
+    return decorator
