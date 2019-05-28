@@ -1,5 +1,6 @@
 import functools
 import getpass
+import json
 
 import click
 from click_didyoumean import DYMMixin
@@ -17,6 +18,16 @@ def del_if_value_is_none(dict_):
     for key, val in list(dict_.items()):
         if val is None:
             del dict_[key]
+
+
+def jsonify_dicts(dict_):
+    json_fields = [
+        "envVars",
+        "nodeAttrs"
+    ]
+    for field in json_fields:
+        if field in dict_:
+            dict_[field] = json.dumps(dict_[field])
 
 
 class ClickGroup(DYMMixin, HelpColorsGroup):

@@ -3,7 +3,7 @@ import click
 from paperspace import client, config
 from paperspace.cli import common
 from paperspace.cli.cli import cli
-from paperspace.cli.common import del_if_value_is_none, deprecated
+from paperspace.cli.common import del_if_value_is_none, deprecated, jsonify_dicts
 from paperspace.cli.jobs import common_jobs_create_options
 from paperspace.commands.run import RunCommand
 from paperspace.constants import RunMode
@@ -19,6 +19,8 @@ from paperspace.constants import RunMode
 @common.api_key_option
 def run(api_key, **kwargs):
     del_if_value_is_none(kwargs)
+    jsonify_dicts(kwargs)
+
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = RunCommand(api=jobs_api)
     command.execute(**kwargs)

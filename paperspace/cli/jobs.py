@@ -5,7 +5,7 @@ import click
 from paperspace import client, config
 from paperspace.cli.cli import cli
 from paperspace.cli.cli_types import json_string
-from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGroup
+from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts
 from paperspace.commands import jobs as jobs_commands
 
 
@@ -89,6 +89,9 @@ def common_jobs_create_options(f):
         click.option("--relDockerfilePath", "relDockerfilePath", help="Relative path to Dockerfile"),
         click.option("--registryUsername", "registryUsername", help="Docker registry username"),
         click.option("--registryPassword", "registryPassword", help="Docker registry password"),
+        click.option("--cluster", "cluster", help="Cluster name"),
+        click.option("--clusterId", "cluster", help="Cluster id"),
+        click.option("--nodeAttrs", "nodeAttrs", type=json_string, help="Cluster node details"),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -99,6 +102,8 @@ def common_jobs_create_options(f):
 @click.pass_context
 def create_job(ctx, api_key, **kwargs):
     del_if_value_is_none(kwargs)
+    jsonify_dicts(kwargs)
+
     jobs_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.CreateJobCommand(api=jobs_api)
     job = command.execute(kwargs)
