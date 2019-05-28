@@ -109,7 +109,7 @@ def common_experiment_create_multi_node_options(f):
     options = [
         click.option(
             "--experimentType",
-            "experimentType",
+            "experimentTypeId",
             type=ChoiceType(MULTI_NODE_EXPERIMENT_TYPES_MAP, case_sensitive=False),
             required=True,
             help="Experiment Type",
@@ -256,7 +256,7 @@ def create_multi_node(api_key, **kwargs):
 @common_experiments_create_options
 @common_experiments_create_single_node_options
 def create_single_node(api_key, **kwargs):
-    kwargs["experimentType"] = constants.ExperimentType.SINGLE_NODE
+    kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.CreateExperimentCommand(api=experiments_api)
@@ -283,7 +283,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
 @show_logs_option
 @click.pass_context
 def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
-    kwargs["experimentType"] = constants.ExperimentType.SINGLE_NODE
+    kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.CreateAndStartExperimentCommand(api=experiments_api)

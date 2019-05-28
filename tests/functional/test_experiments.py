@@ -45,7 +45,7 @@ class TestExperimentsCreateSingleNode(object):
         "container": u"testContainer",
         "machineType": u"testType",
         "command": u"testCommand",
-        "experimentType": constants.ExperimentType.SINGLE_NODE,
+        "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
         "workspaceUrl": u"some-workspace",
     }
     FULL_OPTIONS_REQUEST = {
@@ -63,7 +63,7 @@ class TestExperimentsCreateSingleNode(object):
         "containerUser": u"conUser",
         "registryUsername": u"userName",
         "registryPassword": u"passwd",
-        "experimentType": constants.ExperimentType.SINGLE_NODE,
+        "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
     }
     RESPONSE_JSON_200 = {"handle": "sadkfhlskdjh", "message": "success"}
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
@@ -177,7 +177,7 @@ class TestExperimentsCreateMultiNode(object):
     BASIC_OPTIONS_REQUEST = {
         "name": u"multinode_mpi",
         "projectHandle": u"prq70zy79",
-        "experimentType": 2,
+        "experimentTypeId": 2,
         "workerContainer": u"wcon",
         "workerMachineType": u"mty",
         "workerCommand": u"wcom",
@@ -198,7 +198,7 @@ class TestExperimentsCreateMultiNode(object):
         "clusterId": 2,
         "experimentEnv": {"key": "val"},
         "projectHandle": "prq70zy79",
-        "experimentType": 3,
+        "experimentTypeId": 3,
         "workerContainer": u"wcon",
         "workerMachineType": u"mty",
         "workerCommand": u"wcom",
@@ -357,7 +357,7 @@ class TestExperimentDetail(object):
             "experimentError": None,
             "experimentTemplateHistoryId": 6297,
             "experimentTemplateId": 60,
-            "experimentType": 3,
+            "experimentTypeId": 3,
             "handle": "ew69ls0vy3eto",
             "id": 6286,
             "projectHandle": "prq70zy79",
@@ -375,7 +375,7 @@ class TestExperimentDetail(object):
                     "experimentEnv": {
                         "key": "val"
                     },
-                    "experimentType": 3,
+                    "experimentTypeId": 3,
                     "name": "multinode_mpi",
                     "parameter_server_command": "ls",
                     "parameter_server_container": "pscon",
@@ -437,7 +437,7 @@ class TestExperimentDetail(object):
             "experimentError": None,
             "experimentTemplateHistoryId": 21814,
             "experimentTemplateId": 60,
-            "experimentType": 1,
+            "experimentTypeId": 1,
             "handle": "esro6mbmiulvbl",
             "id": 21784,
             "projectHandle": "prq70zy79",
@@ -450,7 +450,7 @@ class TestExperimentDetail(object):
                 "experimentTemplateId": 60,
                 "id": 21814,
                 "params": {
-                    "experimentType": 1,
+                    "experimentTypeId": 1,
                     "name": "dsfads",
                     "ports": 5000,
                     "project_handle": "prq70zy79",

@@ -24,7 +24,7 @@ def test_should_execute_create_experiment_command_when_cli_singlenode_command_wa
                        "container": u"testContainer",
                        "machineType": u"testType",
                        "command": u"testCommand",
-                       "experimentType": constants.ExperimentType.SINGLE_NODE,
+                       "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
                        "workspaceUrl": "wUrl",
                        }
 
@@ -56,7 +56,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_mpi_command
               "--apiKey some_key"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
-                       "experimentType": constants.ExperimentType.MPI_MULTI_NODE,
+                       "experimentTypeId": constants.ExperimentType.MPI_MULTI_NODE,
                        "workerContainer": u"testWorkerContainer",
                        "workerMachineType": u"testWorkerMachineType",
                        "workerCommand": u"testWorkerCommand",
@@ -95,7 +95,7 @@ def test_should_execute_create_experiment_command_when_cli_multinode_grpc_comman
               "--workspaceUrl wUrl"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
-                       "experimentType": constants.ExperimentType.GRPC_MULTI_NODE,
+                       "experimentTypeId": constants.ExperimentType.GRPC_MULTI_NODE,
                        "workerContainer": u"testWorkerContainer",
                        "workerMachineType": u"testWorkerMachineType",
                        "workerCommand": u"testWorkerCommand",
@@ -132,7 +132,7 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_sing
                        "container": u"testContainer",
                        "machineType": u"testType",
                        "command": u"testCommand",
-                       "experimentType": constants.ExperimentType.SINGLE_NODE,
+                       "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
                        "workspaceUrl": "wUrl",
                        }
 
@@ -163,7 +163,7 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_mult
               "--workspaceUrl wUrl"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
-                       "experimentType": constants.ExperimentType.MPI_MULTI_NODE,
+                       "experimentTypeId": constants.ExperimentType.MPI_MULTI_NODE,
                        "workerContainer": u"testWorkerContainer",
                        "workerMachineType": u"testWorkerMachineType",
                        "workerCommand": u"testWorkerCommand",
