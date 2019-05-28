@@ -1,5 +1,14 @@
 # Paperspace Python Release Notes
 
+# Release Notes for 0.2.0a3
+### New features
+* autocomplete for bash (GNU/Linux and iOS)
+* aliases in singular form for command groups
+* showing logs for experiments and jobs
+* restored and deprecated `run` command
+* workspace uploading for experiments
+* workspace upload progress bar
+
 # Release Notes for 0.2.0a2
 ### New features
 * partial support for hyperparameter tuning

@@ -1,7 +1,7 @@
 Paperspace Python
 =================
 
-Release 0.2.0a2
+Release 0.2.0a3
 
 See [releasenotes.md](https://github.com/Paperspace/paperspace-python/blob/master/releasenotes.md) for details on the current release, as well as release history.
 
