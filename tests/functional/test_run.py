@@ -9,7 +9,7 @@ from tests import MockResponse
 
 
 class TestRunCommand(object):
-    command_name = 'new-run'
+    command_name = 'run'
     common_commands = ["--name", "test", "--projectId", "projectId", "--apiKey", "some_key"]
     url = "https://api.paperspace.io/jobs/createJob/"
     headers = default_headers.copy()

@@ -9,12 +9,12 @@ from paperspace.commands.run import RunCommand
 from paperspace.constants import RunMode
 
 
-@cli.command("new-run")
+@cli.command("run")
 @click.option("-c", "--python-command", "mode", flag_value=RunMode.RUN_MODE_PYTHON_COMMAND)
 @click.option("-m", "--module", "mode", flag_value=RunMode.RUN_MODE_PYTHON_MODULE)
 @click.option("-s", "--shell", "mode", flag_value=RunMode.RUN_MODE_SHELL_COMMAND)
 @common_jobs_create_options
-@click.argument("script", nargs=-1)
+@click.argument("script", nargs=-1, required=True)
 @common.api_key_option
 def run(api_key, **kwargs):
     del_if_value_is_none(kwargs)
