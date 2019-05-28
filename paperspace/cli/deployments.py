@@ -17,7 +17,7 @@ def deployments():
 DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
     (
         ("TFSERVING", "Tensorflow Serving on K8s"),
-        ("GRADIENT", "Gradient Jobs"),
+        # ("GRADIENT", "Gradient Jobs"),
     )
 )
 
@@ -31,7 +31,7 @@ DEPLOYMENT_MACHINE_TYPES = ("G1", "G6", "G12",
     "deploymentType",
     type=ChoiceType(DEPLOYMENT_TYPES_MAP, case_sensitive=False),
     required=True,
-    help="Model deployment type",
+    help="Model deployment type. Only TensorFlow models can currently be deployed",
 )
 @click.option(
     "--modelId",

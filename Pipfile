@@ -16,7 +16,7 @@ terminaltables = "*"
 click-didyoumean = "*"
 click-help-colors = "*"
 colorama = "*"
-
+click-completion = "*"
 
 [dev-packages]
 twine = "*"
