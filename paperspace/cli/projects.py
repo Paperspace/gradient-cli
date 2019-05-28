@@ -11,7 +11,7 @@ def projects_group():
 
 @projects_group.command("list", help="List projects")
 @common.api_key_option
-def delete_job(api_key):
+def list_projects(api_key):
     projects_api = client.API(config.CONFIG_HOST, api_key=api_key)
     command = projects_commands.ListProjectsCommand(api=projects_api)
     command.execute()
