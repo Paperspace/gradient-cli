@@ -1,7 +1,7 @@
+import functools
 import getpass
 
 import click
-from click import group
 from click_didyoumean import DYMMixin
 from click_help_colors import HelpColorsGroup
 
@@ -32,10 +32,10 @@ class ClickGroup(DYMMixin, HelpColorsGroup):
             aliases.append(kwargs.pop('alias'))
 
         def decorator(f):
-            cmd = group(*_args, **kwargs)(f)
+            cmd = click.group(*_args, **kwargs)(f)
             self.add_command(cmd)
             for alias in set(aliases):
-                alias_cmd = group(alias, **kwargs)(f)
+                alias_cmd = click.group(alias, **kwargs)(f)
                 self.add_command(alias_cmd)
                 alias_cmd.commands = cmd.commands
             return cmd
@@ -51,3 +51,20 @@ def prompt_for_secret(prompt):
         return value
 
     return callback_fun
+
+
+def deprecated(version="1.0.0"):
+    deprecated_invoke_notice = """DeprecatedWarning: \nWARNING: This command will not be included in version %s .
+For more information, please see:
+
+https://docs.paperspace.com
+If you depend on functionality not listed there, please file an issue.""" % version
+
+    def new_invoke(self, ctx):
+        click.echo(click.style(deprecated_invoke_notice, fg='red'), err=True)
+        super(type(self), self).invoke(ctx)
+
+    def decorator(f):
+        f.invoke = functools.partial(new_invoke, f)
+
+    return decorator

@@ -203,82 +203,88 @@ class TestCreateMachine(object):
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
                                        params=None,
-                                       files=None)
+                                       files=None,
+                                       data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("paperspace.client.requests.post")
-    def test_should_send_valid_post_request_when_machine_create_was_used_with_all_options(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
+    def test_should_send_valid_post_request_when_machine_create_was_used_with_all_options(self, post_patched):
+        post_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.ALL_COMMANDS)
 
-        get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
-                                       json=self.ALL_COMMANDS_REQUEST_JSON,
-                                       params=None,
-                                       files=None)
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS,
+                                        json=self.ALL_COMMANDS_REQUEST_JSON,
+                                        params=None,
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("paperspace.client.requests.post")
-    def test_should_send_changed_headers_when_api_key_option_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
+    def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
-        get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
-                                       json=self.REQUEST_JSON,
-                                       params=None,
-                                       files=None)
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=self.REQUEST_JSON,
+                                        params=None,
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("paperspace.client.requests.post")
-    def test_should_print_error_message_when_wrong_api_key_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
+    def test_should_print_error_message_when_wrong_api_key_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
-        get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
-                                       json=self.REQUEST_JSON,
-                                       params=None,
-                                       files=None)
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS,
+                                        json=self.REQUEST_JSON,
+                                        params=None,
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
     @mock.patch("paperspace.client.requests.post")
-    def test_should_print_error_message_when_wrong_template_id_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_TEMPLATE_ID, 400)
+    def test_should_print_error_message_when_wrong_template_id_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_TEMPLATE_ID, 400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
-        get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
-                                       json=self.REQUEST_JSON,
-                                       params=None,
-                                       files=None)
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS,
+                                        json=self.REQUEST_JSON,
+                                        params=None,
+                                        files=None,
+                                        data=None)
         assert result.output == "templateId not found\n"
         assert result.exit_code == 0
 
     @mock.patch("paperspace.client.requests.post")
-    def test_should_print_error_message_when_no_content_was_received_in_response(self, get_patched):
-        get_patched.return_value = MockResponse(status_code=400)
+    def test_should_print_error_message_when_no_content_was_received_in_response(self, post_patched):
+        post_patched.return_value = MockResponse(status_code=400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
-        get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
-                                       json=self.REQUEST_JSON,
-                                       params=None,
-                                       files=None)
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS,
+                                        json=self.REQUEST_JSON,
+                                        params=None,
+                                        files=None,
+                                        data=None)
         assert result.output == "Unknown error while creating machine\n"
         assert result.exit_code == 0
 
@@ -340,7 +346,8 @@ class TestDestroyMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -355,7 +362,8 @@ class TestDestroyMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=self.ALL_COMMANDS_REQUEST_JSON,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -370,7 +378,8 @@ class TestDestroyMachine(object):
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -385,7 +394,8 @@ class TestDestroyMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
@@ -401,7 +411,8 @@ class TestDestroyMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
         assert result.exit_code == 0
 
@@ -416,7 +427,8 @@ class TestDestroyMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == "Unknown error while destroying the machine\n"
         assert result.exit_code == 0
 
@@ -663,7 +675,8 @@ class TestRestartMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -678,7 +691,8 @@ class TestRestartMachine(object):
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -693,7 +707,8 @@ class TestRestartMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
@@ -708,7 +723,8 @@ class TestRestartMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == "Unknown error while restarting the machine\n"
         assert result.exit_code == 0
 
@@ -724,7 +740,8 @@ class TestRestartMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
         assert result.exit_code == 0
 
@@ -900,7 +917,8 @@ class TestStartMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -915,7 +933,8 @@ class TestStartMachine(object):
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -930,7 +949,8 @@ class TestStartMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
@@ -945,7 +965,8 @@ class TestStartMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == "Unknown error while starting the machine\n"
         assert result.exit_code == 0
 
@@ -961,7 +982,8 @@ class TestStartMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
         assert result.exit_code == 0
 
@@ -1006,7 +1028,8 @@ class TestStopMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -1021,7 +1044,8 @@ class TestStopMachine(object):
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -1036,7 +1060,8 @@ class TestStopMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
@@ -1051,7 +1076,8 @@ class TestStopMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == "Unknown error while stopping the machine\n"
         assert result.exit_code == 0
 
@@ -1067,7 +1093,8 @@ class TestStopMachine(object):
                                         headers=self.EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
-                                        files=None)
+                                        files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
         assert result.exit_code == 0
 
@@ -1129,7 +1156,8 @@ class TestUpdateMachine(object):
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
                                        params=None,
-                                        files=None)
+                                       files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -1144,7 +1172,8 @@ class TestUpdateMachine(object):
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.ALL_COMMANDS_REQUEST_JSON,
                                        params=None,
-                                        files=None)
+                                       files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -1159,7 +1188,8 @@ class TestUpdateMachine(object):
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=self.REQUEST_JSON,
                                        params=None,
-                                        files=None)
+                                       files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -1174,7 +1204,8 @@ class TestUpdateMachine(object):
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
                                        params=None,
-                                       files=None)
+                                       files=None,
+                                        data=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
@@ -1189,7 +1220,8 @@ class TestUpdateMachine(object):
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
                                        params=None,
-                                        files=None)
+                                       files=None,
+                                        data=None)
         assert result.output == "Not found\n"
         assert result.exit_code == 0
 
@@ -1204,7 +1236,8 @@ class TestUpdateMachine(object):
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
                                        params=None,
-                                       files=None)
+                                       files=None,
+                                        data=None)
         assert result.output == "Unknown error while updating machine\n"
         assert result.exit_code == 0
 

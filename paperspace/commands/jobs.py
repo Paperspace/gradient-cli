@@ -3,11 +3,10 @@ import pydoc
 import terminaltables
 from click import style
 
-from paperspace import config, client
 from paperspace.commands import common
 from paperspace.exceptions import BadResponseError
 from paperspace.utils import get_terminal_lines
-from paperspace.workspace import S3WorkspaceHandler
+from paperspace.workspace import WorkspaceHandler
 
 
 class JobsCommandBase(common.CommandBase):
@@ -146,21 +145,40 @@ class JobLogsCommand(common.CommandBase):
 class CreateJobCommand(JobsCommandBase):
     def __init__(self, workspace_handler=None, **kwargs):
         super(CreateJobCommand, self).__init__(**kwargs)
-        experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=kwargs.get('api_key'))
-        self._workspace_handler = workspace_handler or S3WorkspaceHandler(experiments_api=experiments_api,
-                                                                          logger=self.logger)
+        self._workspace_handler = workspace_handler or WorkspaceHandler(logger=self.logger)
 
     def execute(self, json_):
         url = "/jobs/createJob/"
-
-        workspace_url = self._workspace_handler.upload_workspace(json_)
+        files = None
+        workspace_url = self._workspace_handler.handle(json_)
         if workspace_url:
-            json_['workspaceFileName'] = workspace_url
-        json_['projectId'] = json_.get('projectId', json_.get('projectHandle'))
-        response = self.api.post(url, json_)
+            if self._workspace_handler.archive_path:
+                archive_basename = self._workspace_handler.archive_basename
+                json_["workspaceFileName"] = archive_basename
+                self.api.headers["Content-Type"] = "multipart/form-data"
+                files = self._get_files_dict(workspace_url)
+            else:
+                json_["workspaceFileName"] = workspace_url
+
+        self.set_project(json_)
+
+        response = self.api.post(url, params=json_, files=files)
         self._log_message(response,
                           "Job created",
                           "Unknown error while creating job")
+
+    @staticmethod
+    def _get_files_dict(workspace_url):
+        files = {"file": open(workspace_url, "rb")}
+        return files
+
+    @staticmethod
+    def set_project(json_):
+        project_id = json_.get("projectId", json_.get("projectHandle"))
+        if not project_id:
+            json_["project"] = "paperspace-python"
+        else:
+            json_["projectId"] = project_id
 
 
 class ArtifactsDestroyCommand(JobsCommandBase):

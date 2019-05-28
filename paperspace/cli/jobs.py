@@ -1,3 +1,5 @@
+import functools
+
 import click
 
 from paperspace import client, config
@@ -64,28 +66,35 @@ def list_jobs(api_key, **filters):
     command.execute(filters=filters)
 
 
+def common_jobs_create_options(f):
+    options = [
+        click.option("--name", "name", help="Job name", required=True),
+        click.option("--machineType", "machineType", help="Virtual machine type"),
+        click.option("--container", "container", default="paperspace/tensorflow-python", help="Docker container"),
+        click.option("--command", "command", help="Job command/entrypoint"),
+        click.option("--ports", "ports", help="Mapped ports"),
+        click.option("--isPublic", "isPublic", help="Flag: is job public"),
+        click.option("--workspace", "workspace", required=False, help="Path to workspace directory"),
+        click.option("--workspaceArchive", "workspaceArchive", required=False, help="Path to workspace archive"),
+        click.option("--workspaceUrl", "workspaceUrl", required=False, help="Project git repository url"),
+        click.option("--workingDirectory", "workingDirectory", help="Working directory for the experiment", ),
+        click.option("--ignoreFiles", "ignore_files", help="Ignore certain files from uploading"),
+        click.option("--experimentId", "experimentId", help="Experiment Id"),
+        click.option("--jobEnv", "envVars", type=json_string, help="Environmental variables "),
+        click.option("--useDockerfile", "useDockerfile", help="Flag: using Dockerfile"),
+        click.option("--isPreemptible", "isPreemptible", help="Flag: isPreemptible"),
+        click.option("--project", "project", help="Project name"),
+        click.option("--projectId", "projectHandle", help="Project ID"),
+        click.option("--startedByUserId", "startedByUserId", help="User ID"),
+        click.option("--relDockerfilePath", "relDockerfilePath", help="Relative path to Dockerfile"),
+        click.option("--registryUsername", "registryUsername", help="Docker registry username"),
+        click.option("--registryPassword", "registryPassword", help="Docker registry password"),
+    ]
+    return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
+
+
 @jobs_group.command("create", help="Create job")
-@click.option("--name", "name", help="Job name", required=True)
-@click.option("--machineType", "machineType", help="Virtual machine type")
-@click.option("--container", "container", help="Docker container")
-@click.option("--command", "command", help="Job command/entrypoint")
-@click.option("--ports", "ports", help="Mapped ports")
-@click.option("--isPublic", "isPublic", help="Flag: is job public")
-@click.option("--workspace", "workspace", required=False, help="Path to workspace directory")
-@click.option("--workspaceArchive", "workspaceArchive", required=False, help="Path to workspace archive")
-@click.option("--workspaceUrl", "workspaceUrl", required=False, help="Project git repository url")
-@click.option("--workingDirectory", "workingDirectory", help="Working directory for the experiment")
-@click.option("--ignoreFiles", "ignore_files", help="Ignore certain files from uploading")
-@click.option("--experimentId", "experimentId", help="Experiment Id")
-@click.option("--jobEnv", "envVars", type=json_string, help="Environmental variables ")
-@click.option("--useDockerfile", "useDockerfile", help="Flag: using Dockerfile")
-@click.option("--isPreemptible", "isPreemptible", help="Flag: isPreemptible")
-@click.option("--project", "project", help="Project name")
-@click.option("--projectId", "projectHandle", help="Project ID", required=True)
-@click.option("--startedByUserId", "startedByUserId", help="User ID")
-@click.option("--relDockerfilePath", "relDockerfilePath", help="Relative path to Dockerfile")
-@click.option("--registryUsername", "registryUsername", help="Docker registry username")
-@click.option("--registryPassword", "registryPassword", help="Docker registry password")
+@common_jobs_create_options
 @api_key_option
 @click.pass_context
 def create_job(ctx, api_key, **kwargs):

@@ -34,7 +34,7 @@ class ExperimentCommand(common.CommandBase):
 class CreateExperimentCommand(ExperimentCommand):
 
     def execute(self, json_):
-        workspace_url = self._workspace_handler.upload_workspace(json_)
+        workspace_url = self._workspace_handler.handle(json_)
         if workspace_url:
             json_['workspaceUrl'] = workspace_url
 
@@ -47,7 +47,7 @@ class CreateExperimentCommand(ExperimentCommand):
 
 class CreateAndStartExperimentCommand(ExperimentCommand):
     def execute(self, json_):
-        workspace_url = self._workspace_handler.upload_workspace(json_)
+        workspace_url = self._workspace_handler.handle(json_)
         if workspace_url:
             json_['workspaceUrl'] = workspace_url
 
