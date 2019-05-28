@@ -108,7 +108,7 @@ class JobLogsCommand(common.CommandBase):
             'jobId': job_id,
             'line': line,
             'limit': limit
-        };
+        }
         return self.api.get(self.base_url, params=params)
 
     def _log_logs_list(self, data, table, table_data, follow):
@@ -150,7 +150,7 @@ class CreateJobCommand(JobsCommandBase):
     def execute(self, json_):
         url = "/jobs/createJob/"
         data = None
-        self.set_project(json_)
+        self.set_project_if_not_provided(json_)
 
         workspace_url = self._workspace_handler.handle(json_)
         if workspace_url:
@@ -179,13 +179,8 @@ class CreateJobCommand(JobsCommandBase):
         return job_data
 
     @staticmethod
-    def set_project(json_):
-        if json_.get("projectId"):
-            return
-
-        if json_.get("projectHandle"):
-            json_["projectId"] = json_.pop("projectHandle")
-        else:
+    def set_project_if_not_provided(json_):
+        if not json_.get("projectId"):
             json_["project"] = "paperspace-python"
 
 
