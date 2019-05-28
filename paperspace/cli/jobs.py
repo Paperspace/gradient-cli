@@ -84,7 +84,7 @@ def common_jobs_create_options(f):
         click.option("--useDockerfile", "useDockerfile", help="Flag: using Dockerfile"),
         click.option("--isPreemptible", "isPreemptible", help="Flag: isPreemptible"),
         click.option("--project", "project", help="Project name"),
-        click.option("--projectId", "projectHandle", help="Project ID"),
+        click.option("--projectId", "projectId", help="Project ID"),
         click.option("--startedByUserId", "startedByUserId", help="User ID"),
         click.option("--relDockerfilePath", "relDockerfilePath", help="Relative path to Dockerfile"),
         click.option("--registryUsername", "registryUsername", help="Docker registry username"),

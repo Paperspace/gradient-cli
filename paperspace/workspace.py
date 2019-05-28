@@ -15,8 +15,8 @@ from paperspace.exceptions import S3UploadFailedError, PresignedUrlUnreachableEr
 
 class MultipartEncoder(object):
     def __init__(self, fields):
-        s3_encoder = encoder.MultipartEncoder(fields=fields)
-        self.monitor = encoder.MultipartEncoderMonitor(s3_encoder, callback=self._create_callback(s3_encoder))
+        mp_encoder = encoder.MultipartEncoder(fields=fields)
+        self.monitor = encoder.MultipartEncoderMonitor(mp_encoder, callback=self._create_callback(mp_encoder))
 
     def get_monitor(self):
         return self.monitor
@@ -26,7 +26,10 @@ class MultipartEncoder(object):
         bar = progressbar.ProgressBar(max_value=encoder_obj.len)
 
         def callback(monitor):
-            bar.update(monitor.bytes_read)
+            if monitor.bytes_read == bar.max_value:
+                bar.finish()
+            else:
+                bar.update(monitor.bytes_read)
 
         return callback
 
@@ -105,13 +108,12 @@ class WorkspaceHandler(object):
 
         # Should be removed as soon it won't be necessary by PS_API
         if workspace_path == 'none':
-            return workspace_path
-
+            return 'none'
         if workspace_archive:
             archive_path = os.path.abspath(workspace_archive)
         else:
             self.logger.log('Archiving your working directory for upload as your experiment workspace...'
-             '(See https://docs.paperspace.com/gradient/experiments/run-experiments for more information.)')
+                            '(See https://docs.paperspace.com/gradient/experiments/run-experiments for more information.)')
             archive_path = self._zip_workspace(workspace_path, ignore_files)
         self.archive_path = archive_path
         self.archive_basename = os.path.basename(archive_path)

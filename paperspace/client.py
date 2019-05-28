@@ -30,8 +30,8 @@ class API(object):
 
     def post(self, url, json=None, params=None, files=None, data=None):
         path = self.get_path(url)
-        logger.debug("POST request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}\n\tdata: {}"
-                     .format(path, self.headers, json, params, data))
+        logger.debug("POST request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}\n\tfiles: {}\n\tdata: {}"
+                     .format(path, self.headers, json, params, files, data))
         response = requests.post(path, json=json, params=params, headers=self.headers, files=files, data=data)
         logger.debug("Response status code: {}".format(response.status_code))
         logger.debug("Response content: {}".format(response.content))

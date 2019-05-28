@@ -6,7 +6,7 @@ from click import style
 from paperspace.commands import common
 from paperspace.exceptions import BadResponseError
 from paperspace.utils import get_terminal_lines
-from paperspace.workspace import WorkspaceHandler
+from paperspace.workspace import WorkspaceHandler, MultipartEncoder
 
 
 class JobsCommandBase(common.CommandBase):
@@ -108,7 +108,7 @@ class JobLogsCommand(common.CommandBase):
             'jobId': job_id,
             'line': line,
             'limit': limit
-        };
+        }
         return self.api.get(self.base_url, params=params)
 
     def _log_logs_list(self, data, table, table_data, follow):
@@ -149,36 +149,39 @@ class CreateJobCommand(JobsCommandBase):
 
     def execute(self, json_):
         url = "/jobs/createJob/"
-        files = None
+        data = None
+        self.set_project_if_not_provided(json_)
+
         workspace_url = self._workspace_handler.handle(json_)
         if workspace_url:
             if self._workspace_handler.archive_path:
-                archive_basename = self._workspace_handler.archive_basename
-                json_["workspaceFileName"] = archive_basename
-                self.api.headers["Content-Type"] = "multipart/form-data"
-                files = self._get_files_dict(workspace_url)
+                data = self._get_multipart_data(json_)
             else:
                 json_["workspaceFileName"] = workspace_url
 
-        self.set_project(json_)
-
-        response = self.api.post(url, params=json_, files=files)
+        self.logger.log("Creating job...")
+        response = self.api.post(url, params=json_, data=data)
         self._log_message(response,
-                          "Job created",
+                          "Job created - ID: {id}",
                           "Unknown error while creating job")
 
-    @staticmethod
-    def _get_files_dict(workspace_url):
-        files = {"file": open(workspace_url, "rb")}
-        return files
+    def _get_multipart_data(self, json_):
+        archive_basename = self._workspace_handler.archive_basename
+        json_["workspaceFileName"] = archive_basename
+        job_data = self._get_files_dict(archive_basename)
+        monitor = MultipartEncoder(job_data).get_monitor()
+        self.api.headers["Content-Type"] = monitor.content_type
+        data = monitor
+        return data
+
+    def _get_files_dict(self, archive_basename):
+        job_data = {'file': (archive_basename, open(self._workspace_handler.archive_path, 'rb'), 'text/plain')}
+        return job_data
 
     @staticmethod
-    def set_project(json_):
-        project_id = json_.get("projectId", json_.get("projectHandle"))
-        if not project_id:
+    def set_project_if_not_provided(json_):
+        if not json_.get("projectId"):
             json_["project"] = "paperspace-python"
-        else:
-            json_["projectId"] = project_id
 
 
 class ArtifactsDestroyCommand(JobsCommandBase):

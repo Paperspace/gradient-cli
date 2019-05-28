@@ -366,3 +366,86 @@ class TestJobArtifactsCommands(TestJobs):
                                        params={"jobId": job_id,
                                                param: True})
         assert result.exit_code == 0
+
+
+class TestJobsCreate(object):
+    URL = "https://api.paperspace.io"
+    EXPECTED_HEADERS = default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+    BASIC_OPTIONS_COMMAND = [
+        "jobs", "create",
+        "--name", "exp1",
+        "--projectId", "testHandle",
+        "--container", "testContainer",
+        "--machineType", "testType",
+        "--command", "testCommand",
+        "--workspaceUrl", "some-workspace",
+    ]
+    FULL_OPTIONS_COMMAND = [
+        "jobs", "create",
+        "--name", "exp1",
+        "--ports", 4567,
+        "--workspaceUrl", "wsp.url",
+        "--workingDirectory", "/work/dir/",
+        "--artifactDirectory", "/artifact/dir/",
+        "--clusterId", 42,
+        "--experimentEnv", '{"key":"val"}',
+        "--projectId", "testHandle",
+        "--container", "testContainer",
+        "--machineType", "testType",
+        "--command", "testCommand",
+        "--containerUser", "conUser",
+        "--registryUsername", "userName",
+        "--registryPassword", "passwd",
+        "--apiKey", "some_key",
+    ]
+    BASIC_OPTIONS_REQUEST = {
+        "name": u"exp1",
+        "projectId": u"testHandle",
+        "container": u"testContainer",
+        "machineType": u"testType",
+        "command": u"testCommand",
+        "workspaceUrl": u"some-workspace",
+        "workspaceFileName": u"some-workspace",
+    }
+    FULL_OPTIONS_REQUEST = {
+        "name": u"exp1",
+        "ports": 4567,
+        "workspaceUrl": u"wsp.url",
+        "workingDirectory": u"/work/dir/",
+        "artifactDirectory": u"/artifact/dir/",
+        "clusterId": 42,
+        "experimentEnv": {u"key": u"val"},
+        "projectHandle": u"testHandle",
+        "container": u"testContainer",
+        "machineType": u"testType",
+        "command": u"testCommand",
+        "containerUser": u"conUser",
+        "registryUsername": u"userName",
+        "registryPassword": u"passwd",
+    }
+    RESPONSE_JSON_200 = {"id": "sadkfhlskdjh", "message": "success"}
+    RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
+    EXPECTED_STDOUT = u'Creating job...\nJob created - ID: sadkfhlskdjh\n'
+
+    RESPONSE_JSON_404_PROJECT_NOT_FOUND = {"details": {"handle": "wrong_handle"}, "error": "Project not found"}
+    RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'
+    EXPECTED_STDOUT_PROJECT_NOT_FOUND = "Project not found\nhandle: wrong_handle\n"
+
+    @mock.patch("paperspace.client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_create_job_was_run_with_basic_options(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
+
+        post_patched.assert_called_once_with(self.URL + '/jobs/createJob/',
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=None,
+                                             params=self.BASIC_OPTIONS_REQUEST,
+                                             files=None,
+                                             data=None)
+
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
