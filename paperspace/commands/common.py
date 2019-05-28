@@ -20,6 +20,7 @@ class CommandBase(object):
             else:
                 self.logger.log("%s%s" % (tabulator * (indent + 1), val))
 
+
 class ListCommand(CommandBase):
     @property
     def request_url(self):

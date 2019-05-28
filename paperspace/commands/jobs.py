@@ -122,7 +122,8 @@ class JobLogsCommand(common.CommandBase):
                 self.last_line_number = data[-1].get("line")
             for log in data:
                 log_str = "{}\t{}\t{}"
-                self.logger.log(log_str.format(style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
+                self.logger.log(log_str.format(style(fg="blue", text=str(log.get("jobId"))),
+                                               style(fg="red", text=str(log.get("line"))), log.get("message")))
         else:
             table_str = self._make_table(data, table, table_data)
             if len(table_str.splitlines()) > get_terminal_lines():
