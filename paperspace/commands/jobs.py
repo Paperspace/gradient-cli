@@ -145,7 +145,6 @@ class JobLogsCommand(common.CommandBase):
 class CreateJobCommand(JobsCommandBase):
     def __init__(self, workspace_handler=None, **kwargs):
         super(CreateJobCommand, self).__init__(**kwargs)
-        # experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=kwargs.get('api_key'))
         self._workspace_handler = workspace_handler or WorkspaceHandler(logger=self.logger)
 
     def execute(self, json_):

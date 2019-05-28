@@ -59,3 +59,10 @@ MACHINE_TYPES = ("Air", "Standard", "Pro", "Advanced", "GPU+",
                  "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10")
 
 BILLING_TYPES = ["hourly", "monthly"]
+
+
+class RunMode:
+    RUN_MODE_DEFAULT = 1
+    RUN_MODE_PYTHON_COMMAND = 2
+    RUN_MODE_SHELL_COMMAND = 3
+    RUN_MODE_PYTHON_MODULE = 4
