@@ -46,6 +46,7 @@ setup(
         'six',
         'gradient-statsd',
         'click',
+        'gradient-sdk',
         'terminaltables',
         'click-didyoumean',
         'click-help-colors',
