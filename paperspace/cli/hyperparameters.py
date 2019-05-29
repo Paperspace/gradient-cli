@@ -3,10 +3,17 @@ import functools
 import click
 
 from paperspace import client, config
-from paperspace.cli import common
+from paperspace.cli import common, cli_types
 from paperspace.cli.cli import cli
 from paperspace.cli.common import ClickGroup
 from paperspace.commands import hyperparameters as hyperparameters_commands
+
+
+def add_use_docker_file_flag_if_used(ctx, param, value):
+    if value:
+        ctx.params["useDockerFile"] = True
+
+    return value
 
 
 @cli.group(["hyperparameters", "hyperparameter"], help="Manage hyperparameters", cls=ClickGroup)
@@ -20,49 +27,115 @@ def common_hyperparameter_create_options(f):
             "--name",
             "name",
             required=True,
+            help="Job name",
         ),
         click.option(
             "--projectId",
             "projectHandle",
             required=True,
+            help="Project ID",
         ),
         click.option(
             "--tuningCommand",
             "tuningCommand",
             required=True,
+            help="Tuning command",
         ),
         click.option(
             "--workerContainer",
             "workerContainer",
             required=True,
+            help="Worker Docker image",
         ),
         click.option(
             "--workerMachineType",
             "workerMachineType",
             required=True,
+            help="Worker machine type",
         ),
         click.option(
             "--workerCommand",
             "workerCommand",
             required=True,
+            help="Worker command",
         ),
         click.option(
             "--workerCount",
             "workerCount",
             required=True,
             type=int,
+            help="Worker count",
+        ),
+        click.option(
+            "--isPreemptible",
+            "isPreemptible",
+            type=bool,
+            is_flag=True,
+            help="Flag: isPreemptible",
+        ),
+        click.option(
+            "--ports",
+            "ports",
+            help="Port to use in new job",
+        ),
+        click.option(
+            "--workspaceUrl",
+            "workspaceUrl",
+            help="Project git repository url",
+        ),
+        click.option(
+            "--artifactDirectory",
+            "artifactDirectory",
+            help="Artifacts directory",
+        ),
+        click.option(
+            "--clusterId",
+            "clusterId",
+            type=int,
+            help="Cluster ID",
+        ),
+        click.option(
+            "--experimentEnv",
+            "experimentEnv",
+            type=cli_types.json_string,
+            help="Environment variables in a JSON",
+        ),
+        click.option(
+            "--triggerEventId",
+            "triggerEventId",
+            type=int,
+            help="Trigger event ID",
+        ),
+        click.option(
+            "--modelType",
+            "modelType",
+            help="Model type",
+        ),
+        click.option(
+            "--modelPath",
+            "modelPath",
+            help="Model path",
+        ),
+        click.option(
+            "--dockerfilePath",
+            "dockerfilePath",
+            callback=add_use_docker_file_flag_if_used,
+            help="Path to Dockerfile",
         ),
         click.option(
             "--serverRegistryUsername",
             "hyperparameterServerRegistryUsername",
+            help="Hyperparameter server registry username",
         ),
         click.option(
             "--serverRegistryPassword",
             "hyperparameterServerRegistryPassword",
+            help="Hyperparameter server registry password",
         ),
         click.option(
             "--serverContainerUser",
             "hyperparameterServerContainerUser",
+            help="Hyperparameter server container user",
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
