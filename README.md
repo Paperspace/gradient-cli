@@ -27,6 +27,8 @@ Getting Started
     Alternatively, you can create activation script by:
      
      `(_PAPERSPACE_PYTHON_COMPLETE=source paperspace-python) > ~/paperspace_complete.sh`
+    
+    and then add `. ~/paperspace_complete.sh` to your `.bashrc`, `.zshrc` or `activate` script.
 
     More: https://click.palletsprojects.com/en/7.x/bashcomplete/
 4. Download your api key by executing the following:
