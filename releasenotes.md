@@ -1,5 +1,13 @@
 # Paperspace Python Release Notes
 
+# Release Notes for 0.2.0a4
+### New features
+* new params for `job create` and `hyperparameters create`
+### Fixes
+* fixed missing `--experimentType` when creating new single node experiment
+* deployments can be of `TFSERVING` type only
+* fixed autocomplete instructions
+
 # Release Notes for 0.2.0a3
 ### New features
 * autocomplete for bash (GNU/Linux and iOS)
