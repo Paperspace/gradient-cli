@@ -20,14 +20,15 @@ Getting Started
 3. Enable autocomplete:
     
     Add following to your `.bashrc` (or `.zshrc`) to enable autocomplete anytime you activate your shell.
+    If paperspace-python was installed in a virtual environment, the following has to be added to the `activate` script:
      
-    `eval "$(_PAPERSPACE_PYTHON_COMPLETE=source paperspace-python)"`
+     `eval "$(_PAPERSPACE_PYTHON_COMPLETE=source paperspace-python)"`
+        
+    Alternatively, you can create activation script by:
+     
+     `(_PAPERSPACE_PYTHON_COMPLETE=source paperspace-python) > ~/paperspace_complete.sh`
     
-    For other shell (eg. `zsh` or `fish`), use proper version of `source` (`source_zsh` and `source-fish` respectively)
-     
-     Alternatively, you can create activation script by:
-     
-     `_PAPERSPACE_PYTHON_COMPLETE=source paperspace-python > ~/paperspace_complete.sh`
+    and then add `. ~/paperspace_complete.sh` to your `.bashrc`, `.zshrc` or `activate` script.
 
     More: https://click.palletsprojects.com/en/7.x/bashcomplete/
 4. Download your api key by executing the following:
