@@ -126,7 +126,8 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_sing
               "--machineType testType " \
               "--command testCommand " \
               "--workspaceUrl wUrl " \
-              "--apiKey some_key"
+              "--apiKey some_key " \
+              "--no-logs"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
                        "container": u"testContainer",
@@ -160,7 +161,8 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_mult
               "--parameterServerMachineType testParameterServerMachineType " \
               "--parameterServerCommand testParameterServerCommand " \
               "--parameterServerCount 3 " \
-              "--workspaceUrl wUrl"
+              "--workspaceUrl wUrl " \
+              "--no-logs"
     expected_kwargs = {"name": u"exp1",
                        "projectHandle": u"testHandle",
                        "experimentTypeId": constants.ExperimentType.MPI_MULTI_NODE,

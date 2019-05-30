@@ -263,6 +263,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--machineType", "testType",
         "--command", "testCommand",
         "--workspaceUrl", "some-workspace",
+        "--no-logs",
     ]
     FULL_OPTIONS_COMMAND = [
         "experiments", "createAndStart", "singlenode",
@@ -282,6 +283,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--registryUsername", "userName",
         "--registryPassword", "passwd",
         "--apiKey", "some_key",
+        "--no-logs",
     ]
     EXPECTED_STDOUT = "New experiment created and started with ID: sadkfhlskdjh\n"
 
@@ -303,6 +305,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--parameterServerCount", 2,
         "--workerContainerUser", "usr",
         "--workspaceUrl", "some-workspace",
+        "--no-logs",
     ]
     FULL_OPTIONS_COMMAND = [
         "experiments", "createAndStart", "multinode",
@@ -331,6 +334,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--parameterServerRegistryContainerUser", "psrcus",
         "--parameterServerRegistryPassword", "psrpass",
         "--apiKey", "some_key",
+        "--no-logs",
     ]
     EXPECTED_STDOUT = "New experiment created and started with ID: sadkfhlskdjh\n"
 
