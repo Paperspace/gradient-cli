@@ -9,7 +9,7 @@ from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGro
 from paperspace.commands import jobs as jobs_commands
 
 
-@cli.group(["jobs", "job"], help="Manage gradient jobs", cls=ClickGroup)
+@cli.group("jobs", help="Manage gradient jobs", cls=ClickGroup)
 def jobs_group():
     pass
 

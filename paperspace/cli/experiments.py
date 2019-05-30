@@ -17,7 +17,7 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
 )
 
 
-@cli.group(["experiments", "experiment"], help="Manage experiments", cls=ClickGroup)
+@cli.group("experiments", help="Manage experiments", cls=ClickGroup)
 def experiments():
     pass
 

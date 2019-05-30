@@ -4,7 +4,7 @@ from paperspace.commands import projects as projects_commands
 from paperspace.cli import common
 
 
-@cli.group(["projects", "project"], help="Manage projects", cls=common.ClickGroup)
+@cli.group("projects", help="Manage projects", cls=common.ClickGroup)
 def projects_group():
     pass
 

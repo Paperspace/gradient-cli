@@ -16,7 +16,7 @@ def add_use_docker_file_flag_if_used(ctx, param, value):
     return value
 
 
-@cli.group(["hyperparameters", "hyperparameter"], help="Manage hyperparameters", cls=ClickGroup)
+@cli.group("hyperparameters", help="Manage hyperparameters", cls=ClickGroup)
 def hyperparameters_group():
     pass
 

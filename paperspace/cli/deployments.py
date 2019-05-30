@@ -9,7 +9,7 @@ from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGro
 from paperspace.commands import deployments as deployments_commands
 
 
-@cli.group("deployments", alias='deployment', help="Manage deployments", cls=ClickGroup)
+@cli.group("deployments", help="Manage deployments", cls=ClickGroup)
 def deployments():
     pass
 

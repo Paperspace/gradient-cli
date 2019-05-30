@@ -31,27 +31,7 @@ def jsonify_dicts(dict_):
 
 
 class ClickGroup(DYMMixin, HelpColorsGroup):
-    def group(self, *args, **kwargs):
-        aliases = []
-        _args = args
-        if args and isinstance(args[0], list):
-            # we have a list so create group aliases
-            aliases = args[0][1:]
-            _args = [args[0][0]] + list(args[1:])
-
-        if 'alias' in kwargs:
-            aliases.append(kwargs.pop('alias'))
-
-        def decorator(f):
-            cmd = click.group(*_args, **kwargs)(f)
-            self.add_command(cmd)
-            for alias in set(aliases):
-                alias_cmd = click.group(alias, **kwargs)(f)
-                self.add_command(alias_cmd)
-                alias_cmd.commands = cmd.commands
-            return cmd
-
-        return decorator
+    pass
 
 
 def prompt_for_secret(prompt):

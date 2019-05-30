@@ -18,7 +18,7 @@ REGIONS_MAP = collections.OrderedDict(
 )
 
 
-@cli.group(["machines", "machine"], help="Manage machines", cls=ClickGroup)
+@cli.group("machines", help="Manage machines", cls=ClickGroup)
 def machines_group():
     pass
 
