@@ -1,5 +1,10 @@
 # Paperspace Python Release Notes
 
+# Release Notes for 0.2.0a5
+### Fixes
+* removed command group aliases
+* streaming logs for `experiments createAndStart` by default
+
 # Release Notes for 0.2.0a4
 ### New features
 * new params for `job create` and `hyperparameters create`
