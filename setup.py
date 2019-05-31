@@ -1,14 +1,16 @@
 import io
+import os
 import re
+import sys
 from codecs import open
-from os import path
 
 from setuptools import setup, find_packages
+from setuptools.command.install import install
 
 with io.open("paperspace/version.py", "rt", encoding="utf8") as f:
     version = re.search(r"version = \"(.*?)\"", f.read()).group(1)
 
-here = path.abspath(path.dirname(__file__))
+here = os.path.abspath(os.path.dirname(__file__))
 
 # Get the long description from the README file
 try:
@@ -18,6 +20,21 @@ try:
 except(IOError, ImportError, OSError):
     with open('README.md', encoding='utf-8') as f:
         long_description = f.read()
+
+
+class VerifyVersionCommand(install):
+    """Custom command to verify that the git tag matches our version"""
+    description = 'verify that the git tag matches our version'
+
+    def run(self):
+        tag = os.getenv('CIRCLE_TAG')
+
+        if tag != version:
+            info = "Git tag: {0} does not match the version of this app: {1}".format(
+                tag, version
+            )
+            sys.exit(info)
+
 
 setup(
     name='paperspace',
@@ -63,6 +80,10 @@ setup(
             'tox',
             'pytest',
             'mock',
+            'twine',
         ],
+    },
+    cmdclass={
+        'verify': VerifyVersionCommand,
     },
 )

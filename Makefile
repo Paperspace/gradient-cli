@@ -13,3 +13,6 @@ pip-update:
 
 pip-install-dev: pip-update
 	$(PIP) install --upgrade -e .[dev]
+
+build:
+	python setup.py sdist bdist_wheel
