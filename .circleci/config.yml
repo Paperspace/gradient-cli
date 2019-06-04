@@ -158,3 +158,8 @@ jobs:
             . venv/bin/activate
             # twine upload --config-file ~/.pypirc --repository testpypi dist/gradient-0.2.0.tar.gz dist/gradient-0.2.0.tar.gz.asc
             twine upload -u $TESTPYPI_USERNAME -p $TESTPYPI_PASSWORD --repository testpypi dist/gradient-0.2.0.tar.gz dist/gradient-0.2.0.tar.gz.asc
+      - run:
+          name: verify gradient package can be installed and works
+          command: |
+            pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple gradient
+            gradient --version
