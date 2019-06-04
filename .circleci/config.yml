@@ -53,8 +53,11 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             make pip-install-dev
+      - run:
+          name: create packages [test]
+          command: |
+            make package
             ls
-            ls /dist
             ls ./dist
       - save_cache:
           key: v1-dependency-cache-{{ checksum "setup.py" }}-{{ checksum "Makefile" }}
@@ -140,7 +143,6 @@ jobs:
           command: |
             make package
             ls
-            ls /dist
             ls ./dist
       - run:
           name: upload to pypi
