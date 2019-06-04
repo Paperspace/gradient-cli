@@ -26,11 +26,11 @@ workflows:
       - deploy:
           requires:
             - build
-          filters:
-            tags:
-              only: /[0-9]+(\.[0-9]+)*/
-            branches:
-              ignore: /.*/
+          # filters:
+          #   tags:
+          #     only: /[0-9]+(\.[0-9]+)*/
+          #   branches:
+          #     ignore: /.*/
 jobs:
   build:
     docker:
@@ -53,12 +53,6 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             make pip-install-dev
-      - run:
-          name: create packages [test]
-          command: |
-            make package
-            ls
-            ls ./dist
       - save_cache:
           key: v1-dependency-cache-{{ checksum "setup.py" }}-{{ checksum "Makefile" }}
           paths:
@@ -132,12 +126,12 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             python setup.py verify
-      - run:
-          name: init .pypirc
-          command: |
-            echo -e "[pypi]" >> ~/.pypirc
-            echo -e "username = $PYPI_USERNAME" >> ~/.pypirc
-            echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
+      # - run:
+      #     name: init .pypirc
+      #     command: |
+      #       echo -e "[pypi]" >> ~/.pypirc
+      #       echo -e "username = $PYPI_USERNAME" >> ~/.pypirc
+      #       echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
       - run:
           name: create packages
           command: |
@@ -145,7 +139,11 @@ jobs:
             ls
             ls ./dist
       - run:
-          name: upload to pypi
+          name: sign packages
           command: |
-            . venv/bin/activate
-            twine upload dist/*
+            gpg --detach-sign -a dist/gradient-*.*.*.tar.gz
+      # - run:
+      #     name: upload to pypi
+      #     command: |
+      #       . venv/bin/activate
+      #       twine upload dist/*
