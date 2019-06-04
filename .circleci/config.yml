@@ -87,6 +87,19 @@ jobs:
           paths:
             - "venv"
       - run:
+          name: create packages
+          command: |
+            make package
+            ls
+            ls ./dist
+      - run:
+          name: sign packages
+          command: |
+            # gpg --local-user [fingerprint] --sign --armor --output somefile.tar.xz.asc --detach-sig somefile.tar.xz
+            # gpg --local-user ${GPG_FINGERPRINT} --passphrase "${GPG_PASSWORD}" --sign --armor --detach-sign dist/gradient-*.*.*.tar.gz
+            # gpg --local-user ${GPG_FINGERPRINT} --sign --armor --batch --detach-sign dist/gradient-*.*.*.tar.gz
+            gpg --detach-sign -armor --sign --passphrase "${GPG_PASSWORD}" --batch dist/gradient-*.*.*.tar.gz
+      - run:
           name: run tests
           command: |
             . venv/bin/activate
