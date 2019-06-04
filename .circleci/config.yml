@@ -150,7 +150,9 @@ jobs:
       - run:
           name: sign packages
           command: |
-            gpg --detach-sign -a dist/gradient-*.*.*.tar.gz
+            # gpg --local-user [fingerprint] --sign --armor --output somefile.tar.xz.asc --detach-sig somefile.tar.xz
+            gpg --local-user ${GPG_FINGERPRINT} --sign --armor --detach-signdist/gradient-*.*.*.tar.gz
+            # gpg --detach-sign -a dist/gradient-*.*.*.tar.gz
       # - run:
       #     name: upload to pypi
       #     command: |
