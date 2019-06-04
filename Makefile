@@ -1,7 +1,6 @@
 PIP=pip3
 
-
-clean-tests:
+clean-tests:	
 	rm -rf .tox paperspace.egg-info
 
 run-tests: clean-tests
@@ -13,3 +12,11 @@ pip-update:
 
 pip-install-dev: pip-update
 	$(PIP) install --upgrade -e .[dev]
+
+clean:
+	rm -rf dist/*
+	rm -rf .tox paperspace.egg-info
+	
+package:
+	python setup.py sdist
+	python setup.py bdist_wheel
