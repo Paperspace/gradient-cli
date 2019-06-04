@@ -23,14 +23,14 @@ workflows:
       #     version: "3.7"
       #     requires:
       #       - build
-      # - deploy:
-      #     requires:
-      #       - build
-      #     # filters:
-      #     #   tags:
-      #     #     only: /[0-9]+(\.[0-9]+)*/
-      #     #   branches:
-      #     #     ignore: /.*/
+      - deploy:
+          requires:
+            - build
+          # filters:
+          #   tags:
+          #     only: /[0-9]+(\.[0-9]+)*/
+          #   branches:
+          #     ignore: /.*/
 jobs:
   build:
     docker:
@@ -90,7 +90,7 @@ jobs:
       - save_cache:
           key: v1-dependency-cache-{{ checksum "setup.py" }}-{{ checksum "Makefile" }}
           paths:
-            - "venv"        
+            - "venv"
       - run:
           name: run tests
           command: |
@@ -138,12 +138,12 @@ jobs:
       #       python3 -m venv venv
       #       . venv/bin/activate
       #       python setup.py verify
-      # - run:
-      #     name: init .pypirc
-      #     command: |
-      #       echo -e "[pypi]" >> ~/.pypirc
-      #       echo -e "username = $PYPI_USERNAME" >> ~/.pypirc
-      #       echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
+      - run:
+          name: init .pypirc
+          command: |
+            echo -e "[pypi]" >> ~/.pypirc
+            echo -e "username = $TESTPYPI_USERNAME" >> ~/.pypirc
+            echo -e "password = $TESTPYPI_PASSWORD" >> ~/.pypirc
       - run:
           name: create packages
           command: |
@@ -152,8 +152,8 @@ jobs:
           name: sign packages
           command: |
             gpg --no-tty --batch --pinentry-mode loopback --armor --sign --local-user ${GPG_FINGERPRINT} --passphrase "${GPG_PASSWORD}" --detach-sign dist/gradient-*.*.*.tar.gz
-      # - run:
-      #     name: upload to pypi
-      #     command: |
-      #       . venv/bin/activate
-      #       twine upload dist/*
+      - run:
+          name: upload to testpypi
+          command: |
+            . venv/bin/activate
+            twine upload --repository testpypi dist/gradient-0.2.0.tar.gz dist/gradient-0.2.0.tar.gz.asc
