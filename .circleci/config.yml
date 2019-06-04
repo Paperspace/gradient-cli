@@ -127,9 +127,9 @@ jobs:
             export GPG_TTY=$(tty)
             echo -e "$GPG_KEY" | gpg --import --no-tty --batch --yes --passphrase "${GPG_PASSWORD}"
             gpg --list-options show-unusable-subkeys --list-keys
-      - run:
-          name: decrypt GPG key
-          command: gpg --no-tty --batch --passphrase "$GPG_PASSWORD" --pinentry-mode loopback --output secrets.env --decrypt secrets.env.gpg
+      # - run:
+      #     name: decrypt GPG key
+      #     command: gpg --no-tty --batch --passphrase "$GPG_PASSWORD" --pinentry-mode loopback --output secrets.env --decrypt secrets.env.gpg
 
       # - run:
       #     name: verify git tag vs. version
@@ -154,7 +154,8 @@ jobs:
           command: |
             # gpg --local-user [fingerprint] --sign --armor --output somefile.tar.xz.asc --detach-sig somefile.tar.xz
             # gpg --local-user ${GPG_FINGERPRINT} --passphrase "${GPG_PASSWORD}" --sign --armor --detach-sign dist/gradient-*.*.*.tar.gz
-            gpg --detach-sign -a dist/gradient-*.*.*.tar.gz
+            gpg --local-user ${GPG_FINGERPRINT} --sign --armor --detach-sign dist/gradient-*.*.*.tar.gz
+            # gpg --detach-sign -a dist/gradient-*.*.*.tar.gz
       # - run:
       #     name: upload to pypi
       #     command: |
