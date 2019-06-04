@@ -120,12 +120,12 @@ jobs:
           key: v1-dependency-cache-{{ checksum "setup.py" }}-{{ checksum "Makefile" }}
           paths:
             - "venv"
-      - run:
-          name: verify git tag vs. version
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            python setup.py verify
+      # - run:
+      #     name: verify git tag vs. version
+      #     command: |
+      #       python3 -m venv venv
+      #       . venv/bin/activate
+      #       python setup.py verify
       # - run:
       #     name: init .pypirc
       #     command: |
