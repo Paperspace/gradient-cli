@@ -7,30 +7,30 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - test-python-install:
-          version: "3.4"
-          requires:
-            - build
-      - test-python-install:
-          version: "3.5"
-          requires:
-            - build
-      - test-python-install:
-          version: "3.6"
-          requires:
-            - build
-      - test-python-install:
-          version: "3.7"
-          requires:
-            - build
-      - deploy:
-          requires:
-            - build
-          # filters:
-          #   tags:
-          #     only: /[0-9]+(\.[0-9]+)*/
-          #   branches:
-          #     ignore: /.*/
+      # - test-python-install:
+      #     version: "3.4"
+      #     requires:
+      #       - build
+      # - test-python-install:
+      #     version: "3.5"
+      #     requires:
+      #       - build
+      # - test-python-install:
+      #     version: "3.6"
+      #     requires:
+      #       - build
+      # - test-python-install:
+      #     version: "3.7"
+      #     requires:
+      #       - build
+      # - deploy:
+      #     requires:
+      #       - build
+      #     # filters:
+      #     #   tags:
+      #     #     only: /[0-9]+(\.[0-9]+)*/
+      #     #   branches:
+      #     #     ignore: /.*/
 jobs:
   build:
     docker:
@@ -98,7 +98,8 @@ jobs:
             # gpg --local-user [fingerprint] --sign --armor --output somefile.tar.xz.asc --detach-sig somefile.tar.xz
             # gpg --local-user ${GPG_FINGERPRINT} --passphrase "${GPG_PASSWORD}" --sign --armor --detach-sign dist/gradient-*.*.*.tar.gz
             # gpg --local-user ${GPG_FINGERPRINT} --sign --armor --batch --detach-sign dist/gradient-*.*.*.tar.gz
-            gpg --detach-sign -armor --sign --passphrase "${GPG_PASSWORD}" --batch dist/gradient-*.*.*.tar.gz
+            gpg --no-tty --batch --pinentry-mode loopback --armor --sign --passphrase "${GPG_PASSWORD}" --detach-sign dist/gradient-*.*.*.tar.gz
+            
       - run:
           name: run tests
           command: |
