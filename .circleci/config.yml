@@ -156,4 +156,4 @@ jobs:
           name: upload to testpypi
           command: |
             . venv/bin/activate
-            twine upload --repository testpypi dist/gradient-0.2.0.tar.gz dist/gradient-0.2.0.tar.gz.asc
+            twine upload --config-file ~/.pypirc --repository testpypi dist/gradient-0.2.0.tar.gz dist/gradient-0.2.0.tar.gz.asc
