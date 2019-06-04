@@ -41,7 +41,9 @@ jobs:
           key: v1-dependency-cache-{{ checksum "setup.py" }}-{{ checksum "Makefile" }}
       - run:
           name: import GPG key
-          command: echo -e "$GPG_KEY" | gpg --import
+          command: |
+            export GPG_TTY=$(tty)
+            echo -e "$GPG_KEY" | gpg --import
       # - run:
       #     name: decrypt GPG key
       #     command: gpg --no-tty --batch --passphrase "$GPG_PASSWORD" --pinentry-mode loopback --output secrets.env --decrypt secrets.env.gpg
