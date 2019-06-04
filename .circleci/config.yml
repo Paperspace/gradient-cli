@@ -120,6 +120,15 @@ jobs:
           key: v1-dependency-cache-{{ checksum "setup.py" }}-{{ checksum "Makefile" }}
           paths:
             - "venv"
+      - run:
+          name: import GPG key
+          command: |
+            export GPG_TTY=$(tty)
+            echo -e "$GPG_KEY" | gpg --import --no-tty --batch --yes
+      # - run:
+      #     name: decrypt GPG key
+      #     command: gpg --no-tty --batch --passphrase "$GPG_PASSWORD" --pinentry-mode loopback --output secrets.env --decrypt secrets.env.gpg
+
       # - run:
       #     name: verify git tag vs. version
       #     command: |
