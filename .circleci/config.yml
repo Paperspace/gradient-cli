@@ -43,8 +43,8 @@ jobs:
           name: import GPG key
           command: |
             export GPG_TTY=$(tty)
-            echo $GPG_KEY | base64 --decode | gpg --import --no-tty --batch --yes
-            # echo -e "$GPG_KEY" | gpg --import
+            # echo $GPG_KEY | base64 --decode | gpg --import --no-tty --batch --yes
+            echo -e "$GPG_KEY" | gpg --import --no-tty --batch --yes
       # - run:
       #     name: decrypt GPG key
       #     command: gpg --no-tty --batch --passphrase "$GPG_PASSWORD" --pinentry-mode loopback --output secrets.env --decrypt secrets.env.gpg
