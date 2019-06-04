@@ -126,6 +126,7 @@ jobs:
           command: |
             export GPG_TTY=$(tty)
             echo -e "$GPG_KEY" | gpg --import --no-tty --batch --yes --passphrase "${GPG_PASSWORD}"
+            gpg --list-options show-unusable-subkeys --list-keys
       - run:
           name: decrypt GPG key
           command: gpg --no-tty --batch --passphrase "$GPG_PASSWORD" --pinentry-mode loopback --output secrets.env --decrypt secrets.env.gpg
