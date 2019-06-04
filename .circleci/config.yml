@@ -138,12 +138,12 @@ jobs:
       #       python3 -m venv venv
       #       . venv/bin/activate
       #       python setup.py verify
-      - run:
-          name: init .pypirc
-          command: |
-            echo -e "[pypi]" >> ~/.pypirc
-            echo -e "username = $TESTPYPI_USERNAME" >> ~/.pypirc
-            echo -e "password = $TESTPYPI_PASSWORD" >> ~/.pypirc
+      # - run:
+      #     name: init .pypirc
+      #     command: |
+      #       echo -e "[pypi]" >> ~/.pypirc
+      #       echo -e "username = $TESTPYPI_USERNAME" >> ~/.pypirc
+      #       echo -e "password = $TESTPYPI_PASSWORD" >> ~/.pypirc
       - run:
           name: create packages
           command: |
@@ -156,4 +156,5 @@ jobs:
           name: upload to testpypi
           command: |
             . venv/bin/activate
-            twine upload --config-file ~/.pypirc --repository testpypi dist/gradient-0.2.0.tar.gz dist/gradient-0.2.0.tar.gz.asc
+            # twine upload --config-file ~/.pypirc --repository testpypi dist/gradient-0.2.0.tar.gz dist/gradient-0.2.0.tar.gz.asc
+            twine upload -u $TESTPYPI_USERNAME -p $TESTPYPI_PASSWORD --repository testpypi dist/gradient-0.2.0.tar.gz dist/gradient-0.2.0.tar.gz.asc
