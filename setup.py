@@ -81,6 +81,7 @@ setup(
             'tox',
             'pytest',
             'mock',
+            'twine',
         ],
     },
     cmdclass={
