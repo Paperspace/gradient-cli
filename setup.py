@@ -57,7 +57,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
-    keywords='The command line interface for Gradient - https: // gradient.paperspace.com,
+    keywords='The command line interface for Gradient - https://gradient.paperspace.com',
     packages=find_packages(exclude=['contrib', 'docs', 'tests', 'old_tests']),
     install_requires=[
         'requests[security]',
@@ -74,7 +74,7 @@ setup(
         'progressbar2',
     ],
     entry_points={'console_scripts': [
-        'gradient-cli = paperspace:main',
+        'gradient = paperspace:main',
     ]},
     extras_require={
         "dev": [
