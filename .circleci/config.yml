@@ -67,7 +67,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            make run-tests           
+            make run-tests
       - store_artifacts:
           path: htmlcov/
   test-python-install:

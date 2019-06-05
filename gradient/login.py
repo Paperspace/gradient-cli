@@ -5,9 +5,9 @@ import os
 import requests
 from six.moves import input
 
-from paperspace import logger
+from gradient import logger
 from .config import config
-from paperspace.utils import response_error_check, requests_exception_to_error_obj, status_code_to_error_obj
+from gradient.utils import response_error_check, requests_exception_to_error_obj, status_code_to_error_obj
 
 UNAUTHORIZED_EXTENDED_INFO = '\n\nNote: Please keep in mind that currently you can login only with the email and ' \
                              'password from your Paperspace account. If you\'re using AD, SAML or GitHub ' \
@@ -21,7 +21,8 @@ def is_error_or_missing_keys_print(res, *required_keys):
             print(res['message'])
             return True
         if 'message' in res['error']:
-            error_message = res['error']['message'] + UNAUTHORIZED_EXTENDED_INFO
+            error_message = res['error']['message'] + \
+                UNAUTHORIZED_EXTENDED_INFO
             print(error_message)
             return True
         print(json.dumps(res, indent=2, sort_keys=True))
@@ -125,7 +126,8 @@ def set_apikey(apikey):
         json.dump(config_data, outfile, indent=2, sort_keys=True)
         outfile.write('\n')
 
-    logger.log("Successfully added your API Key to {}. You're ready to go!".format(config_path))
+    logger.log(
+        "Successfully added your API Key to {}. You're ready to go!".format(config_path))
 
     return True
 

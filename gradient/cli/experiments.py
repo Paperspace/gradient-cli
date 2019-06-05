@@ -3,11 +3,11 @@ import functools
 
 import click
 
-from paperspace import client, config, constants
-from paperspace.cli.cli import cli
-from paperspace.cli.cli_types import json_string, ChoiceType
-from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGroup
-from paperspace.commands import experiments as experiments_commands
+from gradient import client, config, constants
+from gradient.cli.cli import cli
+from gradient.cli.cli_types import json_string, ChoiceType
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
+from gradient.commands import experiments as experiments_commands
 
 MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
     (
@@ -110,7 +110,8 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--experimentType",
             "experimentTypeId",
-            type=ChoiceType(MULTI_NODE_EXPERIMENT_TYPES_MAP, case_sensitive=False),
+            type=ChoiceType(MULTI_NODE_EXPERIMENT_TYPES_MAP,
+                            case_sensitive=False),
             required=True,
             help="Experiment Type",
         ),
@@ -240,7 +241,8 @@ def common_experiments_create_single_node_options(f):
 @common_experiment_create_multi_node_options
 def create_multi_node(api_key, **kwargs):
     del_if_value_is_none(kwargs)
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    experiments_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.CreateExperimentCommand(api=experiments_api)
     command.execute(kwargs)
 
@@ -251,7 +253,8 @@ def create_multi_node(api_key, **kwargs):
 def create_single_node(api_key, **kwargs):
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    experiments_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.CreateExperimentCommand(api=experiments_api)
     command.execute(kwargs)
 
@@ -270,11 +273,14 @@ def create_single_node(api_key, **kwargs):
 @click.pass_context
 def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
     del_if_value_is_none(kwargs)
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = experiments_commands.CreateAndStartExperimentCommand(api=experiments_api)
+    experiments_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    command = experiments_commands.CreateAndStartExperimentCommand(
+        api=experiments_api)
     experiment = command.execute(kwargs)
     if experiment and show_logs:
-        ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
+        ctx.invoke(
+            list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
 
 
 @create_and_start_experiment.command(name="singlenode", help="Create and start new single node experiment")
@@ -292,11 +298,14 @@ def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
 def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = experiments_commands.CreateAndStartExperimentCommand(api=experiments_api)
+    experiments_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    command = experiments_commands.CreateAndStartExperimentCommand(
+        api=experiments_api)
     experiment = command.execute(kwargs)
     if experiment and show_logs:
-        ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
+        ctx.invoke(
+            list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
 
 
 @experiments.command("start", help="Start experiment")
@@ -310,17 +319,20 @@ def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
 )
 @click.pass_context
 def start_experiment(ctx, experiment_id, show_logs, api_key):
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    experiments_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.start_experiment(experiment_id, api=experiments_api)
     if show_logs:
-        ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
+        ctx.invoke(list_logs, experiment_id=experiment_id, line=0,
+                   limit=100, follow=True, api_key=api_key)
 
 
 @experiments.command("stop", help="Stop experiment")
 @click.argument("experiment-id")
 @api_key_option
 def stop_experiment(experiment_id, api_key):
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    experiments_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.stop_experiment(experiment_id, api=experiments_api)
 
 
@@ -328,7 +340,8 @@ def stop_experiment(experiment_id, api_key):
 @click.option("--projectId", "-p", "project_ids", multiple=True)
 @api_key_option
 def list_experiments(project_ids, api_key):
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    experiments_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.ListExperimentsCommand(api=experiments_api)
     command.execute(project_ids=project_ids)
 
@@ -337,8 +350,10 @@ def list_experiments(project_ids, api_key):
 @click.argument("experiment-id")
 @api_key_option
 def get_experiment_details(experiment_id, api_key):
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    experiments_commands.get_experiment_details(experiment_id, api=experiments_api)
+    experiments_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    experiments_commands.get_experiment_details(
+        experiment_id, api=experiments_api)
 
 
 @experiments.command("logs", help="List experiment logs")

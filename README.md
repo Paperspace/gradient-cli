@@ -1,4 +1,4 @@
-# Paperspace Python
+# Gradient CLI
 
 Release 0.2.0
 
@@ -22,11 +22,11 @@ See [releasenotes.md](https://github.com/Paperspace/gradient-cli/blob/master/rel
    Add following to your `.bashrc` (or `.zshrc`) to enable autocomplete anytime you activate your shell.
    If gradient was installed in a virtual environment, the following has to be added to the `activate` script:
 
-   `eval "$(_PAPERSPACE_PYTHON_COMPLETE=source gradient)"`
+   `eval "$(_GRADIENT_CLI_COMPLETE=source gradient)"`
 
    Alternatively, you can create activation script by:
 
-   `(_PAPERSPACE_PYTHON_COMPLETE=source gradient) > ~/gradient_complete.sh`
+   `(_GRADIENT_CLI_COMPLETE=source gradient) > ~/gradient_complete.sh`
 
    and then add `. ~/gradient_complete.sh` to your `.bashrc`, `.zshrc` or `activate` script.
 
@@ -304,7 +304,7 @@ See the scripts in the `tests` folder for other examples.
 Currently only email login is supported in the CLI - if you're using AD, SAML or GitHub to login to Paperspace, you will need an API key to log in with the CLI.
 
 You can create an API key from within your Paperspace console under the [API](https://www.paperspace.com/console/account/api) section. Login to your [Paperspace console](https://www.paperspace.com/console), scroll to the API section in the left navigation bar, and click [CREATE AN API KEY](https://www.paperspace.com/console/account/api). Follow the instructions there.
-You will need to pick and API token name for your API key, and also provide a description. You can copy the API key value associated with the API token name only at the time of initial creation. If you need to access your API key in the future, you can instead access it by API token name using the 'paperspace-python login' command.
+You will need to pick and API token name for your API key, and also provide a description. You can copy the API key value associated with the API token name only at the time of initial creation. If you need to access your API key in the future, you can instead access it by API token name using the 'gradient login' command.
 
 # Contributing
 

@@ -3,10 +3,10 @@ import pydoc
 import terminaltables
 from click import style
 
-from paperspace.commands import common
-from paperspace.exceptions import BadResponseError
-from paperspace.utils import get_terminal_lines
-from paperspace.workspace import WorkspaceHandler, MultipartEncoder
+from gradient.commands import common
+from gradient.exceptions import BadResponseError
+from gradient.utils import get_terminal_lines
+from gradient.workspace import WorkspaceHandler, MultipartEncoder
 
 
 class JobsCommandBase(common.CommandBase):
@@ -95,7 +95,8 @@ class JobLogsCommand(common.CommandBase):
             except (ValueError, KeyError) as e:
                 if response.status_code == 204:
                     continue
-                self.logger.log("Error while parsing response data: {}".format(e))
+                self.logger.log(
+                    "Error while parsing response data: {}".format(e))
                 return
             else:
                 self._log_logs_list(data, table, table_data, follow)
@@ -138,7 +139,8 @@ class JobLogsCommand(common.CommandBase):
             self.last_line_number = logs[-1].get("line")
 
         for log in logs:
-            table_data.append((style(fg="red", text=str(log.get("line"))), log.get("message")))
+            table_data.append(
+                (style(fg="red", text=str(log.get("line"))), log.get("message")))
 
         return table.table
 
@@ -146,7 +148,8 @@ class JobLogsCommand(common.CommandBase):
 class CreateJobCommand(JobsCommandBase):
     def __init__(self, workspace_handler=None, **kwargs):
         super(CreateJobCommand, self).__init__(**kwargs)
-        self._workspace_handler = workspace_handler or WorkspaceHandler(logger=self.logger)
+        self._workspace_handler = workspace_handler or WorkspaceHandler(
+            logger=self.logger)
 
     def execute(self, json_):
         url = "/jobs/createJob/"
@@ -176,7 +179,8 @@ class CreateJobCommand(JobsCommandBase):
         return data
 
     def _get_files_dict(self, archive_basename):
-        job_data = {'file': (archive_basename, open(self._workspace_handler.archive_path, 'rb'), 'text/plain')}
+        job_data = {'file': (archive_basename, open(
+            self._workspace_handler.archive_path, 'rb'), 'text/plain')}
         return job_data
 
     @staticmethod
@@ -192,7 +196,8 @@ class ArtifactsDestroyCommand(JobsCommandBase):
         if files:
             params = {'files': files}
         response = self.api.post(url, params=params)
-        self._log_message(response, "Artifacts destroyed", "Unknown error while destroying artifacts")
+        self._log_message(response, "Artifacts destroyed",
+                          "Unknown error while destroying artifacts")
 
 
 class ArtifactsGetCommand(JobsCommandBase):
@@ -211,7 +216,8 @@ class ArtifactsGetCommand(JobsCommandBase):
                 raise BadResponseError(
                     '{}: {}'.format(artifacts_json['error']['status'], artifacts_json['error']['message']))
         except (ValueError, KeyError, BadResponseError) as e:
-            self.logger.error("Error occurred while getting artifacts: {}".format(str(e)))
+            self.logger.error(
+                "Error occurred while getting artifacts: {}".format(str(e)))
 
 
 class ArtifactsListCommand(common.ListCommand):

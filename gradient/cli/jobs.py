@@ -2,11 +2,11 @@ import functools
 
 import click
 
-from paperspace import client, config
-from paperspace.cli.cli import cli
-from paperspace.cli.cli_types import json_string
-from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts
-from paperspace.commands import jobs as jobs_commands
+from gradient import client, config
+from gradient.cli.cli import cli
+from gradient.cli.cli_types import json_string
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts
+from gradient.commands import jobs as jobs_commands
 
 
 @cli.group("jobs", help="Manage gradient jobs", cls=ClickGroup)
@@ -69,29 +69,43 @@ def list_jobs(api_key, **filters):
 def common_jobs_create_options(f):
     options = [
         click.option("--name", "name", help="Job name", required=True),
-        click.option("--machineType", "machineType", help="Virtual machine type"),
-        click.option("--container", "container", default="paperspace/tensorflow-python", help="Docker container"),
+        click.option("--machineType", "machineType",
+                     help="Virtual machine type"),
+        click.option("--container", "container",
+                     default="paperspace/tensorflow-python", help="Docker container"),
         click.option("--command", "command", help="Job command/entrypoint"),
         click.option("--ports", "ports", help="Mapped ports"),
         click.option("--isPublic", "isPublic", help="Flag: is job public"),
-        click.option("--workspace", "workspace", required=False, help="Path to workspace directory"),
-        click.option("--workspaceArchive", "workspaceArchive", required=False, help="Path to workspace archive"),
-        click.option("--workspaceUrl", "workspaceUrl", required=False, help="Project git repository url"),
-        click.option("--workingDirectory", "workingDirectory", help="Working directory for the experiment", ),
-        click.option("--ignoreFiles", "ignore_files", help="Ignore certain files from uploading"),
+        click.option("--workspace", "workspace", required=False,
+                     help="Path to workspace directory"),
+        click.option("--workspaceArchive", "workspaceArchive",
+                     required=False, help="Path to workspace archive"),
+        click.option("--workspaceUrl", "workspaceUrl",
+                     required=False, help="Project git repository url"),
+        click.option("--workingDirectory", "workingDirectory",
+                     help="Working directory for the experiment", ),
+        click.option("--ignoreFiles", "ignore_files",
+                     help="Ignore certain files from uploading"),
         click.option("--experimentId", "experimentId", help="Experiment Id"),
-        click.option("--jobEnv", "envVars", type=json_string, help="Environmental variables "),
-        click.option("--useDockerfile", "useDockerfile", help="Flag: using Dockerfile"),
-        click.option("--isPreemptible", "isPreemptible", help="Flag: isPreemptible"),
+        click.option("--jobEnv", "envVars", type=json_string,
+                     help="Environmental variables "),
+        click.option("--useDockerfile", "useDockerfile",
+                     help="Flag: using Dockerfile"),
+        click.option("--isPreemptible", "isPreemptible",
+                     help="Flag: isPreemptible"),
         click.option("--project", "project", help="Project name"),
         click.option("--projectId", "projectId", help="Project ID"),
         click.option("--startedByUserId", "startedByUserId", help="User ID"),
-        click.option("--relDockerfilePath", "relDockerfilePath", help="Relative path to Dockerfile"),
-        click.option("--registryUsername", "registryUsername", help="Docker registry username"),
-        click.option("--registryPassword", "registryPassword", help="Docker registry password"),
+        click.option("--relDockerfilePath", "relDockerfilePath",
+                     help="Relative path to Dockerfile"),
+        click.option("--registryUsername", "registryUsername",
+                     help="Docker registry username"),
+        click.option("--registryPassword", "registryPassword",
+                     help="Docker registry password"),
         click.option("--cluster", "cluster", help="Cluster name"),
         click.option("--clusterId", "cluster", help="Cluster id"),
-        click.option("--nodeAttrs", "nodeAttrs", type=json_string, help="Cluster node details"),
+        click.option("--nodeAttrs", "nodeAttrs", type=json_string,
+                     help="Cluster node details"),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -108,7 +122,8 @@ def create_job(ctx, api_key, **kwargs):
     command = jobs_commands.CreateJobCommand(api=jobs_api)
     job = command.execute(kwargs)
     if job is not None:
-        ctx.invoke(list_logs, job_id=job["handle"], line=0, limit=100, follow=True, api_key=api_key)
+        ctx.invoke(list_logs, job_id=job["handle"], line=0,
+                   limit=100, follow=True, api_key=api_key)
 
 
 @jobs_group.command("logs", help="List job logs")

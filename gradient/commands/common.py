@@ -3,8 +3,8 @@ from collections import OrderedDict
 
 import terminaltables
 
-from paperspace import logger
-from paperspace.utils import get_terminal_lines
+from gradient import logger
+from gradient.utils import get_terminal_lines
 
 
 class CommandBase(object):
@@ -36,7 +36,8 @@ class ListCommand(CommandBase):
 
             objects = self._get_objects(response, kwargs)
         except (ValueError, KeyError) as e:
-            self.logger.error("Error while parsing response data: {}".format(e))
+            self.logger.error(
+                "Error while parsing response data: {}".format(e))
         else:
             self._log_objects_list(objects)
 

@@ -3,19 +3,21 @@ import pydoc
 import terminaltables
 from click import style
 
-from paperspace import logger, constants, client, config
-from paperspace.logger import log_response
-from paperspace.commands import common
-from paperspace.utils import get_terminal_lines
-from paperspace.workspace import S3WorkspaceHandler
+from gradient import logger, constants, client, config
+from gradient.logger import log_response
+from gradient.commands import common
+from gradient.utils import get_terminal_lines
+from gradient.workspace import S3WorkspaceHandler
 
-experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
+experiments_api = client.API(
+    config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
 
 
 class ExperimentCommand(common.CommandBase):
     def __init__(self, workspace_handler=None, **kwargs):
         super(ExperimentCommand, self).__init__(**kwargs)
-        self._workspace_handler = workspace_handler or S3WorkspaceHandler(experiments_api=self.api, logger=self.logger)
+        self._workspace_handler = workspace_handler or S3WorkspaceHandler(
+            experiments_api=self.api, logger=self.logger)
 
     def _log_create_experiment(self, response, success_msg_template, error_msg):
         if response.ok:
@@ -63,13 +65,15 @@ class CreateAndStartExperimentCommand(ExperimentCommand):
 def start_experiment(experiment_id, api=experiments_api):
     url = "/experiments/{}/start/".format(experiment_id)
     response = api.put(url)
-    log_response(response, "Experiment started", "Unknown error while starting the experiment")
+    log_response(response, "Experiment started",
+                 "Unknown error while starting the experiment")
 
 
 def stop_experiment(experiment_id, api=experiments_api):
     url = "/experiments/{}/stop/".format(experiment_id)
     response = api.put(url)
-    log_response(response, "Experiment stopped", "Unknown error while stopping the experiment")
+    log_response(response, "Experiment stopped",
+                 "Unknown error while stopping the experiment")
 
 
 class ListExperimentsCommand(common.ListCommand):
@@ -78,7 +82,8 @@ class ListExperimentsCommand(common.ListCommand):
         return "/experiments/"
 
     def _get_request_params(self, kwargs):
-        params = {"limit": -1}  # so the API sends back full list without pagination
+        # so the API sends back full list without pagination
+        params = {"limit": -1}
 
         project_ids = kwargs.get("project_ids")
         if project_ids:
@@ -93,13 +98,15 @@ class ListExperimentsCommand(common.ListCommand):
         for experiment in experiments:
             name = experiment["templateHistory"]["params"].get("name")
             handle = experiment["handle"]
-            status = constants.ExperimentState.get_state_str(experiment["state"])
+            status = constants.ExperimentState.get_state_str(
+                experiment["state"])
             data.append((name, handle, status))
 
         return data
 
     def _get_objects(self, response, kwargs):
-        data = super(ListExperimentsCommand, self)._get_objects(response, kwargs)
+        data = super(ListExperimentsCommand,
+                     self)._get_objects(response, kwargs)
 
         filtered = bool(kwargs.get("project_ids"))
         if not filtered:  # If filtering by project ID response data has different format...
@@ -119,14 +126,22 @@ def _make_details_table(experiment):
             ("ID", experiment.get("handle")),
             ("State", constants.ExperimentState.get_state_str(experiment.get("state"))),
             ("Ports", experiment["templateHistory"]["params"].get("ports")),
-            ("Project ID", experiment["templateHistory"]["params"].get("project_handle")),
-            ("Worker Command", experiment["templateHistory"]["params"].get("worker_command")),
-            ("Worker Container", experiment["templateHistory"]["params"].get("worker_container")),
-            ("Worker Machine Type", experiment["templateHistory"]["params"].get("worker_machine_type")),
-            ("Working Directory", experiment["templateHistory"]["params"].get("workingDirectory")),
-            ("Workspace URL", experiment["templateHistory"]["params"].get("workspaceUrl")),
-            ("Model Type", experiment["templateHistory"]["params"].get("modelType")),
-            ("Model Path", experiment["templateHistory"]["params"].get("modelPath")),
+            ("Project ID", experiment["templateHistory"]
+             ["params"].get("project_handle")),
+            ("Worker Command", experiment["templateHistory"]["params"].get(
+                "worker_command")),
+            ("Worker Container", experiment["templateHistory"]["params"].get(
+                "worker_container")),
+            ("Worker Machine Type", experiment["templateHistory"]["params"].get(
+                "worker_machine_type")),
+            ("Working Directory", experiment["templateHistory"]["params"].get(
+                "workingDirectory")),
+            ("Workspace URL", experiment["templateHistory"]["params"].get(
+                "workspaceUrl")),
+            ("Model Type", experiment["templateHistory"]
+             ["params"].get("modelType")),
+            ("Model Path", experiment["templateHistory"]
+             ["params"].get("modelPath")),
         )
     elif experiment["experimentTypeId"] in (constants.ExperimentType.GRPC_MULTI_NODE,
                                             constants.ExperimentType.MPI_MULTI_NODE):
@@ -134,29 +149,45 @@ def _make_details_table(experiment):
             ("Name", experiment["templateHistory"]["params"].get("name")),
             ("ID", experiment.get("handle")),
             ("State", constants.ExperimentState.get_state_str(experiment.get("state"))),
-            ("Artifact directory", experiment["templateHistory"]["params"].get("artifactDirectory")),
-            ("Cluster ID", experiment["templateHistory"]["params"].get("clusterId")),
-            ("Experiment Env", experiment["templateHistory"]["params"].get("experimentEnv")),
+            ("Artifact directory", experiment["templateHistory"]["params"].get(
+                "artifactDirectory")),
+            ("Cluster ID", experiment["templateHistory"]
+             ["params"].get("clusterId")),
+            ("Experiment Env", experiment["templateHistory"]["params"].get(
+                "experimentEnv")),
             ("Experiment Type",
              constants.ExperimentType.get_type_str(experiment["templateHistory"]["params"].get("experimentTypeId"))),
-            ("Model Type", experiment["templateHistory"]["params"].get("modelType")),
-            ("Model Path", experiment["templateHistory"]["params"].get("modelPath")),
-            ("Parameter Server Command", experiment["templateHistory"]["params"].get("parameter_server_command")),
-            ("Parameter Server Container", experiment["templateHistory"]["params"].get("parameter_server_container")),
-            ("Parameter Server Count", experiment["templateHistory"]["params"].get("parameter_server_count")),
+            ("Model Type", experiment["templateHistory"]
+             ["params"].get("modelType")),
+            ("Model Path", experiment["templateHistory"]
+             ["params"].get("modelPath")),
+            ("Parameter Server Command", experiment["templateHistory"]["params"].get(
+                "parameter_server_command")),
+            ("Parameter Server Container", experiment["templateHistory"]["params"].get(
+                "parameter_server_container")),
+            ("Parameter Server Count", experiment["templateHistory"]["params"].get(
+                "parameter_server_count")),
             ("Parameter Server Machine Type",
              experiment["templateHistory"]["params"].get("parameter_server_machine_type")),
             ("Ports", experiment["templateHistory"]["params"].get("ports")),
-            ("Project ID", experiment["templateHistory"]["params"].get("project_handle")),
-            ("Worker Command", experiment["templateHistory"]["params"].get("worker_command")),
-            ("Worker Container", experiment["templateHistory"]["params"].get("worker_container")),
-            ("Worker Count", experiment["templateHistory"]["params"].get("worker_count")),
-            ("Worker Machine Type", experiment["templateHistory"]["params"].get("worker_machine_type")),
-            ("Working Directory", experiment["templateHistory"]["params"].get("workingDirectory")),
-            ("Workspace URL", experiment["templateHistory"]["params"].get("workspaceUrl")),
+            ("Project ID", experiment["templateHistory"]
+             ["params"].get("project_handle")),
+            ("Worker Command", experiment["templateHistory"]["params"].get(
+                "worker_command")),
+            ("Worker Container", experiment["templateHistory"]["params"].get(
+                "worker_container")),
+            ("Worker Count", experiment["templateHistory"]["params"].get(
+                "worker_count")),
+            ("Worker Machine Type", experiment["templateHistory"]["params"].get(
+                "worker_machine_type")),
+            ("Working Directory", experiment["templateHistory"]["params"].get(
+                "workingDirectory")),
+            ("Workspace URL", experiment["templateHistory"]["params"].get(
+                "workspaceUrl")),
         )
     else:
-        raise ValueError("Wrong experiment type: {}".format(experiment["experimentTypeId"]))
+        raise ValueError("Wrong experiment type: {}".format(
+            experiment["experimentTypeId"]))
 
     ascii_table = terminaltables.AsciiTable(data)
     table_string = ascii_table.table
@@ -174,7 +205,8 @@ def get_experiment_details(experiment_id, api=experiments_api):
         except (ValueError, KeyError) as e:
             logger.error("Error parsing response data")
 
-    log_response(response, details, "Unknown error while retrieving details of the experiment")
+    log_response(response, details,
+                 "Unknown error while retrieving details of the experiment")
 
 
 class ExperimentLogsCommand(common.CommandBase):
@@ -193,7 +225,8 @@ class ExperimentLogsCommand(common.CommandBase):
         table = terminaltables.AsciiTable(table_data, title=table_title)
 
         while not self.is_logs_complete:
-            response = self._get_logs(experiment_id, self.last_line_number, limit)
+            response = self._get_logs(
+                experiment_id, self.last_line_number, limit)
 
             try:
                 data = response.json()
@@ -203,7 +236,8 @@ class ExperimentLogsCommand(common.CommandBase):
             except (ValueError, KeyError) as e:
                 if response.status_code == 204:
                     continue
-                self.logger.log("Error while parsing response data: {}".format(e))
+                self.logger.log(
+                    "Error while parsing response data: {}".format(e))
                 return
             else:
                 self._log_logs_list(data, table, table_data, follow)
@@ -216,7 +250,7 @@ class ExperimentLogsCommand(common.CommandBase):
             'experimentId': experiment_id,
             'line': line,
             'limit': limit
-        };
+        }
         return self.api.get(self.base_url, params=params)
 
     def _log_logs_list(self, data, table, table_data, follow):
@@ -231,7 +265,8 @@ class ExperimentLogsCommand(common.CommandBase):
                 self.last_line_number = data[-1].get("line")
             for log in data:
                 log_str = "{}\t{}\t{}"
-                self.logger.log(log_str.format(style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
+                self.logger.log(log_str.format(style(fg="blue", text=str(log.get("jobId"))), style(
+                    fg="red", text=str(log.get("line"))), log.get("message")))
         else:
             table_str = self._make_table(data, table, table_data)
             if len(table_str.splitlines()) > get_terminal_lines():
@@ -246,6 +281,7 @@ class ExperimentLogsCommand(common.CommandBase):
             self.last_line_number = logs[-1].get("line")
 
         for log in logs:
-            table_data.append((style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
+            table_data.append((style(fg="blue", text=str(log.get("jobId"))), style(
+                fg="red", text=str(log.get("line"))), log.get("message")))
 
         return table.table

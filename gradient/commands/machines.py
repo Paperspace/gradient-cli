@@ -2,8 +2,8 @@ import time
 
 import terminaltables
 
-from paperspace.commands import common
-from paperspace.exceptions import BadResponseError
+from gradient.commands import common
+from gradient.exceptions import BadResponseError
 
 
 class _MachinesCommandBase(common.CommandBase):
@@ -36,7 +36,8 @@ class CheckAvailabilityCommand(_MachinesCommandBase):
 
 class CreateMachineCommand(_MachinesCommandBase):
     def execute(self, kwargs):
-        response = self.api.post("/machines/createSingleMachinePublic/", json=kwargs)
+        response = self.api.post(
+            "/machines/createSingleMachinePublic/", json=kwargs)
         self._log_message(response,
                           "New machine created with id: {id}",
                           "Unknown error while creating machine")
@@ -89,7 +90,8 @@ class ShowMachineCommand(_MachinesCommandBase):
                 self.logger.log_error_response(data)
                 return
         except (ValueError, KeyError) as e:
-            self.logger.error("Error while parsing response data: {}".format(e))
+            self.logger.error(
+                "Error while parsing response data: {}".format(e))
         else:
             table = self.make_details_table(data)
             self.logger.log(table)
@@ -184,7 +186,8 @@ class ShowMachineUtilisationCommand(_MachinesCommandBase):
                 self.logger.log_error_response(data)
                 return
         except (ValueError, KeyError) as e:
-            self.logger.error("Error while parsing response data: {}".format(e))
+            self.logger.error(
+                "Error while parsing response data: {}".format(e))
         else:
             table = self.make_details_table(data)
             self.logger.log(table)
@@ -193,10 +196,13 @@ class ShowMachineUtilisationCommand(_MachinesCommandBase):
     def make_details_table(machine):
         data = (
             ("ID", machine.get("machineId")),
-            ("Machine Seconds used", machine["utilization"].get("secondsUsed")),
+            ("Machine Seconds used",
+             machine["utilization"].get("secondsUsed")),
             ("Machine Hourly rate", machine["utilization"].get("hourlyRate")),
-            ("Storage Seconds Used", machine["storageUtilization"].get("secondsUsed")),
-            ("Storage Monthly Rate", machine["storageUtilization"].get("monthlyRate")),
+            ("Storage Seconds Used",
+             machine["storageUtilization"].get("secondsUsed")),
+            ("Storage Monthly Rate",
+             machine["storageUtilization"].get("monthlyRate")),
         )
         ascii_table = terminaltables.AsciiTable(data)
         table_string = ascii_table.table

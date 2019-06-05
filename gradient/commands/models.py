@@ -1,4 +1,4 @@
-from paperspace.commands import common
+from gradient.commands import common
 
 
 class ListModelsCommand(common.ListCommand):
@@ -7,7 +7,8 @@ class ListModelsCommand(common.ListCommand):
         return "/mlModels/getModelList/"
 
     def _get_request_params(self, kwargs):
-        params = {"limit": -1}  # so the api returns full list without pagination
+        # so the api returns full list without pagination
+        params = {"limit": -1}
         return params
 
     def _get_request_json(self, kwargs):

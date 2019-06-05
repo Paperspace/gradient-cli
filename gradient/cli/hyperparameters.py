@@ -2,11 +2,11 @@ import functools
 
 import click
 
-from paperspace import client, config
-from paperspace.cli import common, cli_types
-from paperspace.cli.cli import cli
-from paperspace.cli.common import ClickGroup
-from paperspace.commands import hyperparameters as hyperparameters_commands
+from gradient import client, config
+from gradient.cli import common, cli_types
+from gradient.cli.cli import cli
+from gradient.cli.common import ClickGroup
+from gradient.commands import hyperparameters as hyperparameters_commands
 
 
 def add_use_docker_file_flag_if_used(ctx, param, value):
@@ -146,8 +146,10 @@ def common_hyperparameter_create_options(f):
 @common.api_key_option
 def create_hyperparameter(api_key, **hyperparameter):
     common.del_if_value_is_none(hyperparameter)
-    hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = hyperparameters_commands.CreateHyperparameterCommand(api=hyperparameters_api)
+    hyperparameters_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    command = hyperparameters_commands.CreateHyperparameterCommand(
+        api=hyperparameters_api)
     command.execute(hyperparameter)
 
 
@@ -156,16 +158,20 @@ def create_hyperparameter(api_key, **hyperparameter):
 @common.api_key_option
 def create_and_start_hyperparameter(api_key, **hyperparameter):
     common.del_if_value_is_none(hyperparameter)
-    hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = hyperparameters_commands.CreateAndStartHyperparameterCommand(api=hyperparameters_api)
+    hyperparameters_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    command = hyperparameters_commands.CreateAndStartHyperparameterCommand(
+        api=hyperparameters_api)
     command.execute(hyperparameter)
 
 
 @hyperparameters_group.command("list", help="List hyperparameters")
 @common.api_key_option
 def list_hyperparameters(api_key):
-    hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = hyperparameters_commands.ListHyperparametersCommand(api=hyperparameters_api)
+    hyperparameters_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    command = hyperparameters_commands.ListHyperparametersCommand(
+        api=hyperparameters_api)
     command.execute()
 
 
@@ -178,8 +184,10 @@ def list_hyperparameters(api_key):
 )
 @common.api_key_option
 def delete_hyperparameter(api_key, id_):
-    hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = hyperparameters_commands.DeleteHyperparameterCommand(api=hyperparameters_api)
+    hyperparameters_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    command = hyperparameters_commands.DeleteHyperparameterCommand(
+        api=hyperparameters_api)
     command.execute(id_)
 
 
@@ -191,8 +199,10 @@ def delete_hyperparameter(api_key, id_):
 )
 @common.api_key_option
 def get_hyperparameter_details(api_key, id_):
-    hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = hyperparameters_commands.HyperparameterDetailsCommand(api=hyperparameters_api)
+    hyperparameters_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    command = hyperparameters_commands.HyperparameterDetailsCommand(
+        api=hyperparameters_api)
     command.execute(id_)
 
 
@@ -204,6 +214,8 @@ def get_hyperparameter_details(api_key, id_):
 )
 @common.api_key_option
 def start_hyperparameter_tuning(api_key, id_):
-    hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = hyperparameters_commands.HyperparameterStartCommand(api=hyperparameters_api)
+    hyperparameters_api = client.API(
+        config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    command = hyperparameters_commands.HyperparameterStartCommand(
+        api=hyperparameters_api)
     command.execute(id_)

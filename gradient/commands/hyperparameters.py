@@ -1,6 +1,6 @@
 import terminaltables
 
-from paperspace.commands import common
+from gradient.commands import common
 
 
 class HyperparametersCommandBase(common.CommandBase):
@@ -31,7 +31,8 @@ class CreateHyperparameterCommand(HyperparametersCommandBase):
 
 class CreateAndStartHyperparameterCommand(HyperparametersCommandBase):
     def execute(self, hyperparameter):
-        response = self.api.post("/hyperopt/create_and_start/", json=hyperparameter)
+        response = self.api.post(
+            "/hyperopt/create_and_start/", json=hyperparameter)
         self._log_message(response,
                           "Hyperparameter created with ID: {handle} and started",
                           "Unknown error while creating hyperparameter")
@@ -53,7 +54,8 @@ class ListHyperparametersCommand(common.ListCommand):
         return data
 
     def _get_objects(self, response, kwargs):
-        objects = super(ListHyperparametersCommand, self)._get_objects(response, kwargs)["data"]
+        objects = super(ListHyperparametersCommand, self)._get_objects(
+            response, kwargs)["data"]
         return objects
 
     def _get_request_params(self, kwargs):
@@ -83,7 +85,8 @@ class HyperparameterDetailsCommand(HyperparametersCommandBase):
 
             table = self.make_details_table(data)
         except (ValueError, KeyError) as e:
-            self.logger.error("Error while parsing response data: {}".format(e))
+            self.logger.error(
+                "Error while parsing response data: {}".format(e))
         else:
             self.logger.log(table)
 
@@ -93,14 +96,22 @@ class HyperparameterDetailsCommand(HyperparametersCommandBase):
             ("ID", obj["data"].get("handle")),
             ("Name", obj["data"]["templateHistory"]["params"].get("name")),
             ("Ports", obj["data"]["templateHistory"]["params"].get("ports")),
-            ("Project ID", obj["data"]["templateHistory"]["params"].get("project_handle")),
-            ("Tuning command", obj["data"]["templateHistory"]["params"].get("tuning_command")),
-            ("Worker command", obj["data"]["templateHistory"]["params"].get("worker_command")),
-            ("Worker container", obj["data"]["templateHistory"]["params"].get("worker_container")),
-            ("Worker count", obj["data"]["templateHistory"]["params"].get("worker_count")),
-            ("Worker machine type", obj["data"]["templateHistory"]["params"].get("worker_machine_type")),
-            ("Worker use dockerfile", obj["data"]["templateHistory"]["params"].get("worker_use_dockerfile")),
-            ("Workspace URL", obj["data"]["templateHistory"]["params"].get("workspaceUrl")),
+            ("Project ID", obj["data"]["templateHistory"]
+             ["params"].get("project_handle")),
+            ("Tuning command", obj["data"]["templateHistory"]
+             ["params"].get("tuning_command")),
+            ("Worker command", obj["data"]["templateHistory"]
+             ["params"].get("worker_command")),
+            ("Worker container", obj["data"]["templateHistory"]["params"].get(
+                "worker_container")),
+            ("Worker count", obj["data"]["templateHistory"]
+             ["params"].get("worker_count")),
+            ("Worker machine type", obj["data"]["templateHistory"]["params"].get(
+                "worker_machine_type")),
+            ("Worker use dockerfile", obj["data"]["templateHistory"]["params"].get(
+                "worker_use_dockerfile")),
+            ("Workspace URL", obj["data"]["templateHistory"]
+             ["params"].get("workspaceUrl")),
         )
         ascii_table = terminaltables.AsciiTable(data)
         table_string = ascii_table.table

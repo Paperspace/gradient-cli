@@ -2,14 +2,15 @@ import mock
 import pytest
 from click.testing import CliRunner
 
-from paperspace.cli import cli
-from paperspace.client import default_headers
+from gradient.cli import cli
+from gradient.client import default_headers
 from tests import example_responses, MockResponse
 
 
 class TestJobs(object):
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
+        "status": 400, "message": "Invalid API token"}
 
     EXPECTED_HEADERS = default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = default_headers.copy()
@@ -71,9 +72,10 @@ class TestListJobs(TestJobs):
     EXPECTED_STDOUT_WHEN_MUTUALLY_EXCLUSIVE_FILTERS = "Incompatible parameters: project and projectId " \
                                                       "cannot both be specified\n"
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_jobs_list_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(
+            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -85,9 +87,10 @@ class TestListJobs(TestJobs):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_should_send_valid_post_request_when_jobs_list_was_used_with_api_key_option(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(
+            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -99,9 +102,10 @@ class TestListJobs(TestJobs):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_should_send_valid_post_request_when_jobs_list_was_used_with_wrong_api_key(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        get_patched.return_value = MockResponse(
+            json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -113,7 +117,7 @@ class TestListJobs(TestJobs):
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_should_print_error_message_when_no_job_was_not_found(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WHEN_NO_JOBS_WERE_FOUND,
                                                 status_code=200)
@@ -128,7 +132,7 @@ class TestListJobs(TestJobs):
         assert result.output == self.EXPECTED_STDOUT_WHEN_NO_JOBS_WERE_FOUND
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_should_print_error_message_when_error_status_code_received_but_no_content_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(status_code=400)
 
@@ -142,9 +146,10 @@ class TestListJobs(TestJobs):
         assert result.output == "Error while parsing response data: No JSON\n"
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_should_send_valid_post_request_when_jobs_list_was_used_with_filter_options(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(
+            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_FILTERING)
@@ -156,13 +161,14 @@ class TestListJobs(TestJobs):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_should_print_proper_message_when_jobs_list_was_used_with_mutually_exclusive_filters(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS,
                                                 status_code=422)
 
         cli_runner = CliRunner()
-        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_MUTUALLY_EXCLUSIVE_FILTERS)
+        result = cli_runner.invoke(
+            cli.cli, self.BASIC_COMMAND_WITH_MUTUALLY_EXCLUSIVE_FILTERS)
 
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
@@ -175,10 +181,12 @@ class TestListJobs(TestJobs):
 class TestJobLogs(TestJobs):
     URL = "https://logs.paperspace.io/jobs/logs"
 
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
+        "status": 400, "message": "Invalid API token"}
     EXPECTED_RESPONSE_JSON = example_responses.LIST_OF_LOGS_FOR_JOB
     BASIC_COMMAND_WITHOUT_PARAMETERS = ["jobs", "logs"]
-    BASIC_COMMAND = ["jobs", "logs", "--jobId", "some_job_id", "--apiKey", "some_key"]
+    BASIC_COMMAND = ["jobs", "logs", "--jobId",
+                     "some_job_id", "--apiKey", "some_key"]
     BASIC_COMMAND_PARAMS = {"jobId": "some_job_id", "line": 0, "limit": 10000}
 
     EXPECTED_STDOUT_WITHOUT_PARAMETERS = """Usage: cli jobs logs [OPTIONS]
@@ -206,19 +214,21 @@ Error: Missing option "--jobId".
 
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_command_should_not_send_request_without_required_parameters(self, get_patched):
         cli_runner = CliRunner()
-        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITHOUT_PARAMETERS)
+        result = cli_runner.invoke(
+            cli.cli, self.BASIC_COMMAND_WITHOUT_PARAMETERS)
         print(result)
 
         get_patched.assert_not_called()
         assert result.exit_code == 2
         assert result.output == self.EXPECTED_STDOUT_WITHOUT_PARAMETERS
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_should_send_valid_get_request_and_print_available_logs(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(
+            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -231,9 +241,10 @@ Error: Missing option "--jobId".
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_should_send_valid_get_request_when_log_list_was_used_with_wrong_api_key(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        get_patched.return_value = MockResponse(
+            json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -245,7 +256,7 @@ Error: Missing option "--jobId".
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_should_print_error_message_when_error_status_code_received_but_no_content_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(status_code=400)
 
@@ -264,7 +275,7 @@ class TestJobArtifactsCommands(TestJobs):
     runner = CliRunner()
     URL = "https://api.paperspace.io"
 
-    @mock.patch("paperspace.client.requests.post")
+    @mock.patch("gradient.client.requests.post")
     def test_should_send_valid_post_request_when_destroying_artifacts_with_files_specified(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
@@ -280,11 +291,12 @@ class TestJobArtifactsCommands(TestJobs):
                                         data=None)
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.client.requests.post")
+    @mock.patch("gradient.client.requests.post")
     def test_should_send_valid_post_request_when_destroying_artifacts_without_files_specified(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
-        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--apiKey", "some_key"])
+        result = self.runner.invoke(
+            cli.cli, ["jobs", "artifacts", "destroy", job_id, "--apiKey", "some_key"])
 
         post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy".format(self.URL, job_id),
                                         files=None,
@@ -294,11 +306,12 @@ class TestJobArtifactsCommands(TestJobs):
                                         data=None)
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_should_send_send_valid_get_request_and_receive_json_response(self, get_patched):
         get_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
-        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "get", job_id, "--apiKey", "some_key"])
+        result = self.runner.invoke(
+            cli.cli, ["jobs", "artifacts", "get", job_id, "--apiKey", "some_key"])
 
         get_patched.assert_called_with("{}/jobs/artifactsGet".format(self.URL),
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -306,7 +319,7 @@ class TestJobArtifactsCommands(TestJobs):
                                        params={"jobId": job_id})
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     def test_should_send_valid_get_request_with_all_parameters_for_a_list_of_artifacts(self, get_patched):
         get_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
@@ -323,7 +336,7 @@ class TestJobArtifactsCommands(TestJobs):
                                                "files": "foo"})
         assert result.exit_code == 0
 
-    @mock.patch("paperspace.client.requests.get")
+    @mock.patch("gradient.client.requests.get")
     @pytest.mark.parametrize('option,param', [("--size", "size"),
                                               ("-s", "size"),
                                               ("--links", "links"),
@@ -406,13 +419,15 @@ class TestJobsCreate(object):
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
     EXPECTED_STDOUT = u'Creating job...\nJob created - ID: sadkfhlskdjh\n'
 
-    RESPONSE_JSON_404_PROJECT_NOT_FOUND = {"details": {"handle": "wrong_handle"}, "error": "Project not found"}
+    RESPONSE_JSON_404_PROJECT_NOT_FOUND = {"details": {
+        "handle": "wrong_handle"}, "error": "Project not found"}
     RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'
     EXPECTED_STDOUT_PROJECT_NOT_FOUND = "Project not found\nhandle: wrong_handle\n"
 
-    @mock.patch("paperspace.client.requests.post")
+    @mock.patch("gradient.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_job_was_run_with_basic_options(self, post_patched):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        post_patched.return_value = MockResponse(
+            self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)

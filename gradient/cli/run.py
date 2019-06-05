@@ -1,12 +1,12 @@
 import click
 
-from paperspace import client, config
-from paperspace.cli import common
-from paperspace.cli.cli import cli
-from paperspace.cli.common import del_if_value_is_none, deprecated, jsonify_dicts
-from paperspace.cli.jobs import common_jobs_create_options
-from paperspace.commands.run import RunCommand
-from paperspace.constants import RunMode
+from gradient import client, config
+from gradient.cli import common
+from gradient.cli.cli import cli
+from gradient.cli.common import del_if_value_is_none, deprecated, jsonify_dicts
+from gradient.cli.jobs import common_jobs_create_options
+from gradient.commands.run import RunCommand
+from gradient.constants import RunMode
 
 
 @deprecated(version="0.6.0")

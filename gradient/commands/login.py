@@ -1,7 +1,7 @@
-from paperspace import login, logout
-from paperspace.commands.common import CommandBase
-from paperspace.login import apikey, set_apikey
-from paperspace.version import version
+from gradient import login, logout
+from gradient.commands.common import CommandBase
+from gradient.login import apikey, set_apikey
+from gradient.version import version
 
 
 class LogInCommand(CommandBase):

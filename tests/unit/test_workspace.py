@@ -4,8 +4,8 @@ import click
 import mock
 import pytest
 
-from paperspace import exceptions
-from paperspace.workspace import S3WorkspaceHandler
+from gradient import exceptions
+from gradient.workspace import S3WorkspaceHandler
 
 MOCK_BUCKET_NAME = 'bucket_name'
 MOCK_OBJECT_KEY = 'object_key'
@@ -24,7 +24,8 @@ mock_upload_response = {
 
 @pytest.fixture
 def workspace_handler():
-    s3_workspace_handler = S3WorkspaceHandler(mock.MagicMock(), logger=mock.MagicMock())
+    s3_workspace_handler = S3WorkspaceHandler(
+        mock.MagicMock(), logger=mock.MagicMock())
     s3_workspace_handler._upload = mock.MagicMock()
     s3_workspace_handler._get_upload_data = mock.MagicMock()
     s3_workspace_handler._get_upload_data.return_value = mock_upload_data
@@ -35,8 +36,10 @@ def workspace_handler():
 class TestWorkspace(object):
 
     @pytest.mark.parametrize('params', ({'workspace': 'foo', 'workspaceUrl': 'bar'},
-                                        {'workspaceUrl': 'ffo', 'workspaceArchive': 'var'},
-                                        {'workspaceArchive': 'foo', 'workspace': 'bar'},
+                                        {'workspaceUrl': 'ffo',
+                                            'workspaceArchive': 'var'},
+                                        {'workspaceArchive': 'foo',
+                                            'workspace': 'bar'},
                                         {'workspace': 'foo', 'workspaceUrl': 'bar', 'workspaceArchive': 'baz'}))
     def test_raise_exception_when_more_than_one_workspace_provided(self, params, workspace_handler):
         workspace_handler = S3WorkspaceHandler(mock.MagicMock, mock.MagicMock)
@@ -58,8 +61,10 @@ class TestWorkspace(object):
 
         workspace_handler._zip_workspace.assert_called_once()
         workspace_handler._upload.assert_called_once()
-        workspace_handler._upload.assert_called_with(archive_name, mock_upload_data)
-        assert response_url == 's3://{}/{}'.format(MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
+        workspace_handler._upload.assert_called_with(
+            archive_name, mock_upload_data)
+        assert response_url == 's3://{}/{}'.format(
+            MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
 
     def test_zip_files_and_receive_s3_response_when_workspace_dir_provided(self, workspace_handler):
         archive_name = 'foo.zip'
@@ -67,22 +72,28 @@ class TestWorkspace(object):
         workspace_handler._zip_workspace = mock.MagicMock()
         workspace_handler._zip_workspace.return_value = archive_name
 
-        response_url = workspace_handler.handle({'projectHandle': 'foo', 'workspace': 'foo/bar'})
+        response_url = workspace_handler.handle(
+            {'projectHandle': 'foo', 'workspace': 'foo/bar'})
 
         workspace_handler._zip_workspace.assert_called_once()
         workspace_handler._upload.assert_called_once()
-        workspace_handler._upload.assert_called_with(archive_name, mock_upload_data)
-        assert response_url == 's3://{}/{}'.format(MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
+        workspace_handler._upload.assert_called_with(
+            archive_name, mock_upload_data)
+        assert response_url == 's3://{}/{}'.format(
+            MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
 
     def test_dont_zip_files_and_receive_s3_response_when_workspace_archive_provided(self, workspace_handler):
         workspace_handler._zip_workspace = mock.MagicMock()
 
-        response_url = workspace_handler.handle({'projectHandle': 'foo', 'workspaceArchive': 'foo.zip'})
+        response_url = workspace_handler.handle(
+            {'projectHandle': 'foo', 'workspaceArchive': 'foo.zip'})
 
         workspace_handler._zip_workspace.assert_not_called()
         workspace_handler._upload.assert_called_once()
-        workspace_handler._upload.assert_called_with(os.path.abspath('foo.zip'), mock_upload_data)
-        assert response_url == 's3://{}/{}'.format(MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
+        workspace_handler._upload.assert_called_with(
+            os.path.abspath('foo.zip'), mock_upload_data)
+        assert response_url == 's3://{}/{}'.format(
+            MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
 
     @pytest.mark.parametrize('code,exception', ((401, exceptions.ProjectAccessDeniedError),
                                                 (403, exceptions.PresignedUrlAccessDeniedError),
@@ -91,7 +102,8 @@ class TestWorkspace(object):
         mock_response = mock.MagicMock()
         mock_response.status_code = code
 
-        workspace_handler = S3WorkspaceHandler(mock.MagicMock(), mock.MagicMock())
+        workspace_handler = S3WorkspaceHandler(
+            mock.MagicMock(), mock.MagicMock())
         workspace_handler.experiments_api.get.return_value = mock_response
 
         with pytest.raises(exception):
@@ -101,15 +113,17 @@ class TestWorkspace(object):
         mock_response = mock.MagicMock()
         mock_response.json.return_value = mock_upload_response
 
-        workspace_handler = S3WorkspaceHandler(mock.MagicMock(), mock.MagicMock())
+        workspace_handler = S3WorkspaceHandler(
+            mock.MagicMock(), mock.MagicMock())
         workspace_handler.experiments_api.get.return_value = mock_response
 
         upload_data = workspace_handler._get_upload_data('foo', 'bar')
         assert upload_data == mock_upload_data
 
-    @mock.patch("paperspace.workspace.requests.post")
+    @mock.patch("gradient.workspace.requests.post")
     def test_multipart_upload_ok(self, mock_post):
-        workspace_handler = S3WorkspaceHandler(mock.MagicMock(), mock.MagicMock())
+        workspace_handler = S3WorkspaceHandler(
+            mock.MagicMock(), mock.MagicMock())
         workspace_handler._get_files_dict = mock.MagicMock()
 
         mock_response = mock.MagicMock()
@@ -118,9 +132,10 @@ class TestWorkspace(object):
 
         workspace_handler._upload('foo', {'url': 'bar', 'fields': []})
 
-    @mock.patch("paperspace.workspace.requests.post")
+    @mock.patch("gradient.workspace.requests.post")
     def test_multipart_upload_raises_exception(self, mock_post):
-        workspace_handler = S3WorkspaceHandler(mock.MagicMock(), mock.MagicMock())
+        workspace_handler = S3WorkspaceHandler(
+            mock.MagicMock(), mock.MagicMock())
         workspace_handler._get_files_dict = mock.MagicMock()
 
         mock_response = mock.MagicMock()

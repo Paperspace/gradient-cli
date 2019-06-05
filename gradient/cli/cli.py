@@ -1,9 +1,9 @@
 import click
 import click_completion
 
-from paperspace import config
-from paperspace.cli import common
-from paperspace.commands import login as login_commands
+from gradient import config
+from gradient.cli import common
+from gradient.commands import login as login_commands
 
 click_completion.init()
 

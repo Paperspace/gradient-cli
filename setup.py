@@ -8,7 +8,7 @@ import sys
 from setuptools import setup, find_packages
 from setuptools.command.install import install
 
-with io.open("paperspace/version.py", "rt", encoding="utf8") as f:
+with io.open("gradient/version.py", "rt", encoding="utf8") as f:
     version = re.search(r"version = \"(.*?)\"", f.read()).group(1)
 
 here = path.abspath(path.dirname(__file__))
@@ -43,7 +43,7 @@ setup(
     description='Gradient CLI',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/paperspace/paperspace-python',
+    url='https://github.com/paperspace/gradient-cli',
     author='Paperspace Co.',
     author_email='info@paperspace.com',
     classifiers=[
@@ -74,7 +74,7 @@ setup(
         'progressbar2',
     ],
     entry_points={'console_scripts': [
-        'gradient = paperspace:main',
+        'gradient = gradient:main',
     ]},
     extras_require={
         "dev": [

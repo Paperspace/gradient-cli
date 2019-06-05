@@ -7,8 +7,8 @@ import progressbar
 import requests
 from requests_toolbelt.multipart import encoder
 
-from paperspace import logger as default_logger
-from paperspace.exceptions import S3UploadFailedError, PresignedUrlUnreachableError, \
+from gradient import logger as default_logger
+from gradient.exceptions import S3UploadFailedError, PresignedUrlUnreachableError, \
     PresignedUrlAccessDeniedError, PresignedUrlConnectionError, ProjectAccessDeniedError, \
     PresignedUrlMalformedResponseError, PresignedUrlError
 
@@ -16,7 +16,8 @@ from paperspace.exceptions import S3UploadFailedError, PresignedUrlUnreachableEr
 class MultipartEncoder(object):
     def __init__(self, fields):
         mp_encoder = encoder.MultipartEncoder(fields=fields)
-        self.monitor = encoder.MultipartEncoderMonitor(mp_encoder, callback=self._create_callback(mp_encoder))
+        self.monitor = encoder.MultipartEncoderMonitor(
+            mp_encoder, callback=self._create_callback(mp_encoder))
 
     def get_monitor(self):
         return self.monitor
@@ -38,8 +39,8 @@ class WorkspaceHandler(object):
     def __init__(self, logger=None):
         """
 
-        :param experiments_api: paperspace.client.API
-        :param logger: paperspace.logger
+        :param experiments_api: gradient.client.API
+        :param logger: gradient.logger
         """
         self.logger = logger or default_logger
         self.archive_path = None
@@ -63,7 +64,8 @@ class WorkspaceHandler(object):
                 if relpath == '.':
                     file_path = filename
                 else:
-                    file_path = os.path.join(os.path.relpath(root, dir_name), filename)
+                    file_path = os.path.join(
+                        os.path.relpath(root, dir_name), filename)
                 if file_path not in exclude:
                     file_paths[file_path] = os.path.join(root, filename)
 
@@ -100,7 +102,8 @@ class WorkspaceHandler(object):
         return zip_file_path
 
     def handle(self, input_data):
-        workspace_archive, workspace_path, workspace_url = self._validate_input(input_data)
+        workspace_archive, workspace_path, workspace_url = self._validate_input(
+            input_data)
         ignore_files = input_data.get('ignore_files')
 
         if workspace_url:
@@ -138,8 +141,8 @@ class S3WorkspaceHandler(WorkspaceHandler):
     def __init__(self, experiments_api, logger=None):
         """
 
-        :param experiments_api: paperspace.client.API
-        :param logger: paperspace.logger
+        :param experiments_api: gradient.client.API
+        :param logger: gradient.logger
         """
         super(S3WorkspaceHandler, self).__init__(logger=logger)
         self.experiments_api = experiments_api
@@ -171,7 +174,8 @@ class S3WorkspaceHandler(WorkspaceHandler):
         fields.update(files)
 
         monitor = MultipartEncoder(fields).get_monitor()
-        s3_response = requests.post(s3_upload_data['url'], data=monitor, headers={'Content-Type': monitor.content_type})
+        s3_response = requests.post(s3_upload_data['url'], data=monitor, headers={
+                                    'Content-Type': monitor.content_type})
         self.logger.debug("S3 upload response: {}".format(s3_response.headers))
         if not s3_response.ok:
             raise S3UploadFailedError(s3_response)

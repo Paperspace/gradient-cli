@@ -104,5 +104,5 @@ ENV/
 .vscode/*
 
 .idea
-paperspace-python.zip
+gradient-cli.zip
 *.env

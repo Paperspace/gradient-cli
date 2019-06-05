@@ -1,10 +1,10 @@
 import os
 import sys
 
-from paperspace import client, config, logger
-from paperspace.commands.jobs import CreateJobCommand
-from paperspace.constants import RunMode
-from paperspace.workspace import WorkspaceHandler
+from gradient import client, config, logger
+from gradient.commands.jobs import CreateJobCommand
+from gradient.constants import RunMode
+from gradient.workspace import WorkspaceHandler
 
 
 class RunCommand(object):
@@ -15,7 +15,8 @@ class RunCommand(object):
 
     @staticmethod
     def _get_executor(mode, python_version=None):
-        python_version = python_version or str(sys.version_info[0])  # defaults locally running version
+        python_version = python_version or str(
+            sys.version_info[0])  # defaults locally running version
         python_bin = 'python{v}'.format(v=python_version)
         executors = {
             RunMode.RUN_MODE_DEFAULT: python_bin,
@@ -53,5 +54,6 @@ class RunCommand(object):
         command = self._create_command(mode, script)
         json_['command'] = command
 
-        command = CreateJobCommand(api=self.api, workspace_handler=WorkspaceHandler())
+        command = CreateJobCommand(
+            api=self.api, workspace_handler=WorkspaceHandler())
         command.execute(json_)

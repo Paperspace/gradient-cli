@@ -2,15 +2,15 @@ import click
 import colorama
 from click._compat import get_text_stderr
 
-import paperspace.cli.auth
-import paperspace.cli.deployments
-import paperspace.cli.experiments
-import paperspace.cli.hyperparameters
-import paperspace.cli.jobs
-import paperspace.cli.machines
-import paperspace.cli.models
-import paperspace.cli.projects
-import paperspace.cli.run
+import gradient.cli.auth
+import gradient.cli.deployments
+import gradient.cli.experiments
+import gradient.cli.hyperparameters
+import gradient.cli.jobs
+import gradient.cli.machines
+import gradient.cli.models
+import gradient.cli.projects
+import gradient.cli.run
 
 
 def show(self, file=None):
@@ -24,8 +24,10 @@ def show(self, file=None):
                 % (self.ctx.command_path, self.ctx.help_option_names[0]))
     if self.ctx is not None:
         color = self.ctx.color
-        click.echo(self.ctx.get_usage() + '\n%s' % hint, file=file, color=color)
-    msg = colorama.Fore.RED + 'Error: %s' % self.format_message() + colorama.Style.RESET_ALL
+        click.echo(self.ctx.get_usage() + '\n%s' %
+                   hint, file=file, color=color)
+    msg = colorama.Fore.RED + 'Error: %s' % self.format_message() + \
+        colorama.Style.RESET_ALL
     click.echo(msg, file=file, color=color)
 
 

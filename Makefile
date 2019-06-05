@@ -1,7 +1,7 @@
 PIP=pip3
 
 clean-tests:	
-	rm -rf .tox paperspace.egg-info
+	rm -rf .tox gradient.egg-info
 
 run-tests: clean-tests
 	tox
@@ -15,7 +15,7 @@ pip-install-dev: pip-update
 
 clean:
 	rm -rf dist/*
-	rm -rf .tox paperspace.egg-info
+	rm -rf .tox gradient.egg-info
 	
 package:
 	python setup.py sdist

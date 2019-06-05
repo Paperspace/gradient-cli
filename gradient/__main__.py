@@ -1,4 +1,4 @@
-from paperspace import main
+from gradient import main
 
 if __name__ == '__main__':
     main()
