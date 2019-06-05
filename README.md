@@ -1,3 +1,12 @@
+---------
+⚠️ NOTE: THIS REPO IS BEING MOVED TO A NEW LOCATION [paperspace/gradient-cli](https://github.com/Paperspace/gradient-cli). The package will be available as `paperspace-python` while we complete this migration but we recommend installing the new `gradient` package moving forward.
+---------
+
+
+
+
+
+
 Paperspace Python
 =================
 
