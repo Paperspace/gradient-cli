@@ -7,30 +7,30 @@ workflows:
           filters:
             tags:
               only: /.*/
-      # - test-python-install:
-      #     version: "3.4"
-      #     requires:
-      #       - build
-      # - test-python-install:
-      #     version: "3.5"
-      #     requires:
-      #       - build
-      # - test-python-install:
-      #     version: "3.6"
-      #     requires:
-      #       - build
-      # - test-python-install:
-      #     version: "3.7"
-      #     requires:
-      #       - build
+      - test-python-install:
+          version: "3.4"
+          requires:
+            - build
+      - test-python-install:
+          version: "3.5"
+          requires:
+            - build
+      - test-python-install:
+          version: "3.6"
+          requires:
+            - build
+      - test-python-install:
+          version: "3.7"
+          requires:
+            - build
       - deploy:
           requires:
             - build
-          # filters:
-          #   tags:
-          #     only: /[0-9]+(\.[0-9]+)*/
-          #   branches:
-          #     ignore: /.*/
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
 jobs:
   build:
     docker:
@@ -138,12 +138,6 @@ jobs:
       #       python3 -m venv venv
       #       . venv/bin/activate
       #       python setup.py verify
-      # - run:
-      #     name: init .pypirc
-      #     command: |
-      #       echo -e "[pypi]" >> ~/.pypirc
-      #       echo -e "username = $TESTPYPI_USERNAME" >> ~/.pypirc
-      #       echo -e "password = $TESTPYPI_PASSWORD" >> ~/.pypirc
       - run:
           name: create packages
           command: |
