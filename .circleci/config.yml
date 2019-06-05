@@ -160,5 +160,5 @@ jobs:
       - run:
           name: verify gradient package can be installed and works
           command: |
-            pip install -U --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple gradient
+            pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple --user gradient
             gradient --version
