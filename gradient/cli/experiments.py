@@ -3,11 +3,11 @@ import functools
 
 import click
 
-from paperspace import client, config, constants
-from paperspace.cli.cli import cli
-from paperspace.cli.cli_types import json_string, ChoiceType
-from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGroup
-from paperspace.commands import experiments as experiments_commands
+from gradient import client, config, constants
+from gradient.cli.cli import cli
+from gradient.cli.cli_types import json_string, ChoiceType
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
+from gradient.commands import experiments as experiments_commands
 
 MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
     (

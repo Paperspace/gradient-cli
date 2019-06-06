@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 import mock
 
-from paperspace.commands.common import CommandBase
+from gradient.commands.common import CommandBase
 
 output_response = ""
 

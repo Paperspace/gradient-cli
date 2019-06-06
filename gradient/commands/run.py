@@ -1,10 +1,10 @@
 import os
 import sys
 
-from paperspace import client, config, logger
-from paperspace.commands.jobs import CreateJobCommand
-from paperspace.constants import RunMode
-from paperspace.workspace import WorkspaceHandler
+from gradient import client, config, logger
+from gradient.commands.jobs import CreateJobCommand
+from gradient.constants import RunMode
+from gradient.workspace import WorkspaceHandler
 
 
 class RunCommand(object):

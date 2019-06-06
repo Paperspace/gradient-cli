@@ -2,11 +2,11 @@ import functools
 
 import click
 
-from paperspace import client, config
-from paperspace.cli.cli import cli
-from paperspace.cli.cli_types import json_string
-from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts
-from paperspace.commands import jobs as jobs_commands
+from gradient import client, config
+from gradient.cli.cli import cli
+from gradient.cli.cli_types import json_string
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts
+from gradient.commands import jobs as jobs_commands
 
 
 @cli.group("jobs", help="Manage gradient jobs", cls=ClickGroup)

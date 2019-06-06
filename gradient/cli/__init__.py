@@ -2,15 +2,15 @@ import click
 import colorama
 from click._compat import get_text_stderr
 
-import paperspace.cli.auth
-import paperspace.cli.deployments
-import paperspace.cli.experiments
-import paperspace.cli.hyperparameters
-import paperspace.cli.jobs
-import paperspace.cli.machines
-import paperspace.cli.models
-import paperspace.cli.projects
-import paperspace.cli.run
+import gradient.cli.auth
+import gradient.cli.deployments
+import gradient.cli.experiments
+import gradient.cli.hyperparameters
+import gradient.cli.jobs
+import gradient.cli.machines
+import gradient.cli.models
+import gradient.cli.projects
+import gradient.cli.run
 
 
 def show(self, file=None):

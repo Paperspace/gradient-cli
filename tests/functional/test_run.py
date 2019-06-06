@@ -3,8 +3,8 @@ import sys
 import mock
 from click.testing import CliRunner
 
-from paperspace.cli import cli
-from paperspace.client import default_headers
+from gradient.cli import cli
+from gradient.client import default_headers
 from tests import MockResponse
 
 
@@ -15,10 +15,10 @@ class TestRunCommand(object):
     headers = default_headers.copy()
     headers["X-API-Key"] = "some_key"
 
-    @mock.patch("paperspace.client.requests.post")
-    @mock.patch("paperspace.workspace.WorkspaceHandler._zip_workspace")
-    @mock.patch("paperspace.workspace.MultipartEncoder.get_monitor")
-    @mock.patch("paperspace.commands.jobs.CreateJobCommand._get_files_dict")
+    @mock.patch("gradient.client.requests.post")
+    @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
+    @mock.patch("gradient.workspace.MultipartEncoder.get_monitor")
+    @mock.patch("gradient.commands.jobs.CreateJobCommand._get_files_dict")
     def test_run_simple_file_with_args(self, get_files_patched, get_moniror_patched, workspace_zip_patched, post_patched):
         get_files_patched.return_value = mock.MagicMock()
         workspace_zip_patched.return_value = '/foo/bar'
@@ -46,7 +46,7 @@ class TestRunCommand(object):
                                         headers=expected_headers,
                                         json=None)
 
-    @mock.patch("paperspace.client.requests.post")
+    @mock.patch("gradient.client.requests.post")
     def test_run_python_command_with_args_and_no_workspace(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
@@ -66,8 +66,8 @@ class TestRunCommand(object):
                                         headers=expected_headers,
                                         json=None)
 
-    @mock.patch("paperspace.client.requests.post")
-    @mock.patch("paperspace.workspace.WorkspaceHandler._zip_workspace")
+    @mock.patch("gradient.client.requests.post")
+    @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
     def test_run_shell_command_with_args_with_s3_workspace(self, workspace_zip_patched, post_patched):
         workspace_zip_patched.return_value = '/foo/bar'
         post_patched.return_value = MockResponse(status_code=200)
