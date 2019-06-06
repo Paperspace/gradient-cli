@@ -182,7 +182,7 @@ class CreateJobCommand(JobsCommandBase):
     @staticmethod
     def set_project_if_not_provided(json_):
         if not json_.get("projectId"):
-            json_["project"] = "paperspace-python"
+            json_["project"] = "gradient-project"
 
 
 class ArtifactsDestroyCommand(JobsCommandBase):

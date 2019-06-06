@@ -20,12 +20,12 @@ except(IOError, ImportError, OSError):
         long_description = f.read()
 
 setup(
-    name='paperspace',
+    name='gradient',
     version=version,
     description='Paperspace Python',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/paperspace/paperspace-python',
+    url='https://github.com/paperspace/gradient-cli',
     author='Paperspace Co.',
     author_email='info@paperspace.com',
     classifiers=[
@@ -56,7 +56,7 @@ setup(
         'progressbar2',
     ],
     entry_points={'console_scripts': [
-        'paperspace-python = paperspace:main',
+        'gradient = paperspace:main',
     ]},
     extras_require={
         "dev": [
