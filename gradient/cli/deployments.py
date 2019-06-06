@@ -2,11 +2,11 @@ import collections
 
 import click
 
-from paperspace import client, config
-from paperspace.cli.cli import cli
-from paperspace.cli.cli_types import ChoiceType
-from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGroup
-from paperspace.commands import deployments as deployments_commands
+from gradient import client, config
+from gradient.cli.cli import cli
+from gradient.cli.cli_types import ChoiceType
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
+from gradient.commands import deployments as deployments_commands
 
 
 @cli.group("deployments", help="Manage deployments", cls=ClickGroup)

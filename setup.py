@@ -5,7 +5,7 @@ from os import path
 
 from setuptools import setup, find_packages
 
-with io.open("paperspace/version.py", "rt", encoding="utf8") as f:
+with io.open("gradient/version.py", "rt", encoding="utf8") as f:
     version = re.search(r"version = \"(.*?)\"", f.read()).group(1)
 
 here = path.abspath(path.dirname(__file__))
@@ -20,12 +20,12 @@ except(IOError, ImportError, OSError):
         long_description = f.read()
 
 setup(
-    name='paperspace',
+    name='gradient',
     version=version,
     description='Paperspace Python',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/paperspace/paperspace-python',
+    url='https://github.com/paperspace/gradient-cli',
     author='Paperspace Co.',
     author_email='info@paperspace.com',
     classifiers=[
@@ -56,7 +56,7 @@ setup(
         'progressbar2',
     ],
     entry_points={'console_scripts': [
-        'paperspace-python = paperspace:main',
+        'gradient = gradient:main',
     ]},
     extras_require={
         "dev": [

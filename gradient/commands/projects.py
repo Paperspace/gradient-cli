@@ -1,4 +1,4 @@
-from paperspace.commands import common
+from gradient.commands import common
 
 
 class ListProjectsCommand(common.ListCommand):

@@ -2,11 +2,11 @@ import functools
 
 import click
 
-from paperspace import client, config
-from paperspace.cli import common, cli_types
-from paperspace.cli.cli import cli
-from paperspace.cli.common import ClickGroup
-from paperspace.commands import hyperparameters as hyperparameters_commands
+from gradient import client, config
+from gradient.cli import common, cli_types
+from gradient.cli.cli import cli
+from gradient.cli.common import ClickGroup
+from gradient.commands import hyperparameters as hyperparameters_commands
 
 
 def add_use_docker_file_flag_if_used(ctx, param, value):

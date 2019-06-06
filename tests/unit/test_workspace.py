@@ -4,8 +4,8 @@ import click
 import mock
 import pytest
 
-from paperspace import exceptions
-from paperspace.workspace import S3WorkspaceHandler
+from gradient import exceptions
+from gradient.workspace import S3WorkspaceHandler
 
 MOCK_BUCKET_NAME = 'bucket_name'
 MOCK_OBJECT_KEY = 'object_key'
@@ -107,7 +107,7 @@ class TestWorkspace(object):
         upload_data = workspace_handler._get_upload_data('foo', 'bar')
         assert upload_data == mock_upload_data
 
-    @mock.patch("paperspace.workspace.requests.post")
+    @mock.patch("gradient.workspace.requests.post")
     def test_multipart_upload_ok(self, mock_post):
         workspace_handler = S3WorkspaceHandler(mock.MagicMock(), mock.MagicMock())
         workspace_handler._get_files_dict = mock.MagicMock()
@@ -118,7 +118,7 @@ class TestWorkspace(object):
 
         workspace_handler._upload('foo', {'url': 'bar', 'fields': []})
 
-    @mock.patch("paperspace.workspace.requests.post")
+    @mock.patch("gradient.workspace.requests.post")
     def test_multipart_upload_raises_exception(self, mock_post):
         workspace_handler = S3WorkspaceHandler(mock.MagicMock(), mock.MagicMock())
         workspace_handler._get_files_dict = mock.MagicMock()

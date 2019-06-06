@@ -1,7 +1,7 @@
-from paperspace import client, config
-from paperspace.cli.cli import cli
-from paperspace.commands import projects as projects_commands
-from paperspace.cli import common
+from gradient import client, config
+from gradient.cli.cli import cli
+from gradient.commands import projects as projects_commands
+from gradient.cli import common
 
 
 @cli.group("projects", help="Manage projects", cls=common.ClickGroup)

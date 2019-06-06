@@ -3,8 +3,8 @@ from collections import OrderedDict
 
 import terminaltables
 
-from paperspace import logger
-from paperspace.utils import get_terminal_lines
+from gradient import logger
+from gradient.utils import get_terminal_lines
 
 
 class CommandBase(object):
