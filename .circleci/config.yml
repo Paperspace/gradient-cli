@@ -70,4 +70,4 @@ jobs:
       - run:
           name: upload to pypi
           command: |
-            twine upload dist/*
+            .local/bin/twine upload dist/*
