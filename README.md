@@ -12,11 +12,11 @@ Getting Started
 
 2. Use pip, pipenv, or conda to install the gradient package, e.g.:
 
-    `pip install -U paperspace`
+    `pip install -U gradient`
 
     To install/update prerelease (Alpha/Beta) version version of gradient, use:
 
-    `pip install -U --pre paperspace`
+    `pip install -U --pre gradient`
 3. Enable autocomplete:
     
     Add following to your `.bashrc` (or `.zshrc`) to enable autocomplete anytime you activate your shell.
