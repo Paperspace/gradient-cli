@@ -71,5 +71,3 @@ jobs:
           name: upload to pypi
           command: |
             twine upload dist/*
-      - store_artifacts:
-          path: htmlcov/
