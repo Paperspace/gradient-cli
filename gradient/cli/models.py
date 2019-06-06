@@ -1,9 +1,9 @@
 import click
 
-from paperspace import client, config
-from paperspace.cli import common
-from paperspace.cli.cli import cli
-from paperspace.commands import models as models_commands
+from gradient import client, config
+from gradient.cli import common
+from gradient.cli.cli import cli
+from gradient.commands import models as models_commands
 
 
 @cli.group("models", help="Manage models", cls=common.ClickGroup)

@@ -5,9 +5,9 @@ import os
 import requests
 from six.moves import input
 
-from paperspace import logger
+from gradient import logger
 from .config import config
-from paperspace.utils import response_error_check, requests_exception_to_error_obj, status_code_to_error_obj
+from gradient.utils import response_error_check, requests_exception_to_error_obj, status_code_to_error_obj
 
 UNAUTHORIZED_EXTENDED_INFO = '\n\nNote: Please keep in mind that currently you can login only with the email and ' \
                              'password from your Paperspace account. If you\'re using AD, SAML or GitHub ' \

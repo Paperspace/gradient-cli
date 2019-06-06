@@ -2,12 +2,12 @@ import collections
 
 import click
 
-from paperspace import constants, client, config
-from paperspace.cli.cli import cli
-from paperspace.cli.cli_types import ChoiceType, json_string
-from paperspace.cli.common import api_key_option, del_if_value_is_none, ClickGroup
-from paperspace.cli.validators import validate_email, validate_mutually_exclusive
-from paperspace.commands import machines as machines_commands
+from gradient import constants, client, config
+from gradient.cli.cli import cli
+from gradient.cli.cli_types import ChoiceType, json_string
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
+from gradient.cli.validators import validate_email, validate_mutually_exclusive
+from gradient.commands import machines as machines_commands
 
 REGIONS_MAP = collections.OrderedDict(
     (

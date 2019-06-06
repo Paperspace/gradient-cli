@@ -1,9 +1,9 @@
 import click
 
-from paperspace import logger
-from paperspace.cli import common
-from paperspace.cli.cli import cli
-from paperspace.commands import login as login_commands
+from gradient import logger
+from gradient.cli import common
+from gradient.cli.cli import cli
+from gradient.commands import login as login_commands
 
 LOGIN_DEPRECATION_MESSAGE = """The login command is currently disabled for logging in using `--email` and `--password`.
 

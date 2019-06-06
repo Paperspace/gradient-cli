@@ -1,5 +1,5 @@
-import paperspace
+import gradient
 
-paperspace.run()
+gradient.run()
 
 print('hello gradient!')

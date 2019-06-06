@@ -1,6 +1,6 @@
 import terminaltables
 
-from paperspace.commands import common
+from gradient.commands import common
 
 
 class HyperparametersCommandBase(common.CommandBase):

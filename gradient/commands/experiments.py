@@ -3,11 +3,11 @@ import pydoc
 import terminaltables
 from click import style
 
-from paperspace import logger, constants, client, config
-from paperspace.logger import log_response
-from paperspace.commands import common
-from paperspace.utils import get_terminal_lines
-from paperspace.workspace import S3WorkspaceHandler
+from gradient import logger, constants, client, config
+from gradient.logger import log_response
+from gradient.commands import common
+from gradient.utils import get_terminal_lines
+from gradient.workspace import S3WorkspaceHandler
 
 experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
 

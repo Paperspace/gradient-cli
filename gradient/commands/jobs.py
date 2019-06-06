@@ -3,10 +3,10 @@ import pydoc
 import terminaltables
 from click import style
 
-from paperspace.commands import common
-from paperspace.exceptions import BadResponseError
-from paperspace.utils import get_terminal_lines
-from paperspace.workspace import WorkspaceHandler, MultipartEncoder
+from gradient.commands import common
+from gradient.exceptions import BadResponseError
+from gradient.utils import get_terminal_lines
+from gradient.workspace import WorkspaceHandler, MultipartEncoder
 
 
 class JobsCommandBase(common.CommandBase):

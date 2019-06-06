@@ -1,6 +1,6 @@
 import requests
 
-from paperspace import logger, config, version
+from gradient import logger, config, version
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "paperspace-python",

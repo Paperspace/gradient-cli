@@ -5,7 +5,7 @@ from os import path
 
 from setuptools import setup, find_packages
 
-with io.open("paperspace/version.py", "rt", encoding="utf8") as f:
+with io.open("gradient/version.py", "rt", encoding="utf8") as f:
     version = re.search(r"version = \"(.*?)\"", f.read()).group(1)
 
 here = path.abspath(path.dirname(__file__))
@@ -56,7 +56,7 @@ setup(
         'progressbar2',
     ],
     entry_points={'console_scripts': [
-        'gradient = paperspace:main',
+        'gradient = gradient:main',
     ]},
     extras_require={
         "dev": [

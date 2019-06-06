@@ -2,8 +2,8 @@ import time
 
 import terminaltables
 
-from paperspace.commands import common
-from paperspace.exceptions import BadResponseError
+from gradient.commands import common
+from gradient.exceptions import BadResponseError
 
 
 class _MachinesCommandBase(common.CommandBase):
