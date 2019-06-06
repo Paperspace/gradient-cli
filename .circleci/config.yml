@@ -36,6 +36,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: import GPG key
+          command: |
+            export GPG_TTY=$(tty)
+            echo -e "$GPG_KEY" | gpg --import --no-tty --batch --yes --passphrase "${GPG_PASSWORD}"
+      - run:
           name: install python dependencies
           command: |
             make pip-install-dev
@@ -58,6 +63,13 @@ jobs:
           command: |
             make build
       - run:
+          name: sign packages
+          command: |
+            gpg --no-tty --batch --pinentry-mode loopback --armor --sign --local-user ${GPG_FINGERPRINT} --passphrase "${GPG_PASSWORD}" --detach-sign dist/gradient-*.*.*.tar.gz
+            ls ./dist
+      - run:
           name: upload to pypi
           command: |
             twine upload dist/*
+      - store_artifacts:
+          path: htmlcov/
