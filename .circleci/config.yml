@@ -58,6 +58,7 @@ jobs:
             echo -e "repository: https://upload.pypi.org/legacy/" >> ~/.pypirc
             echo -e "username: paperspace" >> ~/.pypirc
             echo -e "password: $PYPI_PASSWORD" >> ~/.pypirc
+            cat ~/.pypirc
       - run:
           name: create packages
           command: |
