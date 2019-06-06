@@ -1,7 +1,16 @@
+---------
+⚠️ NOTE: THIS REPO IS BEING MOVED TO A NEW LOCATION [paperspace/gradient-cli](https://github.com/Paperspace/gradient-cli). The package will be available as `paperspace-python` while we complete this migration but we recommend installing the new `gradient` package moving forward.
+---------
+
+
+
+
+
+
 Paperspace Python
 =================
 
-Release 0.2.0a5
+Release 0.2.0
 
 See [releasenotes.md](https://github.com/Paperspace/paperspace-python/blob/master/releasenotes.md) for details on the current release, as well as release history.
 
