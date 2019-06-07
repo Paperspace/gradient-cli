@@ -1,7 +1,7 @@
 # Paperspace Python Release Notes
 
 
-#Release Notes for 0.2.1a0
+#Release Notes for 0.2.1
 ### Fixes
 * renamed `createAndStart` commands to `run` for experiments and hyperparameters
 
