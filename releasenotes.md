@@ -1,5 +1,10 @@
 # Paperspace Python Release Notes
 
+
+#Release Notes for 0.2.1a0
+### Fixes
+* renamed `createAndStart` commands to `run` for experiments and hyperparameters
+
 # Release Notes for 0.2.0a5
 ### Fixes
 * removed command group aliases
