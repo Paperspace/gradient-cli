@@ -27,7 +27,7 @@ def create_experiment():
     pass
 
 
-@experiments.group(name="createAndStart", help="Create and start new experiment", cls=ClickGroup)
+@experiments.group(name="run", help="Create and start new experiment", cls=ClickGroup)
 def create_and_start_experiment():
     pass
 

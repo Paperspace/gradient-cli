@@ -198,7 +198,7 @@ class TestCreateHyperparameters(object):
 class TestCreateAndStartHyperparameters(object):
     URL = "https://services.paperspace.io/experiments/v1/hyperopt/create_and_start/"
     COMMAND = [
-        "hyperparameters", "createAndStart",
+        "hyperparameters", "run",
         "--name", "some_name",
         "--tuningCommand", "some command",
         "--workerContainer", "some_container",
@@ -218,7 +218,7 @@ class TestCreateAndStartHyperparameters(object):
     }
 
     COMMAND_WHEN_ALL_PARAMETERS_WERE_USED = [
-        "hyperparameters", "createAndStart",
+        "hyperparameters", "run",
         "--name", "some_name",
         "--tuningCommand", "some command",
         "--workerContainer", "some_container",
@@ -257,7 +257,7 @@ class TestCreateAndStartHyperparameters(object):
     EXPECTED_STDOUT_WHEN_ERROR_RECEIVED = "Experiment data error\nprojectHandle: Missing data for required field.\n"
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
-        "hyperparameters", "createAndStart",
+        "hyperparameters", "run",
         "--name", "some_name",
         "--tuningCommand", "some command",
         "--workerContainer", "some_container",
