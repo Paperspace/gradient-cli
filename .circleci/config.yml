@@ -58,7 +58,6 @@ jobs:
             echo -e "repository: https://upload.pypi.org/legacy/" >> ~/.pypirc
             echo -e "username: paperspace" >> ~/.pypirc
             echo -e "password: $PYPI_PASSWORD" >> ~/.pypirc
-            cat ~/.pypirc
       - run:
           name: create packages
           command: |
@@ -67,7 +66,6 @@ jobs:
           name: sign packages
           command: |
             gpg --no-tty --batch --pinentry-mode loopback --armor --sign --local-user ${GPG_FINGERPRINT} --passphrase "${GPG_PASSWORD}" --detach-sign dist/gradient-*.*.*.tar.gz
-            ls ./dist
       - run:
           name: upload to pypi
           command: |
