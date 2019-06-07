@@ -1,10 +1,23 @@
 version: 2.1
-
+workflows:
+  build_and_deploy:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /.*/
+      - deploy:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
 executors:
   python-tox:
     docker:
       - image: themattrix/tox-base:latest
-
 jobs:
   test:
     executor: python-tox
@@ -17,8 +30,43 @@ jobs:
           name: Run tests
           command: make run-tests
 
-workflows:
-  version: 2.1
-  pipeline:
-    jobs:
-      - test
+  deploy:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run:
+          name: import GPG key
+          command: |
+            export GPG_TTY=$(tty)
+            echo -e "$GPG_KEY" | gpg --import --no-tty --batch --yes --passphrase "${GPG_PASSWORD}"
+      - run:
+          name: install python dependencies
+          command: |
+            make pip-install-dev
+      - run:
+          name: verify git tag vs. version
+          command: |
+            python setup.py verify
+      - run:
+          name: init .pypirc
+          command: |
+            echo -e "[distutils]" >> ~/.pypirc
+            echo -e "index-servers =" >> ~/.pypirc
+            echo -e "    pypi" >> ~/.pypirc
+            echo -e "[pypi]" >> ~/.pypirc
+            echo -e "repository: https://upload.pypi.org/legacy/" >> ~/.pypirc
+            echo -e "username: paperspace" >> ~/.pypirc
+            echo -e "password: $PYPI_PASSWORD" >> ~/.pypirc
+      - run:
+          name: create packages
+          command: |
+            make build
+      - run:
+          name: sign packages
+          command: |
+            gpg --no-tty --batch --pinentry-mode loopback --armor --sign --local-user ${GPG_FINGERPRINT} --passphrase "${GPG_PASSWORD}" --detach-sign dist/gradient-*.*.*.tar.gz
+      - run:
+          name: upload to pypi
+          command: |
+            python -m twine upload dist/*

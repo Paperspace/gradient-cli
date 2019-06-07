@@ -12,4 +12,7 @@ pip-update:
 	$(PIP) install --upgrade setuptools
 
 pip-install-dev: pip-update
-	$(PIP) install --upgrade -e .[dev]
+	$(PIP) install --upgrade -e .[dev] --user
+
+build:
+	python setup.py sdist bdist_wheel
