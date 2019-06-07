@@ -79,7 +79,7 @@ The two available experiment types are `singlenode` and `multinode`.
 
 To create and immediately start new experiment use:
 ```
-gradient experiments createAndStart [type] [--options]
+gradient experiments run [type] [--options]
 ```
 
 For a full list of available commands run `paperspace experiments --help`. 
