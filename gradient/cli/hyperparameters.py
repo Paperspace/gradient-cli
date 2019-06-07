@@ -151,7 +151,7 @@ def create_hyperparameter(api_key, **hyperparameter):
     command.execute(hyperparameter)
 
 
-@hyperparameters_group.command("createAndStart", help="Create hyperparameter")
+@hyperparameters_group.command("run", help="Create and start hyperparameter tuning job")
 @common_hyperparameter_create_options
 @common.api_key_option
 def create_and_start_hyperparameter(api_key, **hyperparameter):

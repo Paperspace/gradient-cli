@@ -256,7 +256,7 @@ class TestExperimentsCreateMultiNode(object):
 class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     URL = "https://services.paperspace.io/experiments/v1/experiments/create_and_start/"
     BASIC_OPTIONS_COMMAND = [
-        "experiments", "createAndStart", "singlenode",
+        "experiments", "run", "singlenode",
         "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
@@ -266,7 +266,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--no-logs",
     ]
     FULL_OPTIONS_COMMAND = [
-        "experiments", "createAndStart", "singlenode",
+        "experiments", "run", "singlenode",
         "--name", "exp1",
         "--ports", 4567,
         "--workspaceUrl", "wsp.url",
@@ -291,7 +291,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
 class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
     URL = "https://services.paperspace.io/experiments/v1/experiments/create_and_start/"
     BASIC_OPTIONS_COMMAND = [
-        "experiments", "createAndStart", "multinode",
+        "experiments", "run", "multinode",
         "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
@@ -308,7 +308,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--no-logs",
     ]
     FULL_OPTIONS_COMMAND = [
-        "experiments", "createAndStart", "multinode",
+        "experiments", "run", "multinode",
         "--name", "multinode_mpi",
         "--ports", 3456,
         "--workspaceUrl", "wurl",

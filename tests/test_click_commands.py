@@ -119,7 +119,7 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_sing
         command_patched, api_patched):
     api_patched.return_value = mock.MagicMock()
     runner = CliRunner()
-    command = "experiments createAndStart singlenode " \
+    command = "experiments run singlenode " \
               "--name exp1 " \
               "--projectId testHandle " \
               "--container testContainer " \
@@ -149,7 +149,7 @@ def test_should_execute_create_experiment_command_when_cli_create_and_start_mult
         command_patched, api_patched):
     api_patched.return_value = mock.MagicMock()
     runner = CliRunner()
-    command = "experiments createAndStart multinode " \
+    command = "experiments run multinode " \
               "--name exp1 " \
               "--projectId testHandle " \
               "--experimentType MPI " \
