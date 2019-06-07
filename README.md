@@ -12,11 +12,11 @@ Getting Started
 
 2. Use pip, pipenv, or conda to install the gradient package, e.g.:
 
-    `pip install -U paperspace`
+    `pip install -U gradient`
 
     To install/update prerelease (Alpha/Beta) version version of gradient, use:
 
-    `pip install -U --pre paperspace`
+    `pip install -U --pre gradient`
 3. Enable autocomplete:
     
     Add following to your `.bashrc` (or `.zshrc`) to enable autocomplete anytime you activate your shell.
@@ -223,7 +223,7 @@ Other `jobs create options` can be specified, such as `--machineType <machine ty
 Here are some of the other jobs create options available:
 
 - `--project "<project name>"`  (defaults to 'paperspace-python')
-- `--machineType [GPU+|P4000|P5000|P6000|V100]`  (defaults to P5000)
+- `--machineType [C2|C7|GPU+|P4000|P5000|P6000|V100|G1|G6|G12|K80|GV100|GV100x8]`  (defaults to P5000)
 - `--container <docker image link or paperspace container name>`  (defaults to `docker.io/paperspace/tensorflow-python`)
 - `--name "<job name>"` (defaults to 'job for project <project name>')
 - `--projectId "<existing paperspace project id>"`
