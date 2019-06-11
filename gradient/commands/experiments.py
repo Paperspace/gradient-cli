@@ -39,12 +39,8 @@ class CreateExperimentCommand(ExperimentCommand):
         if workspace_url:
             json_['workspaceUrl'] = workspace_url
 
-        spinner = halo.Halo(text="Creating new experiment", spinner="dots")
-        spinner.start()
-
-        response = self.api.post("/experiments/", json=json_)
-
-        spinner.stop()
+        with halo.Halo(text="Creating new experiment", spinner="dots"):
+            response = self.api.post("/experiments/", json=json_)
 
         self._log_create_experiment(response,
                                     "New experiment created with ID: {}",
