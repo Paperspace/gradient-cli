@@ -2,6 +2,7 @@ import pydoc
 from collections import OrderedDict
 
 import terminaltables
+from halo import halo
 
 from gradient import logger
 from gradient.utils import get_terminal_lines
@@ -22,12 +23,15 @@ class CommandBase(object):
 
 
 class ListCommand(CommandBase):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
+
     @property
     def request_url(self):
         raise NotImplementedError()
 
     def execute(self, **kwargs):
-        response = self._get_response(kwargs)
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            response = self._get_response(kwargs)
 
         try:
             if not response.ok:

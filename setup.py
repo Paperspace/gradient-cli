@@ -71,6 +71,7 @@ setup(
         'colorama',
         'requests-toolbelt',
         'progressbar2',
+        'halo',
     ],
     entry_points={'console_scripts': [
         'gradient = gradient:main',
