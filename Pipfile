@@ -17,6 +17,7 @@ click-didyoumean = "*"
 click-help-colors = "*"
 colorama = "*"
 click-completion = "*"
+halo = "*"
 
 [dev-packages]
 twine = "*"

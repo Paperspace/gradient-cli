@@ -2,10 +2,11 @@ import pydoc
 
 import terminaltables
 from click import style
+from halo import halo
 
 from gradient import logger, constants, client, config
-from gradient.logger import log_response
 from gradient.commands import common
+from gradient.logger import log_response
 from gradient.utils import get_terminal_lines
 from gradient.workspace import S3WorkspaceHandler
 
@@ -38,7 +39,8 @@ class CreateExperimentCommand(ExperimentCommand):
         if workspace_url:
             json_['workspaceUrl'] = workspace_url
 
-        response = self.api.post("/experiments/", json=json_)
+        with halo.Halo(text="Creating new experiment", spinner="dots"):
+            response = self.api.post("/experiments/", json=json_)
 
         self._log_create_experiment(response,
                                     "New experiment created with ID: {}",
