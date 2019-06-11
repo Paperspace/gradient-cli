@@ -1,7 +1,11 @@
 # Paperspace Python Release Notes
 
+# Release Notes for 0.2.2a0
+# New features
+* added `projects create` command
+* added spinner for some long running commands
 
-#Release Notes for 0.2.1
+# Release Notes for 0.2.1
 ### Fixes
 * renamed `createAndStart` commands to `run` for experiments and hyperparameters
 
