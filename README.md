@@ -70,7 +70,7 @@ Note that some options are required to create new experiment.
 
 Running a python script by name
 ===============================
-You can run an python script on Paperspace server from the command line as follows:
+You can run a Python script on a Paperspace server from the command line as follows:
 
     gradient run myscript.py --name my_new_job
 
