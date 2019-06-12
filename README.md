@@ -79,6 +79,7 @@ You can also provide additional jobs options on the command line:
     gradient run myscript.py --name my_new_job --project myproject --machineType P5000 \
      --container paperspace/tensorflow-python`
 
+Note: this functionality is deprecated and will not be available in future releases
 
 See the [Gradient docs](https://docs.paperspace.com/gradient/jobs/about) documentation for the full list of jobs create options that can be specified.
 
