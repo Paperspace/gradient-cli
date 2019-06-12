@@ -147,7 +147,7 @@ The `--ignoreFiles "<file-or-dir>,..."` option can be used specify a simple comm
 
 The following files and directories are ignored by default: `.git`, `.gitignore`, `__pycache__`.
 
-Other `jobs create` options can be specified, such as `--machineType <machine type>`, `--container <container image reference>`, and `--project <project name>`.
+Other `jobs create` options can be specified, such as `--machineType <machine-type>`, `--container <container-image-reference>`, and `--project <project-name>`.
 
 See the Paperspae API [jobs create](https://paperspace.github.io/paperspace-node/jobs.html#.create) documentation for a complete description of these options.
 
