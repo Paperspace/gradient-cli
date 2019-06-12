@@ -45,10 +45,10 @@ Getting Started
 
 5. Use gradient to run a python script remotely:
 
-    `gradient run myscript.py --name my_new_job`
+    `gradient run myscript.py --name <your-new-job-name>`
 
    The script will be run on the Paperspace job cluster node, and its output will be logged locally.
-   Note: this will zip and send your entire current working directory to our server if `--worskpace` was not provided
+   Note: this will archive and upload your entire current working directory to our server if `--workspace` was not provided
 
 
 Create/create and start experiment
@@ -70,7 +70,7 @@ Note that some options are required to create new experiment.
 
 Running a python script by name
 ===============================
-You can run an python script on Paperspace server from the command line as follows:
+You can run a Python script on a Paperspace server from the command line as follows:
 
     gradient run myscript.py --name my_new_job
 
@@ -81,7 +81,7 @@ You can also provide additional jobs options on the command line:
 
 Note: this functionality is deprecated and will not be available in future releases
 
-See the [Gradient docs](https://docs.paperspace.com/gradient/jobs/about) documentation for the full list of jobs create options that can be specified.
+See the [Gradient docs](https://docs.paperspace.com/gradient/jobs/about) for the full list of jobs create options that can be specified.
 
 
 Basic Run Scenarios
@@ -148,7 +148,7 @@ The `--ignoreFiles "<file-or-dir>,..."` option can be used specify a simple comm
 
 The following files and directories are ignored by default: `.git`, `.gitignore`, `__pycache__`.
 
-Other `jobs create` options can be specified, such as `--machineType <machine type>`, `--container <container image reference>`, and `--project <project name>`.
+Other `jobs create` options can be specified, such as `--machineType <machine-type>`, `--container <container-image-reference>`, and `--project <project-name>`.
 
 See the Paperspae API [jobs create](https://paperspace.github.io/paperspace-node/jobs.html#.create) documentation for a complete description of these options.
 
