@@ -1,5 +1,5 @@
 ![Artboard 1](https://user-images.githubusercontent.com/585865/59315146-781a3300-8c86-11e9-9b7d-0cbca81d4278.png)
-Paperspace Python
+Gradient CLI
 =================
 
 Release 0.2.2a0
@@ -8,7 +8,7 @@ See [releasenotes.md](https://github.com/Paperspace/paperspace-python/blob/maste
 
 Getting Started
 ===============
-1. Make sure you have a Paperspace account set up. Go to http://paperspace.com
+1. Make sure you have a Paperspace account set up. Go to [http://paperspace.com](https://www.paperspace.com/account/signup?gradient=true)
    to register.
 
 2. Use pip, pipenv, or conda to install the gradient package, e.g.:
@@ -93,9 +93,9 @@ This example shows how a script can specify paperspace jobs options for itself, 
 
     # tests/test_remote.py - runs itself on paperspace, demonstrates setting jobs create options
     import os
-    import paperspace
+    import gradient
 
-    paperspace.run({'project': 'myproject', 'machineType': 'P5000',
+    gradient.run({'project': 'myproject', 'machineType': 'P5000',
                     'container': 'paperspace/tensorflow-python'})
 
     print(os.getcwd())
@@ -104,13 +104,13 @@ This example shows how a script can specify paperspace jobs options for itself, 
 
 Automatic running of a python script remotely
 =============================================
-The above example demonstrates running a python script locally and having that script transmit itself to the paperspace jobs cluster for further execution.  To do this a copy of the local script is modified before transmission to the jobs cluster, in order to strip out the `import paperspace` statements and other `paperspace` library references. There are also some limitations on the types of import statements that are supported, and the dependencies that are supported in each environment (local vs. remote):
+The above example demonstrates running a python script locally and having that script transmit itself to the gradient jobs cluster for further execution.  To do this a copy of the local script is modified before transmission to the jobs cluster, in order to strip out the `import gradient` statements and other `gradient` library references. There are also some limitations on the types of import statements that are supported, and the dependencies that are supported in each environment (local vs. remote):
 
-1. You need to use a bare import statement, `import paperspace`, and not use the `import paperspace as ...` form.
-2. The import form `from paperspace import ...` is currently not supported.
-3. Everything after the `paperspace.run()` function call is ignored when running locally (when no script name is provided).  The local script execution stops after the `paperspace.run()` call.
-4. Dependencies that are included before `paperspace.run()` must be available locally.
-5. If you need to reference dependencies that are not available locally but are available remotely, those should be imported after the `paperspace.run()` call.
+1. You need to use a bare import statement, `import gradient`, and not use the `import gradient as ...` form.
+2. The import form `from paperspace gradient ...` is currently not supported.
+3. Everything after the `gradient.run()` function call is ignored when running locally (when no script name is provided).  The local script execution stops after the `gradient.run()` call.
+4. Dependencies that are included before `gradient.run()` must be available locally.
+5. If you need to reference dependencies that are not available locally but are available remotely, those should be imported after the `gradient.run()` call.
 6. Dependencies that are needed remotely need to either be already installed in the container used for the job, or need to be installed using one of the techniques below in the section [Dependency Options](#dependency-options)
 
 Because of these limitations it may not always be appropriate to run python scripts automatically from within the same script file.  As an alternative you can run your python scripts unmodified using the techniques below.
@@ -129,16 +129,16 @@ You can also provide additional jobs options on the command line:
 
 Alternatively you can use the `paperspace.run()` fuction in code with a script file name as the first argument:
 
-    import paperspace
+    import gradient
 
-    paperspace.run('myscript.py') # runs myscript on paperspace
+    gradient.run('myscript.py') # runs myscript on paperspace
 
 In code you can provide additional paperspace jobs create options in a dict in the second argument to run():
 
-    paperspace.run('myscript.py', {'project': 'myproject', 'machineType': 'P5000',
+    gradient.run('myscript.py', {'project': 'myproject', 'machineType': 'P5000',
                                    'container': 'paperspace/tensorflow-python'})
 
-See the Paperspace API [jobs create](https://paperspace.github.io/paperspace-node/jobs.html#.create) documentation for the full list of jobs create options that can be specified.
+See the [Gradient docs](https://docs.paperspace.com/gradient/jobs/about) documentation for the full list of jobs create options that can be specified.
 
 
 Using gradient run
@@ -282,13 +282,13 @@ Other Authentication options
 1. Specify your apiKey explicitly on the paperspace.run() function or any of the paperspace.jobs methods, e.g.:
 
     ```
-    paperspace.jobs.create({'apiKey': '1qks1hKsU7e1k...', 'project': 'myproject',
+    gradient.jobs.create({'apiKey': '1qks1hKsU7e1k...', 'project': 'myproject',
                             'machineType': 'P5000', 'container': 'paperspace/tensorflow-python'})
     ```
 
 2. Set the package paperspace.config option in your python code:
 
-    `paperspace.config.PAPERSPACE_API_KEY = '1qks1hKsU7e1k...'`
+    `gradient.config.PAPERSPACE_API_KEY = '1qks1hKsU7e1k...'`
 
 3. Set the PAPERSPACE_API_KEY environment variable:
 
