@@ -80,7 +80,7 @@ You can also provide additional jobs options on the command line:
      --container paperspace/tensorflow-python`
 
 
-See the [Gradient docs](https://docs.paperspace.com/gradient/jobs/about) documentation for the full list of jobs create options that can be specified.
+See the [Gradient docs](https://docs.paperspace.com/gradient/jobs/about) for the full list of jobs create options that can be specified.
 
 
 Basic Run Scenarios
