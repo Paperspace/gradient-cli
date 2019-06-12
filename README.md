@@ -45,7 +45,7 @@ Getting Started
 
 5. Use gradient to run a python script remotely:
 
-    `gradient run myscript.py --name my_new_job`
+    `gradient run myscript.py --name <your-new-job-name>`
 
    The script will be run on the Paperspace job cluster node, and its output will be logged locally.
    Note: this will archive and upload your entire current working directory to our server if `--workspace` was not provided
