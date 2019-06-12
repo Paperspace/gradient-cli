@@ -48,7 +48,7 @@ Getting Started
     `gradient run myscript.py --name my_new_job`
 
    The script will be run on the Paperspace job cluster node, and its output will be logged locally.
-   Note: this will zip and send your entire current working directory to our server if `--worskpace` was not provided
+   Note: this will zip and send your entire current working directory to our server if `--workspace` was not provided
 
 
 Create/create and start experiment
