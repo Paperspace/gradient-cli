@@ -182,7 +182,7 @@ Authentication options
 
 3. Set the key in the `~/.paperspace/config.json` file from the command line by running:
 
-    `gradient apikey 1qks1hKsU7e1k...`
+    `gradient apiKey 1qks1hKsU7e1k...`
 
 
 Contributing
