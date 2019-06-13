@@ -1,7 +1,7 @@
 import os
 import sys
 
-from gradient import client, config, logger
+from gradient import logger
 from gradient.commands.jobs import CreateJobCommand
 from gradient.constants import RunMode
 from gradient.workspace import WorkspaceHandler
