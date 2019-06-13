@@ -19,7 +19,7 @@ def cli():
 
 
 @cli.command("version", help="Show the version and exit")
-def version():
+def get_version():
     command = login_commands.ShowVersionCommand()
     command.execute()
 

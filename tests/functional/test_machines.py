@@ -820,7 +820,7 @@ class TestShowMachine(object):
         assert result.exit_code == 0
 
     @mock.patch("gradient.client.requests.get")
-    def test_should_send_valid_post_request_when_machines_list_was_used_with_api_key_option(self, get_patched):
+    def test_should_send_valid_post_request_when_machines_show_was_used_with_api_key_option(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
