@@ -1,7 +1,8 @@
+import getpass
+
 import click
 
 from gradient import logger
-from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.commands import login as login_commands
 
@@ -41,8 +42,11 @@ def logout():
 
 
 @cli.command("apiKey", help="Save your api key")
-@click.argument("api_key", required=False, callback=common.prompt_for_secret("Enter your API Key: "))
+@click.argument("api_key", required=False, )
 def save_api_key(api_key):
+    if not api_key:
+        api_key = getpass.getpass("Enter your API Key: ")
+
     command = login_commands.SetApiKeyCommand()
     api_key = api_key.strip()
     command.execute(api_key)

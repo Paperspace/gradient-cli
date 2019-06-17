@@ -34,16 +34,6 @@ class ClickGroup(DYMMixin, HelpColorsGroup):
     pass
 
 
-def prompt_for_secret(prompt):
-    def callback_fun(ctx, param, value):
-        if value is None:
-            value = getpass.getpass(prompt)
-
-        return value
-
-    return callback_fun
-
-
 def deprecated(version="1.0.0"):
     deprecated_invoke_notice = """DeprecatedWarning: \nWARNING: This command will not be included in version %s .
 For more information, please see:
