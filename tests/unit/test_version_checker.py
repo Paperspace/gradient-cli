@@ -2,30 +2,35 @@ import mock
 import pytest
 
 from gradient import version_checker
+from gradient.version import version
 
 
+@mock.patch("gradient.version_checker.GradientVersionChecker._should_check_version")
 @mock.patch("gradient.version_checker.VersionChecker.is_up_to_date")
 @mock.patch("gradient.version_checker.logger")
-def test_should_check_for_new_gradient_version_and_print_proper_warning_when_current_version_is_old(logger_patched,
-                                                                                                    is_up_to_date_patched):
+def test_should_check_for_new_gradient_version_and_print_proper_warning_when_current_version_is_old(
+        logger_patched, is_up_to_date_patched, should_check_patched):
+    should_check_patched.return_value = True
     is_up_to_date_patched.return_value = (False, "1.2.3")
 
-    version_checker.look_for_new_version()
+    version_checker.GradientVersionChecker.look_for_new_version()
 
     is_up_to_date_patched.assert_called_once()
     logger_patched.warning.assert_called_once_with(
-        "Warning: this version of the Gradient CLI (0.2.0a0) is out of date. "
+        "Warning: this version of the Gradient CLI ({}) is out of date. "
         "Some functionality might not be supported until you upgrade. \n\n"
-        "Run `pip install -U gradient` to upgrade\n")
+        "Run `pip install -U gradient` to upgrade\n".format(version))
 
 
+@mock.patch("gradient.version_checker.GradientVersionChecker._should_check_version")
 @mock.patch("gradient.version_checker.VersionChecker.is_up_to_date")
 @mock.patch("gradient.version_checker.logger")
-def test_should_check_for_new_gradient_version_and_not_print_anything_when_current_version_is_latest(logger_patched,
-                                                                                                     is_up_to_date_patched):
+def test_should_check_for_new_gradient_version_and_not_print_anything_when_current_version_is_latest(
+        logger_patched, is_up_to_date_patched, should_check_patched):
+    should_check_patched.return_value = True
     is_up_to_date_patched.return_value = (True, "1.2.3")
 
-    version_checker.look_for_new_version()
+    version_checker.GradientVersionChecker.look_for_new_version()
 
     is_up_to_date_patched.assert_called_once()
     logger_patched.warning.assert_not_called()
@@ -38,10 +43,10 @@ def test_should_return_package_version_when_get_version_was_run(sever_proxy_clas
     sever_proxy_class_patched.return_value = pypi_patched
 
     vc = version_checker.VersionChecker()
-    version = vc.get_version_from_repository("some_module_name")
+    latest_version = vc.get_version_from_repository("some_module_name")
 
     sever_proxy_class_patched.assert_called_with("http://pypi.python.org/pypi")
-    assert version == "1.2.3"
+    assert latest_version == "1.2.3"
 
 
 @mock.patch("gradient.version_checker.xmlrpclib.ServerProxy")
