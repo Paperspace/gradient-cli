@@ -1,5 +1,9 @@
 # Paperspace Python Release Notes
 
+# Release Notes for 0.2.2a1
+# New features
+* add looking for new client version
+
 # Release Notes for 0.2.2a0
 # New features
 * added `projects create` command
