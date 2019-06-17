@@ -54,9 +54,9 @@ def log_error_response(data):
         error(str(message))
 
 
-def debug(messages):
+def debug(message):
     if config.DEBUG:
-        log("DEBUG: {}".format(messages))
+        log("DEBUG: {}".format(message))
 
 
 def log_response(response, success_msg, error_msg):
