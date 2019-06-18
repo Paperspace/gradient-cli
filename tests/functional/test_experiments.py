@@ -71,7 +71,7 @@ class TestExperimentsCreateSingleNode(object):
 
     RESPONSE_JSON_404_PROJECT_NOT_FOUND = {"details": {"handle": "wrong_handle"}, "error": "Project not found"}
     RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'
-    EXPECTED_STDOUT_PROJECT_NOT_FOUND = "Project not found\nhandle: wrong_handle\n"
+    EXPECTED_STDOUT_PROJECT_NOT_FOUND = "handle: wrong_handle\nProject not found\n"
 
     @mock.patch("gradient.client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
@@ -576,7 +576,7 @@ class TestExperimentList(object):
 +---------------+---------------+---------+
 """
     RESPONSE_JSON_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
-    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Forbidden\nIncorrect API Key provided\n"
+    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Incorrect API Key provided\nForbidden\n"
 
     @mock.patch("gradient.client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments(self, get_patched):

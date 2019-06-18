@@ -6,7 +6,6 @@ from halo import halo
 
 from gradient import logger, constants, client, config
 from gradient.commands import common
-from gradient.logger import log_response
 from gradient.utils import get_terminal_lines
 from gradient.workspace import S3WorkspaceHandler
 
@@ -16,7 +15,7 @@ experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.defa
 class ExperimentCommand(common.CommandBase):
     def __init__(self, workspace_handler=None, **kwargs):
         super(ExperimentCommand, self).__init__(**kwargs)
-        self._workspace_handler = workspace_handler or S3WorkspaceHandler(experiments_api=self.api, logger=self.logger)
+        self._workspace_handler = workspace_handler or S3WorkspaceHandler(experiments_api=self.api, logger_=self.logger)
 
     def _log_create_experiment(self, response, success_msg_template, error_msg):
         if response.ok:
@@ -62,16 +61,16 @@ class CreateAndStartExperimentCommand(ExperimentCommand):
         return None
 
 
-def start_experiment(experiment_id, api=experiments_api):
+def start_experiment(experiment_id, api=experiments_api, logger_=logger.Logger()):
     url = "/experiments/{}/start/".format(experiment_id)
     response = api.put(url)
-    log_response(response, "Experiment started", "Unknown error while starting the experiment")
+    logger_.log_response(response, "Experiment started", "Unknown error while starting the experiment")
 
 
-def stop_experiment(experiment_id, api=experiments_api):
+def stop_experiment(experiment_id, api=experiments_api, logger_=logger.Logger()):
     url = "/experiments/{}/stop/".format(experiment_id)
     response = api.put(url)
-    log_response(response, "Experiment stopped", "Unknown error while stopping the experiment")
+    logger_.log_response(response, "Experiment stopped", "Unknown error while stopping the experiment")
 
 
 class ListExperimentsCommand(common.ListCommand):
@@ -165,7 +164,7 @@ def _make_details_table(experiment):
     return table_string
 
 
-def get_experiment_details(experiment_id, api=experiments_api):
+def get_experiment_details(experiment_id, api=experiments_api, logger_=logger.Logger()):
     url = "/experiments/{}/".format(experiment_id)
     response = api.get(url)
     details = response.content
@@ -174,9 +173,9 @@ def get_experiment_details(experiment_id, api=experiments_api):
             experiment = response.json()["data"]
             details = _make_details_table(experiment)
         except (ValueError, KeyError) as e:
-            logger.error("Error parsing response data")
+            logger_.error("Error parsing response data")
 
-    log_response(response, details, "Unknown error while retrieving details of the experiment")
+    logger_.log_response(response, details, "Unknown error while retrieving details of the experiment")
 
 
 class ExperimentLogsCommand(common.CommandBase):
