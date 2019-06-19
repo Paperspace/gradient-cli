@@ -1,4 +1,4 @@
-# Paperspace Python Release Notes
+# Gradient by Paperspace Release Notes
 
 # Release Notes for 0.2.2a1
 # New features
