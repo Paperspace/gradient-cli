@@ -65,7 +65,7 @@ class TestCreateHyperparameters(object):
         },
         "error": "Experiment data error",
     }
-    EXPECTED_STDOUT_WHEN_ERROR_RECEIVED = "Experiment data error\nprojectHandle: Missing data for required field.\n"
+    EXPECTED_STDOUT_WHEN_ERROR_RECEIVED = "projectHandle: Missing data for required field.\nExperiment data error\n"
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
         "hyperparameters", "create",
@@ -89,7 +89,7 @@ class TestCreateHyperparameters(object):
     }
 
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
-    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Forbidden\nIncorrect API Key provided\n"
+    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Incorrect API Key provided\nForbidden\n"
 
     @mock.patch("gradient.client.requests.post")
     def test_should_send_get_request_and_print_proper_message_when_create_command_was_used(self, post_patched):
@@ -254,7 +254,7 @@ class TestCreateAndStartHyperparameters(object):
         },
         "error": "Experiment data error",
     }
-    EXPECTED_STDOUT_WHEN_ERROR_RECEIVED = "Experiment data error\nprojectHandle: Missing data for required field.\n"
+    EXPECTED_STDOUT_WHEN_ERROR_RECEIVED = "projectHandle: Missing data for required field.\nExperiment data error\n"
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
         "hyperparameters", "run",
@@ -278,7 +278,7 @@ class TestCreateAndStartHyperparameters(object):
     }
 
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
-    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Forbidden\nIncorrect API Key provided\n"
+    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Incorrect API Key provided\nForbidden\n"
 
     @mock.patch("gradient.client.requests.post")
     def test_should_send_get_request_and_print_proper_message_when_create_command_was_used(self, post_patched):
@@ -406,7 +406,7 @@ class TestStartHyperparameters(object):
         "--apiKey", "some_key",
     ]
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
-    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Forbidden\nIncorrect API Key provided\n"
+    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Incorrect API Key provided\nForbidden\n"
 
     @mock.patch("gradient.client.requests.put")
     def test_should_send_get_request_and_print_proper_message_when_start_command_was_used(self, post_patched):

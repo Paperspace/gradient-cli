@@ -9,7 +9,7 @@ from gradient.utils import get_terminal_lines
 
 
 class CommandBase(object):
-    def __init__(self, api=None, logger_=logger):
+    def __init__(self, api=None, logger_=logger.Logger()):
         self.api = api
         self.logger = logger_
 

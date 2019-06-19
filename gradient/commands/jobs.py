@@ -146,7 +146,7 @@ class JobLogsCommand(common.CommandBase):
 class CreateJobCommand(JobsCommandBase):
     def __init__(self, workspace_handler=None, **kwargs):
         super(CreateJobCommand, self).__init__(**kwargs)
-        self._workspace_handler = workspace_handler or WorkspaceHandler(logger=self.logger)
+        self._workspace_handler = workspace_handler or WorkspaceHandler(logger_=self.logger)
 
     def execute(self, json_):
         url = "/jobs/createJob/"

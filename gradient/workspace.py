@@ -7,7 +7,7 @@ import progressbar
 import requests
 from requests_toolbelt.multipart import encoder
 
-from gradient import logger as default_logger
+from gradient import logger
 from gradient.exceptions import S3UploadFailedError, PresignedUrlUnreachableError, \
     PresignedUrlAccessDeniedError, PresignedUrlConnectionError, ProjectAccessDeniedError, \
     PresignedUrlMalformedResponseError, PresignedUrlError
@@ -35,13 +35,12 @@ class MultipartEncoder(object):
 
 
 class WorkspaceHandler(object):
-    def __init__(self, logger=None):
+    def __init__(self, logger_=None):
         """
 
-        :param experiments_api: gradient.client.API
-        :param logger: gradient.logger
+        :param logger_: gradient.logger
         """
-        self.logger = logger or default_logger
+        self.logger = logger_ or logger.Logger()
         self.archive_path = None
         self.archive_basename = None
 
@@ -135,13 +134,13 @@ class WorkspaceHandler(object):
 
 
 class S3WorkspaceHandler(WorkspaceHandler):
-    def __init__(self, experiments_api, logger=None):
+    def __init__(self, experiments_api, logger_=None):
         """
 
         :param experiments_api: gradient.client.API
-        :param logger: gradient.logger
+        :param logger_: gradient.logger
         """
-        super(S3WorkspaceHandler, self).__init__(logger=logger)
+        super(S3WorkspaceHandler, self).__init__(logger_=logger_)
         self.experiments_api = experiments_api
 
     def handle(self, input_data):

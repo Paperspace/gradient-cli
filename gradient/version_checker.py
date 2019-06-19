@@ -13,6 +13,9 @@ else:
     import xmlrpc.client as xmlrpclib
 
 
+logger = logger.Logger()
+
+
 class PackageNotFoundError(Exception):
     pass
 

@@ -24,7 +24,7 @@ mock_upload_response = {
 
 @pytest.fixture
 def workspace_handler():
-    s3_workspace_handler = S3WorkspaceHandler(mock.MagicMock(), logger=mock.MagicMock())
+    s3_workspace_handler = S3WorkspaceHandler(mock.MagicMock(), logger_=mock.MagicMock())
     s3_workspace_handler._upload = mock.MagicMock()
     s3_workspace_handler._get_upload_data = mock.MagicMock()
     s3_workspace_handler._get_upload_data.return_value = mock_upload_data
