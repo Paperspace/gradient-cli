@@ -197,7 +197,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
             response_message = response_content['message']
             response_data = response_content['data']
         except KeyError:
-            raise PresignedUrlMalformedResponseError(response_data)
+            raise PresignedUrlMalformedResponseError(response_content)
         if response_message != 'success':
             raise PresignedUrlError(response)
         return response_data
