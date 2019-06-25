@@ -62,7 +62,7 @@ setup(
         'requests[security]',
         'six',
         'gradient-statsd',
-        'click',
+        'click>=7.0',
         'gradient-sdk',
         'terminaltables',
         'click-didyoumean',
@@ -72,6 +72,7 @@ setup(
         'requests-toolbelt',
         'progressbar2',
         'halo',
+        'prompt_toolkit<3.0',
     ],
     entry_points={'console_scripts': [
         'gradient = gradient:main',
