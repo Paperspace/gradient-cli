@@ -73,6 +73,8 @@ setup(
         'progressbar2',
         'halo',
         'prompt_toolkit<3.0',
+        'marshmallow',
+        'attr',
     ],
     entry_points={'console_scripts': [
         'gradient = gradient:main',
