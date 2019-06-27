@@ -1,5 +1,11 @@
 # Gradient by Paperspace Release Notes
 
+# Release Notes for 0.2.2a2
+# New features
+* experimental wizard for creating projects
+### Fixes
+* fix autocomplete executing prompt for password when double-tab on gradient apiKey
+
 # Release Notes for 0.2.2a1
 # New features
 * add looking for new client version
