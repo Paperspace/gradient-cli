@@ -1,10 +1,12 @@
+import abc
 import pydoc
 
+import six
 import terminaltables
 from click import style
 from halo import halo
 
-from gradient import logger, constants, client, config
+from gradient import logger, constants, client, config, sdk
 from gradient.commands import common
 from gradient.utils import get_terminal_lines
 from gradient.workspace import S3WorkspaceHandler
@@ -31,34 +33,68 @@ class ExperimentCommand(common.CommandBase):
                 self.logger.error(error_msg)
 
 
-class CreateExperimentCommand(ExperimentCommand):
+@six.add_metaclass(abc.ABCMeta)
+class _CreateExperimentCommand(object):
+    def __init__(self, sdk_client, logger_=logger.Logger()):
+        self.sdk_client = sdk_client
+        self.logger = logger_
 
     def execute(self, json_):
-        workspace_url = self._workspace_handler.handle(json_)
-        if workspace_url:
-            json_['workspaceUrl'] = workspace_url
-
         with halo.Halo(text="Creating new experiment", spinner="dots"):
-            response = self.api.post("/experiments/", json=json_)
+            try:
+                experiment_id = self._create(json_)
+            except sdk.GradientSdkError as e:
+                self.logger.error(e)
+            else:
+                self.logger.log("New experiment created with ID: {}".format(experiment_id))
 
-        self._log_create_experiment(response,
-                                    "New experiment created with ID: {}",
-                                    "Unknown error while creating the experiment")
+    @abc.abstractmethod
+    def _create(self, json_):
+        pass
 
 
-class CreateAndStartExperimentCommand(ExperimentCommand):
+class CreateSingleNodeExperimentCommand(_CreateExperimentCommand):
+    def _create(self, json_):
+        handle = self.sdk_client.experiments.create_single_node(**json_)
+        return handle
+
+
+class CreateMultiNodeExperimentCommand(_CreateExperimentCommand):
+    def _create(self, json_):
+        handle = self.sdk_client.experiments.create_multi_node(**json_)
+        return handle
+
+
+@six.add_metaclass(abc.ABCMeta)
+class _RunExperimentCommand(object):
+    def __init__(self, sdk_client, logger_=logger.Logger()):
+        self.sdk_client = sdk_client
+        self.logger = logger_
+
     def execute(self, json_):
-        workspace_url = self._workspace_handler.handle(json_)
-        if workspace_url:
-            json_['workspaceUrl'] = workspace_url
+        with halo.Halo(text="Creating and starting new experiment", spinner="dots"):
+            try:
+                experiment_id = self._create(json_)
+            except sdk.GradientSdkError as e:
+                self.logger.error(e)
+            else:
+                self.logger.log("New experiment created and started with ID: {}".format(experiment_id))
 
-        response = self.api.post("/experiments/create_and_start/", json=json_)
-        self._log_create_experiment(response,
-                                    "New experiment created and started with ID: {}",
-                                    "Unknown error while creating/starting the experiment")
-        if response.ok:
-            return response.json()
-        return None
+    @abc.abstractmethod
+    def _create(self, json_):
+        pass
+
+
+class CreateAndStartMultiNodeExperimentCommand(_RunExperimentCommand):
+    def _create(self, json_):
+        handle = self.sdk_client.experiments.run_multi_node(**json_)
+        return handle
+
+
+class CreateAndStartSingleNodeExperimentCommand(_RunExperimentCommand):
+    def _create(self, json_):
+        handle = self.sdk_client.experiments.run_single_node(**json_)
+        return handle
 
 
 def start_experiment(experiment_id, api=experiments_api, logger_=logger.Logger()):

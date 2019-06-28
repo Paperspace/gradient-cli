@@ -1,0 +1,2 @@
+class GradientSdkError(Exception):
+    pass

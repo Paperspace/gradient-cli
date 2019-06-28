@@ -1,6 +1,6 @@
 import click
-import six
 
+import gradient.utils
 from .config import config
 
 
@@ -22,38 +22,11 @@ class Logger(object):
         self._log(message, color=color)
 
     def log_error_response(self, data):
-        messages = list(self._get_error_messages(data))
-        msg = "\n".join(messages)
-
+        msg = gradient.utils.MessageExtractor().get_message_from_response_data(data)
         if not msg:
             raise ValueError("No error messages found")
 
         self.error(msg)
-
-    def _get_error_messages(self, data, add_prefix=False):
-        if isinstance(data, dict):
-            for key, value in sorted(data.items()):
-                if key in ("error", "errors", "message", "messages"):
-                    for message in self._get_error_messages(value):
-                        yield message
-
-                # when key == "details" and value is a dict then values should be prefixed with key
-                if add_prefix:
-                    for message in self._get_error_messages(value):
-                        # there is some useless message in data["context"]
-                        if key != "context":
-                            yield key + ": " + message
-                if key == "details":
-                    for message in self._get_error_messages(value, add_prefix=True):
-                        yield message
-
-        if isinstance(data, list):
-            for element in data:
-                for message in self._get_error_messages(element):
-                    yield message
-
-        if isinstance(data, six.string_types):
-            yield data
 
     def debug(self, message):
         if config.DEBUG:
