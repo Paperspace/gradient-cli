@@ -4,7 +4,7 @@ import functools
 import click
 
 import gradient.api_sdk.clients.api_client
-import gradient.api_sdk.clients.client
+import gradient.api_sdk.clients.sdk_client
 from gradient import config, constants
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
@@ -241,7 +241,7 @@ def common_experiments_create_single_node_options(f):
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
 def create_multi_node(api_key, **kwargs):
-    sdk_client = gradient.api_sdk.clients.client.SdkClient(api_key=api_key)
+    sdk_client = gradient.api_sdk.clients.sdk_client.SdkClient(api_key=api_key)
     command = experiments_commands.CreateMultiNodeExperimentCommand(sdk_client=sdk_client)
     command.execute(kwargs)
 
@@ -250,7 +250,7 @@ def create_multi_node(api_key, **kwargs):
 @common_experiments_create_options
 @common_experiments_create_single_node_options
 def create_single_node(api_key, **kwargs):
-    sdk_client = gradient.api_sdk.clients.client.SdkClient(api_key=api_key)
+    sdk_client = gradient.api_sdk.clients.sdk_client.SdkClient(api_key=api_key)
     command = experiments_commands.CreateSingleNodeExperimentCommand(sdk_client=sdk_client)
     command.execute(kwargs)
 
@@ -268,7 +268,7 @@ def create_single_node(api_key, **kwargs):
 )
 @click.pass_context
 def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
-    sdk_client = gradient.api_sdk.clients.client.SdkClient(api_key=api_key)
+    sdk_client = gradient.api_sdk.clients.sdk_client.SdkClient(api_key=api_key)
     command = experiments_commands.CreateAndStartMultiNodeExperimentCommand(sdk_client=sdk_client)
     experiment = command.execute(kwargs)
     if experiment and show_logs:
@@ -288,7 +288,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
 )
 @click.pass_context
 def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
-    sdk_client = gradient.api_sdk.clients.client.SdkClient(api_key=api_key)
+    sdk_client = gradient.api_sdk.clients.sdk_client.SdkClient(api_key=api_key)
     command = experiments_commands.CreateAndStartSingleNodeExperimentCommand(sdk_client=sdk_client)
     experiment = command.execute(kwargs)
     if experiment and show_logs:

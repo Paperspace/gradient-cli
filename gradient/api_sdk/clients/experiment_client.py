@@ -1,25 +1,13 @@
-from gradient import config, constants
-from gradient.api_sdk.clients.api_client import API
+from gradient import constants
 from gradient.utils import MessageExtractor
 from gradient.workspace import S3WorkspaceHandler
+from .base_client import BaseClient
 from ..exceptions import GradientSdkError
-from ..logger import MuteLogger
 from ..models import SingleNodeExperiment, MultiNodeExperiment
 from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema
 
 
-class ExperimentsClient(object):
-    API_URL = config.CONFIG_EXPERIMENTS_HOST
-
-    def __init__(self, api_key, logger=MuteLogger()):
-        """
-
-        :type api_key: str
-        :type logger: Logger
-        """
-        self._client = API(self.API_URL, api_key=api_key)
-        self.logger = logger
-
+class ExperimentsClient(BaseClient):
     def create_single_node(self, name, project_id, machine_type, command, ports=None, workspace=None,
                            workspace_archive=None, workspace_url=None, ignore_files=None, working_directory=None,
                            artifact_directory=None, cluster_id=None, experiment_env=None, model_type=None,
