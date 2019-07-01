@@ -3,7 +3,7 @@ import functools
 
 import click
 
-import gradient.api_sdk.clients.api_client
+import gradient.api_sdk.clients.http_client
 import gradient.api_sdk.clients.sdk_client
 from gradient import config, constants
 from gradient.cli.cli import cli
@@ -306,7 +306,7 @@ def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
 )
 @click.pass_context
 def start_experiment(ctx, experiment_id, show_logs, api_key):
-    experiments_api = gradient.api_sdk.clients.api_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    experiments_api = gradient.api_sdk.clients.http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.start_experiment(experiment_id, api=experiments_api)
     if show_logs:
         ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
@@ -316,7 +316,7 @@ def start_experiment(ctx, experiment_id, show_logs, api_key):
 @click.argument("experiment-id")
 @api_key_option
 def stop_experiment(experiment_id, api_key):
-    experiments_api = gradient.api_sdk.clients.api_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    experiments_api = gradient.api_sdk.clients.http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.stop_experiment(experiment_id, api=experiments_api)
 
 
@@ -324,7 +324,7 @@ def stop_experiment(experiment_id, api_key):
 @click.option("--projectId", "-p", "project_ids", multiple=True)
 @api_key_option
 def list_experiments(project_ids, api_key):
-    experiments_api = gradient.api_sdk.clients.api_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    experiments_api = gradient.api_sdk.clients.http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.ListExperimentsCommand(api=experiments_api)
     command.execute(project_ids=project_ids)
 
@@ -333,7 +333,7 @@ def list_experiments(project_ids, api_key):
 @click.argument("experiment-id")
 @api_key_option
 def get_experiment_details(experiment_id, api_key):
-    experiments_api = gradient.api_sdk.clients.api_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    experiments_api = gradient.api_sdk.clients.http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     experiments_commands.get_experiment_details(experiment_id, api=experiments_api)
 
 
@@ -363,6 +363,6 @@ def get_experiment_details(experiment_id, api_key):
 )
 @api_key_option
 def list_logs(experiment_id, line, limit, follow, api_key=None):
-    logs_api = gradient.api_sdk.clients.api_client.API(config.CONFIG_LOG_HOST, api_key=api_key)
+    logs_api = gradient.api_sdk.clients.http_client.API(config.CONFIG_LOG_HOST, api_key=api_key)
     command = experiments_commands.ExperimentLogsCommand(api=logs_api)
     command.execute(experiment_id, line, limit, follow)

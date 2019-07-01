@@ -1,7 +1,7 @@
 import click
 
 from gradient import config
-from gradient.api_sdk.clients import api_client
+from gradient.api_sdk.clients import http_client
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.commands import projects as projects_commands
@@ -16,7 +16,7 @@ def projects_group():
 @projects_group.command("list", help="List projects")
 @common.api_key_option
 def list_projects(api_key):
-    projects_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    projects_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = projects_commands.ListProjectsCommand(api=projects_api)
     command.execute()
 
@@ -42,7 +42,7 @@ def list_projects(api_key):
 def create_project(api_key, **project):
     common.del_if_value_is_none(project)
 
-    projects_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    projects_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = projects_commands.CreateProjectCommand(api=projects_api)
     command.execute(project)
 

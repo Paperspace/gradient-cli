@@ -7,13 +7,13 @@ from click import style
 from halo import halo
 
 from gradient import logger, constants, config, api_sdk
-from gradient.api_sdk.clients import api_client
+from gradient.api_sdk.clients import http_client
 from gradient.commands import common
 from gradient.utils import get_terminal_lines
 from gradient.workspace import S3WorkspaceHandler
 
-experiments_api = api_client.API(config.CONFIG_EXPERIMENTS_HOST,
-                                 headers=api_client.default_headers)
+experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST,
+                                  headers=http_client.default_headers)
 
 
 class ExperimentCommand(common.CommandBase):

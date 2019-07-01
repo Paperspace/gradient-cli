@@ -3,7 +3,7 @@ import collections
 import click
 
 from gradient import config
-from gradient.api_sdk.clients import api_client
+from gradient.api_sdk.clients import http_client
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
@@ -69,7 +69,7 @@ DEPLOYMENT_MACHINE_TYPES = ("G1", "G6", "G12",
 @api_key_option
 def create_deployment(api_key=None, **kwargs):
     del_if_value_is_none(kwargs)
-    deployments_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    deployments_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = deployments_commands.CreateDeploymentCommand(api=deployments_api)
     command.execute(kwargs)
 
@@ -107,7 +107,7 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
 @api_key_option
 def get_deployments_list(api_key=None, **filters):
     del_if_value_is_none(filters)
-    deployments_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    deployments_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = deployments_commands.ListDeploymentsCommand(api=deployments_api)
     command.execute(filters=filters)
 
@@ -121,7 +121,7 @@ def get_deployments_list(api_key=None, **filters):
 )
 @api_key_option
 def start_deployment(id_, api_key=None):
-    deployments_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    deployments_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = deployments_commands.StartDeploymentCommand(api=deployments_api)
     command.execute(id_)
 
@@ -135,6 +135,6 @@ def start_deployment(id_, api_key=None):
 )
 @api_key_option
 def stop_deployment(id_, api_key=None):
-    deployments_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    deployments_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = deployments_commands.StopDeploymentCommand(api=deployments_api)
     command.execute(id_)

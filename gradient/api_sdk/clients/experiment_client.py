@@ -109,6 +109,9 @@ class ExperimentsClient(BaseClient):
         handle = self._run(experiment, MultiNodeExperimentSchema)
         return handle
 
+    def start(self, experiment_id):
+        response = self._get_start_response(experiment_id)
+
     def _create(self, experiment, schema_cls):
         experiment_dict = self._get_experiment_dict(experiment, schema_cls)
         response = self._get_create_response(experiment_dict)
@@ -160,3 +163,7 @@ class ExperimentsClient(BaseClient):
         workspace_handler = S3WorkspaceHandler(experiments_api=self._client, logger_=self.logger)
         workspace_url = workspace_handler.handle(experiment_dict)
         return workspace_url
+
+    def _get_start_response(self, experiment_id):
+        url = "/experiments/{}/start/".format(experiment_id)
+        response = self._client.put(url)

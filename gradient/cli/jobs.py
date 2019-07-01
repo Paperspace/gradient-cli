@@ -3,7 +3,7 @@ import functools
 import click
 
 from gradient import config
-from gradient.api_sdk.clients import api_client
+from gradient.api_sdk.clients import http_client
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts
@@ -24,7 +24,7 @@ def jobs_group():
 )
 @api_key_option
 def delete_job(job_id, api_key=None):
-    jobs_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.DeleteJobCommand(api=jobs_api)
     command.execute(job_id)
 
@@ -38,7 +38,7 @@ def delete_job(job_id, api_key=None):
 )
 @api_key_option
 def stop_job(job_id, api_key=None):
-    jobs_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.StopJobCommand(api=jobs_api)
     command.execute(job_id)
 
@@ -62,7 +62,7 @@ def stop_job(job_id, api_key=None):
 @api_key_option
 def list_jobs(api_key, **filters):
     del_if_value_is_none(filters)
-    jobs_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.ListJobsCommand(api=jobs_api)
     command.execute(filters=filters)
 
@@ -105,7 +105,7 @@ def create_job(ctx, api_key, **kwargs):
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
 
-    jobs_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.CreateJobCommand(api=jobs_api)
     job = command.execute(kwargs)
     if job is not None:
@@ -138,7 +138,7 @@ def create_job(ctx, api_key, **kwargs):
 )
 @api_key_option
 def list_logs(job_id, line, limit, follow, api_key=None):
-    logs_api = api_client.API(config.CONFIG_LOG_HOST, api_key=api_key)
+    logs_api = http_client.API(config.CONFIG_LOG_HOST, api_key=api_key)
     command = jobs_commands.JobLogsCommand(api=logs_api)
     command.execute(job_id, line, limit, follow)
 
@@ -153,7 +153,7 @@ def artifacts():
 @click.option("--files", "files")
 @api_key_option
 def destroy_artifacts(job_id, api_key=None, files=None):
-    jobs_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.ArtifactsDestroyCommand(api=jobs_api)
     command.execute(job_id, files=files)
 
@@ -162,7 +162,7 @@ def destroy_artifacts(job_id, api_key=None, files=None):
 @click.argument("job_id")
 @api_key_option
 def get_artifacts(job_id, api_key=None):
-    jobs_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.ArtifactsGetCommand(api=jobs_api)
     command.execute(job_id)
 
@@ -174,6 +174,6 @@ def get_artifacts(job_id, api_key=None):
 @click.option("--files", "files", help="Get only given file (use at the end * as a wildcard)")
 @api_key_option
 def list_artifacts(job_id, size, links, files, api_key=None):
-    jobs_api = api_client.API(config.CONFIG_HOST, api_key=api_key)
+    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.ArtifactsListCommand(api=jobs_api)
     command.execute(job_id=job_id, size=size, links=links, files=files)
