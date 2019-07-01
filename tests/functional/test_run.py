@@ -3,8 +3,8 @@ import sys
 import mock
 from click.testing import CliRunner
 
+from gradient.api_sdk.clients.api_client import default_headers
 from gradient.cli import cli
-from gradient.client import default_headers
 from tests import MockResponse
 
 
@@ -15,7 +15,7 @@ class TestRunCommand(object):
     headers = default_headers.copy()
     headers["X-API-Key"] = "some_key"
 
-    @mock.patch("gradient.client.requests.post")
+    @mock.patch("gradient.cli.run.api_client.requests.post")
     @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
     @mock.patch("gradient.workspace.MultipartEncoder.get_monitor")
     @mock.patch("gradient.commands.jobs.CreateJobCommand._get_files_dict")
@@ -46,7 +46,7 @@ class TestRunCommand(object):
                                         headers=expected_headers,
                                         json=None)
 
-    @mock.patch("gradient.client.requests.post")
+    @mock.patch("gradient.cli.run.api_client.requests.post")
     def test_run_python_command_with_args_and_no_workspace(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
@@ -66,7 +66,7 @@ class TestRunCommand(object):
                                         headers=expected_headers,
                                         json=None)
 
-    @mock.patch("gradient.client.requests.post")
+    @mock.patch("gradient.cli.run.api_client.requests.post")
     @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
     def test_run_shell_command_with_args_with_s3_workspace(self, workspace_zip_patched, post_patched):
         workspace_zip_patched.return_value = '/foo/bar'

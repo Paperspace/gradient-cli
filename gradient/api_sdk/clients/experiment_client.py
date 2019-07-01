@@ -1,45 +1,11 @@
-import abc
-
-import six
-
 from gradient import config, constants
-from gradient.client import API
+from gradient.api_sdk.clients.api_client import API
 from gradient.utils import MessageExtractor
 from gradient.workspace import S3WorkspaceHandler
-from .exceptions import GradientSdkError
-from .models import MultiNodeExperiment
-from .models import SingleNodeExperiment
-from .serializers import MultiNodeExperimentSchema
-from .serializers import SingleNodeExperimentSchema
-
-
-@six.add_metaclass(abc.ABCMeta)
-class Logger(object):
-    @abc.abstractmethod
-    def log(self, msg, *args, **kwargs):
-        pass
-
-    @abc.abstractmethod
-    def warning(self, msg, *args, **kwargs):
-        pass
-
-    @abc.abstractmethod
-    def error(self, msg, *args, **kwargs):
-        pass
-
-    def debug(self, msg, *args, **kwargs):
-        pass
-
-
-class MuteLogger(Logger):
-    def log(self, msg, *args, **kwargs):
-        pass
-
-    def warning(self, msg, *args, **kwargs):
-        pass
-
-    def error(self, msg, *args, **kwargs):
-        pass
+from ..exceptions import GradientSdkError
+from ..logger import MuteLogger
+from ..models import SingleNodeExperiment, MultiNodeExperiment
+from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema
 
 
 class ExperimentsClient(object):
@@ -206,13 +172,3 @@ class ExperimentsClient(object):
         workspace_handler = S3WorkspaceHandler(experiments_api=self._client, logger_=self.logger)
         workspace_url = workspace_handler.handle(experiment_dict)
         return workspace_url
-
-
-class SdkClient(object):
-    def __init__(self, api_key, logger=MuteLogger()):
-        """
-
-        :type api_key: str
-        :type logger: Logger
-        """
-        self.experiments = ExperimentsClient(api_key, logger)
