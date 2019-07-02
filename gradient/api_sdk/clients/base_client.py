@@ -12,5 +12,5 @@ class BaseClient(object):
         :type api_key: str
         :type logger: sdk_logger.Logger
         """
-        self._client = http_client.API(self.API_URL, api_key=api_key)
+        self._client = http_client.API(self.API_URL, api_key=api_key, logger=logger)
         self.logger = logger

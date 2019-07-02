@@ -72,3 +72,29 @@ class API(object):
         self.logger.debug("Response status code: {}".format(response.status_code))
         self.logger.debug("Response content: {}".format(response.content))
         return response
+
+
+class GradientResponse(object):
+    def __init__(self, body, code, headers, data):
+        self.body = body
+        self.code = code
+        self.headers = headers
+        self.data = data
+
+    @property
+    def ok(self):
+        return 200 <= self.code < 400
+
+    @classmethod
+    def interpret_response(cls, response):
+        """
+        :type response: requests.Response
+        :rtype: GradientResponse
+        """
+        try:
+            data = response.json()
+        except ValueError:
+            data = None
+
+        gradient_response = cls(response.content, response.status_code, response.headers, data)
+        return gradient_response

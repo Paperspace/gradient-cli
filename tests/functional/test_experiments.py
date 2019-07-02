@@ -576,7 +576,7 @@ class TestExperimentList(object):
 +---------------+---------------+---------+
 """
     RESPONSE_JSON_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
-    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Incorrect API Key provided\nForbidden\n"
+    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Failed to fetch data: Incorrect API Key provided\nForbidden\n"
 
     @mock.patch("gradient.cli.experiments.experiments_commands.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments(self, get_patched):
@@ -593,7 +593,7 @@ class TestExperimentList(object):
         assert result.output == self.DETAILS_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.cli.experiments.experiments_commands.common.pydoc")
+    @mock.patch("gradient.cli.experiments.experiments_commands.pydoc")
     @mock.patch("gradient.cli.experiments.experiments_commands.http_client.requests.get")
     def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
                                                                                                      pydoc_patched):

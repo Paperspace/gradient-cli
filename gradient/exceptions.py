@@ -32,3 +32,7 @@ class PresignedUrlError(ApplicationError):
 
 class S3UploadFailedError(ApplicationError):
     pass
+
+
+class ReceivingDataFailedError(ApplicationError):
+    pass
