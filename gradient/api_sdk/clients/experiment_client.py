@@ -1,59 +1,13 @@
-import abc
-
-import six
-
-from gradient import config, constants
-from gradient.client import API
+from gradient import constants
 from gradient.utils import MessageExtractor
 from gradient.workspace import S3WorkspaceHandler
-from .exceptions import GradientSdkError
-from .models import MultiNodeExperiment
-from .models import SingleNodeExperiment
-from .serializers import MultiNodeExperimentSchema
-from .serializers import SingleNodeExperimentSchema
+from .base_client import BaseClient
+from ..exceptions import GradientSdkError
+from ..models import SingleNodeExperiment, MultiNodeExperiment
+from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema
 
 
-@six.add_metaclass(abc.ABCMeta)
-class Logger(object):
-    @abc.abstractmethod
-    def log(self, msg, *args, **kwargs):
-        pass
-
-    @abc.abstractmethod
-    def warning(self, msg, *args, **kwargs):
-        pass
-
-    @abc.abstractmethod
-    def error(self, msg, *args, **kwargs):
-        pass
-
-    def debug(self, msg, *args, **kwargs):
-        pass
-
-
-class MuteLogger(Logger):
-    def log(self, msg, *args, **kwargs):
-        pass
-
-    def warning(self, msg, *args, **kwargs):
-        pass
-
-    def error(self, msg, *args, **kwargs):
-        pass
-
-
-class ExperimentsClient(object):
-    API_URL = config.CONFIG_EXPERIMENTS_HOST
-
-    def __init__(self, api_key, logger=MuteLogger()):
-        """
-
-        :type api_key: str
-        :type logger: Logger
-        """
-        self._client = API(self.API_URL, api_key=api_key)
-        self.logger = logger
-
+class ExperimentsClient(BaseClient):
     def create_single_node(self, name, project_id, machine_type, command, ports=None, workspace=None,
                            workspace_archive=None, workspace_url=None, ignore_files=None, working_directory=None,
                            artifact_directory=None, cluster_id=None, experiment_env=None, model_type=None,
@@ -155,6 +109,9 @@ class ExperimentsClient(object):
         handle = self._run(experiment, MultiNodeExperimentSchema)
         return handle
 
+    def start(self, experiment_id):
+        response = self._get_start_response(experiment_id)
+
     def _create(self, experiment, schema_cls):
         experiment_dict = self._get_experiment_dict(experiment, schema_cls)
         response = self._get_create_response(experiment_dict)
@@ -207,12 +164,6 @@ class ExperimentsClient(object):
         workspace_url = workspace_handler.handle(experiment_dict)
         return workspace_url
 
-
-class SdkClient(object):
-    def __init__(self, api_key, logger=MuteLogger()):
-        """
-
-        :type api_key: str
-        :type logger: Logger
-        """
-        self.experiments = ExperimentsClient(api_key, logger)
+    def _get_start_response(self, experiment_id):
+        url = "/experiments/{}/start/".format(experiment_id)
+        response = self._client.put(url)

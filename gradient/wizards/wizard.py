@@ -10,7 +10,8 @@ from prompt_toolkit.layout import VSplit, HSplit, Layout
 from prompt_toolkit.styles import Style
 from prompt_toolkit.widgets import Frame, Label, TextArea, RadioList, Box, Button, HorizontalLine
 
-from gradient import client, config, logger
+from gradient import config, logger
+from gradient.api_sdk.clients import http_client
 from gradient.cli import common
 
 if not six.PY2:
@@ -163,7 +164,7 @@ class Wizard(object):
         api_key = project.pop("api_key", None)
         common.del_if_value_is_none(project)
 
-        projects_api = client.API(config.CONFIG_HOST, api_key=api_key)
+        projects_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
 
         command = self.command_cls(api=projects_api, logger_=self.logger)
 

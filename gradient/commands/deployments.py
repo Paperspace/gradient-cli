@@ -1,10 +1,11 @@
-from gradient import config, version, client
+from gradient import config, version
+from gradient.api_sdk.clients import http_client
 from gradient.commands import common
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "paperspace-python",
                    "ps_client_version": version.version}
-deployments_api = client.API(config.CONFIG_HOST, headers=default_headers)
+deployments_api = http_client.API(config.CONFIG_HOST, headers=default_headers)
 
 
 class _DeploymentCommandBase(common.CommandBase):
@@ -73,6 +74,7 @@ class StartDeploymentCommand(_DeploymentCommandBase):
         self._log_message(response,
                           "Deployment started",
                           "Unknown error occurred.")
+
 
 class StopDeploymentCommand(_DeploymentCommandBase):
     def execute(self, deployment_id):

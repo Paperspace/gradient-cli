@@ -1,6 +1,7 @@
 import click
 
-from gradient import client, config
+from gradient import config
+from gradient.api_sdk.clients import http_client
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.commands import models as models_commands
@@ -25,6 +26,6 @@ def models_group():
 @common.api_key_option
 def list_models(api_key, **filters):
     common.del_if_value_is_none(filters)
-    models_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    models_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = models_commands.ListModelsCommand(api=models_api)
     command.execute(filters=filters)

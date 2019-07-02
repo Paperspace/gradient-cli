@@ -6,12 +6,14 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import logger, constants, client, config, sdk
+from gradient import logger, constants, config, api_sdk
+from gradient.api_sdk.clients import http_client
 from gradient.commands import common
 from gradient.utils import get_terminal_lines
 from gradient.workspace import S3WorkspaceHandler
 
-experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
+experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST,
+                                  headers=http_client.default_headers)
 
 
 class ExperimentCommand(common.CommandBase):
@@ -43,7 +45,7 @@ class _CreateExperimentCommand(object):
         with halo.Halo(text="Creating new experiment", spinner="dots"):
             try:
                 experiment_id = self._create(json_)
-            except sdk.GradientSdkError as e:
+            except api_sdk.GradientSdkError as e:
                 self.logger.error(e)
             else:
                 self.logger.log("New experiment created with ID: {}".format(experiment_id))
@@ -75,7 +77,7 @@ class _RunExperimentCommand(object):
         with halo.Halo(text="Creating and starting new experiment", spinner="dots"):
             try:
                 experiment_id = self._create(json_)
-            except sdk.GradientSdkError as e:
+            except api_sdk.GradientSdkError as e:
                 self.logger.error(e)
             else:
                 self.logger.log("New experiment created and started with ID: {}".format(experiment_id))
