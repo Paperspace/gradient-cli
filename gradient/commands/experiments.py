@@ -6,14 +6,15 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import logger, constants, config, api_sdk
-from gradient.api_sdk.clients import http_client
+from gradient import logger as gradient_logger, constants, config, api_sdk, exceptions
+from gradient.api_sdk.clients import http_client, sdk_client
 from gradient.commands import common
 from gradient.utils import get_terminal_lines
 from gradient.workspace import S3WorkspaceHandler
 
 experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST,
-                                  headers=http_client.default_headers)
+                                  headers=http_client.default_headers,
+                                  logger=gradient_logger.Logger())
 
 
 class ExperimentCommand(common.CommandBase):
@@ -37,11 +38,14 @@ class ExperimentCommand(common.CommandBase):
 
 @six.add_metaclass(abc.ABCMeta)
 class _CreateExperimentCommand(object):
-    def __init__(self, sdk_client, logger_=logger.Logger()):
+    def __init__(self, sdk_client, logger_=gradient_logger.Logger()):
         self.sdk_client = sdk_client
         self.logger = logger_
 
     def execute(self, json_):
+        if "ignore_files" in json_:
+            json_["ignore_files"] = self._parse_comma_separated_to_list(json_["ignore_files"])
+
         with halo.Halo(text="Creating new experiment", spinner="dots"):
             try:
                 experiment_id = self._create(json_)
@@ -53,6 +57,14 @@ class _CreateExperimentCommand(object):
     @abc.abstractmethod
     def _create(self, json_):
         pass
+
+    @staticmethod
+    def _parse_comma_separated_to_list(s):
+        if not s:
+            return []
+
+        list_of_str = [s.strip() for s in s.split(",")]
+        return list_of_str
 
 
 class CreateSingleNodeExperimentCommand(_CreateExperimentCommand):
@@ -69,7 +81,7 @@ class CreateMultiNodeExperimentCommand(_CreateExperimentCommand):
 
 @six.add_metaclass(abc.ABCMeta)
 class _RunExperimentCommand(object):
-    def __init__(self, sdk_client, logger_=logger.Logger()):
+    def __init__(self, sdk_client, logger_=gradient_logger.Logger()):
         self.sdk_client = sdk_client
         self.logger = logger_
 
@@ -99,56 +111,80 @@ class CreateAndStartSingleNodeExperimentCommand(_RunExperimentCommand):
         return handle
 
 
-def start_experiment(experiment_id, api=experiments_api, logger_=logger.Logger()):
-    url = "/experiments/{}/start/".format(experiment_id)
-    response = api.put(url)
+def start_experiment(experiment_id, client, logger_=gradient_logger.Logger()):
+    """
+    :type experiment_id: str
+    :type client: sdk_client.SdkClient
+    :param logger_: logger.Logger
+    """
+    response = client.experiments.start(experiment_id)
     logger_.log_response(response, "Experiment started", "Unknown error while starting the experiment")
 
 
-def stop_experiment(experiment_id, api=experiments_api, logger_=logger.Logger()):
-    url = "/experiments/{}/stop/".format(experiment_id)
-    response = api.put(url)
+def stop_experiment(experiment_id, client, logger_=gradient_logger.Logger()):
+    """
+    :type experiment_id: str
+    :type client: sdk_client.SdkClient
+    :param logger_: logger.Logger
+    """
+    response = client.experiments.start(experiment_id)
     logger_.log_response(response, "Experiment stopped", "Unknown error while stopping the experiment")
 
 
-class ListExperimentsCommand(common.ListCommand):
-    @property
-    def request_url(self):
-        return "/experiments/"
+class ListExperimentsCommand(object):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
-    def _get_request_params(self, kwargs):
-        params = {"limit": -1}  # so the API sends back full list without pagination
+    def __init__(self, client, logger=gradient_logger.Logger()):
+        """
 
-        project_ids = kwargs.get("project_ids")
-        if project_ids:
-            for i, experiment_id in enumerate(project_ids):
-                key = "projectHandle[{}]".format(i)
-                params[key] = experiment_id
+        :type client: sdk_client.SdkClient
+        """
+        self.client = client
+        self.logger = logger
 
-        return params
+    def execute(self, **kwargs):
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            instances = self._get_instances(kwargs)
 
-    def _get_table_data(self, experiments):
+        self._log_objects_list(instances)
+
+    def _get_instances(self, kwargs):
+        project_id = kwargs.get("project_id")
+        try:
+            instances = self.client.experiments.list(project_id)
+        except api_sdk.GradientSdkError as e:
+            raise exceptions.ReceivingDataFailedError(e)
+
+        return instances
+
+    @staticmethod
+    def _get_table_data(experiments):
         data = [("Name", "ID", "Status")]
         for experiment in experiments:
-            name = experiment["templateHistory"]["params"].get("name")
-            handle = experiment["handle"]
-            status = constants.ExperimentState.get_state_str(experiment["state"])
+            name = experiment.name
+            handle = experiment.id
+            status = constants.ExperimentState.get_state_str(experiment.state)
             data.append((name, handle, status))
 
         return data
 
-    def _get_objects(self, response, kwargs):
-        data = super(ListExperimentsCommand, self)._get_objects(response, kwargs)
+    def _log_objects_list(self, objects):
+        if not objects:
+            self.logger.warning("No data found")
+            return
 
-        filtered = bool(kwargs.get("project_ids"))
-        if not filtered:  # If filtering by project ID response data has different format...
-            return data["data"]
+        table_data = self._get_table_data(objects)
+        table_str = self._make_table(table_data)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
 
-        experiments = []
-        for project_experiments in data["data"]:
-            for experiment in project_experiments["data"]:
-                experiments.append(experiment)
-        return experiments
+    @staticmethod
+    def _make_table(table_data):
+        ascii_table = terminaltables.AsciiTable(table_data)
+        table_string = ascii_table.table
+        return table_string
 
 
 def _make_details_table(experiment):
@@ -202,7 +238,7 @@ def _make_details_table(experiment):
     return table_string
 
 
-def get_experiment_details(experiment_id, api=experiments_api, logger_=logger.Logger()):
+def get_experiment_details(experiment_id, api=experiments_api, logger_=gradient_logger.Logger()):
     url = "/experiments/{}/".format(experiment_id)
     response = api.get(url)
     details = response.content

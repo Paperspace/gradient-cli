@@ -33,6 +33,11 @@ class Logger(object):
             self._log("DEBUG: {}".format(message))
 
     def log_response(self, response, success_msg, error_msg):
+        """
+        :type response: requests.Response|http_client.GradientResponse
+        :type success_msg: str
+        :type error_msg: str
+        """
         if response.ok:
             self._log(success_msg)
         else:
@@ -41,3 +46,8 @@ class Logger(object):
                 self.log_error_response(data)
             except ValueError:
                 self.error(error_msg)
+            except AttributeError:
+                if response.data:
+                    self.log_error_response(response.data)
+                else:
+                    self.error(response)

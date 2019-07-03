@@ -1,5 +1,5 @@
 class MockResponse:
-    def __init__(self, json_data=None, status_code=200, content=""):
+    def __init__(self, json_data=None, status_code=200, content="", headers=None):
         """
         :type json_data: dict|list
         :type status_code: int
@@ -8,6 +8,7 @@ class MockResponse:
         self.status_code = status_code
         self.content = content
         self.url = "example.com"
+        self.headers = headers
 
     @property
     def ok(self):
