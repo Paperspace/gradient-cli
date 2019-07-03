@@ -1,15 +1,11 @@
-import abc
-
-import six
-
 from gradient import constants
-from gradient.api_sdk import exceptions, serializers
 from gradient.utils import MessageExtractor
 from gradient.workspace import S3WorkspaceHandler
 from .base_client import BaseClient
 from ..clients import http_client
 from ..exceptions import GradientSdkError
 from ..models import SingleNodeExperiment, MultiNodeExperiment
+from ..repositories.experiments import ListExperiments
 from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema
 
 
@@ -335,104 +331,3 @@ class ExperimentsClient(BaseClient):
         url = "/experiments/{}/stop/".format(experiment_id)
         response = self._client.put(url)
         return response
-
-
-@six.add_metaclass(abc.ABCMeta)
-class ListResources(object):
-    def __init__(self, api):
-        self.api = api
-
-    @abc.abstractproperty
-    def request_url(self):
-        """
-        :rtype: str
-        """
-        pass
-
-    @abc.abstractmethod
-    def _parse_objects(self, data, **kwargs):
-        pass
-
-    def list(self, **kwargs):
-        response = self._get_response(kwargs)
-        self._validate_response(response)
-        objects = self._get_objects(response, **kwargs)
-        return objects
-
-    def _get_response(self, kwargs):
-        json_ = self._get_request_json(kwargs)
-        params = self._get_request_params(kwargs)
-        response = self.api.get(self.request_url, json=json_, params=params)
-        gradient_response = http_client.GradientResponse.interpret_response(response)
-
-        return gradient_response
-
-    @staticmethod
-    def _validate_response(response):
-        if not response.ok:
-            msg = "Failed to fetch data"
-            errors = MessageExtractor().get_message_from_response_data(response.data)
-            if errors:
-                msg += ": " + errors
-            raise exceptions.ResourceFetchingError(msg)
-
-    def _get_objects(self, response, **kwargs):
-        if not response.data:
-            return []
-
-        objects = self._parse_objects(response.data, **kwargs)
-        return objects
-
-    def _get_request_json(self, kwargs):
-        return None
-
-    def _get_request_params(self, kwargs):
-        return None
-
-
-class ListExperiments(ListResources):
-    @property
-    def request_url(self):
-        return "/experiments/"
-
-    def _parse_objects(self, data, **kwargs):
-        experiments_dicts = self._get_experiments_dicts_from_json_data(data, kwargs)
-        experiments = []
-        for experiment_dict in experiments_dicts:
-            experiment_dict.update(experiment_dict["templateHistory"]["params"])
-
-            if self._is_single_node_experiment(experiment_dict):
-                experiment = serializers.SingleNodeExperimentSchema().get_instance(experiment_dict)
-            else:
-                experiment = serializers.MultiNodeExperimentSchema().get_instance(experiment_dict)
-            experiments.append(experiment)
-
-        return experiments
-
-    @staticmethod
-    def _is_single_node_experiment(experiment_dict):
-        return "parameter_server_machine_type" not in experiment_dict["templateHistory"]["params"]
-
-    @staticmethod
-    def _get_experiments_dicts_from_json_data(data, kwargs):
-        filtered = bool(kwargs.get("project_id"))
-        if not filtered:  # If filtering by project ID response data has different format...
-            return data["data"]
-
-        experiments = []
-        for project_experiments in data["data"]:
-            for experiment in project_experiments["data"]:
-                experiments.append(experiment)
-
-        return experiments
-
-    def _get_request_params(self, kwargs):
-        params = {"limit": -1}  # so the API sends back full list without pagination
-
-        project_id = kwargs.get("project_id")
-        if project_id:
-            for i, experiment_id in enumerate(project_id):
-                key = "projectHandle[{}]".format(i)
-                params[key] = experiment_id
-
-        return params
