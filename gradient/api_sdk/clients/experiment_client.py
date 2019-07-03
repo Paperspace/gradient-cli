@@ -68,7 +68,40 @@ class ExperimentsClient(BaseClient):
                           model_path=None, worker_container_user=None, worker_registry_username=None,
                           worker_registry_password=None, parameter_server_container_user=None,
                           parameter_server_registry_container_user=None, parameter_server_registry_password=None):
+        """Create multi node experiment
 
+        :param str name:
+        :param str project_id:
+        :param str experiment_type_id:
+        :param str worker_container:
+        :param str worker_machine_type:
+        :param str worker_command:
+        :param int worker_count:
+        :param str parameter_server_container:
+        :param str parameter_server_machine_type:
+        :param str parameter_server_command:
+        :param int parameter_server_count:
+        :param str ports:
+        :param str workspace:
+        :param str workspace_archive:
+        :param str workspace_url:
+        :param list[str] ignore_files:
+        :param str working_directory:
+        :param str artifact_directory:
+        :param str cluster_id:
+        :param dict experiment_env:
+        :param str model_type:
+        :param str model_path:
+        :param str worker_container_user:
+        :param str worker_registry_username:
+        :param str worker_registry_password:
+        :param str parameter_server_container_user:
+        :param str parameter_server_registry_container_user:
+        :param str parameter_server_registry_password:
+
+        :rtype: str
+
+        """
         experiment = MultiNodeExperiment(name=name, project_id=project_id, experiment_type_id=experiment_type_id,
                                          worker_container=worker_container, worker_machine_type=worker_machine_type,
                                          worker_command=worker_command, worker_count=worker_count,
@@ -143,7 +176,40 @@ class ExperimentsClient(BaseClient):
                        model_type=None, model_path=None, worker_container_user=None, worker_registry_username=None,
                        worker_registry_password=None, parameter_server_container_user=None,
                        parameter_server_registry_container_user=None, parameter_server_registry_password=None):
+        """Create and start multi node experiment
 
+        :param str name:
+        :param str project_id:
+        :param str experiment_type_id:
+        :param str worker_container:
+        :param str worker_machine_type:
+        :param str worker_command:
+        :param int worker_count:
+        :param str parameter_server_container:
+        :param str parameter_server_machine_type:
+        :param str parameter_server_command:
+        :param int parameter_server_count:
+        :param str ports:
+        :param str workspace:
+        :param str workspace_archive:
+        :param str workspace_url:
+        :param list[str] ignore_files:
+        :param str working_directory:
+        :param str artifact_directory:
+        :param str cluster_id:
+        :param dict experiment_env:
+        :param str model_type:
+        :param str model_path:
+        :param str worker_container_user:
+        :param str worker_registry_username:
+        :param str worker_registry_password:
+        :param str parameter_server_container_user:
+        :param str parameter_server_registry_container_user:
+        :param str parameter_server_registry_password:
+
+        :rtype: str
+
+        """
         experiment = MultiNodeExperiment(name=name, project_id=project_id, experiment_type_id=experiment_type_id,
                                          worker_container=worker_container, worker_machine_type=worker_machine_type,
                                          worker_command=worker_command, worker_count=worker_count,
@@ -151,14 +217,11 @@ class ExperimentsClient(BaseClient):
                                          parameter_server_machine_type=parameter_server_machine_type,
                                          parameter_server_command=parameter_server_command,
                                          parameter_server_count=parameter_server_count, ports=ports,
-                                         workspace=workspace,
-                                         workspace_archive=workspace_archive, workspace_url=workspace_url,
-                                         ignore_files=ignore_files,
-                                         working_directory=working_directory,
-                                         artifact_directory=artifact_directory, cluster_id=cluster_id,
-                                         experiment_env=experiment_env,
-                                         model_type=model_type, model_path=model_path,
-                                         worker_container_user=worker_container_user,
+                                         workspace=workspace, workspace_archive=workspace_archive,
+                                         workspace_url=workspace_url, ignore_files=ignore_files,
+                                         working_directory=working_directory, artifact_directory=artifact_directory,
+                                         cluster_id=cluster_id, experiment_env=experiment_env, model_type=model_type,
+                                         model_path=model_path, worker_container_user=worker_container_user,
                                          worker_registry_username=worker_registry_username,
                                          worker_registry_password=worker_registry_password,
                                          parameter_server_container_user=parameter_server_container_user,
@@ -171,7 +234,7 @@ class ExperimentsClient(BaseClient):
     def start(self, experiment_id):
         """Start existing experiment
 
-        :type experiment_id: str
+        :param str experiment_id:
         :rtype: http_client.GradientResponse
         """
         response = self._get_start_response(experiment_id)
@@ -181,7 +244,7 @@ class ExperimentsClient(BaseClient):
     def stop(self, experiment_id):
         """Stop running experiment
 
-        :type experiment_id: str
+        :param str experiment_id:
         :rtype: http_client.GradientResponse
         """
         response = self._get_stop_response(experiment_id)
@@ -191,7 +254,7 @@ class ExperimentsClient(BaseClient):
     def list(self, project_id=None):
         """Get a list of experiments. Optionally filter by project ID
 
-        :type project_id: str|list|None
+        :param str|list|None project_id:
         :rtype: list[SingleNodeExperiment|MultiNodeExperiment]
         """
         experiments = ListExperiments(self._client).list(project_id=project_id)
