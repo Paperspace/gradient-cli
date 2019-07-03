@@ -3,6 +3,7 @@ import pydoc
 import terminaltables
 from click import style
 
+from gradient import utils
 from gradient.commands import common
 from gradient.exceptions import BadResponseError
 from gradient.utils import get_terminal_lines
@@ -206,7 +207,7 @@ class ArtifactsGetCommand(JobsCommandBase):
         try:
             artifacts_json = response.json()
             if response.ok:
-                self._print_dict_recursive(artifacts_json)
+                utils.print_dict_recursive(artifacts_json, self.logger)
             else:
                 raise BadResponseError(
                     '{}: {}'.format(artifacts_json['error']['status'], artifacts_json['error']['message']))

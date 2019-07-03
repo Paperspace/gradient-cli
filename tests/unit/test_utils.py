@@ -2,12 +2,12 @@ from collections import OrderedDict
 
 import mock
 
-from gradient.commands.common import CommandBase
+from gradient import utils
 
 output_response = ""
 
 
-class TestBaseClass(object):
+class TestPrintDictRecursive(object):
     def test_json_print(self):
         global output_response
         output_response = ""
@@ -32,7 +32,6 @@ class TestBaseClass(object):
       faz
 """
 
-        command = CommandBase(logger_=logger_)
-        command._print_dict_recursive(OrderedDict(input_dict))
+        utils.print_dict_recursive(OrderedDict(input_dict), logger_)
 
         assert output_response == expected_string

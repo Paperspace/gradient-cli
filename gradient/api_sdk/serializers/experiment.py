@@ -5,24 +5,32 @@ from . import BaseSchema
 
 
 class _ExperimentSchema(BaseSchema):
+    experiment_type_id = marshmallow.fields.Int(required=True, dump_to="experimentTypeId", load_from="experimentTypeId")
     name = marshmallow.fields.Str(required=True)
     ports = marshmallow.fields.Str()
     workspace = marshmallow.fields.Str()
-    workspace_archive = marshmallow.fields.Str(dump_to="workspaceArchive")
-    workspace_url = marshmallow.fields.Str(dump_to="workspaceUrl")
+    workspace_archive = marshmallow.fields.Str(dump_to="workspaceArchive", load_from="workspaceArchive")
+    workspace_url = marshmallow.fields.Str(dump_to="workspaceUrl", load_from="workspaceUrl")
     ignore_files = marshmallow.fields.List(marshmallow.fields.String(), )
-    working_directory = marshmallow.fields.Str(dump_to="workingDirectory")
-    artifact_directory = marshmallow.fields.Str(dump_to="artifactDirectory")
-    cluster_id = marshmallow.fields.Int(dump_to="clusterId")
-    experiment_env = marshmallow.fields.Dict(dump_to="experimentEnv")
-    project_id = marshmallow.fields.Str(required=True, dump_to="projectHandle", load_from="projectHandle")
-    model_type = marshmallow.fields.Str(dump_to="modelType")
-    model_path = marshmallow.fields.Str(dump_to="modelPath")
+    working_directory = marshmallow.fields.Str(dump_to="workingDirectory", load_from="workingDirectory")
+    artifact_directory = marshmallow.fields.Str(dump_to="artifactDirectory", load_from="artifactDirectory")
+    cluster_id = marshmallow.fields.Int(dump_to="clusterId", load_from="clusterId")
+    experiment_env = marshmallow.fields.Dict(dump_to="experimentEnv", load_from="experimentEnv")
+    project_id = marshmallow.fields.Str(required=True, dump_to="projectHandle", load_from="project_handle")
+    model_type = marshmallow.fields.Str(dump_to="modelType", load_from="modelType")
+    model_path = marshmallow.fields.Str(dump_to="modelPath", load_from="modelPath")
     id = marshmallow.fields.Str(load_from="handle")
     state = marshmallow.fields.Int()
 
     def get_instance(self, obj_dict):
+        # without popping these marshmallow wouldn't use load_from
         obj_dict.pop("id", None)
+        obj_dict.pop("project_id", None)
+
+        ports = obj_dict.get("ports")
+        if isinstance(ports, int):
+            obj_dict["ports"] = str(ports)
+
         instance = super(_ExperimentSchema, self).get_instance(obj_dict)
         return instance
 
@@ -30,30 +38,38 @@ class _ExperimentSchema(BaseSchema):
 class SingleNodeExperimentSchema(_ExperimentSchema):
     MODEL = models.SingleNodeExperiment
 
-    experiment_type_id = marshmallow.fields.Int(required=True, dump_to="experimentTypeId")
-    container = marshmallow.fields.Str(required=True)
-    machine_type = marshmallow.fields.Str(required=True, dump_to="machineType", load_from="machine_type")
-    command = marshmallow.fields.Str(required=True)
-    container_user = marshmallow.fields.Str(dump_to="containerUser")
-    registry_username = marshmallow.fields.Str(dump_to="registryUsername")
-    registry_password = marshmallow.fields.Str(dump_to="registryPassword")
+    container = marshmallow.fields.Str(required=True, load_from="worker_container")
+    machine_type = marshmallow.fields.Str(required=True, dump_to="machineType", load_from="worker_machine_type")
+    command = marshmallow.fields.Str(required=True, load_from="worker_command")
+    container_user = marshmallow.fields.Str(dump_to="containerUser", load_from="containerUser")
+    registry_username = marshmallow.fields.Str(dump_to="registryUsername", load_from="registryUsername")
+    registry_password = marshmallow.fields.Str(dump_to="registryPassword", load_from="registryPassword")
 
 
 class MultiNodeExperimentSchema(_ExperimentSchema):
     MODEL = models.MultiNodeExperiment
 
-    experiment_type_id = marshmallow.fields.Int(required=True, dump_to="experimentTypeId")
-    worker_container = marshmallow.fields.Str(required=True, dump_to="workerContainer")
-    worker_machine_type = marshmallow.fields.Str(required=True, dump_to="workerMachineType")
-    worker_command = marshmallow.fields.Str(required=True, dump_to="workerCommand")
-    worker_count = marshmallow.fields.Int(required=True, dump_to="workerCount")
-    parameter_server_container = marshmallow.fields.Str(required=True, dump_to="parameterServerContainer")
-    parameter_server_machine_type = marshmallow.fields.Str(required=True, dump_to="parameterServerMachineType")
-    parameter_server_command = marshmallow.fields.Str(required=True, dump_to="parameterServerCommand")
-    parameter_server_count = marshmallow.fields.Int(required=True, dump_to="parameterServerCount")
-    worker_container_user = marshmallow.fields.Str(dump_to="workerContainerUser")
-    worker_registry_username = marshmallow.fields.Str(dump_to="workerRegistryUsername")
-    worker_registry_password = marshmallow.fields.Str(dump_to="workerRegistryPassword")
-    parameter_server_container_user = marshmallow.fields.Str(required=True, dump_to="parameterServerContainerUser")
-    parameter_server_registry_container_user = marshmallow.fields.Str(dump_to="parameterServerRegistryContainerUser")
-    parameter_server_registry_password = marshmallow.fields.Str(dump_to="parameterServerRegistryPassword")
+    worker_container = marshmallow.fields.Str(required=True, dump_to="workerContainer", load_from="workerContainer")
+    worker_machine_type = marshmallow.fields.Str(required=True, dump_to="workerMachineType",
+                                                 load_from="workerMachineType")
+    worker_command = marshmallow.fields.Str(required=True, dump_to="workerCommand", load_from="workerCommand")
+    worker_count = marshmallow.fields.Int(required=True, dump_to="workerCount", load_from="workerCount")
+    parameter_server_container = marshmallow.fields.Str(required=True, dump_to="parameterServerContainer",
+                                                        load_from="parameterServerContainer")
+    parameter_server_machine_type = marshmallow.fields.Str(required=True, dump_to="parameterServerMachineType",
+                                                           load_from="parameterServerMachineType")
+    parameter_server_command = marshmallow.fields.Str(required=True, dump_to="parameterServerCommand",
+                                                      load_from="parameterServerCommand")
+    parameter_server_count = marshmallow.fields.Int(required=True, dump_to="parameterServerCount",
+                                                    load_from="parameterServerCount")
+    worker_container_user = marshmallow.fields.Str(dump_to="workerContainerUser", load_from="workerContainerUser")
+    worker_registry_username = marshmallow.fields.Str(dump_to="workerRegistryUsername",
+                                                      load_from="workerRegistryUsername")
+    worker_registry_password = marshmallow.fields.Str(dump_to="workerRegistryPassword",
+                                                      load_from="workerRegistryPassword")
+    parameter_server_container_user = marshmallow.fields.Str(required=True, dump_to="parameterServerContainerUser",
+                                                             load_from="parameterServerContainerUser")
+    parameter_server_registry_container_user = marshmallow.fields.Str(dump_to="parameterServerRegistryContainerUser",
+                                                                      load_from="parameterServerRegistryContainerUser")
+    parameter_server_registry_password = marshmallow.fields.Str(dump_to="parameterServerRegistryPassword",
+                                                                load_from="parameterServerRegistryPassword")

@@ -5,7 +5,7 @@ from .base_client import BaseClient
 from ..clients import http_client
 from ..exceptions import GradientSdkError
 from ..models import SingleNodeExperiment, MultiNodeExperiment
-from ..repositories.experiments import ListExperiments
+from ..repositories.experiments import ListExperiments, GetExperiment
 from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema
 
 
@@ -255,6 +255,15 @@ class ExperimentsClient(BaseClient):
         """
         experiments = ListExperiments(self._client).list(project_id=project_id)
         return experiments
+
+    def get(self, experiment_id):
+        """Get experiment instance
+
+        :param str experiment_id:
+        :rtype: SingleNodeExperiment|MultiNodeExperiment
+        """
+        experiment = GetExperiment(self._client).get(experiment_id=experiment_id)
+        return experiment
 
     def _create(self, experiment, schema_cls):
         experiment_dict = self._get_experiment_dict(experiment, schema_cls)

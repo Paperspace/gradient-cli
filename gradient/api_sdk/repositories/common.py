@@ -3,36 +3,27 @@ import abc
 import six
 
 from gradient.utils import MessageExtractor
-from ..exceptions import ResourceFetchingError
 from ..clients import http_client
+from ..exceptions import ResourceFetchingError
 
 
 @six.add_metaclass(abc.ABCMeta)
-class ListResources(object):
+class BaseRepository(object):
     def __init__(self, api):
         self.api = api
 
-    @abc.abstractproperty
-    def request_url(self):
+    @abc.abstractmethod
+    def get_request_url(self, **kwargs):
         """
         :rtype: str
         """
         pass
 
-    @abc.abstractmethod
-    def _parse_objects(self, data, **kwargs):
-        pass
-
-    def list(self, **kwargs):
-        response = self._get_response(kwargs)
-        self._validate_response(response)
-        objects = self._get_objects(response, **kwargs)
-        return objects
-
-    def _get_response(self, kwargs):
+    def _get(self, kwargs):
         json_ = self._get_request_json(kwargs)
         params = self._get_request_params(kwargs)
-        response = self.api.get(self.request_url, json=json_, params=params)
+        url = self.get_request_url(**kwargs)
+        response = self.api.get(url, json=json_, params=params)
         gradient_response = http_client.GradientResponse.interpret_response(response)
 
         return gradient_response
@@ -46,15 +37,50 @@ class ListResources(object):
                 msg += ": " + errors
             raise ResourceFetchingError(msg)
 
-    def _get_objects(self, response, **kwargs):
+    def _get_request_json(self, kwargs):
+        return None
+
+    def _get_request_params(self, kwargs):
+        return None
+
+
+@six.add_metaclass(abc.ABCMeta)
+class ListResources(BaseRepository):
+    @abc.abstractmethod
+    def _parse_objects(self, data, **kwargs):
+        pass
+
+    def list(self, **kwargs):
+        response = self._get(kwargs)
+        self._validate_response(response)
+        instances = self._get_instances(response, **kwargs)
+        return instances
+
+    def _get_instances(self, response, **kwargs):
         if not response.data:
             return []
 
         objects = self._parse_objects(response.data, **kwargs)
         return objects
 
-    def _get_request_json(self, kwargs):
-        return None
 
-    def _get_request_params(self, kwargs):
-        return None
+@six.add_metaclass(abc.ABCMeta)
+class GetResource(BaseRepository):
+    @abc.abstractmethod
+    def _parse_object(self, data, **kwargs):
+        pass
+
+    def get(self, **kwargs):
+        response = self._get(kwargs)
+        self._validate_response(response)
+        instance = self._get_instance(response, **kwargs)
+        return instance
+
+    def _get_instance(self, response, **kwargs):
+        try:
+            objects = self._parse_object(response.data, **kwargs)
+        except KeyError:
+            msg = "Error parsing response data: {}".format(str(response.body))
+            raise ResourceFetchingError(msg)
+
+        return objects
