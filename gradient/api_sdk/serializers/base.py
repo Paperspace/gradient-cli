@@ -18,4 +18,3 @@ class BaseSchema(marshmallow.Schema):
         obj = self.load(obj_dict)
         instance = self.MODEL(**obj.data)
         return instance
-

@@ -1,5 +1,6 @@
 import json
 import shutil
+from collections import OrderedDict
 
 import requests
 import six
@@ -71,3 +72,12 @@ class MessageExtractor(object):
 
         if isinstance(data, six.string_types):
             yield data
+
+
+def print_dict_recursive(input_dict, logger, indent=0, tabulator="  "):
+    for key, val in input_dict.items():
+        logger.log("%s%s:" % (tabulator * indent, key))
+        if type(val) is dict:
+            print_dict_recursive(OrderedDict(val), logger, indent + 1)
+        else:
+            logger.log("%s%s" % (tabulator * (indent + 1), val))

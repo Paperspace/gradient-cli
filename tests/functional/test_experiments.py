@@ -522,7 +522,7 @@ class TestExperimentDetail(object):
                                             json=None,
                                             params=None)
 
-        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT
+        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT, result.exc_info[1]
         assert result.exit_code == 0
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
@@ -538,15 +538,13 @@ class TestExperimentDetail(object):
                                             json=None,
                                             params=None)
 
-        assert result.output == self.MULTI_NODE_DETAILS_STDOUT
+        assert result.output == self.MULTI_NODE_DETAILS_STDOUT, result.exc_info[1]
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.experiments.experiments_commands.http_client.requests.get")
     def test_should_send_get_request_and_print_request_content_when_response_data_was_malformed(self, get_patched):
         get_patched.return_value = MockResponse({}, 200, "fake content")
-        g = """Error parsing response data
-fake content
-"""
+        expected_output = "Error parsing response data: fake content\n"
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -556,7 +554,7 @@ fake content
                                             json=None,
                                             params=None)
 
-        assert result.output == g
+        assert result.output == expected_output, result.exc_info[1]
         assert result.exit_code == 0
 
 
