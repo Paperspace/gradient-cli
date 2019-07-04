@@ -122,7 +122,7 @@ class TestExperimentsCreateSingleNode(object):
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT_PROJECT_NOT_FOUND
+        assert result.output == self.EXPECTED_STDOUT_PROJECT_NOT_FOUND, result.exc_info[1]
         assert result.exit_code == 0
 
 

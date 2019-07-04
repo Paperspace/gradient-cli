@@ -2,12 +2,12 @@ import functools
 
 import click
 
-from gradient import config
 from gradient.api_sdk.clients import http_client
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts
 from gradient.commands import jobs as jobs_commands
+from gradient.config import config
 
 
 @cli.group("jobs", help="Manage gradient jobs", cls=ClickGroup)

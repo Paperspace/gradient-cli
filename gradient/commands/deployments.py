@@ -1,6 +1,7 @@
-from gradient import config, version
+from gradient import version
 from gradient.api_sdk.clients import http_client
 from gradient.commands import common
+from gradient.config import config
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "paperspace-python",

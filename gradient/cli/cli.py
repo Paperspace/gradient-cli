@@ -1,9 +1,9 @@
 import click
 import click_completion
 
-from gradient import config
 from gradient.cli import common
 from gradient.commands import login as login_commands
+from gradient.config import config
 
 click_completion.init()
 
