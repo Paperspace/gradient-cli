@@ -2,10 +2,11 @@ import functools
 
 import click
 
+from gradient import utils
 from gradient.api_sdk.clients import http_client
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string
-from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts, deprecated
 from gradient.commands import jobs as jobs_commands
 from gradient.config import config
 
@@ -97,11 +98,14 @@ def common_jobs_create_options(f):
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
 
+@deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
+            "options will not be included in version 0.6.0")
 @jobs_group.command("create", help="Create job")
 @common_jobs_create_options
 @api_key_option
 @click.pass_context
 def create_job(ctx, api_key, **kwargs):
+    utils.validate_workspace_input(kwargs)
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
 

@@ -7,7 +7,7 @@ import progressbar
 import requests
 from requests_toolbelt.multipart import encoder
 
-from gradient import logger
+from gradient import logger, utils
 from gradient.exceptions import S3UploadFailedError, PresignedUrlUnreachableError, \
     PresignedUrlAccessDeniedError, PresignedUrlConnectionError, ProjectAccessDeniedError, \
     PresignedUrlMalformedResponseError, PresignedUrlError
@@ -120,16 +120,26 @@ class WorkspaceHandler(object):
 
     @staticmethod
     def _validate_input(input_data):
+        utils.validate_workspace_input(input_data)
+
         workspace_url = input_data.get('workspaceUrl')
         workspace_path = input_data.get('workspace')
         workspace_archive = input_data.get('workspaceArchive')
 
-        if (workspace_archive and workspace_path) or (workspace_archive and workspace_url) or (
-                workspace_path and workspace_url):
-            raise click.UsageError("Use either:\n\t--workspaceUrl to point repository URL"
-                                   "\n\t--workspace to point on project directory"
-                                   "\n\t--workspaceArchive to point on project .zip archive"
-                                   "\n or neither to use current directory")
+        if workspace_path not in ("none", None):
+            path_type = utils.PathParser().parse_path(workspace_path)
+
+            if path_type == utils.PathParser.LOCAL_DIR:
+                input_data["workspace"] = workspace_path
+            else:
+                if path_type == utils.PathParser.LOCAL_FILE:
+                    input_data["workspaceArchive"] = workspace_archive = workspace_path
+                elif path_type in (utils.PathParser.GIT_URL, utils.PathParser.S3_URL):
+                    input_data["workspaceUrl"] = workspace_url = workspace_path
+
+                workspace_path = None
+                input_data.pop("workspace", None)
+
         return workspace_archive, workspace_path, workspace_url
 
 

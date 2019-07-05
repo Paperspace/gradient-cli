@@ -1,9 +1,13 @@
 import json
+import os
 import shutil
 from collections import OrderedDict
 
+import click
 import requests
 import six
+
+from gradient import exceptions
 
 
 def get_terminal_lines(fallback=48):
@@ -81,3 +85,57 @@ def print_dict_recursive(input_dict, logger, indent=0, tabulator="  "):
             print_dict_recursive(OrderedDict(val), logger, indent + 1)
         else:
             logger.log("%s%s" % (tabulator * (indent + 1), val))
+
+
+class PathParser(object):
+    LOCAL_DIR = 0
+    LOCAL_FILE = 1
+    GIT_URL = 2
+    S3_URL = 3
+
+    @classmethod
+    def parse_path(cls, path):
+        if cls.is_local_dir(path):
+            return cls.LOCAL_DIR
+
+        if cls.is_local_zip_file(path):
+            return cls.LOCAL_FILE
+
+        if cls.is_git_url(path):
+            return cls.GIT_URL
+
+        if cls.is_s3_url(path):
+            return cls.S3_URL
+
+        raise exceptions.WrongPathError("Given path is neither local path, nor valid URL")
+
+    @staticmethod
+    def is_local_dir(path):
+        return os.path.exists(path) and os.path.isdir(path)
+
+    @staticmethod
+    def is_local_zip_file(path):
+        return os.path.exists(path) and os.path.isfile(path) and path.endswith(".zip")
+
+    @staticmethod
+    def is_git_url(path):
+        return not os.path.exists(path) and path.endswith(".git") or path.lower().startswith("git:")
+
+    @staticmethod
+    def is_s3_url(path):
+        return not os.path.exists(path) and path.lower().startswith("s3:")
+
+
+def validate_workspace_input(input_data):
+    workspace_url = input_data.get('workspaceUrl')
+    workspace_path = input_data.get('workspace')
+    workspace_archive = input_data.get('workspaceArchive')
+
+    if (workspace_archive and workspace_path) \
+            or (workspace_archive and workspace_url) \
+            or (workspace_path and workspace_url):
+        raise click.UsageError("Use either:\n\t--workspace https://path.to/git/repository.git - to point repository URL"
+                               "\n\t--workspace /path/to/local/directory - to point on project directory"
+                               "\n\t--workspace /path/to/local/archive.zip - to point on project .zip archive"
+                               "\n\t--workspace none - to use no workspace"
+                               "\n or neither to use current directory")
