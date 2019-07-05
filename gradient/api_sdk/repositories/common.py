@@ -2,9 +2,9 @@ import abc
 
 import six
 
-from gradient.utils import MessageExtractor
 from ..clients import http_client
 from ..exceptions import ResourceFetchingError
+from ..utils import MessageExtractor
 
 
 @six.add_metaclass(abc.ABCMeta)

@@ -1,12 +1,12 @@
 from gradient import constants
-from gradient.utils import MessageExtractor
-from gradient.workspace import S3WorkspaceHandler
+from gradient.api_sdk.workspace import S3WorkspaceHandler
 from .base_client import BaseClient
 from ..clients import http_client
 from ..exceptions import GradientSdkError
 from ..models import SingleNodeExperiment, MultiNodeExperiment
 from ..repositories.experiments import ListExperiments, GetExperiment
 from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema
+from ..utils import MessageExtractor
 
 
 class ExperimentsClient(BaseClient):

@@ -2,11 +2,11 @@ import os
 import zipfile
 from collections import OrderedDict
 
-import click
 import progressbar
 import requests
 from requests_toolbelt.multipart import encoder
 
+import gradient.api_sdk.utils
 from gradient import logger, utils
 from gradient.exceptions import S3UploadFailedError, PresignedUrlUnreachableError, \
     PresignedUrlAccessDeniedError, PresignedUrlConnectionError, ProjectAccessDeniedError, \
@@ -127,14 +127,14 @@ class WorkspaceHandler(object):
         workspace_archive = input_data.get('workspaceArchive')
 
         if workspace_path not in ("none", None):
-            path_type = utils.PathParser().parse_path(workspace_path)
+            path_type = gradient.api_sdk.utils.PathParser().parse_path(workspace_path)
 
-            if path_type == utils.PathParser.LOCAL_DIR:
+            if path_type == gradient.api_sdk.utils.PathParser.LOCAL_DIR:
                 input_data["workspace"] = workspace_path
             else:
-                if path_type == utils.PathParser.LOCAL_FILE:
+                if path_type == gradient.api_sdk.utils.PathParser.LOCAL_FILE:
                     input_data["workspaceArchive"] = workspace_archive = workspace_path
-                elif path_type in (utils.PathParser.GIT_URL, utils.PathParser.S3_URL):
+                elif path_type in (gradient.api_sdk.utils.PathParser.GIT_URL, gradient.api_sdk.utils.PathParser.S3_URL):
                     input_data["workspaceUrl"] = workspace_url = workspace_path
 
                 workspace_path = None
