@@ -1,4 +1,4 @@
-from gradient import config
+from gradient.config import config
 from gradient.api_sdk.clients import http_client
 from .. import logger as sdk_logger
 

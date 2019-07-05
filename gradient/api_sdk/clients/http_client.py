@@ -1,6 +1,7 @@
 import requests
 
-from gradient import config, version
+from gradient import version
+from gradient.config import config
 from .. import logger as sdk_logger
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,

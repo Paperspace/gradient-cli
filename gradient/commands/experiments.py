@@ -6,7 +6,8 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import logger as gradient_logger, constants, config, api_sdk, exceptions
+from gradient import logger as gradient_logger, constants, api_sdk, exceptions
+from gradient.config import config
 from gradient.api_sdk.clients import http_client, sdk_client
 from gradient.commands import common
 from gradient.utils import get_terminal_lines
