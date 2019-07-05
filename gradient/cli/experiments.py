@@ -3,10 +3,10 @@ import functools
 
 import click
 
-from gradient import client, config, constants
+from gradient import client, config, constants, utils
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
-from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, deprecated
 from gradient.commands import experiments as experiments_commands
 
 MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
@@ -235,20 +235,26 @@ def common_experiments_create_single_node_options(f):
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
 
+@deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
+            "options will not be included in version 0.6.0")
 @create_experiment.command(name="multinode", help="Create multi node experiment")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
 def create_multi_node(api_key, **kwargs):
+    utils.validate_workspace_input(kwargs)
     del_if_value_is_none(kwargs)
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.CreateExperimentCommand(api=experiments_api)
     command.execute(kwargs)
 
 
+@deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
+            "options will not be included in version 0.6.0")
 @create_experiment.command(name="singlenode", help="Create single node experiment")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
 def create_single_node(api_key, **kwargs):
+    utils.validate_workspace_input(kwargs)
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
@@ -256,6 +262,8 @@ def create_single_node(api_key, **kwargs):
     command.execute(kwargs)
 
 
+@deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
+            "options will not be included in version 0.6.0")
 @create_and_start_experiment.command(name="multinode", help="Create and start new multi node experiment")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
@@ -269,6 +277,7 @@ def create_single_node(api_key, **kwargs):
 )
 @click.pass_context
 def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
+    utils.validate_workspace_input(kwargs)
     del_if_value_is_none(kwargs)
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     command = experiments_commands.CreateAndStartExperimentCommand(api=experiments_api)
@@ -277,6 +286,8 @@ def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
 
 
+@deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
+            "options will not be included in version 0.6.0")
 @create_and_start_experiment.command(name="singlenode", help="Create and start new single node experiment")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
@@ -290,6 +301,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
 )
 @click.pass_context
 def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
+    utils.validate_workspace_input(kwargs)
     kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
     del_if_value_is_none(kwargs)
     experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)

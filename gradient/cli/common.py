@@ -34,12 +34,11 @@ class ClickGroup(DYMMixin, HelpColorsGroup):
     pass
 
 
-def deprecated(version="1.0.0"):
-    deprecated_invoke_notice = """DeprecatedWarning: \nWARNING: This command will not be included in version %s .
-For more information, please see:
+def deprecated(msg):
+    deprecated_invoke_notice = msg + """\nFor more information, please see:
 
 https://docs.paperspace.com
-If you depend on functionality not listed there, please file an issue.""" % version
+If you depend on functionality not listed there, please file an issue."""
 
     def new_invoke(self, ctx):
         click.echo(click.style(deprecated_invoke_notice, fg='red'), err=True)

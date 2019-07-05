@@ -32,3 +32,11 @@ class PresignedUrlError(ApplicationError):
 
 class S3UploadFailedError(ApplicationError):
     pass
+
+
+class WrongPathError(ApplicationError):
+    pass
+
+
+class MutuallyExclusiveParametersUsedError(Exception):
+    pass
