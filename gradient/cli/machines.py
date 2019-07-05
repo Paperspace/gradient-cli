@@ -2,13 +2,14 @@ import collections
 
 import click
 
-from gradient import constants, config
+from gradient import constants
 from gradient.api_sdk.clients import http_client
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
 from gradient.cli.validators import validate_email, validate_mutually_exclusive
 from gradient.commands import machines as machines_commands
+from gradient.config import config
 
 REGIONS_MAP = collections.OrderedDict(
     (

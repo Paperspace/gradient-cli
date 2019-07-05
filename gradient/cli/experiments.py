@@ -2,11 +2,11 @@ import collections
 import functools
 
 import click
-from gradient.cli import common
 
 import gradient.api_sdk.clients.sdk_client
 from gradient import config, constants, exceptions, logger
-from gradient.api_sdk.clients import http_client
+from gradient.api_sdk.clients import http_client, sdk_client
+from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
 from gradient.cli.common import api_key_option, ClickGroup
@@ -330,7 +330,7 @@ def stop_experiment(experiment_id, api_key):
 @api_key_option
 def list_experiments(project_ids, api_key):
     client = gradient.api_sdk.clients.sdk_client.SdkClient(api_key=api_key)
-    command = experiments_commands.ListExperimentsCommand(client=client)
+    command = experiments_commands.ListExperimentsCommand(sdk_client=client)
     try:
         command.execute(project_id=project_ids)
     except exceptions.ApplicationError as e:
@@ -341,8 +341,12 @@ def list_experiments(project_ids, api_key):
 @click.argument("experiment-id")
 @api_key_option
 def get_experiment_details(experiment_id, api_key):
-    experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    experiments_commands.get_experiment_details(experiment_id, api=experiments_api)
+    client = gradient.api_sdk.clients.sdk_client.SdkClient(api_key=api_key)
+    command = experiments_commands.GetExperimentCommand(sdk_client=client)
+    try:
+        command.execute(experiment_id=experiment_id)
+    except exceptions.ApplicationError as e:
+        logger.Logger().error(e)
 
 
 @experiments.command("logs", help="List experiment logs")

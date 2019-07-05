@@ -1,10 +1,23 @@
-from .common import ListResources
+from .common import ListResources, GetResource
 from .. import serializers
 
 
-class ListExperiments(ListResources):
-    @property
-    def request_url(self):
+class ParseExperimentDictMixin(object):
+    def _parse_object(self, experiment_dict, **kwargs):
+        if self._is_single_node_experiment(experiment_dict):
+            experiment = serializers.SingleNodeExperimentSchema().get_instance(experiment_dict)
+        else:
+            experiment = serializers.MultiNodeExperimentSchema().get_instance(experiment_dict)
+
+        return experiment
+
+    @staticmethod
+    def _is_single_node_experiment(experiment_dict):
+        return "parameter_server_machine_type" not in experiment_dict
+
+
+class ListExperiments(ParseExperimentDictMixin, ListResources):
+    def get_request_url(self, **kwargs):
         return "/experiments/"
 
     def _parse_objects(self, data, **kwargs):
@@ -12,18 +25,10 @@ class ListExperiments(ListResources):
         experiments = []
         for experiment_dict in experiments_dicts:
             experiment_dict.update(experiment_dict["templateHistory"]["params"])
-
-            if self._is_single_node_experiment(experiment_dict):
-                experiment = serializers.SingleNodeExperimentSchema().get_instance(experiment_dict)
-            else:
-                experiment = serializers.MultiNodeExperimentSchema().get_instance(experiment_dict)
+            experiment = self._parse_object(experiment_dict)
             experiments.append(experiment)
 
         return experiments
-
-    @staticmethod
-    def _is_single_node_experiment(experiment_dict):
-        return "parameter_server_machine_type" not in experiment_dict["templateHistory"]["params"]
 
     @staticmethod
     def _get_experiments_dicts_from_json_data(data, kwargs):
@@ -48,3 +53,15 @@ class ListExperiments(ListResources):
                 params[key] = experiment_id
 
         return params
+
+
+class GetExperiment(ParseExperimentDictMixin, GetResource):
+    def _parse_object(self, experiment_dict, **kwargs):
+        experiment_dict = experiment_dict["data"]
+        experiment_dict.update(experiment_dict["templateHistory"]["params"])
+        return super(GetExperiment, self)._parse_object(experiment_dict, **kwargs)
+
+    def get_request_url(self, **kwargs):
+        experiment_id = kwargs["experiment_id"]
+        url = "/experiments/{}/".format(experiment_id)
+        return url
