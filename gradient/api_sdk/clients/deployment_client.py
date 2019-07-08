@@ -1,11 +1,12 @@
-from gradient.api_sdk import GradientSdkError
+from ..exceptions import GradientSdkError
 from gradient.api_sdk.clients.base_client import BaseClient
 from gradient.api_sdk.models.deployment import Deployment
+from gradient.api_sdk.repositories.deployments import ListDeployments
 from gradient.api_sdk.serializers.deployment import DeploymentSchema
 from gradient.utils import MessageExtractor
 
 
-class DeploymentClient(BaseClient):
+class DeploymentsClient(BaseClient):
     def create(self, deployment_type, model_id, name, machine_type, image_url, instance_count):
         """
         Method to create deployment instance
@@ -36,8 +37,8 @@ class DeploymentClient(BaseClient):
     def stop(self, deployment_id):
         return self._get_put_response(deployment_id, is_running=False)
 
-    def list(self):
-        pass
+    def list(self, filters):
+        return ListDeployments(self._client).list(filters=filters)
 
     @staticmethod
     def _get_deployment_dict(deployment, schema_cls):
@@ -61,7 +62,7 @@ class DeploymentClient(BaseClient):
 
     def _process_response(self, response):
         if response.ok:
-            return response.json()["id"]
+            return response.json()["deployment"]["id"]
 
         msg = self._get_error_message(response)
         # TODO prepare more detailed error type message

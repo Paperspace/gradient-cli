@@ -3,7 +3,7 @@ from .. import serializers
 
 
 class ListDeployments(ListResources):
-    def request_url(self):
+    def get_request_url(self, **kwargs):
         return "/deployments/getDeploymentList/"
 
     def _parse_objects(self, data, **kwargs):
@@ -19,3 +19,13 @@ class ListDeployments(ListResources):
     @staticmethod
     def _get_deployments_dicts_from_json_data(data, kwargs):
         return data["deploymentList"]
+
+    def _get_request_json(self, kwargs):
+        json_ = {}  # so the API sends back full list without pagination
+
+        filters = kwargs.get("filters")
+        if filters:
+            json_["filter"] = filters
+            return json_
+
+        return None

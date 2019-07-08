@@ -60,6 +60,7 @@ class TestDeploymentsCreate(object):
                                              params=None,
                                              files=None,
                                              data=None)
+
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 

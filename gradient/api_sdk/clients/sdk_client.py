@@ -1,3 +1,5 @@
+from gradient.config import config
+from .deployment_client import DeploymentsClient
 from .experiment_client import ExperimentsClient
 from .. import logger as sdk_logger
 
@@ -10,3 +12,4 @@ class SdkClient(object):
         :type logger: sdk_logger.Logger
         """
         self.experiments = ExperimentsClient(api_key, logger)
+        self.deployments = DeploymentsClient(api_key, logger, api_url=config.CONFIG_HOST)
