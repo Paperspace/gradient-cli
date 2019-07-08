@@ -81,13 +81,14 @@ class TestExperimentsCreateSingleNode(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
 
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
-        assert self.EXPECTED_STDOUT in result.output
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.experiments.experiments_commands.http_client.requests.post")

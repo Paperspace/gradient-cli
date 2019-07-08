@@ -3,9 +3,10 @@ from collections import OrderedDict
 import mock
 import pytest
 
+import gradient.api_sdk.utils
 from gradient import exceptions
 from gradient import utils
-from gradient.utils import PathParser
+from gradient.api_sdk.utils import PathParser
 
 output_response = ""
 
@@ -35,7 +36,7 @@ class TestPrintDictRecursive(object):
       faz
 """
 
-        utils.print_dict_recursive(OrderedDict(input_dict), logger_)
+        gradient.api_sdk.utils.print_dict_recursive(OrderedDict(input_dict), logger_)
 
         assert output_response == expected_string
 

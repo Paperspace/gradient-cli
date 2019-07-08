@@ -18,8 +18,8 @@ experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST,
 
 
 class ExperimentCommand(object):
-    def __init__(self, sdk_client, logger_=gradient_logger.Logger()):
-        self.sdk_client = sdk_client
+    def __init__(self, experiments_client, logger_=gradient_logger.Logger()):
+        self.experiments_client = experiments_client
         self.logger = logger_
 
 
@@ -52,13 +52,13 @@ class _CreateExperimentCommand(ExperimentCommand):
 
 class CreateSingleNodeExperimentCommand(_CreateExperimentCommand):
     def _create(self, json_):
-        handle = self.sdk_client.experiments.create_single_node(**json_)
+        handle = self.experiments_client.create_single_node(**json_)
         return handle
 
 
 class CreateMultiNodeExperimentCommand(_CreateExperimentCommand):
     def _create(self, json_):
-        handle = self.sdk_client.experiments.create_multi_node(**json_)
+        handle = self.experiments_client.create_multi_node(**json_)
         return handle
 
 
@@ -80,13 +80,13 @@ class _RunExperimentCommand(ExperimentCommand):
 
 class CreateAndStartMultiNodeExperimentCommand(_RunExperimentCommand):
     def _create(self, json_):
-        handle = self.sdk_client.experiments.run_multi_node(**json_)
+        handle = self.experiments_client.run_multi_node(**json_)
         return handle
 
 
 class CreateAndStartSingleNodeExperimentCommand(_RunExperimentCommand):
     def _create(self, json_):
-        handle = self.sdk_client.experiments.run_single_node(**json_)
+        handle = self.experiments_client.run_single_node(**json_)
         return handle
 
 
@@ -122,7 +122,7 @@ class ListExperimentsCommand(ExperimentCommand):
     def _get_instances(self, kwargs):
         project_id = kwargs.get("project_id")
         try:
-            instances = self.sdk_client.experiments.list(project_id)
+            instances = self.experiments_client.list(project_id)
         except api_sdk.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
@@ -173,7 +173,7 @@ class GetExperimentCommand(ExperimentCommand):
         """
         experiment_id = kwargs["experiment_id"]
         try:
-            instance = self.sdk_client.experiments.get(experiment_id)
+            instance = self.experiments_client.get(experiment_id)
         except api_sdk.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
