@@ -130,5 +130,5 @@ class StartDeploymentCommand(_DeploymentCommand):
 
 class StopDeploymentCommand(_DeploymentCommand):
     def execute(self, **kwargs):
-        response = self.sdk_client.deployments.start(**kwargs)
+        response = self.sdk_client.deployments.stop(**kwargs)
         self.logger.log_response(response, "Deployment stopped", "Unknown error while stopping the deployment")

@@ -32,10 +32,10 @@ class DeploymentsClient(BaseClient):
         return id_
 
     def start(self, deploymnet_id):
-        return self._get_put_response(deploymnet_id)
+        return self._get_post_response(deploymnet_id)
 
     def stop(self, deployment_id):
-        return self._get_put_response(deployment_id, is_running=False)
+        return self._get_post_response(deployment_id, is_running=False)
 
     def list(self, filters):
         return ListDeployments(self._client).list(filters=filters)
@@ -74,7 +74,7 @@ class DeploymentsClient(BaseClient):
         handle = self._process_response(response)
         return handle
 
-    def _get_put_response(self, deployment_id, is_running=True):
+    def _get_post_response(self, deployment_id, is_running=True):
         data = {
             "id": deployment_id,
             "isRunning": is_running
