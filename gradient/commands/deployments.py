@@ -39,8 +39,8 @@ class _DeploymentCommandBase(common.CommandBase):
 
 @six.add_metaclass(abc.ABCMeta)
 class _DeploymentCommand(object):
-    def __init__(self, sdk_client, logger_=gradient_logger.Logger()):
-        self.sdk_client = sdk_client
+    def __init__(self, deployment_client, logger_=gradient_logger.Logger()):
+        self.deployment_client = deployment_client
         self.logger = logger_
 
     @abc.abstractmethod
@@ -52,7 +52,7 @@ class CreateDeploymentCommand(_DeploymentCommand):
     def execute(self, **kwargs):
         with halo.Halo(text="Creating new experiment", spinner="dots"):
             try:
-                deployment_id = self.sdk_client.deployments.create(**kwargs)
+                deployment_id = self.deployment_client.create(**kwargs)
             except api_sdk.GradientSdkError as e:
                 self.logger.error(e)
             else:
@@ -75,7 +75,7 @@ class ListDeploymentsCommand(_DeploymentCommand):
     def _get_instances(self, **kwargs):
         filters = self._get_request_json(kwargs)
         try:
-            instances = self.sdk_client.deployments.list(filters)
+            instances = self.deployment_client.list(filters)
         except api_sdk.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
@@ -124,11 +124,11 @@ class ListDeploymentsCommand(_DeploymentCommand):
 
 class StartDeploymentCommand(_DeploymentCommand):
     def execute(self, **kwargs):
-        response = self.sdk_client.deployments.start(**kwargs)
+        response = self.deployment_client.start(**kwargs)
         self.logger.log_response(response, "Deployment started", "Unknown error while starting the deployment")
 
 
 class StopDeploymentCommand(_DeploymentCommand):
     def execute(self, **kwargs):
-        response = self.sdk_client.deployments.stop(**kwargs)
+        response = self.deployment_client.stop(**kwargs)
         self.logger.log_response(response, "Deployment stopped", "Unknown error while stopping the deployment")
