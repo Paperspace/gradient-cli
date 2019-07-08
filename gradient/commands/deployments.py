@@ -125,10 +125,10 @@ class ListDeploymentsCommand(_DeploymentCommand):
 class StartDeploymentCommand(_DeploymentCommand):
     def execute(self, **kwargs):
         response = self.sdk_client.deployments.start(**kwargs)
-        return response
+        self.logger.log_response(response, "Deployment started", "Unknown error while starting the deployment")
 
 
 class StopDeploymentCommand(_DeploymentCommand):
     def execute(self, **kwargs):
         response = self.sdk_client.deployments.start(**kwargs)
-        return response
+        self.logger.log_response(response, "Deployment stopped", "Unknown error while stopping the deployment")

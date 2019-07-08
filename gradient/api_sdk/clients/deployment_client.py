@@ -79,4 +79,4 @@ class DeploymentsClient(BaseClient):
             "id": deployment_id,
             "isRunning": is_running
         }
-        return self._client.put("/deployments/updateDeployment/", json=data)
+        return self._client.post("/deployments/updateDeployment/", json=data)
