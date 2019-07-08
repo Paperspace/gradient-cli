@@ -81,13 +81,14 @@ class TestExperimentsCreateSingleNode(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
 
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.experiments.experiments_commands.http_client.requests.post")
@@ -104,7 +105,7 @@ class TestExperimentsCreateSingleNode(object):
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_STDOUT in result.output
         assert result.exit_code == 0
         assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
 
@@ -122,7 +123,7 @@ class TestExperimentsCreateSingleNode(object):
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT_PROJECT_NOT_FOUND, result.exc_info[1]
+        assert self.EXPECTED_STDOUT_PROJECT_NOT_FOUND in result.output, result.exc_info[1]
         assert result.exit_code == 0
 
 
@@ -145,7 +146,7 @@ class TestExperimentsCreateMultiNode(object):
         "--parameterServerCommand", "ls",
         "--parameterServerCount", 2,
         "--workerContainerUser", "usr",
-        "--workspaceUrl", "some-workspace",
+        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
     ]
     FULL_OPTIONS_COMMAND = [
         "experiments", "create", "multinode",
@@ -187,7 +188,7 @@ class TestExperimentsCreateMultiNode(object):
         u"parameterServerCommand": u"ls",
         u"parameterServerCount": 2,
         u"workerContainerUser": u"usr",
-        u"workspaceUrl": u"some-workspace",
+        u"workspaceUrl": u"https://github.com/Paperspace/gradient-cli.git",
     }
     FULL_OPTIONS_REQUEST = {
         "name": u"multinode_mpi",
@@ -232,7 +233,7 @@ class TestExperimentsCreateMultiNode(object):
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_STDOUT in result.output
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.experiments.experiments_commands.http_client.requests.post")
@@ -249,7 +250,7 @@ class TestExperimentsCreateMultiNode(object):
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_STDOUT in result.output
         assert result.exit_code == 0
 
 
@@ -304,7 +305,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--parameterServerCommand", "ls",
         "--parameterServerCount", 2,
         "--workerContainerUser", "usr",
-        "--workspaceUrl", "some-workspace",
+        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
         "--no-logs",
     ]
     FULL_OPTIONS_COMMAND = [

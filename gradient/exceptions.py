@@ -36,3 +36,11 @@ class S3UploadFailedError(ApplicationError):
 
 class ReceivingDataFailedError(ApplicationError):
     pass
+
+
+class WrongPathError(ApplicationError):
+    pass
+
+
+class MutuallyExclusiveParametersUsedError(Exception):
+    pass

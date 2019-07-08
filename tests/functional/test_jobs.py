@@ -357,7 +357,7 @@ class TestJobsCreate(object):
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
-        "--workspaceUrl", "some-workspace",
+        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
     ]
     FULL_OPTIONS_COMMAND = [
         "jobs", "create",
@@ -383,8 +383,8 @@ class TestJobsCreate(object):
         "container": u"testContainer",
         "machineType": u"testType",
         "command": u"testCommand",
-        "workspaceUrl": u"some-workspace",
-        "workspaceFileName": u"some-workspace",
+        "workspaceUrl": u"https://github.com/Paperspace/gradient-cli.git",
+        "workspaceFileName": u"https://github.com/Paperspace/gradient-cli.git",
     }
     FULL_OPTIONS_REQUEST = {
         "name": u"exp1",
@@ -424,5 +424,5 @@ class TestJobsCreate(object):
                                              files=None,
                                              data=None)
 
-        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_STDOUT in result.output
         assert result.exit_code == 0

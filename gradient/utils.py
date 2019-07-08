@@ -1,7 +1,7 @@
 import json
 import shutil
-from collections import OrderedDict
 
+import click
 import requests
 import six
 
@@ -36,48 +36,16 @@ def status_code_to_error_obj(status_code):
     return { 'error': True, 'message': message, 'status': status_code }
 
 
-class MessageExtractor(object):
-    def get_message_from_response_data(self, response_data, sep="\n"):
-        """
-        :type response_data: None|dict|list|str
-        :type sep: str
-        :rtype: str
-        """
-        messages = list(self.get_error_messages(response_data))
-        msg = sep.join(messages)
+def validate_workspace_input(input_data):
+    workspace_url = input_data.get('workspaceUrl')
+    workspace_path = input_data.get('workspace')
+    workspace_archive = input_data.get('workspaceArchive')
 
-        return msg
-
-    def get_error_messages(self, data, add_prefix=False):
-        if isinstance(data, dict):
-            for key, value in sorted(data.items()):
-                if key in ("error", "errors", "message", "messages"):
-                    for message in self.get_error_messages(value):
-                        yield message
-
-                # when key == "details" and value is a dict then values should be prefixed with key
-                if add_prefix:
-                    for message in self.get_error_messages(value):
-                        # there is some useless message in data["context"]
-                        if key != "context":
-                            yield key + ": " + message
-                if key == "details":
-                    for message in self.get_error_messages(value, add_prefix=True):
-                        yield message
-
-        if isinstance(data, list):
-            for element in data:
-                for message in self.get_error_messages(element):
-                    yield message
-
-        if isinstance(data, six.string_types):
-            yield data
-
-
-def print_dict_recursive(input_dict, logger, indent=0, tabulator="  "):
-    for key, val in input_dict.items():
-        logger.log("%s%s:" % (tabulator * indent, key))
-        if type(val) is dict:
-            print_dict_recursive(OrderedDict(val), logger, indent + 1)
-        else:
-            logger.log("%s%s" % (tabulator * (indent + 1), val))
+    if (workspace_archive and workspace_path) \
+            or (workspace_archive and workspace_url) \
+            or (workspace_path and workspace_url):
+        raise click.UsageError("Use either:\n\t--workspace https://path.to/git/repository.git - to point repository URL"
+                               "\n\t--workspace /path/to/local/directory - to point on project directory"
+                               "\n\t--workspace /path/to/local/archive.zip - to point on project .zip archive"
+                               "\n\t--workspace none - to use no workspace"
+                               "\n or neither to use current directory")

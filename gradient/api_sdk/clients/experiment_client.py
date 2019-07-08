@@ -1,12 +1,11 @@
 from gradient import constants
-from gradient.utils import MessageExtractor
-from gradient.workspace import S3WorkspaceHandler
 from .base_client import BaseClient
 from ..clients import http_client
 from ..exceptions import GradientSdkError
 from ..models import SingleNodeExperiment, MultiNodeExperiment
 from ..repositories.experiments import ListExperiments, GetExperiment
 from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema
+from ..utils import MessageExtractor
 
 
 class ExperimentsClient(BaseClient):
@@ -253,7 +252,7 @@ class ExperimentsClient(BaseClient):
         :param str|list|None project_id:
         :rtype: list[SingleNodeExperiment|MultiNodeExperiment]
         """
-        experiments = ListExperiments(self._client).list(project_id=project_id)
+        experiments = ListExperiments(self.client).list(project_id=project_id)
         return experiments
 
     def get(self, experiment_id):
@@ -262,7 +261,7 @@ class ExperimentsClient(BaseClient):
         :param str experiment_id:
         :rtype: SingleNodeExperiment|MultiNodeExperiment
         """
-        experiment = GetExperiment(self._client).get(experiment_id=experiment_id)
+        experiment = GetExperiment(self.client).get(experiment_id=experiment_id)
         return experiment
 
     def _create(self, experiment, schema_cls):
@@ -283,11 +282,11 @@ class ExperimentsClient(BaseClient):
         return handle
 
     def _get_create_response(self, experiment_dict):
-        response = self._client.post("/experiments/", json=experiment_dict)
+        response = self.client.post("/experiments/", json=experiment_dict)
         return response
 
     def _get_run_response(self, experiment_dict):
-        response = self._client.post("/experiments/create_and_start/", json=experiment_dict)
+        response = self.client.post("/experiments/create_and_start/", json=experiment_dict)
         return response
 
     def _process_response(self, response):
@@ -322,8 +321,7 @@ class ExperimentsClient(BaseClient):
         return experiment_dict
 
     def _get_workspace_url(self, experiment_dict):
-        workspace_handler = S3WorkspaceHandler(experiments_api=self._client, logger_=self.logger)
-        workspace_url = workspace_handler.handle(experiment_dict)
+        workspace_url = self.workspace_handler.handle(experiment_dict)
         return workspace_url
 
     @staticmethod
@@ -333,10 +331,10 @@ class ExperimentsClient(BaseClient):
 
     def _get_start_response(self, experiment_id):
         url = "/experiments/{}/start/".format(experiment_id)
-        response = self._client.put(url)
+        response = self.client.put(url)
         return response
 
     def _get_stop_response(self, experiment_id):
         url = "/experiments/{}/stop/".format(experiment_id)
-        response = self._client.put(url)
+        response = self.client.put(url)
         return response
