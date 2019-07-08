@@ -7,7 +7,12 @@ from ..clients import http_client
 class BaseClient(object):
     DEFAULT_WORKSPACE_HANDLER_CLS = workspace.S3WorkspaceHandler
 
-    def __init__(self, api_key, logger=sdk_logger.MuteLogger(), , api_url=config.CONFIG_EXPERIMENTS_HOST, workspace_handler_cls=DEFAULT_WORKSPACE_HANDLER_CLS):
+    def __init__(
+            self, api_key,
+            logger=sdk_logger.MuteLogger(),
+            api_url=config.CONFIG_EXPERIMENTS_HOST,
+            workspace_handler_cls=DEFAULT_WORKSPACE_HANDLER_CLS
+    ):
         """
 
         :type api_key: str

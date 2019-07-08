@@ -1,9 +1,9 @@
+from gradient.api_sdk.utils import MessageExtractor
 from ..exceptions import GradientSdkError
 from gradient.api_sdk.clients.base_client import BaseClient
 from gradient.api_sdk.models.deployment import Deployment
 from gradient.api_sdk.repositories.deployments import ListDeployments
 from gradient.api_sdk.serializers.deployment import DeploymentSchema
-from gradient.utils import MessageExtractor
 
 
 class DeploymentsClient(BaseClient):
@@ -38,7 +38,7 @@ class DeploymentsClient(BaseClient):
         return self._get_post_response(deployment_id, is_running=False)
 
     def list(self, filters):
-        return ListDeployments(self._client).list(filters=filters)
+        return ListDeployments(self.client).list(filters=filters)
 
     @staticmethod
     def _get_deployment_dict(deployment, schema_cls):
@@ -58,7 +58,7 @@ class DeploymentsClient(BaseClient):
         return msg
 
     def _get_create_response(self, deployment_dict):
-        return self._client.post("/deployments/createDeployment/", json=deployment_dict)
+        return self.client.post("/deployments/createDeployment/", json=deployment_dict)
 
     def _process_response(self, response):
         if response.ok:
@@ -79,4 +79,4 @@ class DeploymentsClient(BaseClient):
             "id": deployment_id,
             "isRunning": is_running
         }
-        return self._client.post("/deployments/updateDeployment/", json=data)
+        return self.client.post("/deployments/updateDeployment/", json=data)
