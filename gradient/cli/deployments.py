@@ -2,6 +2,7 @@ import collections
 
 import click
 
+from gradient import exceptions, logger
 from gradient.api_sdk.clients.sdk_client import SdkClient
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType
@@ -108,7 +109,10 @@ def get_deployments_list(api_key=None, **filters):
     del_if_value_is_none(filters)
     sdk_client = SdkClient(api_key=api_key)
     command = deployments_commands.ListDeploymentsCommand(sdk_client=sdk_client)
-    command.execute(filters=filters)
+    try:
+        command.execute(filters=filters)
+    except exceptions.ApplicationError as e:
+        logger.Logger().error(e)
 
 
 @deployments.command("start", help="Start deployment")

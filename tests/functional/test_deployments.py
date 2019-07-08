@@ -149,7 +149,7 @@ class TestDeploymentsList(object):
                                             params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.common.pydoc")
+    @mock.patch("gradient.cli.deployments.deployments_commands.pydoc")
     @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
                                                                                                      pydoc_patched):
@@ -206,7 +206,7 @@ class TestDeploymentsList(object):
                                             headers=EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
-        assert result.output == "Invalid API token\n"
+        assert result.output == "Failed to fetch data: Invalid API token\n"
 
 
 class TestStartDeployment(object):

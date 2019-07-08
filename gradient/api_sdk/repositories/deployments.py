@@ -21,11 +21,9 @@ class ListDeployments(ListResources):
         return data["deploymentList"]
 
     def _get_request_json(self, kwargs):
-        json_ = {}  # so the API sends back full list without pagination
-
         filters = kwargs.get("filters")
-        if filters:
-            json_["filter"] = filters
-            return json_
+        if not filters:
+            return None
 
-        return None
+        json_ = filters
+        return json_
