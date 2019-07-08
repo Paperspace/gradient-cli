@@ -3,7 +3,7 @@ import functools
 
 import click
 
-from gradient import constants, utils, api_sdk, exceptions, logger
+from gradient import constants, utils, api_sdk, exceptions, logger, workspace
 from gradient.api_sdk.clients import http_client
 from gradient.cli import common
 from gradient.cli.cli import cli
@@ -247,8 +247,9 @@ def create_multi_node(api_key, **kwargs):
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
-    client = api_sdk.clients.sdk_client.SdkClient(api_key=api_key)
-    command = experiments_commands.CreateMultiNodeExperimentCommand(sdk_client=client)
+    experiments_client = api_sdk.clients.ExperimentsClient(
+        api_key=api_key, workspace_handler_cls=workspace.S3WorkspaceHandlerWithProgressbar)
+    command = experiments_commands.CreateMultiNodeExperimentCommand(experiments_client=experiments_client)
     command.execute(kwargs)
 
 
@@ -261,8 +262,9 @@ def create_single_node(api_key, **kwargs):
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
-    sdk_client = api_sdk.clients.sdk_client.SdkClient(api_key=api_key)
-    command = experiments_commands.CreateSingleNodeExperimentCommand(sdk_client=sdk_client)
+    experiments_client = api_sdk.clients.ExperimentsClient(
+        api_key=api_key, workspace_handler_cls=workspace.S3WorkspaceHandlerWithProgressbar)
+    command = experiments_commands.CreateSingleNodeExperimentCommand(experiments_client=experiments_client)
     command.execute(kwargs)
 
 
@@ -284,8 +286,9 @@ def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
-    sdk_client = api_sdk.clients.sdk_client.SdkClient(api_key=api_key)
-    command = experiments_commands.CreateAndStartMultiNodeExperimentCommand(sdk_client=sdk_client)
+    experiments_client = api_sdk.clients.ExperimentsClient(
+        api_key=api_key, workspace_handler_cls=workspace.S3WorkspaceHandlerWithProgressbar)
+    command = experiments_commands.CreateAndStartMultiNodeExperimentCommand(experiments_client=experiments_client)
     experiment = command.execute(kwargs)
     if experiment and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
@@ -309,8 +312,9 @@ def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
-    sdk_client = api_sdk.clients.sdk_client.SdkClient(api_key=api_key)
-    command = experiments_commands.CreateAndStartSingleNodeExperimentCommand(sdk_client=sdk_client)
+    experiments_client = api_sdk.clients.ExperimentsClient(
+        api_key=api_key, workspace_handler_cls=workspace.S3WorkspaceHandlerWithProgressbar)
+    command = experiments_commands.CreateAndStartSingleNodeExperimentCommand(experiments_client=experiments_client)
     experiment = command.execute(kwargs)
     if experiment and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
@@ -345,8 +349,8 @@ def stop_experiment(experiment_id, api_key):
 @click.option("--projectId", "-p", "project_ids", multiple=True)
 @api_key_option
 def list_experiments(project_ids, api_key):
-    client = api_sdk.clients.sdk_client.SdkClient(api_key=api_key)
-    command = experiments_commands.ListExperimentsCommand(sdk_client=client)
+    experiments_client = api_sdk.clients.ExperimentsClient(api_key=api_key)
+    command = experiments_commands.ListExperimentsCommand(experiments_client=experiments_client)
     try:
         command.execute(project_id=project_ids)
     except exceptions.ApplicationError as e:
@@ -357,8 +361,8 @@ def list_experiments(project_ids, api_key):
 @click.argument("experiment-id")
 @api_key_option
 def get_experiment_details(experiment_id, api_key):
-    client = api_sdk.clients.sdk_client.SdkClient(api_key=api_key)
-    command = experiments_commands.GetExperimentCommand(sdk_client=client)
+    experiments_client = api_sdk.clients.ExperimentsClient(api_key=api_key)
+    command = experiments_commands.GetExperimentCommand(experiments_client=experiments_client)
     try:
         command.execute(experiment_id=experiment_id)
     except exceptions.ApplicationError as e:

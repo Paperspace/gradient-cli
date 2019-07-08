@@ -2,7 +2,6 @@ import os
 import zipfile
 from collections import OrderedDict
 
-import progressbar
 import requests
 from requests_toolbelt.multipart import encoder
 
@@ -23,15 +22,7 @@ class MultipartEncoder(object):
 
     @staticmethod
     def _create_callback(encoder_obj):
-        bar = progressbar.ProgressBar(max_value=encoder_obj.len)
-
-        def callback(monitor):
-            if monitor.bytes_read == bar.max_value:
-                bar.finish()
-            else:
-                bar.update(monitor.bytes_read)
-
-        return callback
+        pass
 
 
 class WorkspaceHandler(object):
@@ -85,18 +76,22 @@ class WorkspaceHandler(object):
         self.logger.log('Creating zip archive: %s' % zip_file_name)
         zip_file = zipfile.ZipFile(zip_file_path, 'w')
 
-        bar = progressbar.ProgressBar(max_value=len(file_paths))
+        self._zip_files(zip_file, file_paths)
 
+        self.logger.log('\nFinished creating archive: %s' % zip_file_name)
+        return zip_file_path
+
+    def _zip_files(self, zip_file, file_paths):
         with zip_file:
             i = 0
             for relpath, abspath in file_paths.items():
                 i += 1
                 self.logger.debug('Adding %s to archive' % relpath)
                 zip_file.write(abspath, arcname=relpath)
-                bar.update(i)
-        bar.finish()
-        self.logger.log('\nFinished creating archive: %s' % zip_file_name)
-        return zip_file_path
+                self._zip_files_iterate_callback(i)
+
+    def _zip_files_iterate_callback(self, i):
+        pass
 
     def handle(self, input_data):
         workspace_archive, workspace_path, workspace_url = self._validate_input(input_data)
@@ -144,14 +139,19 @@ class WorkspaceHandler(object):
 
 
 class S3WorkspaceHandler(WorkspaceHandler):
-    def __init__(self, experiments_api, logger_=None):
+    DEFAULT_MULTIPART_ENCODER_CLS = MultipartEncoder
+
+    def __init__(self, experiments_api, logger_=None,
+                 multipart_encoder_cls=DEFAULT_MULTIPART_ENCODER_CLS):
         """
 
         :param experiments_api: gradient.client.API
         :param logger_: gradient.logger
+        :type multipart_encoder_cls: MultipartEncoder
         """
         super(S3WorkspaceHandler, self).__init__(logger_=logger_)
         self.experiments_api = experiments_api
+        self.multipart_encoder_cls = multipart_encoder_cls
 
     def handle(self, input_data):
         workspace = super(S3WorkspaceHandler, self).handle(input_data)
@@ -179,7 +179,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
         fields = OrderedDict(s3_upload_data['fields'])
         fields.update(files)
 
-        monitor = MultipartEncoder(fields).get_monitor()
+        monitor = self.multipart_encoder_cls(fields).get_monitor()
         s3_response = requests.post(s3_upload_data['url'], data=monitor, headers={'Content-Type': monitor.content_type})
         self.logger.debug("S3 upload response: {}".format(s3_response.headers))
         if not s3_response.ok:
