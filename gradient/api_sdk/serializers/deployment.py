@@ -1,11 +1,16 @@
 import marshmallow
 
+from gradient.api_sdk import models
 from . import BaseSchema
 
 
 class DeploymentSchema(BaseSchema):
+    MODEL = models.Deployment
+
     id_ = marshmallow.fields.Str(dump_to="id", load_from="id")
     name = marshmallow.fields.Str(required=True)
+    endpoint = marshmallow.fields.Str()
+    api_type = marshmallow.fields.Str(dump_to="apiType", load_from="apiType")
 
     state = marshmallow.fields.Str()
 

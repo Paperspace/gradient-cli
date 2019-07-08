@@ -5,6 +5,8 @@ import attr
 class Deployment(object):
     id_ = attr.ib(type=str, default=None)
     name = attr.ib(type=str, default=None)
+    endpoint = attr.ib(type=str, default=None)
+    api_type = attr.ib(type=str, default=None)
 
     state = attr.ib(type=str, default=None)
 
