@@ -77,7 +77,7 @@ setup(
         'attrs<=19',
     ],
     entry_points={'console_scripts': [
-        'gradient = gradient:main',
+        'gradient = gradient:main.main',
     ]},
     extras_require={
         "dev": [
