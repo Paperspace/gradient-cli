@@ -2,7 +2,8 @@ import collections
 
 import click
 
-from gradient.api_sdk.clients import http_client
+from gradient import exceptions, logger
+from gradient.api_sdk.clients.deployment_client import DeploymentsClient
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
@@ -29,14 +30,14 @@ DEPLOYMENT_MACHINE_TYPES = ("G1", "G6", "G12",
 @deployments.command("create", help="Create new deployment")
 @click.option(
     "--deploymentType",
-    "deploymentType",
+    "deployment_type",
     type=ChoiceType(DEPLOYMENT_TYPES_MAP, case_sensitive=False),
     required=True,
     help="Model deployment type. Only TensorFlow models can currently be deployed",
 )
 @click.option(
     "--modelId",
-    "modelId",
+    "model_id",
     required=True,
     help="ID of a trained model",
 )
@@ -48,20 +49,20 @@ DEPLOYMENT_MACHINE_TYPES = ("G1", "G6", "G12",
 )
 @click.option(
     "--machineType",
-    "machineType",
+    "machine_type",
     type=click.Choice(DEPLOYMENT_MACHINE_TYPES),
     required=True,
     help="Type of machine for new deployment",
 )
 @click.option(
     "--imageUrl",
-    "imageUrl",
+    "image_url",
     required=True,
     help="Docker image for model serving",
 )
 @click.option(
     "--instanceCount",
-    "instanceCount",
+    "instance_count",
     type=int,
     required=True,
     help="Number of machine instances",
@@ -69,9 +70,9 @@ DEPLOYMENT_MACHINE_TYPES = ("G1", "G6", "G12",
 @api_key_option
 def create_deployment(api_key=None, **kwargs):
     del_if_value_is_none(kwargs)
-    deployments_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = deployments_commands.CreateDeploymentCommand(api=deployments_api)
-    command.execute(kwargs)
+    deployment_client = DeploymentsClient(api_key=api_key, api_url=config.CONFIG_HOST)
+    command = deployments_commands.CreateDeploymentCommand(deployment_client=deployment_client)
+    command.execute(**kwargs)
 
 
 DEPLOYMENT_STATES_MAP = collections.OrderedDict(
@@ -96,20 +97,23 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
 )
 @click.option(
     "--projectId",
-    "projectId",
+    "project_id",
     help="Use to filter by project ID",
 )
 @click.option(
-    "--modelId",
+    "--model_id",
     "modelId",
     help="Use to filter by model ID",
 )
 @api_key_option
 def get_deployments_list(api_key=None, **filters):
     del_if_value_is_none(filters)
-    deployments_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = deployments_commands.ListDeploymentsCommand(api=deployments_api)
-    command.execute(filters=filters)
+    deployment_client = DeploymentsClient(api_key=api_key, api_url=config.CONFIG_HOST)
+    command = deployments_commands.ListDeploymentsCommand(deployment_client=deployment_client)
+    try:
+        command.execute(filters=filters)
+    except exceptions.ApplicationError as e:
+        logger.Logger().error(e)
 
 
 @deployments.command("start", help="Start deployment")
@@ -121,9 +125,9 @@ def get_deployments_list(api_key=None, **filters):
 )
 @api_key_option
 def start_deployment(id_, api_key=None):
-    deployments_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = deployments_commands.StartDeploymentCommand(api=deployments_api)
-    command.execute(id_)
+    deployment_client = DeploymentsClient(api_key=api_key, api_url=config.CONFIG_HOST)
+    command = deployments_commands.StartDeploymentCommand(deployment_client=deployment_client)
+    command.execute(deploymnet_id=id_)
 
 
 @deployments.command("stop", help="Stop deployment")
@@ -135,6 +139,6 @@ def start_deployment(id_, api_key=None):
 )
 @api_key_option
 def stop_deployment(id_, api_key=None):
-    deployments_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = deployments_commands.StopDeploymentCommand(api=deployments_api)
-    command.execute(id_)
+    deployment_client = DeploymentsClient(api_key=api_key, api_url=config.CONFIG_HOST)
+    command = deployments_commands.StopDeploymentCommand(deployment_client=deployment_client)
+    command.execute(deployment_id=id_)

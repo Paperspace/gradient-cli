@@ -1,7 +1,16 @@
-from gradient import version
+import abc
+import pydoc
+
+import six
+import terminaltables
+from halo import halo
+
+from gradient import version, logger as gradient_logger, api_sdk, exceptions
 from gradient.api_sdk.clients import http_client
-from gradient.commands import common
 from gradient.config import config
+from gradient.commands import common
+from gradient.utils import get_terminal_lines
+
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "paperspace-python",
@@ -28,20 +37,52 @@ class _DeploymentCommandBase(common.CommandBase):
                 self.logger.error(error_msg)
 
 
-class CreateDeploymentCommand(_DeploymentCommandBase):
-    def execute(self, kwargs):
-        response = self.api.post("/deployments/createDeployment/", json=kwargs)
-        self._log_message(response,
-                          "New deployment created with id: {id}",
-                          "Unknown error during deployment")
+@six.add_metaclass(abc.ABCMeta)
+class _DeploymentCommand(object):
+    def __init__(self, deployment_client, logger_=gradient_logger.Logger()):
+        self.deployment_client = deployment_client
+        self.logger = logger_
+
+    @abc.abstractmethod
+    def execute(self, **kwargs):
+        pass
 
 
-class ListDeploymentsCommand(common.ListCommand):
+class CreateDeploymentCommand(_DeploymentCommand):
+    def execute(self, **kwargs):
+        with halo.Halo(text="Creating new experiment", spinner="dots"):
+            try:
+                deployment_id = self.deployment_client.create(**kwargs)
+            except api_sdk.GradientSdkError as e:
+                self.logger.error(e)
+            else:
+                self.logger.log("New deployment created with id: {}".format(deployment_id))
+
+
+class ListDeploymentsCommand(_DeploymentCommand):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
+
     @property
     def request_url(self):
         return "/deployments/getDeploymentList/"
 
-    def _get_request_json(self, kwargs):
+    def execute(self, **kwargs):
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            instances = self._get_instances(**kwargs)
+
+        self._log_objects_list(instances)
+
+    def _get_instances(self, **kwargs):
+        filters = self._get_request_json(kwargs)
+        try:
+            instances = self.deployment_client.list(filters)
+        except api_sdk.GradientSdkError as e:
+            raise exceptions.ReceivingDataFailedError(e)
+
+        return instances
+
+    @staticmethod
+    def _get_request_json(kwargs):
         filters = kwargs.get("filters")
         if not filters:
             return None
@@ -49,39 +90,45 @@ class ListDeploymentsCommand(common.ListCommand):
         json_ = {"filter": {"where": {"and": [filters]}}}
         return json_
 
-    def _get_objects(self, response, kwargs):
-        data = super(ListDeploymentsCommand, self)._get_objects(response, kwargs)
-        objects = data["deploymentList"]
-        return objects
-
-    def _get_table_data(self, deployments):
+    @staticmethod
+    def _get_table_data(deployments):
         data = [("Name", "ID", "Endpoint", "Api Type", "Deployment Type")]
         for deployment in deployments:
-            name = deployment.get("name")
-            id_ = deployment.get("id")
-            endpoint = deployment.get("endpoint")
-            api_type = deployment.get("apiType")
-            deployment_type = deployment.get("deploymentType")
+            name = deployment.name
+            id_ = deployment.id_
+            endpoint = deployment.endpoint
+            api_type = deployment.api_type
+            deployment_type = deployment.deployment_type
             data.append((name, id_, endpoint, api_type, deployment_type))
 
         return data
 
+    def _log_objects_list(self, objects):
+        if not objects:
+            self.logger.warning("No data found")
+            return
 
-class StartDeploymentCommand(_DeploymentCommandBase):
-    def execute(self, deployment_id):
-        json_ = {"id": deployment_id,
-                 "isRunning": True}
-        response = self.api.post("/deployments/updateDeployment/", json=json_)
-        self._log_message(response,
-                          "Deployment started",
-                          "Unknown error occurred.")
+        table_data = self._get_table_data(objects)
+        table_str = self._make_table(table_data)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
+
+    @staticmethod
+    def _make_table(table_data):
+        ascii_table = terminaltables.AsciiTable(table_data)
+        table_string = ascii_table.table
+        return table_string
 
 
-class StopDeploymentCommand(_DeploymentCommandBase):
-    def execute(self, deployment_id):
-        json_ = {"id": deployment_id,
-                 "isRunning": False}
-        response = self.api.post("/deployments/updateDeployment/", json=json_)
-        self._log_message(response,
-                          "Deployment stopped",
-                          "Unknown error occurred.")
+class StartDeploymentCommand(_DeploymentCommand):
+    def execute(self, **kwargs):
+        response = self.deployment_client.start(**kwargs)
+        self.logger.log_response(response, "Deployment started", "Unknown error while starting the deployment")
+
+
+class StopDeploymentCommand(_DeploymentCommand):
+    def execute(self, **kwargs):
+        response = self.deployment_client.stop(**kwargs)
+        self.logger.log_response(response, "Deployment stopped", "Unknown error while stopping the deployment")
