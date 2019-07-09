@@ -65,3 +65,49 @@ class GetExperiment(ParseExperimentDictMixin, GetResource):
         experiment_id = kwargs["experiment_id"]
         url = "/experiments/{}/".format(experiment_id)
         return url
+
+
+class ListExperimentLogs(ListResources):
+    def __init__(self, api):
+        super(ListExperimentLogs, self).__init__(api)
+
+    def get_request_url(self, **kwargs):
+        return "/jobs/logs"
+
+    def list(self, experiment_id, line, limit, **kwargs):
+        instances = super(ListExperimentLogs, self).list(experiment_id=experiment_id,
+                                                         line=line, limit=limit)
+        instances = list(instances)  # because here the _parse_objects returns a generator
+        return instances
+
+    def yield_logs(self, experiment_id, line=0, limit=10000):
+
+        gen = self._get_logs_generator(experiment_id, line, limit)
+        return gen
+
+    def _get_logs_generator(self, experiment_id, line, limit):
+        last_line_number = line
+
+        while True:
+            logs = self.list(experiment_id, last_line_number, limit)
+
+            for log in logs:
+                # stop generator - "PSEOF" indicates there are no more logs
+                if log.message == "PSEOF":
+                    raise StopIteration()
+
+                last_line_number += 1
+                yield log
+
+    def _parse_objects(self, log_rows, **kwargs):
+        serializer = serializers.LogRowSchema()
+        log_rows = (serializer.get_instance(row) for row in log_rows)
+        return log_rows
+
+    def _get_request_params(self, kwargs):
+        params = {
+            "experimentId": kwargs["experiment_id"],
+            "line": kwargs["line"],
+            "limit": kwargs["limit"],
+        }
+        return params

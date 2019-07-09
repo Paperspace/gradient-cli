@@ -1,14 +1,20 @@
-from gradient import constants
+from gradient import constants, config
 from .base_client import BaseClient
 from ..clients import http_client
 from ..exceptions import GradientSdkError
 from ..models import SingleNodeExperiment, MultiNodeExperiment
-from ..repositories.experiments import ListExperiments, GetExperiment
+from ..repositories.experiments import ListExperiments, GetExperiment, ListExperimentLogs
 from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema
 from ..utils import MessageExtractor
 
 
 class ExperimentsClient(BaseClient):
+    def __init__(self, *args, **kwargs):
+        super(ExperimentsClient, self).__init__(*args, **kwargs)
+        self.logs_client = http_client.API(config.config.CONFIG_LOG_HOST,
+                                           api_key=self.api_key,
+                                           logger=self.logger)
+
     def create_single_node(self, name, project_id, machine_type, command, ports=None, workspace=None,
                            workspace_archive=None, workspace_url=None, ignore_files=None, working_directory=None,
                            artifact_directory=None, cluster_id=None, experiment_env=None, model_type=None,
@@ -263,6 +269,26 @@ class ExperimentsClient(BaseClient):
         """
         experiment = GetExperiment(self.client).get(experiment_id=experiment_id)
         return experiment
+
+    def logs(self, experiment_id, line=0, limit=10000):
+        """Get list of logs for an experiment
+
+        :param str experiment_id:
+        :param int line:
+        :param int limit:
+        """
+        logs = ListExperimentLogs(self.logs_client).list(experiment_id, line, limit)
+        return logs
+
+    def yield_logs(self, experiment_id, line=0, limit=10000):
+        """Get log generator. Polls the API for new logs
+
+        :param str experiment_id:
+        :param int line:
+        :param int limit:
+        """
+        logs_generator = ListExperimentLogs(self.logs_client).yield_logs(experiment_id, line, limit)
+        return logs_generator
 
     def _create(self, experiment, schema_cls):
         experiment_dict = self._get_experiment_dict(experiment, schema_cls)

@@ -15,9 +15,12 @@ class BaseClient(object):
     ):
         """
 
-        :type api_key: str
-        :type logger: sdk_logger.Logger
+        :param str api_key:
+        :param sdk_logger.Logger logger:
+        :param str api_url:
+        :param type[workspace.WorkspaceHandler] workspace_handler_cls:
         """
+        self.api_key = api_key
         self.api_url = api_url
         self.client = http_client.API(self.api_url, api_key=api_key, logger=logger)
         self.logger = logger

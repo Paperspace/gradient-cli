@@ -27,6 +27,11 @@ DEPLOYMENT_MACHINE_TYPES = ("G1", "G6", "G12",
                             "K80", "P100", "GV100")
 
 
+def get_deployment_client(api_key):
+    deployment_client = DeploymentsClient(api_key=api_key, logger=logger.Logger(), api_url=config.CONFIG_HOST)
+    return deployment_client
+
+
 @deployments.command("create", help="Create new deployment")
 @click.option(
     "--deploymentType",
@@ -70,7 +75,7 @@ DEPLOYMENT_MACHINE_TYPES = ("G1", "G6", "G12",
 @api_key_option
 def create_deployment(api_key=None, **kwargs):
     del_if_value_is_none(kwargs)
-    deployment_client = DeploymentsClient(api_key=api_key, api_url=config.CONFIG_HOST)
+    deployment_client = get_deployment_client(api_key)
     command = deployments_commands.CreateDeploymentCommand(deployment_client=deployment_client)
     command.execute(**kwargs)
 
@@ -108,7 +113,7 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
 @api_key_option
 def get_deployments_list(api_key=None, **filters):
     del_if_value_is_none(filters)
-    deployment_client = DeploymentsClient(api_key=api_key, api_url=config.CONFIG_HOST)
+    deployment_client = get_deployment_client(api_key)
     command = deployments_commands.ListDeploymentsCommand(deployment_client=deployment_client)
     try:
         command.execute(filters=filters)
@@ -125,7 +130,7 @@ def get_deployments_list(api_key=None, **filters):
 )
 @api_key_option
 def start_deployment(id_, api_key=None):
-    deployment_client = DeploymentsClient(api_key=api_key, api_url=config.CONFIG_HOST)
+    deployment_client = get_deployment_client(api_key)
     command = deployments_commands.StartDeploymentCommand(deployment_client=deployment_client)
     command.execute(deploymnet_id=id_)
 
@@ -139,6 +144,6 @@ def start_deployment(id_, api_key=None):
 )
 @api_key_option
 def stop_deployment(id_, api_key=None):
-    deployment_client = DeploymentsClient(api_key=api_key, api_url=config.CONFIG_HOST)
+    deployment_client = get_deployment_client(api_key)
     command = deployments_commands.StopDeploymentCommand(deployment_client=deployment_client)
     command.execute(deployment_id=id_)

@@ -95,7 +95,8 @@ class GradientResponse(object):
         try:
             data = response.json()
         except ValueError:
-            data = None
+            content = response.content
+            data = content or None
 
         gradient_response = cls(response.content, response.status_code, response.headers, data)
         return gradient_response

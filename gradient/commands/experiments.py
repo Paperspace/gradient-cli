@@ -7,9 +7,8 @@ from click import style
 from halo import halo
 
 from gradient import logger as gradient_logger, constants, api_sdk, exceptions
+from gradient.api_sdk.clients import http_client, experiment_client
 from gradient.config import config
-from gradient.api_sdk.clients import http_client, sdk_client
-from gradient.commands import common
 from gradient.utils import get_terminal_lines
 
 experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST,
@@ -93,20 +92,20 @@ class CreateAndStartSingleNodeExperimentCommand(_RunExperimentCommand):
 def start_experiment(experiment_id, client, logger_=gradient_logger.Logger()):
     """
     :type experiment_id: str
-    :type client: sdk_client.SdkClient
+    :type client: experiment_client.ExperimentsClient
     :param logger_: logger.Logger
     """
-    response = client.experiments.start(experiment_id)
+    response = client.start(experiment_id)
     logger_.log_response(response, "Experiment started", "Unknown error while starting the experiment")
 
 
 def stop_experiment(experiment_id, client, logger_=gradient_logger.Logger()):
     """
     :type experiment_id: str
-    :type client: sdk_client.SdkClient
+    :type client: experiment_client.ExperimentsClient
     :param logger_: logger.Logger
     """
-    response = client.experiments.start(experiment_id)
+    response = client.stop(experiment_id)
     logger_.log_response(response, "Experiment stopped", "Unknown error while stopping the experiment")
 
 
@@ -237,75 +236,44 @@ class GetExperimentCommand(ExperimentCommand):
         return table_string
 
 
-class ExperimentLogsCommand(common.CommandBase):
-    last_line_number = 0
-    base_url = "/jobs/logs"
-
-    is_logs_complete = False
-
+class ExperimentLogsCommand(ExperimentCommand):
     def execute(self, experiment_id, line, limit, follow):
         if follow:
             self.logger.log("Awaiting logs...")
+            self._log_logs_continuously(experiment_id, line, limit)
+        else:
+            self._log_table_of_logs(experiment_id, line, limit)
 
-        self.last_line_number = line
+    def _log_table_of_logs(self, experiment_id, line, limit):
+        logs = self.experiments_client.logs(experiment_id, line, limit)
+        if not logs:
+            self.logger.log("No logs found")
+            return
+
+        table_str = self._make_table(logs, experiment_id)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
+
+    def _log_logs_continuously(self, experiment_id, line, limit):
+        logs_gen = self.experiments_client.yield_logs(experiment_id, line, limit)
+        for log in logs_gen:
+            log_msg = "{}\t{}\t{}".format(*self._format_row(experiment_id, log))
+            self.logger.log(log_msg)
+
+    def _make_table(self, logs, experiment_id):
         table_title = "Experiment %s logs" % experiment_id
         table_data = [("JOB ID", "LINE", "MESSAGE")]
         table = terminaltables.AsciiTable(table_data, title=table_title)
 
-        while not self.is_logs_complete:
-            response = self._get_logs(experiment_id, self.last_line_number, limit)
-
-            try:
-                data = response.json()
-                if not response.ok:
-                    self.logger.log_error_response(data)
-                    return
-            except (ValueError, KeyError) as e:
-                if response.status_code == 204:
-                    continue
-                self.logger.log("Error while parsing response data: {}".format(e))
-                return
-            else:
-                self._log_logs_list(data, table, table_data, follow)
-
-            if not follow:
-                self.is_logs_complete = True
-
-    def _get_logs(self, experiment_id, line, limit):
-        params = {
-            'experimentId': experiment_id,
-            'line': line,
-            'limit': limit
-        };
-        return self.api.get(self.base_url, params=params)
-
-    def _log_logs_list(self, data, table, table_data, follow):
-        if not data:
-            self.logger.log("No logs found")
-            return
-        if follow:
-            # TODO track number of jobs seen to look for PSEOF
-            if data[-1].get("message") == "PSEOF":
-                self.is_logs_complete = True
-            else:
-                self.last_line_number = data[-1].get("line")
-            for log in data:
-                log_str = "{}\t{}\t{}"
-                self.logger.log(log_str.format(style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
-        else:
-            table_str = self._make_table(data, table, table_data)
-            if len(table_str.splitlines()) > get_terminal_lines():
-                pydoc.pager(table_str)
-            else:
-                self.logger.log(table_str)
-
-    def _make_table(self, logs, table, table_data):
-        if logs[-1].get("message") == "PSEOF":
-            self.is_logs_complete = True
-        else:
-            self.last_line_number = logs[-1].get("line")
-
         for log in logs:
-            table_data.append((style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
+            table_data.append(self._format_row(experiment_id, log))
 
         return table.table
+
+    @staticmethod
+    def _format_row(experiment_id, log_row):
+        return (style(fg="blue", text=experiment_id),
+                style(fg="red", text=str(log_row.line)),
+                log_row.message)
