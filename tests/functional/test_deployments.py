@@ -206,7 +206,7 @@ class TestDeploymentsList(object):
                                             headers=EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
-        assert result.output == "Failed to fetch data: Invalid API token\n"
+        assert result.output == "Failed to fetch data: Invalid API token\n", result.exc_info
 
 
 class TestStartDeployment(object):

@@ -680,12 +680,12 @@ class TestStartExperiment(object):
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.START_STDOUT, result.exc_info
         put_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
-
-        assert result.output == self.START_STDOUT
 
     @mock.patch("gradient.cli.experiments.experiments_commands.http_client.requests.put")
     def test_should_send_put_request_with_changed_api_key_when_api_key_option_was_provided(self, put_patched):
@@ -693,9 +693,52 @@ class TestStartExperiment(object):
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
+
+        assert result.output == self.START_STDOUT
         put_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=None)
 
-        assert result.output == self.START_STDOUT
+
+class TestExperimentLogs(object):
+    URL = "https://logs.paperspace.io/jobs/logs"
+    COMMAND = ["experiments", "logs", "--experimentId", "some_id"]
+    COMMAND_WITH_FOLLOW = ["experiments", "logs", "--experimentId", "some_id", "--follow", "True"]
+    EXPECTED_HEADERS = http_client.default_headers.copy()
+
+
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+    @mock.patch("gradient.cli.experiments.experiments_commands.http_client.requests.get")
+    def test_should_send_get_request_and_print_all_received_logs_when_logs_command_was_used(self, get_patched):
+        get_patched.return_value = MockResponse(json_data=example_responses.LIST_OF_LOGS_FOR_EXPERIMENT,
+                                                status_code=200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert "Downloading https://storage.googleapis.com/cvdf-datasets/mnist/t10k-labels" \
+               "-idx1-ubyte.gz to /tmp/tmpbrss4txl.gz" in result.output
+
+    @mock.patch("gradient.cli.experiments.experiments_commands.http_client.requests.get")
+    def test_should_send_get_request_and_print_all_received_logs_when_logs_command_was_used_with_follow_flag(self, get_patched):
+        get_patched.return_value = MockResponse(json_data=example_responses.LIST_OF_LOGS_FOR_EXPERIMENT,
+                                                status_code=200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_FOLLOW)
+
+        assert "Downloading https://storage.googleapis.com/cvdf-datasets/mnist/t10k-labels" \
+               "-idx1-ubyte.gz to /tmp/tmpbrss4txl.gz" in result.output
+
+    @mock.patch("gradient.cli.experiments.experiments_commands.http_client.requests.get")
+    def test_should_send_get_request_and_error_message_when_wrong_api_key_was_used(self, get_patched):
+        get_patched.return_value = MockResponse(content="Authentication failed",
+                                                status_code=401)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_FOLLOW)
+
+        assert "Awaiting logs...\nFailed to fetch data: Authentication failed\n" in result.output

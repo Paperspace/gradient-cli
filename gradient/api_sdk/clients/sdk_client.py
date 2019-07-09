@@ -11,5 +11,5 @@ class SdkClient(object):
         :type api_key: str
         :type logger: sdk_logger.Logger
         """
-        self.experiments = ExperimentsClient(api_key, logger)
-        self.deployments = DeploymentsClient(api_key, logger, api_url=config.CONFIG_HOST)
+        self.experiments = ExperimentsClient(api_key=api_key, logger=logger)
+        self.deployments = DeploymentsClient(api_key=api_key, logger=logger, api_url=config.CONFIG_HOST)
