@@ -172,7 +172,7 @@ def get_experiment_details(experiment_id, api=experiments_api, logger_=logger.Lo
         try:
             experiment = response.json()["data"]
             details = _make_details_table(experiment)
-        except (ValueError, KeyError) as e:
+        except (ValueError, KeyError):
             logger_.error("Error parsing response data")
 
     logger_.log_response(response, details, "Unknown error while retrieving details of the experiment")

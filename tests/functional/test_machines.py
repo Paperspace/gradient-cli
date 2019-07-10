@@ -1157,7 +1157,7 @@ class TestUpdateMachine(object):
                                        json=self.REQUEST_JSON,
                                        params=None,
                                        files=None,
-                                        data=None)
+                                       data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -1173,7 +1173,7 @@ class TestUpdateMachine(object):
                                        json=self.ALL_COMMANDS_REQUEST_JSON,
                                        params=None,
                                        files=None,
-                                        data=None)
+                                       data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -1189,7 +1189,7 @@ class TestUpdateMachine(object):
                                        json=self.REQUEST_JSON,
                                        params=None,
                                        files=None,
-                                        data=None)
+                                       data=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -1205,7 +1205,7 @@ class TestUpdateMachine(object):
                                        json=self.REQUEST_JSON,
                                        params=None,
                                        files=None,
-                                        data=None)
+                                       data=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
@@ -1221,7 +1221,7 @@ class TestUpdateMachine(object):
                                        json=self.REQUEST_JSON,
                                        params=None,
                                        files=None,
-                                        data=None)
+                                       data=None)
         assert result.output == "Not found\n"
         assert result.exit_code == 0
 
@@ -1237,7 +1237,7 @@ class TestUpdateMachine(object):
                                        json=self.REQUEST_JSON,
                                        params=None,
                                        files=None,
-                                        data=None)
+                                       data=None)
         assert result.output == "Unknown error while updating machine\n"
         assert result.exit_code == 0
 
