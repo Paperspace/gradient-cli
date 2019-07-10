@@ -86,8 +86,9 @@ def validate_workspace_input(input_data):
     if (workspace_archive and workspace_path) \
             or (workspace_archive and workspace_url) \
             or (workspace_path and workspace_url):
-        raise click.UsageError("Use either:\n\t--workspace https://path.to/git/repository.git - to point repository URL"
-                               "\n\t--workspace /path/to/local/directory - to point on project directory"
-                               "\n\t--workspace /path/to/local/archive.zip - to point on project .zip archive"
-                               "\n\t--workspace none - to use no workspace"
+        raise click.UsageError("Use either:"
+                               "\n\t--workspace https://path.to/git/repository.git  - to point to a repository URL"
+                               "\n\t--workspace /path/to/local/directory            - to point to a project directory"
+                               "\n\t--workspace /path/to/local/archive.zip          - to point to a .zip archive"
+                               "\n\t--workspace none                                - to use no workspace"
                                "\n or neither to use current directory")
