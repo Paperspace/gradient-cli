@@ -29,7 +29,7 @@ class WorkspaceHandler(object):
     def __init__(self, logger_=None):
         """
 
-        :param logger_: gradient.logger
+        :param gradient.logger.Logger logger_:
         """
         self.logger = logger_ or logger.Logger()
         self.archive_path = None
@@ -144,10 +144,9 @@ class S3WorkspaceHandler(WorkspaceHandler):
     def __init__(self, experiments_api, logger_=None,
                  multipart_encoder_cls=DEFAULT_MULTIPART_ENCODER_CLS):
         """
-
-        :param experiments_api: gradient.client.API
-        :param logger_: gradient.logger
-        :type type]multipart_encoder_cls]: MultipartEncoder
+        :param api_sdk.clients.http_client.API experiments_api:
+        :param gradient.logger.Logger logger_:
+        :param type[MultipartEncoder] multipart_encoder_cls:
         """
         super(S3WorkspaceHandler, self).__init__(logger_=logger_)
         self.experiments_api = experiments_api
