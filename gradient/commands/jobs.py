@@ -7,7 +7,6 @@ from gradient.api_sdk.utils import print_dict_recursive
 from gradient.commands import common
 from gradient.exceptions import BadResponseError
 from gradient.utils import get_terminal_lines
-from gradient.api_sdk.workspace import WorkspaceHandler, MultipartEncoder
 
 
 class JobsCommandBase(common.CommandBase):
@@ -145,45 +144,16 @@ class JobLogsCommand(common.CommandBase):
 
 
 class CreateJobCommand(JobsCommandBase):
-    def __init__(self, workspace_handler=None, **kwargs):
+    def __init__(self, job_client, **kwargs):
         super(CreateJobCommand, self).__init__(**kwargs)
-        self._workspace_handler = workspace_handler or WorkspaceHandler(logger_=self.logger)
+        self.job_client = job_client
 
     def execute(self, json_):
-        url = "/jobs/createJob/"
-        data = None
-        self.set_project_if_not_provided(json_)
-
-        workspace_url = self._workspace_handler.handle(json_)
-        if workspace_url:
-            if self._workspace_handler.archive_path:
-                data = self._get_multipart_data(json_)
-            else:
-                json_["workspaceFileName"] = workspace_url
-
         self.logger.log("Creating job...")
-        response = self.api.post(url, params=json_, data=data)
+        response = self.job_client.create(json_)
         self._log_message(response,
                           "Job created - ID: {id}",
                           "Unknown error while creating job")
-
-    def _get_multipart_data(self, json_):
-        archive_basename = self._workspace_handler.archive_basename
-        json_["workspaceFileName"] = archive_basename
-        job_data = self._get_files_dict(archive_basename)
-        monitor = MultipartEncoder(job_data).get_monitor()
-        self.api.headers["Content-Type"] = monitor.content_type
-        data = monitor
-        return data
-
-    def _get_files_dict(self, archive_basename):
-        job_data = {'file': (archive_basename, open(self._workspace_handler.archive_path, 'rb'), 'text/plain')}
-        return job_data
-
-    @staticmethod
-    def set_project_if_not_provided(json_):
-        if not json_.get("projectId"):
-            json_["project"] = "gradient-project"
 
 
 class ArtifactsDestroyCommand(JobsCommandBase):

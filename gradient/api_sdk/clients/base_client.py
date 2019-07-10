@@ -24,4 +24,4 @@ class BaseClient(object):
         self.api_url = api_url
         self.client = http_client.API(self.api_url, api_key=api_key, logger=logger)
         self.logger = logger
-        self.workspace_handler = workspace_handler_cls(self.client)
+        self.workspace_handler = workspace_handler_cls(experiments_api=self.client)

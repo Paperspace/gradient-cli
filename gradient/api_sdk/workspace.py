@@ -5,8 +5,9 @@ from collections import OrderedDict
 import requests
 from requests_toolbelt.multipart import encoder
 
+from gradient.api_sdk import logger
 import gradient.api_sdk.utils
-from gradient import logger, utils
+from gradient import utils
 from gradient.exceptions import S3UploadFailedError, PresignedUrlUnreachableError, \
     PresignedUrlAccessDeniedError, PresignedUrlConnectionError, ProjectAccessDeniedError, \
     PresignedUrlMalformedResponseError, PresignedUrlError
@@ -26,12 +27,12 @@ class MultipartEncoder(object):
 
 
 class WorkspaceHandler(object):
-    def __init__(self, logger_=None):
+    def __init__(self, logger_=logger.MuteLogger(), **kwargs):
         """
 
         :param logger_: gradient.logger
         """
-        self.logger = logger_ or logger.Logger()
+        self.logger = logger_
         self.archive_path = None
         self.archive_basename = None
 

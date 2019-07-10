@@ -8,7 +8,7 @@ class JobSchema(BaseSchema):
     MODEL = models.Job
 
     id_ = marshmallow.fields.Str(dump_to="id", load_from="id")
-    name = marshmallow.fields.Str()
+    name = marshmallow.fields.Str(required=True)
     state = marshmallow.fields.Str()
     workspace_url = marshmallow.fields.Str(dump_to="workspaceUrl", load_from="workspaceUrl")
     working_directory = marshmallow.fields.Str(dump_to="workingDirectory", load_from="workingDirectory")
@@ -76,3 +76,12 @@ class JobSchema(BaseSchema):
     metrics_url = marshmallow.fields.Str(dump_to="metricsURL", load_from="metricsURL")
     custom_metrics = marshmallow.fields.Str(dump_to="customMetrics", load_from="customMetrics")
     experiment_id = marshmallow.fields.Str(dump_to="experimentId", load_from="experimentId")
+
+    command = marshmallow.fields.Str()
+    workspace = marshmallow.fields.Str()
+    workspace_archive = marshmallow.fields.Str(dump_to="workspaceArchive", load_from="workspaceArchive")
+    ignore_files = marshmallow.fields.Str(dump_to="ignoreFiles", load_from="ignoreFiles")
+    use_dockerfile = marshmallow.fields.Bool(dump_to="useDockerfile", load_from="useDockerfile")
+    rel_dockerfile_path = marshmallow.fields.Str(dump_to="relDockerfilePath", load_from="relDockerfilePath")
+    registry_username = marshmallow.fields.Str(dump_to="registryUsername", load_from="registryUsername")
+    registry_password = marshmallow.fields.Str(dump_to="registryPassword", load_from="registryPassword")
