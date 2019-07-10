@@ -2,9 +2,12 @@ import getpass
 
 import click
 
-from gradient import logger
+import gradient.logger
 from gradient.cli.cli import cli
 from gradient.commands import login as login_commands
+
+logger = gradient.logger.Logger()
+
 
 LOGIN_DEPRECATION_MESSAGE = """The login command is currently disabled for logging in using `--email` and `--password`.
 
