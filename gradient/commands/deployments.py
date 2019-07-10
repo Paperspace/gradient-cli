@@ -74,6 +74,7 @@ class StartDeploymentCommand(_DeploymentCommandBase):
                           "Deployment started",
                           "Unknown error occurred.")
 
+
 class StopDeploymentCommand(_DeploymentCommandBase):
     def execute(self, deployment_id):
         json_ = {"id": deployment_id,

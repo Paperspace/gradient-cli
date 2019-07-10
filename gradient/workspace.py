@@ -2,7 +2,6 @@ import os
 import zipfile
 from collections import OrderedDict
 
-import click
 import progressbar
 import requests
 from requests_toolbelt.multipart import encoder

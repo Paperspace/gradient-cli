@@ -1,5 +1,4 @@
 import functools
-import getpass
 import json
 
 import click
