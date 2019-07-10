@@ -1,19 +1,17 @@
+from gradient.api_sdk import serializers
 from .common import ListResources, GetResource
-from .. import serializers
+from ..serializers import utils
 
 
 class ParseExperimentDictMixin(object):
     def _parse_object(self, experiment_dict, **kwargs):
-        if self._is_single_node_experiment(experiment_dict):
-            experiment = serializers.SingleNodeExperimentSchema().get_instance(experiment_dict)
-        else:
-            experiment = serializers.MultiNodeExperimentSchema().get_instance(experiment_dict)
-
+        """
+        :param dict experiment_dict:
+        :rtype BaseExperiment
+        """
+        serializer = utils.get_serializer_for_experiment(experiment_dict)
+        experiment = serializer().get_instance(experiment_dict)
         return experiment
-
-    @staticmethod
-    def _is_single_node_experiment(experiment_dict):
-        return "parameter_server_machine_type" not in experiment_dict
 
 
 class ListExperiments(ParseExperimentDictMixin, ListResources):

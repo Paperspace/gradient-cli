@@ -147,7 +147,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
 
         :param experiments_api: gradient.client.API
         :param logger_: gradient.logger
-        :type multipart_encoder_cls: MultipartEncoder
+        :type type]multipart_encoder_cls]: MultipartEncoder
         """
         super(S3WorkspaceHandler, self).__init__(logger_=logger_)
         self.experiments_api = experiments_api

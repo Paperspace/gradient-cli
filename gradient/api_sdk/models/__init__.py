@@ -1,3 +1,4 @@
 from .deployment import Deployment
-from .experiment import MultiNodeExperiment, SingleNodeExperiment
+from .experiment import BaseExperiment, MultiNodeExperiment, SingleNodeExperiment
+from .hyperparameter import Hyperparameter
 from .log import LogRow

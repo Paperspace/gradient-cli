@@ -186,54 +186,84 @@ class GetExperimentCommand(ExperimentCommand):
         else:
             self.logger.log(table_str)
 
-    @staticmethod
-    def _make_table(experiment):
-        if experiment.experiment_type_id == constants.ExperimentType.SINGLE_NODE:
-            data = (
-                ("Name", experiment.name),
-                ("ID", experiment.id),
-                ("State", constants.ExperimentState.get_state_str(experiment.state)),
-                ("Ports", experiment.ports),
-                ("Project ID", experiment.project_id),
-                ("Worker Command", experiment.command),
-                ("Worker Container", experiment.container),
-                ("Worker Machine Type", experiment.machine_type),
-                ("Working Directory", experiment.working_directory),
-                ("Workspace URL", experiment.workspace_url),
-                ("Model Type", experiment.model_type),
-                ("Model Path", experiment.model_path),
-            )
-        elif experiment.experiment_type_id in (constants.ExperimentType.GRPC_MULTI_NODE,
-                                               constants.ExperimentType.MPI_MULTI_NODE):
-            data = (
-                ("Name", experiment.name),
-                ("ID", experiment.id),
-                ("State", constants.ExperimentState.get_state_str(experiment.state)),
-                ("Artifact directory", experiment.artifact_directory),
-                ("Cluster ID", experiment.cluster_id),
-                ("Experiment Env", experiment.experiment_env),
-                ("Experiment Type", constants.ExperimentType.get_type_str(experiment.experiment_type_id)),
-                ("Model Type", experiment.model_type),
-                ("Model Path", experiment.model_path),
-                ("Parameter Server Command", experiment.parameter_server_command),
-                ("Parameter Server Container", experiment.parameter_server_container),
-                ("Parameter Server Count", experiment.parameter_server_count),
-                ("Parameter Server Machine Type", experiment.parameter_server_machine_type),
-                ("Ports", experiment.ports),
-                ("Project ID", experiment.project_id),
-                ("Worker Command", experiment.worker_command),
-                ("Worker Container", experiment.worker_container),
-                ("Worker Count", experiment.worker_count),
-                ("Worker Machine Type", experiment.worker_machine_type),
-                ("Working Directory", experiment.working_directory),
-                ("Workspace URL", experiment.workspace_url),
-            )
-        else:
-            raise ValueError("Wrong experiment type: {}".format(experiment.experiment_type_id))
-
+    def _make_table(self, experiment):
+        """
+        :param api_sdk.BaseExperiment:
+        """
+        data = self._get_experiment_table_data(experiment)
         ascii_table = terminaltables.AsciiTable(data)
         table_string = ascii_table.table
         return table_string
+
+    def _get_experiment_table_data(self, experiment):
+        if experiment.experiment_type_id == constants.ExperimentType.SINGLE_NODE:
+            return self._get_single_node_data(experiment)
+
+        if experiment.experiment_type_id in (constants.ExperimentType.GRPC_MULTI_NODE,
+                                             constants.ExperimentType.MPI_MULTI_NODE):
+            return self._get_multi_node_data(experiment)
+
+        if experiment.experiment_type_id == constants.ExperimentType.HYPERPARAMETER_TUNING:
+            return self._get_hyperparameter_data(experiment)
+
+        raise ValueError("Wrong experiment type: {}".format(experiment.experiment_type_id))
+
+    @staticmethod
+    def _get_single_node_data(experiment):
+        """
+        :param api_sdk.SingleNodeExperiment experiment:
+        """
+        data = (
+            ("Name", experiment.name),
+            ("ID", experiment.id),
+            ("State", constants.ExperimentState.get_state_str(experiment.state)),
+            ("Ports", experiment.ports),
+            ("Project ID", experiment.project_id),
+            ("Worker Command", experiment.command),
+            ("Worker Container", experiment.container),
+            ("Worker Machine Type", experiment.machine_type),
+            ("Working Directory", experiment.working_directory),
+            ("Workspace URL", experiment.workspace_url),
+            ("Model Type", experiment.model_type),
+            ("Model Path", experiment.model_path),
+        )
+        return data
+
+    @staticmethod
+    def _get_multi_node_data(experiment):
+        """
+        :param api_sdk.MultiNodeExperiment experiment:
+        """
+        data = (
+            ("Name", experiment.name),
+            ("ID", experiment.id),
+            ("State", constants.ExperimentState.get_state_str(experiment.state)),
+            ("Artifact directory", experiment.artifact_directory),
+            ("Cluster ID", experiment.cluster_id),
+            ("Experiment Env", experiment.experiment_env),
+            ("Experiment Type", constants.ExperimentType.get_type_str(experiment.experiment_type_id)),
+            ("Model Type", experiment.model_type),
+            ("Model Path", experiment.model_path),
+            ("Parameter Server Command", experiment.parameter_server_command),
+            ("Parameter Server Container", experiment.parameter_server_container),
+            ("Parameter Server Count", experiment.parameter_server_count),
+            ("Parameter Server Machine Type", experiment.parameter_server_machine_type),
+            ("Ports", experiment.ports),
+            ("Project ID", experiment.project_id),
+            ("Worker Command", experiment.worker_command),
+            ("Worker Container", experiment.worker_container),
+            ("Worker Count", experiment.worker_count),
+            ("Worker Machine Type", experiment.worker_machine_type),
+            ("Working Directory", experiment.working_directory),
+            ("Workspace URL", experiment.workspace_url),
+        )
+        return data
+
+    @staticmethod
+    def _get_hyperparameter_data(experiment):
+        """
+        :param api_sdk.Hyperparameter experiment:
+        """
 
 
 class ExperimentLogsCommand(ExperimentCommand):
