@@ -2,6 +2,7 @@ class ExperimentType:
     SINGLE_NODE = 1
     GRPC_MULTI_NODE = 2
     MPI_MULTI_NODE = 3
+    HYPERPARAMETER_TUNING = 4
 
     @classmethod
     def get_type_str(cls, state_int):
@@ -9,6 +10,7 @@ class ExperimentType:
             1: "single node",
             2: "GRPC multi node",
             3: "MPI multi node",
+            4: "Hyperparameter tuning"
         }
         return type_strings.get(state_int, "undefined")
 
