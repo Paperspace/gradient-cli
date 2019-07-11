@@ -19,6 +19,11 @@ class JobsClient(BaseClient):
         job_dict = JobSchema().dump(job).data
         return self._create(job_dict)
 
+    def delete(self, job_id):
+        url = self._get_delete_url(job_id)
+        response = self.client.post(url)
+        return response
+
     def _create(self, job_dict):
         """
 
@@ -83,3 +88,7 @@ class JobsClient(BaseClient):
 
         msg = MessageExtractor().get_message_from_response_data(response_data)
         return msg
+
+    @staticmethod
+    def _get_delete_url(job_id):
+        return "/jobs/{}/destroy/".format(job_id)

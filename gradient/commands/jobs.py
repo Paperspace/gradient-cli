@@ -28,9 +28,12 @@ class JobsCommandBase(common.CommandBase):
 
 
 class DeleteJobCommand(JobsCommandBase):
+    def __init__(self, job_client, **kwargs):
+        super(DeleteJobCommand, self).__init__(**kwargs)
+        self.job_client = job_client
+
     def execute(self, job_id):
-        url = "/jobs/{}/destroy/".format(job_id)
-        response = self.api.post(url)
+        response = self.job_client.delete(job_id)
         self._log_message(response,
                           "Job deleted",
                           "Unknown error while deleting job")

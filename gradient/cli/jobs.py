@@ -36,8 +36,8 @@ def jobs_group():
 )
 @api_key_option
 def delete_job(job_id, api_key=None):
-    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = jobs_commands.DeleteJobCommand(api=jobs_api)
+    job_client = get_job_client(api_key)
+    command = jobs_commands.DeleteJobCommand(job_client=job_client)
     command.execute(job_id)
 
 
