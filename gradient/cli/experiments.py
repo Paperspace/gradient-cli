@@ -46,7 +46,7 @@ def common_experiments_create_options(f):
         click.option(
             "--workspace",
             "workspace",
-            help="Path to workspace directory",
+            help="Path to workspace directory, archive, S3 or git repository",
         ),
         click.option(
             "--workspaceArchive",
