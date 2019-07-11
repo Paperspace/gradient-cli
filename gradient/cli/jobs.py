@@ -50,8 +50,8 @@ def delete_job(job_id, api_key=None):
 )
 @api_key_option
 def stop_job(job_id, api_key=None):
-    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = jobs_commands.StopJobCommand(api=jobs_api)
+    job_client = get_job_client(api_key)
+    command = jobs_commands.StopJobCommand(job_client=job_client)
     command.execute(job_id)
 
 

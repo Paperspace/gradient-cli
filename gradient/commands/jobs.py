@@ -40,9 +40,12 @@ class DeleteJobCommand(JobsCommandBase):
 
 
 class StopJobCommand(JobsCommandBase):
+    def __init__(self, job_client, **kwargs):
+        super(StopJobCommand, self).__init__(**kwargs)
+        self.job_client = job_client
+
     def execute(self, job_id):
-        url = "/jobs/{}/stop/".format(job_id)
-        response = self.api.post(url)
+        response = self.job_client.dtop(job_id)
         self._log_message(response,
                           "Job stopped",
                           "Unknown error while stopping job")

@@ -20,7 +20,12 @@ class JobsClient(BaseClient):
         return self._create(job_dict)
 
     def delete(self, job_id):
-        url = self._get_delete_url(job_id)
+        url = self._get_action_url(job_id, "destroy")
+        response = self.client.post(url)
+        return response
+
+    def stop(self, job_id):
+        url = self._get_action_url(job_id, "stop")
         response = self.client.post(url)
         return response
 
@@ -90,5 +95,5 @@ class JobsClient(BaseClient):
         return msg
 
     @staticmethod
-    def _get_delete_url(job_id):
-        return "/jobs/{}/destroy/".format(job_id)
+    def _get_action_url(job_id, action):
+        return "/jobs/{}/{}/".format(job_id, action)
