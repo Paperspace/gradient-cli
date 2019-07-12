@@ -5,8 +5,6 @@ import attr
 class _Experiment(object):
     name = attr.ib(type=str, default=None)
     ports = attr.ib(type=str, default=None)
-    workspace = attr.ib(type=str, default=None)
-    workspace_archive = attr.ib(type=str, default=None)
     workspace_url = attr.ib(type=str, default=None)
     ignore_files = attr.ib(type=list, default=list)
     working_directory = attr.ib(type=str, default=None)

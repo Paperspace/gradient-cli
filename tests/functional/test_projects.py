@@ -1,10 +1,9 @@
 import mock
 from click.testing import CliRunner
 
-import gradient
 import gradient.api_sdk.clients.http_client
-from gradient.cli import cli
 from gradient.api_sdk.clients.http_client import default_headers
+from gradient.cli import cli
 from tests import example_responses, MockResponse
 
 

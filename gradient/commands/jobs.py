@@ -7,7 +7,7 @@ from gradient.api_sdk.utils import print_dict_recursive
 from gradient.commands import common
 from gradient.exceptions import BadResponseError
 from gradient.utils import get_terminal_lines
-from gradient.api_sdk.workspace import WorkspaceHandler, MultipartEncoder
+from gradient.workspace import MultipartEncoder, WorkspaceHandler
 
 
 class JobsCommandBase(common.CommandBase):
@@ -160,6 +160,15 @@ class CreateJobCommand(JobsCommandBase):
                 data = self._get_multipart_data(json_)
             else:
                 json_["workspaceFileName"] = workspace_url
+
+        json_.pop("workspaceArchive", None)
+        json_.pop("workspaceUrl", None)
+        json_.pop("workspace", None)
+        if workspace_url:
+            if workspace_url != "none":
+                json_["workspaceUrl"] = workspace_url
+            else:
+                json_["workspace"] = workspace_url
 
         self.logger.log("Creating job...")
         response = self.api.post(url, params=json_, data=data)

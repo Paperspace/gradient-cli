@@ -5,8 +5,7 @@ import pytest
 
 import gradient.api_sdk.utils
 from gradient import exceptions
-from gradient import utils
-from gradient.api_sdk.utils import PathParser
+from gradient.utils import PathParser
 
 output_response = ""
 
