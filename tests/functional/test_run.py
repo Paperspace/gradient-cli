@@ -16,8 +16,8 @@ class TestRunCommand(object):
     headers["X-API-Key"] = "some_key"
 
     @mock.patch("gradient.cli.run.http_client.requests.post")
-    @mock.patch("gradient.api_sdk.workspace.WorkspaceHandler._zip_workspace")
-    @mock.patch("gradient.api_sdk.workspace.MultipartEncoder.get_monitor")
+    @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
+    @mock.patch("gradient.workspace.MultipartEncoder.get_monitor")
     @mock.patch("gradient.commands.jobs.CreateJobCommand._get_files_dict")
     def test_run_simple_file_with_args(self, get_files_patched, get_moniror_patched, workspace_zip_patched, post_patched):
         get_files_patched.return_value = mock.MagicMock()
@@ -39,6 +39,7 @@ class TestRunCommand(object):
         post_patched.assert_called_with(self.url,
                                         params={'name': u'test', 'projectId': u'projectId',
                                                 'workspaceFileName': 'bar',
+                                                'workspaceUrl': '/foo/bar',
                                                 'command': 'python{} myscript.py a b'.format(str(sys.version_info[0])),
                                                 'container': u'paperspace/tensorflow-python'},
                                         data=mock.ANY,
@@ -67,7 +68,7 @@ class TestRunCommand(object):
                                         json=None)
 
     @mock.patch("gradient.cli.run.http_client.requests.post")
-    @mock.patch("gradient.api_sdk.workspace.WorkspaceHandler._zip_workspace")
+    @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
     def test_run_shell_command_with_args_with_s3_workspace(self, workspace_zip_patched, post_patched):
         workspace_zip_patched.return_value = '/foo/bar'
         post_patched.return_value = MockResponse(status_code=200)

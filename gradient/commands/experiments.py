@@ -23,18 +23,35 @@ class ExperimentCommand(object):
 
 
 @six.add_metaclass(abc.ABCMeta)
-class _CreateExperimentCommand(ExperimentCommand):
+class BaseCreateExperimentCommand(ExperimentCommand):
+    SPINNER_MESSAGE = "Creating new experiment"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created with ID: {}"
+
+    def __init__(self, workspace_handler, *args, **kwargs):
+        super(BaseCreateExperimentCommand, self).__init__(*args, **kwargs)
+        self.workspace_handler = workspace_handler
+
     def execute(self, json_):
         if "ignore_files" in json_:
             json_["ignore_files"] = self._parse_comma_separated_to_list(json_["ignore_files"])
 
-        with halo.Halo(text="Creating new experiment", spinner="dots"):
+        self._handle_workspace(json_)
+
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
             try:
                 experiment_id = self._create(json_)
             except api_sdk.GradientSdkError as e:
                 self.logger.error(e)
             else:
-                self.logger.log("New experiment created with ID: {}".format(experiment_id))
+                self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(experiment_id))
+
+    def _handle_workspace(self, instance_dict):
+        handler = self.workspace_handler.handle(instance_dict)
+        instance_dict.pop("workspace", None)
+        instance_dict.pop("workspace_archive", None)
+        instance_dict.pop("workspace_url", None)
+        if handler:
+            instance_dict["workspace_url"] = handler
 
     @abc.abstractmethod
     def _create(self, json_):
@@ -49,41 +66,31 @@ class _CreateExperimentCommand(ExperimentCommand):
         return list_of_str
 
 
-class CreateSingleNodeExperimentCommand(_CreateExperimentCommand):
+class CreateSingleNodeExperimentCommand(BaseCreateExperimentCommand):
     def _create(self, json_):
         handle = self.experiments_client.create_single_node(**json_)
         return handle
 
 
-class CreateMultiNodeExperimentCommand(_CreateExperimentCommand):
+class CreateMultiNodeExperimentCommand(BaseCreateExperimentCommand):
     def _create(self, json_):
         handle = self.experiments_client.create_multi_node(**json_)
         return handle
 
 
-@six.add_metaclass(abc.ABCMeta)
-class _RunExperimentCommand(ExperimentCommand):
-    def execute(self, json_):
-        with halo.Halo(text="Creating and starting new experiment", spinner="dots"):
-            try:
-                experiment_id = self._create(json_)
-            except api_sdk.GradientSdkError as e:
-                self.logger.error(e)
-            else:
-                self.logger.log("New experiment created and started with ID: {}".format(experiment_id))
+class CreateAndStartMultiNodeExperimentCommand(BaseCreateExperimentCommand):
+    SPINNER_MESSAGE = "Creating and starting new experiment"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
 
-    @abc.abstractmethod
-    def _create(self, json_):
-        pass
-
-
-class CreateAndStartMultiNodeExperimentCommand(_RunExperimentCommand):
     def _create(self, json_):
         handle = self.experiments_client.run_multi_node(**json_)
         return handle
 
 
-class CreateAndStartSingleNodeExperimentCommand(_RunExperimentCommand):
+class CreateAndStartSingleNodeExperimentCommand(BaseCreateExperimentCommand):
+    SPINNER_MESSAGE = "Creating and starting new experiment"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
+
     def _create(self, json_):
         handle = self.experiments_client.run_single_node(**json_)
         return handle

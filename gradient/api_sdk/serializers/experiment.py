@@ -8,8 +8,6 @@ class BaseExperimentSchema(BaseSchema):
     experiment_type_id = marshmallow.fields.Int(required=True, dump_to="experimentTypeId", load_from="experimentTypeId")
     name = marshmallow.fields.Str(required=True)
     ports = marshmallow.fields.Str()
-    workspace = marshmallow.fields.Str()
-    workspace_archive = marshmallow.fields.Str(dump_to="workspaceArchive", load_from="workspaceArchive")
     workspace_url = marshmallow.fields.Str(dump_to="workspaceUrl", load_from="workspaceUrl")
     ignore_files = marshmallow.fields.List(marshmallow.fields.String(), )
     working_directory = marshmallow.fields.Str(dump_to="workingDirectory", load_from="workingDirectory")

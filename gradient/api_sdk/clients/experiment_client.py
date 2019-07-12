@@ -15,11 +15,26 @@ class ExperimentsClient(BaseClient):
                                            api_key=self.api_key,
                                            logger=self.logger)
 
-    def create_single_node(self, name, project_id, machine_type, command, ports=None, workspace=None,
-                           workspace_archive=None, workspace_url=None, ignore_files=None, working_directory=None,
-                           artifact_directory=None, cluster_id=None, experiment_env=None, model_type=None,
-                           model_path=None, container=None, container_user=None, registry_username=None,
-                           registry_password=None):
+    def create_single_node(
+            self,
+            name,
+            project_id,
+            machine_type,
+            command,
+            ports=None,
+            workspace_url=None,
+            ignore_files=None,
+            working_directory=None,
+            artifact_directory=None,
+            cluster_id=None,
+            experiment_env=None,
+            model_type=None,
+            model_path=None,
+            container=None,
+            container_user=None,
+            registry_username=None,
+            registry_password=None,
+    ):
         """Create single node experiment
 
         :param str name:
@@ -27,8 +42,6 @@ class ExperimentsClient(BaseClient):
         :param str machine_type:
         :param str command:
         :param str ports:
-        :param str workspace:
-        :param str workspace_archive:
         :param str workspace_url:
         :param list[str] ignore_files:
         :param str working_directory:
@@ -48,27 +61,59 @@ class ExperimentsClient(BaseClient):
         if ignore_files is None:
             ignore_files = []
 
-        experiment = SingleNodeExperiment(experiment_type_id=constants.ExperimentType.SINGLE_NODE, name=name,
-                                          project_id=project_id, machine_type=machine_type, ports=ports,
-                                          workspace=workspace, workspace_archive=workspace_archive,
-                                          workspace_url=workspace_url, ignore_files=ignore_files,
-                                          working_directory=working_directory, artifact_directory=artifact_directory,
-                                          cluster_id=cluster_id, experiment_env=experiment_env, model_type=model_type,
-                                          model_path=model_path, container=container, command=command,
-                                          container_user=container_user, registry_username=registry_username,
-                                          registry_password=registry_password)
+        experiment = SingleNodeExperiment(
+            experiment_type_id=constants.ExperimentType.SINGLE_NODE,
+            name=name,
+            project_id=project_id,
+            machine_type=machine_type,
+            ports=ports,
+            workspace_url=workspace_url,
+            ignore_files=ignore_files,
+            working_directory=working_directory,
+            artifact_directory=artifact_directory,
+            cluster_id=cluster_id,
+            experiment_env=experiment_env,
+            model_type=model_type,
+            model_path=model_path,
+            container=container,
+            command=command,
+            container_user=container_user,
+            registry_username=registry_username,
+            registry_password=registry_password,
+        )
 
         handle = self._create(experiment, SingleNodeExperimentSchema)
         return handle
 
-    def create_multi_node(self, name, project_id, experiment_type_id, worker_container, worker_machine_type,
-                          worker_command, worker_count, parameter_server_container, parameter_server_machine_type,
-                          parameter_server_command, parameter_server_count, ports=None, workspace=None,
-                          workspace_archive=None, workspace_url=None, ignore_files=None, working_directory=None,
-                          artifact_directory=None, cluster_id=None, experiment_env=None, model_type=None,
-                          model_path=None, worker_container_user=None, worker_registry_username=None,
-                          worker_registry_password=None, parameter_server_container_user=None,
-                          parameter_server_registry_container_user=None, parameter_server_registry_password=None):
+    def create_multi_node(
+            self,
+            name,
+            project_id,
+            experiment_type_id,
+            worker_container,
+            worker_machine_type,
+            worker_command,
+            worker_count,
+            parameter_server_container,
+            parameter_server_machine_type,
+            parameter_server_command,
+            parameter_server_count,
+            ports=None,
+            workspace_url=None,
+            ignore_files=None,
+            working_directory=None,
+            artifact_directory=None,
+            cluster_id=None,
+            experiment_env=None,
+            model_type=None,
+            model_path=None,
+            worker_container_user=None,
+            worker_registry_username=None,
+            worker_registry_password=None,
+            parameter_server_container_user=None,
+            parameter_server_registry_container_user=None,
+            parameter_server_registry_password=None,
+    ):
         """Create multi node experiment
 
         :param str name:
@@ -83,8 +128,6 @@ class ExperimentsClient(BaseClient):
         :param str parameter_server_command:
         :param int parameter_server_count:
         :param str ports:
-        :param str workspace:
-        :param str workspace_archive:
         :param str workspace_url:
         :param list[str] ignore_files:
         :param str working_directory:
@@ -103,34 +146,58 @@ class ExperimentsClient(BaseClient):
         :rtype: str
 
         """
-        experiment = MultiNodeExperiment(name=name, project_id=project_id, experiment_type_id=experiment_type_id,
-                                         worker_container=worker_container, worker_machine_type=worker_machine_type,
-                                         worker_command=worker_command, worker_count=worker_count,
-                                         parameter_server_container=parameter_server_container,
-                                         parameter_server_machine_type=parameter_server_machine_type,
-                                         parameter_server_command=parameter_server_command,
-                                         parameter_server_count=parameter_server_count, ports=ports,
-                                         workspace=workspace,
-                                         workspace_archive=workspace_archive, workspace_url=workspace_url,
-                                         ignore_files=ignore_files,
-                                         working_directory=working_directory,
-                                         artifact_directory=artifact_directory, cluster_id=cluster_id,
-                                         experiment_env=experiment_env,
-                                         model_type=model_type, model_path=model_path,
-                                         worker_container_user=worker_container_user,
-                                         worker_registry_username=worker_registry_username,
-                                         worker_registry_password=worker_registry_password,
-                                         parameter_server_container_user=parameter_server_container_user,
-                                         parameter_server_registry_container_user=parameter_server_registry_container_user,
-                                         parameter_server_registry_password=parameter_server_registry_password)
+        experiment = MultiNodeExperiment(
+            name=name,
+            project_id=project_id,
+            experiment_type_id=experiment_type_id,
+            worker_container=worker_container,
+            worker_machine_type=worker_machine_type,
+            worker_command=worker_command,
+            worker_count=worker_count,
+            parameter_server_container=parameter_server_container,
+            parameter_server_machine_type=parameter_server_machine_type,
+            parameter_server_command=parameter_server_command,
+            parameter_server_count=parameter_server_count,
+            ports=ports,
+            workspace_url=workspace_url,
+            ignore_files=ignore_files,
+            working_directory=working_directory,
+            artifact_directory=artifact_directory,
+            cluster_id=cluster_id,
+            experiment_env=experiment_env,
+            model_type=model_type,
+            model_path=model_path,
+            worker_container_user=worker_container_user,
+            worker_registry_username=worker_registry_username,
+            worker_registry_password=worker_registry_password,
+            parameter_server_container_user=parameter_server_container_user,
+            parameter_server_registry_container_user=parameter_server_registry_container_user,
+            parameter_server_registry_password=parameter_server_registry_password,
+        )
 
         handle = self._create(experiment, MultiNodeExperimentSchema)
         return handle
 
-    def run_single_node(self, name, project_id, machine_type, command, ports=None, workspace=None,
-                        workspace_archive=None, workspace_url=None, ignore_files=None, working_directory=None,
-                        artifact_directory=None, cluster_id=None, experiment_env=None, model_type=None, model_path=None,
-                        container=None, container_user=None, registry_username=None, registry_password=None):
+    def run_single_node(
+            self,
+            name,
+            project_id,
+            machine_type,
+            command,
+            ports=None,
+            workspace_url=None,
+            ignore_files=None,
+            working_directory=None,
+            artifact_directory=None,
+            cluster_id=None,
+            experiment_env=None,
+            model_type=None,
+            model_path=None,
+            container=None,
+            container_user=None,
+            registry_username=None,
+            registry_password=None,
+    ):
         """Create and start single node experiment
 
         :param str name:
@@ -138,8 +205,6 @@ class ExperimentsClient(BaseClient):
         :param str machine_type:
         :param str command:
         :param str ports:
-        :param str workspace:
-        :param str workspace_archive:
         :param str workspace_url:
         :param list[str] ignore_files:
         :param str working_directory:
@@ -156,27 +221,59 @@ class ExperimentsClient(BaseClient):
         :rtype: str
         """
 
-        experiment = SingleNodeExperiment(experiment_type_id=constants.ExperimentType.SINGLE_NODE, name=name,
-                                          project_id=project_id, machine_type=machine_type, ports=ports,
-                                          workspace=workspace, workspace_archive=workspace_archive,
-                                          workspace_url=workspace_url, ignore_files=ignore_files,
-                                          working_directory=working_directory, artifact_directory=artifact_directory,
-                                          cluster_id=cluster_id, experiment_env=experiment_env, model_type=model_type,
-                                          model_path=model_path, container=container, command=command,
-                                          container_user=container_user, registry_username=registry_username,
-                                          registry_password=registry_password)
+        experiment = SingleNodeExperiment(
+            experiment_type_id=constants.ExperimentType.SINGLE_NODE,
+            name=name,
+            project_id=project_id,
+            machine_type=machine_type,
+            ports=ports,
+            workspace_url=workspace_url,
+            ignore_files=ignore_files,
+            working_directory=working_directory,
+            artifact_directory=artifact_directory,
+            cluster_id=cluster_id,
+            experiment_env=experiment_env,
+            model_type=model_type,
+            model_path=model_path,
+            container=container,
+            command=command,
+            container_user=container_user,
+            registry_username=registry_username,
+            registry_password=registry_password,
+        )
 
         handle = self._run(experiment, SingleNodeExperimentSchema)
         return handle
 
-    def run_multi_node(self, name, project_id, experiment_type_id, worker_container, worker_machine_type,
-                       worker_command, worker_count, parameter_server_container, parameter_server_machine_type,
-                       parameter_server_command, parameter_server_count, ports=None, workspace=None,
-                       workspace_archive=None, workspace_url=None, ignore_files=None, working_directory=None,
-                       artifact_directory=None, cluster_id=None, experiment_env=None,
-                       model_type=None, model_path=None, worker_container_user=None, worker_registry_username=None,
-                       worker_registry_password=None, parameter_server_container_user=None,
-                       parameter_server_registry_container_user=None, parameter_server_registry_password=None):
+    def run_multi_node(
+            self,
+            name,
+            project_id,
+            experiment_type_id,
+            worker_container,
+            worker_machine_type,
+            worker_command,
+            worker_count,
+            parameter_server_container,
+            parameter_server_machine_type,
+            parameter_server_command,
+            parameter_server_count,
+            ports=None,
+            workspace_url=None,
+            ignore_files=None,
+            working_directory=None,
+            artifact_directory=None,
+            cluster_id=None,
+            experiment_env=None,
+            model_type=None,
+            model_path=None,
+            worker_container_user=None,
+            worker_registry_username=None,
+            worker_registry_password=None,
+            parameter_server_container_user=None,
+            parameter_server_registry_container_user=None,
+            parameter_server_registry_password=None,
+    ):
         """Create and start multi node experiment
 
         :param str name:
@@ -191,8 +288,6 @@ class ExperimentsClient(BaseClient):
         :param str parameter_server_command:
         :param int parameter_server_count:
         :param str ports:
-        :param str workspace:
-        :param str workspace_archive:
         :param str workspace_url:
         :param list[str] ignore_files:
         :param str working_directory:
@@ -211,23 +306,34 @@ class ExperimentsClient(BaseClient):
         :rtype: str
 
         """
-        experiment = MultiNodeExperiment(name=name, project_id=project_id, experiment_type_id=experiment_type_id,
-                                         worker_container=worker_container, worker_machine_type=worker_machine_type,
-                                         worker_command=worker_command, worker_count=worker_count,
-                                         parameter_server_container=parameter_server_container,
-                                         parameter_server_machine_type=parameter_server_machine_type,
-                                         parameter_server_command=parameter_server_command,
-                                         parameter_server_count=parameter_server_count, ports=ports,
-                                         workspace=workspace, workspace_archive=workspace_archive,
-                                         workspace_url=workspace_url, ignore_files=ignore_files,
-                                         working_directory=working_directory, artifact_directory=artifact_directory,
-                                         cluster_id=cluster_id, experiment_env=experiment_env, model_type=model_type,
-                                         model_path=model_path, worker_container_user=worker_container_user,
-                                         worker_registry_username=worker_registry_username,
-                                         worker_registry_password=worker_registry_password,
-                                         parameter_server_container_user=parameter_server_container_user,
-                                         parameter_server_registry_container_user=parameter_server_registry_container_user,
-                                         parameter_server_registry_password=parameter_server_registry_password)
+        experiment = MultiNodeExperiment(
+            name=name,
+            project_id=project_id,
+            experiment_type_id=experiment_type_id,
+            worker_container=worker_container,
+            worker_machine_type=worker_machine_type,
+            worker_command=worker_command,
+            worker_count=worker_count,
+            parameter_server_container=parameter_server_container,
+            parameter_server_machine_type=parameter_server_machine_type,
+            parameter_server_command=parameter_server_command,
+            parameter_server_count=parameter_server_count,
+            ports=ports,
+            workspace_url=workspace_url,
+            ignore_files=ignore_files,
+            working_directory=working_directory,
+            artifact_directory=artifact_directory,
+            cluster_id=cluster_id,
+            experiment_env=experiment_env,
+            model_type=model_type,
+            model_path=model_path,
+            worker_container_user=worker_container_user,
+            worker_registry_username=worker_registry_username,
+            worker_registry_password=worker_registry_password,
+            parameter_server_container_user=parameter_server_container_user,
+            parameter_server_registry_container_user=parameter_server_registry_container_user,
+            parameter_server_registry_password=parameter_server_registry_password,
+        )
 
         handle = self._run(experiment, MultiNodeExperimentSchema)
         return handle
@@ -336,19 +442,11 @@ class ExperimentsClient(BaseClient):
         experiment_schema = schema_cls()
         experiment_dict = experiment_schema.dump(experiment).data
 
-        workspace_url = self._get_workspace_url(experiment_dict)
-        if workspace_url:
-            experiment_dict["workspaceUrl"] = workspace_url
-
         ignore_files = experiment_dict.pop("ignore_files", None)
         if ignore_files:
             experiment_dict["ignore_files"] = self._list_to_comma_separated(ignore_files)
 
         return experiment_dict
-
-    def _get_workspace_url(self, experiment_dict):
-        workspace_url = self.workspace_handler.handle(experiment_dict)
-        return workspace_url
 
     @staticmethod
     def _interpret_response(response):

@@ -4,11 +4,13 @@ import functools
 import click
 
 from gradient import constants, utils, api_sdk, exceptions, logger, workspace
+from gradient.api_sdk.clients import http_client
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
 from gradient.cli.common import api_key_option, ClickGroup, deprecated
 from gradient.commands import experiments as experiments_commands
+from gradient.config import config
 
 MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
     (
@@ -20,8 +22,15 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
 
 def get_experiments_client(api_key):
     experiments_client = api_sdk.clients.ExperimentsClient(
-        api_key=api_key, logger=logger.Logger(), workspace_handler_cls=workspace.S3WorkspaceHandlerWithProgressbar)
+        api_key=api_key, logger=logger.Logger())
     return experiments_client
+
+
+def get_workspace_handler(api_key):
+    client = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    logger_ = logger.Logger()
+    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(experiments_api=client, logger_=logger_)
+    return workspace_handler
 
 
 @cli.group("experiments", help="Manage experiments", cls=ClickGroup)
@@ -252,7 +261,10 @@ def create_multi_node(api_key, **kwargs):
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
     experiments_client = get_experiments_client(api_key)
-    command = experiments_commands.CreateMultiNodeExperimentCommand(experiments_client=experiments_client)
+    command = experiments_commands.CreateMultiNodeExperimentCommand(
+        experiments_client=experiments_client,
+        workspace_handler=get_workspace_handler(api_key),
+    )
     command.execute(kwargs)
 
 
@@ -266,7 +278,10 @@ def create_single_node(api_key, **kwargs):
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
     experiments_client = get_experiments_client(api_key)
-    command = experiments_commands.CreateSingleNodeExperimentCommand(experiments_client=experiments_client)
+    command = experiments_commands.CreateSingleNodeExperimentCommand(
+        experiments_client=experiments_client,
+        workspace_handler=get_workspace_handler(api_key),
+    )
     command.execute(kwargs)
 
 
@@ -289,7 +304,10 @@ def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
     experiments_client = get_experiments_client(api_key)
-    command = experiments_commands.CreateAndStartMultiNodeExperimentCommand(experiments_client=experiments_client)
+    command = experiments_commands.CreateAndStartMultiNodeExperimentCommand(
+        experiments_client=experiments_client,
+        workspace_handler=get_workspace_handler(api_key),
+    )
     experiment = command.execute(kwargs)
     if experiment and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
@@ -314,7 +332,10 @@ def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
     experiments_client = get_experiments_client(api_key)
-    command = experiments_commands.CreateAndStartSingleNodeExperimentCommand(experiments_client=experiments_client)
+    command = experiments_commands.CreateAndStartSingleNodeExperimentCommand(
+        experiments_client=experiments_client,
+        workspace_handler=get_workspace_handler(api_key),
+    )
     experiment = command.execute(kwargs)
     if experiment and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
