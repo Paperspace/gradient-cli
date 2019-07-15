@@ -2,6 +2,7 @@ from .base_client import BaseClient
 from ..models import Job
 from ..serializers import JobSchema
 from ..workspace import MultipartEncoder
+from ..repositories.jobs import ListJobs
 from ..exceptions import GradientSdkError
 from ..utils import MessageExtractor
 
@@ -28,6 +29,9 @@ class JobsClient(BaseClient):
         url = self._get_action_url(job_id, "stop")
         response = self.client.post(url)
         return response
+
+    def list(self, filters):
+        return ListJobs(self.client).list(filters=filters)
 
     def _create(self, job_dict):
         """

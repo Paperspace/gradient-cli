@@ -8,7 +8,7 @@ from tests import example_responses, MockResponse
 
 
 class TestJobs(object):
-    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
 
     EXPECTED_HEADERS = default_headers.copy()
@@ -68,8 +68,8 @@ class TestListJobs(TestJobs):
             "message": "Incompatible parameters: project and projectId cannot both be specified",
         },
     }
-    EXPECTED_STDOUT_WHEN_MUTUALLY_EXCLUSIVE_FILTERS = "Incompatible parameters: project and projectId " \
-                                                      "cannot both be specified\n"
+    EXPECTED_STDOUT_WHEN_MUTUALLY_EXCLUSIVE_FILTERS = "Failed to fetch data: Incompatible parameters: project and " \
+                                                      "projectId cannot both be specified\n"
 
     @mock.patch("gradient.cli.jobs.http_client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_jobs_list_was_used(self, get_patched):
@@ -139,7 +139,7 @@ class TestListJobs(TestJobs):
                                        headers=self.EXPECTED_HEADERS,
                                        json=None,
                                        params=None)
-        assert result.output == "Error while parsing response data: No JSON\n"
+        assert result.output == "Failed to fetch data\n"
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.jobs.http_client.requests.get")

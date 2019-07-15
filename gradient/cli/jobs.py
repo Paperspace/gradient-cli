@@ -74,8 +74,8 @@ def stop_job(job_id, api_key=None):
 @api_key_option
 def list_jobs(api_key, **filters):
     del_if_value_is_none(filters)
-    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = jobs_commands.ListJobsCommand(api=jobs_api)
+    job_client = get_job_client(api_key)
+    command = jobs_commands.ListJobsCommand(job_client=job_client)
     command.execute(filters=filters)
 
 

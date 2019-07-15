@@ -62,10 +62,6 @@ class CreateDeploymentCommand(_DeploymentCommand):
 class ListDeploymentsCommand(_DeploymentCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
-    @property
-    def request_url(self):
-        return "/deployments/getDeploymentList/"
-
     def execute(self, **kwargs):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
             instances = self._get_instances(**kwargs)

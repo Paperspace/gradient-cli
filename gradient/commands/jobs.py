@@ -2,14 +2,20 @@ import pydoc
 
 import terminaltables
 from click import style
+from halo import halo
 
+from gradient import logger, api_sdk, exceptions
 from gradient.api_sdk.utils import print_dict_recursive
 from gradient.commands import common
 from gradient.exceptions import BadResponseError
 from gradient.utils import get_terminal_lines
 
 
-class JobsCommandBase(common.CommandBase):
+class JobsCommandBase(object):
+    def __init__(self, job_client, logger_=logger.Logger()):
+        self.job_client = job_client
+        self.logger = logger_
+
     def _log_message(self, response, success_msg_template, error_msg):
         if response.ok:
             try:
@@ -51,7 +57,25 @@ class StopJobCommand(JobsCommandBase):
                           "Unknown error while stopping job")
 
 
-class ListJobsCommand(common.ListCommand):
+class ListJobsCommand(JobsCommandBase):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
+
+    def execute(self, **kwargs):
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            instances = self._get_instances(**kwargs)
+
+        self._log_objects_list(instances)
+
+    def _get_instances(self, **kwargs):
+        filters = self._get_request_json(kwargs)
+
+        try:
+            instances = self.job_client.list(filters)
+        except api_sdk.GradientSdkError as e:
+            raise exceptions.ReceivingDataFailedError(e)
+
+        return instances
+
     @property
     def request_url(self):
         return "/jobs/getJobs/"
@@ -61,18 +85,48 @@ class ListJobsCommand(common.ListCommand):
         json_ = filters or None
         return json_
 
-    def _get_table_data(self, jobs):
+    @staticmethod
+    def _get_table_data(jobs):
         data = [("ID", "Name", "Project", "Cluster", "Machine Type", "Created")]
         for job in jobs:
-            id_ = job.get("id")
-            name = job.get("name")
-            project = job.get("project")
-            cluster = job.get("cluster")
-            machine_type = job.get("machineType")
-            created = job.get("dtCreated")
+            id_ = job.id_
+            name = job.name
+            project = job.project
+            cluster = job.cluster
+            machine_type = job.machine_type
+            created = job.dt_created
             data.append((id_, name, project, cluster, machine_type, created))
 
         return data
+
+    def _log_objects_list(self, objects):
+        if not objects:
+            self.logger.warning("No data found")
+            return
+
+        table_data = self._get_table_data(objects)
+        table_str = self._make_table(table_data)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
+
+    @staticmethod
+    def _get_objects(response, kwargs):
+        data = response.json()
+        return data
+
+    def _get_response(self, kwargs):
+        json_ = self._get_request_json(kwargs)
+        params = self._get_request_params(kwargs)
+        response = self.job_client.get(self.request_url, json=json_, params=params)
+        return response
+
+    @staticmethod
+    def _make_table(table_data):
+        ascii_table = terminaltables.AsciiTable(table_data)
+        table_string = ascii_table.table
+        return table_string
 
 
 class JobLogsCommand(common.CommandBase):
