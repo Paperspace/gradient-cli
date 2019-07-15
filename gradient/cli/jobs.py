@@ -153,8 +153,8 @@ def create_job(ctx, api_key, **kwargs):
 )
 @api_key_option
 def list_logs(job_id, line, limit, follow, api_key=None):
-    logs_api = http_client.API(config.CONFIG_LOG_HOST, api_key=api_key)
-    command = jobs_commands.JobLogsCommand(api=logs_api)
+    job_client = get_job_client(api_key)
+    command = jobs_commands.JobLogsCommand(job_client=job_client)
     command.execute(job_id, line, limit, follow)
 
 

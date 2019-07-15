@@ -1,13 +1,20 @@
+from gradient import config
 from .base_client import BaseClient
+from ..clients import http_client
 from ..models import Job
 from ..serializers import JobSchema
 from ..workspace import MultipartEncoder
-from ..repositories.jobs import ListJobs
-from ..exceptions import GradientSdkError
+from ..repositories.jobs import ListJobs, ListJobLogs
 from ..utils import MessageExtractor
 
 
 class JobsClient(BaseClient):
+
+    def __init__(self, *args, **kwargs):
+        super(JobsClient, self).__init__(*args, **kwargs)
+        self.logs_client = http_client.API(config.config.CONFIG_LOG_HOST,
+                                           api_key=self.api_key,
+                                           logger=self.logger)
 
     def create(self, json_):
         """
@@ -32,6 +39,10 @@ class JobsClient(BaseClient):
 
     def list(self, filters):
         return ListJobs(self.client).list(filters=filters)
+
+    def logs(self, job_id, line=0, limit=10000):
+        logs = ListJobLogs(self.logs_client).list(job_id=job_id, line=line, limit=limit)
+        return logs
 
     def _create(self, job_dict):
         """

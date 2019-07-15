@@ -204,7 +204,7 @@ Error: Missing option "--jobId".
 +------+---------------------------------------------------------------------------------+
 """
 
-    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
 
     @mock.patch("gradient.cli.jobs.http_client.requests.get")
     def test_command_should_not_send_request_without_required_parameters(self, get_patched):
@@ -256,7 +256,7 @@ Error: Missing option "--jobId".
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.BASIC_COMMAND_PARAMS)
-        assert result.output == "Error while parsing response data: No JSON\n"
+        assert result.output == "Failed to fetch data\n"
         assert result.exit_code == 0
 
 

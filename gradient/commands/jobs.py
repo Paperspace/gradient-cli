@@ -124,76 +124,45 @@ class ListJobsCommand(JobsCommandBase):
         return table_string
 
 
-class JobLogsCommand(common.CommandBase):
-    last_line_number = 0
-    base_url = "/jobs/logs"
-
-    is_logs_complete = False
+class JobLogsCommand(JobsCommandBase):
 
     def execute(self, job_id, line, limit, follow):
         if follow:
             self.logger.log("Awaiting logs...")
+            self._log_logs_continuously(job_id, line, limit)
+        else:
+            self._log_table_of_logs(job_id, line, limit)
 
-        self.last_line_number = line
+    def _log_table_of_logs(self, job_id, line, limit):
+        logs = self.job_client.logs(job_id, line, limit)
+        if not logs:
+            self.logger.log("No logs found")
+            return
+
+        table_str = self._make_table(logs, job_id)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
+
+    def _log_logs_continuously(self, job_id, line, limit):
+        logs_gen = self.job_client.yield_logs(job_id, line, limit)
+        for log in logs_gen:
+            log_msg = "{}\t{}\t{}".format(*self._format_row(job_id, log))
+            self.logger.log(log_msg)
+
+    @staticmethod
+    def _format_row(log_row):
+        return (style(fg="red", text=str(log_row.line)),
+                log_row.message)
+
+    def _make_table(self, logs, job_id):
         table_title = "Job %s logs" % job_id
         table_data = [("LINE", "MESSAGE")]
         table = terminaltables.AsciiTable(table_data, title=table_title)
 
-        while not self.is_logs_complete:
-            response = self._get_logs(job_id, self.last_line_number, limit)
-
-            try:
-                data = response.json()
-                if not response.ok:
-                    self.logger.log_error_response(data)
-                    return
-            except (ValueError, KeyError) as e:
-                if response.status_code == 204:
-                    continue
-                self.logger.log("Error while parsing response data: {}".format(e))
-                return
-            else:
-                self._log_logs_list(data, table, table_data, follow)
-
-            if not follow:
-                self.is_logs_complete = True
-
-    def _get_logs(self, job_id, line, limit):
-        params = {
-            'jobId': job_id,
-            'line': line,
-            'limit': limit
-        }
-        return self.api.get(self.base_url, params=params)
-
-    def _log_logs_list(self, data, table, table_data, follow):
-        if not data:
-            self.logger.log("No Logs found")
-            return
-        if follow:
-            if data[-1].get("message") == "PSEOF":
-                self.is_logs_complete = True
-            else:
-                self.last_line_number = data[-1].get("line")
-            for log in data:
-                log_str = "{}\t{}\t{}"
-                self.logger.log(log_str.format(style(fg="blue", text=str(log.get("jobId"))),
-                                               style(fg="red", text=str(log.get("line"))), log.get("message")))
-        else:
-            table_str = self._make_table(data, table, table_data)
-            if len(table_str.splitlines()) > get_terminal_lines():
-                pydoc.pager(table_str)
-            else:
-                self.logger.log(table_str)
-
-    def _make_table(self, logs, table, table_data):
-        if logs[-1].get("message") == "PSEOF":
-            self.is_logs_complete = True
-        else:
-            self.last_line_number = logs[-1].get("line")
-
         for log in logs:
-            table_data.append((style(fg="red", text=str(log.get("line"))), log.get("message")))
+            table_data.append(self._format_row(log))
 
         return table.table
 
