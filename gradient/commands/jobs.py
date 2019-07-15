@@ -34,9 +34,6 @@ class JobsCommandBase(object):
 
 
 class DeleteJobCommand(JobsCommandBase):
-    def __init__(self, job_client, **kwargs):
-        super(DeleteJobCommand, self).__init__(**kwargs)
-        self.job_client = job_client
 
     def execute(self, job_id):
         response = self.job_client.delete(job_id)
@@ -46,9 +43,6 @@ class DeleteJobCommand(JobsCommandBase):
 
 
 class StopJobCommand(JobsCommandBase):
-    def __init__(self, job_client, **kwargs):
-        super(StopJobCommand, self).__init__(**kwargs)
-        self.job_client = job_client
 
     def execute(self, job_id):
         response = self.job_client.dtop(job_id)
@@ -80,7 +74,8 @@ class ListJobsCommand(JobsCommandBase):
     def request_url(self):
         return "/jobs/getJobs/"
 
-    def _get_request_json(self, kwargs):
+    @staticmethod
+    def _get_request_json(kwargs):
         filters = kwargs.get("filters")
         json_ = filters or None
         return json_
@@ -204,9 +199,6 @@ class JobLogsCommand(common.CommandBase):
 
 
 class CreateJobCommand(JobsCommandBase):
-    def __init__(self, job_client, **kwargs):
-        super(CreateJobCommand, self).__init__(**kwargs)
-        self.job_client = job_client
 
     def execute(self, json_):
         self.logger.log("Creating job...")
