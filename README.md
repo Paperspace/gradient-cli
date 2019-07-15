@@ -3,7 +3,7 @@
 Gradient CLI
 =================
 
-Release 0.2.2
+Release 0.2.3
 
 See [releasenotes.md](https://github.com/Paperspace/gradient-cli/blob/master/releasenotes.md) for details on the current release, as well as release history.
 
@@ -78,7 +78,7 @@ You can run a Python script on a Paperspace server from the command line as foll
 
 You can also provide additional jobs options on the command line:
 
-    gradient run myscript.py --name my_new_job --project myproject --machineType P5000 \
+    gradient run myscript.py --name my_new_job --projectId myproject --machineType P5000 \
      --container paperspace/tensorflow-python`
 
 Note: this functionality is deprecated and will not be available in future releases
@@ -114,11 +114,11 @@ Basic Run Scenarios
 
 4. Run an executable or shell command remotely using the `--command` option:
 
-    `gradient run --command "<executable or shell command>"`
+    `gradient run <path_to_script.py> --command "<executable or shell command>"`
 
    Example:
 
-    `gradient run --command "ls -al"`
+    `gradient run <path_to_script.py> --command "ls -al"`
 
 Run Options
 ===========
@@ -150,7 +150,7 @@ The `--ignoreFiles "<file-or-dir>,..."` option can be used specify a simple comm
 
 The following files and directories are ignored by default: `.git`, `.gitignore`, `__pycache__`.
 
-Other `jobs create` options can be specified, such as `--machineType <machine-type>`, `--container <container-image-reference>`, and `--project <project-name>`.
+Other `jobs create` options can be specified, such as `--machineType <machine-type>`, `--container <container-image-reference>`, and `--projectId <project-name>`.
 
 See the Paperspae API [jobs create](https://paperspace.github.io/paperspace-node/jobs.html#.create) documentation for a complete description of these options.
 

@@ -1,5 +1,9 @@
 # Gradient by Paperspace Release Notes
 
+# Release Notes for 0.2.3
+### Fixes
+* hardcoded `colorama` version to avoid errors during installation
+
 # Release Notes for 0.2.2
 ##### Note: this list includes all changes made in alpha releases since 0.2.1
 ### New features
