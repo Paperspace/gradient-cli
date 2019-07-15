@@ -3,7 +3,7 @@
 Gradient CLI
 =================
 
-Release 0.2.2
+Release 0.2.3
 
 See [releasenotes.md](https://github.com/Paperspace/gradient-cli/blob/master/releasenotes.md) for details on the current release, as well as release history.
 
