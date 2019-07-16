@@ -112,13 +112,13 @@ Basic Run Scenarios
 
     `gradient run -c "import os; print(os.getcwd())"`
 
-4. Run an executable or shell command remotely using the `--command` option:
+4. Run an executable or shell command remotely using the `--shell` option:
 
-    `gradient run <path_to_script.py> --command "<executable or shell command>"`
+    `gradient run --shell "<executable or shell command>"`
 
    Example:
 
-    `gradient run <path_to_script.py> --command "ls -al"`
+    `gradient run --shell "ls -al"`
 
 Run Options
 ===========
@@ -150,7 +150,7 @@ The `--ignoreFiles "<file-or-dir>,..."` option can be used specify a simple comm
 
 The following files and directories are ignored by default: `.git`, `.gitignore`, `__pycache__`.
 
-Other `jobs create` options can be specified, such as `--machineType <machine-type>`, `--container <container-image-reference>`, and `--projectId <project-name>`.
+Other `jobs create` options can be specified, such as `--machineType <machine-type>`, `--container <container-image-reference>`, and `--projectId <project-id>`.
 
 See the Paperspae API [jobs create](https://paperspace.github.io/paperspace-node/jobs.html#.create) documentation for a complete description of these options.
 
