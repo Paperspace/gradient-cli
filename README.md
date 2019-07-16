@@ -112,7 +112,7 @@ Basic Run Scenarios
 
     `gradient run -c "import os; print(os.getcwd())"`
 
-4. Run an executable or shell command remotely using the `--command` option:
+4. Run an executable or shell command remotely using the `--shell` option:
 
     `gradient run --shell "<executable or shell command>"`
 
