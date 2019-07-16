@@ -19,6 +19,14 @@ class Hyperparameter(BaseExperiment):
     hyperparameter_server_registry_password = attr.ib(type=str, default=None)
     hyperparameter_server_container_user = attr.ib(type=str, default=None)
 
+    is_preemptible = attr.ib(type=bool, default=None)
+    trigger_event_id = attr.ib(type=str, default=None)
+    dockerfile_path = attr.ib(type=str, default=None)
+    registry_username = attr.ib(type=str, default=None)
+    registry_password = attr.ib(type=str, default=None)
+    container_user = attr.ib(type=str, default=None)
+    use_dockerfile = attr.ib(type=False, default=None)
+
     @experiment_type_id.validator
     def experiment_type_id_validator(self, attribute, value):
         if value is not constants.ExperimentType.HYPERPARAMETER_TUNING:

@@ -3,7 +3,7 @@ import functools
 
 import click
 
-from gradient import constants, utils, api_sdk, exceptions, logger, workspace
+from gradient import constants, utils, logger, workspace
 from gradient.api_sdk.clients import http_client
 from gradient.cli import common
 from gradient.cli.cli import cli
@@ -18,12 +18,6 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
         ("MPI", constants.ExperimentType.MPI_MULTI_NODE),
     )
 )
-
-
-def get_experiments_client(api_key):
-    experiments_client = api_sdk.clients.ExperimentsClient(
-        api_key=api_key, logger=logger.Logger())
-    return experiments_client
 
 
 def get_workspace_handler(api_key):
@@ -115,6 +109,13 @@ def common_experiments_create_options(f):
             "--modelPath",
             "model_path",
             help="Model path",
+        ),
+        click.option(
+            "--isPreemptible",
+            "is_preemptible",
+            type=bool,
+            is_flag=True,
+            help="Flag: is preemptible",
         ),
         api_key_option
     ]
@@ -260,9 +261,8 @@ def create_multi_node(api_key, **kwargs):
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
-    experiments_client = get_experiments_client(api_key)
     command = experiments_commands.CreateMultiNodeExperimentCommand(
-        experiments_client=experiments_client,
+        api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
     command.execute(kwargs)
@@ -277,9 +277,8 @@ def create_single_node(api_key, **kwargs):
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
-    experiments_client = get_experiments_client(api_key)
     command = experiments_commands.CreateSingleNodeExperimentCommand(
-        experiments_client=experiments_client,
+        api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
     command.execute(kwargs)
@@ -303,9 +302,8 @@ def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
-    experiments_client = get_experiments_client(api_key)
     command = experiments_commands.CreateAndStartMultiNodeExperimentCommand(
-        experiments_client=experiments_client,
+        api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
     experiment = command.execute(kwargs)
@@ -331,9 +329,8 @@ def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
-    experiments_client = get_experiments_client(api_key)
     command = experiments_commands.CreateAndStartSingleNodeExperimentCommand(
-        experiments_client=experiments_client,
+        api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
     experiment = command.execute(kwargs)
@@ -352,8 +349,9 @@ def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
 )
 @click.pass_context
 def start_experiment(ctx, experiment_id, show_logs, api_key):
-    experiments_client = get_experiments_client(api_key)
-    experiments_commands.start_experiment(experiment_id, client=experiments_client)
+    command = experiments_commands.StartExperimentCommand(api_key=api_key)
+    command.execute(experiment_id)
+
     if show_logs:
         ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
@@ -362,32 +360,24 @@ def start_experiment(ctx, experiment_id, show_logs, api_key):
 @click.argument("experiment-id")
 @api_key_option
 def stop_experiment(experiment_id, api_key):
-    experiments_client = get_experiments_client(api_key)
-    experiments_commands.stop_experiment(experiment_id, client=experiments_client)
+    command = experiments_commands.StartExperimentCommand(api_key=api_key)
+    command.execute(experiment_id)
 
 
 @experiments.command("list", help="List experiments")
 @click.option("--projectId", "-p", "project_ids", multiple=True)
 @api_key_option
 def list_experiments(project_ids, api_key):
-    experiments_client = get_experiments_client(api_key)
-    command = experiments_commands.ListExperimentsCommand(experiments_client=experiments_client)
-    try:
-        command.execute(project_id=project_ids)
-    except exceptions.ApplicationError as e:
-        logger.Logger().error(e)
+    command = experiments_commands.ListExperimentsCommand(api_key=api_key)
+    command.execute(project_id=project_ids)
 
 
 @experiments.command("details", help="Show detail of an experiment")
 @click.argument("experiment-id")
 @api_key_option
 def get_experiment_details(experiment_id, api_key):
-    experiments_client = get_experiments_client(api_key)
-    command = experiments_commands.GetExperimentCommand(experiments_client=experiments_client)
-    try:
-        command.execute(experiment_id=experiment_id)
-    except exceptions.ApplicationError as e:
-        logger.Logger().error(e)
+    command = experiments_commands.GetExperimentCommand(api_key=api_key)
+    command.execute(experiment_id)
 
 
 @experiments.command("logs", help="List experiment logs")
@@ -416,6 +406,5 @@ def get_experiment_details(experiment_id, api_key):
 )
 @api_key_option
 def list_logs(experiment_id, line, limit, follow, api_key=None):
-    experiments_client = get_experiments_client(api_key)
-    command = experiments_commands.ExperimentLogsCommand(experiments_client=experiments_client)
+    command = experiments_commands.ExperimentLogsCommand(api_key=api_key)
     command.execute(experiment_id, line, limit, follow)

@@ -1,5 +1,5 @@
-from gradient.api_sdk import serializers
-from .common import ListResources, GetResource
+from .common import ListResources, GetResource, CreateResource, StartResource, StopResource
+from .. import serializers
 from ..serializers import utils
 
 
@@ -66,9 +66,6 @@ class GetExperiment(ParseExperimentDictMixin, GetResource):
 
 
 class ListExperimentLogs(ListResources):
-    def __init__(self, api):
-        super(ListExperimentLogs, self).__init__(api)
-
     def get_request_url(self, **kwargs):
         return "/jobs/logs"
 
@@ -109,3 +106,29 @@ class ListExperimentLogs(ListResources):
             "limit": kwargs["limit"],
         }
         return params
+
+
+class CreateExperiment(CreateResource):
+    def _get_create_url(self):
+        return "/experiments/"
+
+
+class RunExperiment(CreateExperiment):
+    def _get_create_url(self):
+        return "/experiments/create_and_start/"
+
+
+class StartExperiment(StartResource):
+    VALIDATION_ERROR_MESSAGE = "Failed to start experiment"
+
+    def get_request_url(self, id_):
+        url = "/experiments/{}/start/".format(id_)
+        return url
+
+
+class StopExperiment(StopResource):
+    VALIDATION_ERROR_MESSAGE = "Failed to stop experiment"
+
+    def get_request_url(self, id_):
+        url = "/experiments/{}/stop/".format(id_)
+        return url

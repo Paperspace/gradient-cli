@@ -164,7 +164,7 @@ class Wizard(object):
         api_key = project.pop("api_key", None)
         common.del_if_value_is_none(project)
 
-        projects_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
+        projects_api = http_client.API(config.config.CONFIG_HOST, api_key=api_key)
 
         command = self.command_cls(api=projects_api, logger_=self.logger)
 

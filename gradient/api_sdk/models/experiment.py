@@ -8,7 +8,6 @@ class BaseExperiment(object):
     name = attr.ib(type=str, default=None)
     ports = attr.ib(type=str, default=None)
     workspace_url = attr.ib(type=str, default=None)
-    ignore_files = attr.ib(type=list, default=list)
     working_directory = attr.ib(type=str, default=None)
     artifact_directory = attr.ib(type=str, default=None)
     cluster_id = attr.ib(type=int, default=None)

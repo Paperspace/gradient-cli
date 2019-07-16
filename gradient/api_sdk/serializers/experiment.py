@@ -9,7 +9,6 @@ class BaseExperimentSchema(BaseSchema):
     name = marshmallow.fields.Str(required=True)
     ports = marshmallow.fields.Str()
     workspace_url = marshmallow.fields.Str(dump_to="workspaceUrl", load_from="workspaceUrl")
-    ignore_files = marshmallow.fields.List(marshmallow.fields.String(), )
     working_directory = marshmallow.fields.Str(dump_to="workingDirectory", load_from="workingDirectory")
     artifact_directory = marshmallow.fields.Str(dump_to="artifactDirectory", load_from="artifactDirectory")
     cluster_id = marshmallow.fields.Int(dump_to="clusterId", load_from="clusterId")

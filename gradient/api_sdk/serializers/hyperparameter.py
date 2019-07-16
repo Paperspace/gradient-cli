@@ -15,9 +15,9 @@ class HyperparameterSchema(BaseExperimentSchema):
     worker_use_dockerfile = marshmallow.fields.Bool(dump_to="useDockerfile", load_from="useDockerfile")
     worker_dockerfile_path = marshmallow.fields.Str(dump_to="dockerfilePath", load_from="dockerfilePath")
 
-    hyperparameter_server_registry_username = marshmallow.fields.Str(dump_to="hyperparameterServerRegistryUsername",
-                                                                     load_from="hyperparameterServerRegistryUsername")
-    hyperparameter_server_registry_password = marshmallow.fields.Str(dump_to="hyperparameterServerRegistryPassword",
-                                                                     load_from="hyperparameterServerRegistryPassword")
-    hyperparameter_server_container_user = marshmallow.fields.Str(dump_to="hyperparameterServerContainerUser",
-                                                                  load_from="hyperparameterServerContainerUser")
+    registry_username = marshmallow.fields.Str(dump_to="hyperparameterServerRegistryUsername",
+                                               load_from="hyperparameterServerRegistryUsername")
+    registry_password = marshmallow.fields.Str(dump_to="hyperparameterServerRegistryPassword",
+                                               load_from="hyperparameterServerRegistryPassword")
+    container_user = marshmallow.fields.Str(dump_to="hyperparameterServerContainerUser",
+                                            load_from="hyperparameterServerContainerUser")

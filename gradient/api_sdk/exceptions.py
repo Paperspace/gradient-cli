@@ -4,3 +4,7 @@ class GradientSdkError(Exception):
 
 class ResourceFetchingError(GradientSdkError):
     pass
+
+
+class ResourceCreatingError(GradientSdkError):
+    pass
