@@ -1,12 +1,13 @@
+from gradient import config
 from gradient.api_sdk.utils import MessageExtractor
+from .base_client import BaseClient
+from .. import models, repositories, serializers
 from ..exceptions import GradientSdkError
-from gradient.api_sdk.clients.base_client import BaseClient
-from gradient.api_sdk.models.deployment import Deployment
-from gradient.api_sdk.repositories.deployments import ListDeployments
-from gradient.api_sdk.serializers.deployment import DeploymentSchema
 
 
 class DeploymentsClient(BaseClient):
+    HOST_URL = config.config.CONFIG_HOST
+
     def create(self, deployment_type, model_id, name, machine_type, image_url, instance_count):
         """
         Method to create deployment instance
@@ -19,7 +20,7 @@ class DeploymentsClient(BaseClient):
         :param instance_count:
         :return: Created deployment id
         """
-        deployment = Deployment(
+        deployment = models.Deployment(
             deployment_type=deployment_type,
             model_id=model_id,
             name=name,
@@ -28,17 +29,17 @@ class DeploymentsClient(BaseClient):
             instance_count=instance_count
         )
 
-        id_ = self._create(deployment, DeploymentSchema)
+        id_ = self._create(deployment, serializers.DeploymentSchema)
         return id_
 
-    def start(self, deploymnet_id):
-        return self._get_post_response(deploymnet_id)
+    def start(self, deployment_id):
+        return self._get_post_response(deployment_id)
 
     def stop(self, deployment_id):
         return self._get_post_response(deployment_id, is_running=False)
 
     def list(self, filters):
-        return ListDeployments(self.client).list(filters=filters)
+        return repositories.ListDeployments(self.client).list(filters=filters)
 
     @staticmethod
     def _get_deployment_dict(deployment, schema_cls):

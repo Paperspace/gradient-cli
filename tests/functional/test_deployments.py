@@ -54,6 +54,7 @@ class TestDeploymentsCreate(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
@@ -61,7 +62,6 @@ class TestDeploymentsCreate(object):
                                              files=None,
                                              data=None)
 
-        assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
@@ -223,13 +223,13 @@ class TestStartDeployment(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
 

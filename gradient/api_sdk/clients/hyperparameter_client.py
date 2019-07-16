@@ -168,6 +168,12 @@ class HyperparameterJobsClient(base_client.BaseClient):
         return handle
 
     def get(self, id_):
+        """Get Hyperparameter tuning job's instance
+
+        :param str id_:
+
+        :rtype: models.Hyperparameter
+        """
         job = repositories.GetHyperparameterTuningJob(self.client).get(id=id_)
         return job
 
@@ -181,7 +187,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
     def list(self):
         """Get a list of hyperparameter tuning jobs
 
-        :rtype: list[Hyperparameter]
+        :rtype: list[models.Hyperparameter]
         """
         experiments = repositories.ListHyperparameterJobs(self.client).list()
         return experiments
