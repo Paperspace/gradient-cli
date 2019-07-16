@@ -8,16 +8,13 @@ class BaseClient(object):
 
     def __init__(
             self, api_key,
-            logger=sdk_logger.MuteLogger(),
-            api_url=HOST_URL
+            logger=sdk_logger.MuteLogger()
     ):
         """
 
         :param str api_key:
         :param sdk_logger.Logger logger:
-        :param str api_url:
         """
         self.api_key = api_key
-        self.api_url = api_url
-        self.client = http_client.API(self.api_url, api_key=api_key, logger=logger)
+        self.client = http_client.API(self.HOST_URL, api_key=api_key, logger=logger)
         self.logger = logger

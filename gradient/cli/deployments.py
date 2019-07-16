@@ -3,12 +3,11 @@ import collections
 import click
 
 from gradient import exceptions, logger
-from gradient.api_sdk.clients.deployment_client import DeploymentsClient
+from gradient.api_sdk import DeploymentsClient
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
 from gradient.commands import deployments as deployments_commands
-from gradient.config import config
 
 
 @cli.group("deployments", help="Manage deployments", cls=ClickGroup)
@@ -28,7 +27,7 @@ DEPLOYMENT_MACHINE_TYPES = ("G1", "G6", "G12",
 
 
 def get_deployment_client(api_key):
-    deployment_client = DeploymentsClient(api_key=api_key, logger=logger.Logger(), api_url=config.CONFIG_HOST)
+    deployment_client = DeploymentsClient(api_key=api_key, logger=logger.Logger())
     return deployment_client
 
 
@@ -132,7 +131,7 @@ def get_deployments_list(api_key=None, **filters):
 def start_deployment(id_, api_key=None):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.StartDeploymentCommand(deployment_client=deployment_client)
-    command.execute(deploymnet_id=id_)
+    command.execute(deployment_id=id_)
 
 
 @deployments.command("stop", help="Stop deployment")

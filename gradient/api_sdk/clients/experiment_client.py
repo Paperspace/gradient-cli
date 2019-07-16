@@ -1,16 +1,17 @@
 from gradient import constants, config
+from . import http_client
 from .base_client import BaseClient
 from .. import repositories, models, serializers
-from ..clients import http_client
 
 
 class ExperimentsClient(BaseClient):
-    HOST_URL = config.config.CONFIG_LOG_HOST
+    HOST_URL = config.config.CONFIG_EXPERIMENTS_HOST
+    LOG_HOST_URL = config.config.CONFIG_LOG_HOST
 
-    def __init__(self, *args, **kwargs):
-        super(ExperimentsClient, self).__init__(*args, **kwargs)
-        self.logs_client = http_client.API(api_url=self.api_url,
-                                           api_key=self.api_key,
+    def __init__(self, api_key, *args, **kwargs):
+        super(ExperimentsClient, self).__init__(api_key, *args, **kwargs)
+        self.logs_client = http_client.API(api_url=self.LOG_HOST_URL,
+                                           api_key=api_key,
                                            logger=self.logger)
 
     def create_single_node(
