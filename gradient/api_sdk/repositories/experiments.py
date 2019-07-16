@@ -1,19 +1,17 @@
-from .common import ListResources, GetResource
+from .common import ListResources, GetResource, CreateResource, StartResource, StopResource
 from .. import serializers
+from ..serializers import utils
 
 
 class ParseExperimentDictMixin(object):
     def _parse_object(self, experiment_dict, **kwargs):
-        if self._is_single_node_experiment(experiment_dict):
-            experiment = serializers.SingleNodeExperimentSchema().get_instance(experiment_dict)
-        else:
-            experiment = serializers.MultiNodeExperimentSchema().get_instance(experiment_dict)
-
+        """
+        :param dict experiment_dict:
+        :rtype BaseExperiment
+        """
+        serializer = utils.get_serializer_for_experiment(experiment_dict)
+        experiment = serializer().get_instance(experiment_dict)
         return experiment
-
-    @staticmethod
-    def _is_single_node_experiment(experiment_dict):
-        return "parameter_server_machine_type" not in experiment_dict
 
 
 class ListExperiments(ParseExperimentDictMixin, ListResources):
@@ -68,9 +66,6 @@ class GetExperiment(ParseExperimentDictMixin, GetResource):
 
 
 class ListExperimentLogs(ListResources):
-    def __init__(self, api):
-        super(ListExperimentLogs, self).__init__(api)
-
     def get_request_url(self, **kwargs):
         return "/jobs/logs"
 
@@ -111,3 +106,29 @@ class ListExperimentLogs(ListResources):
             "limit": kwargs["limit"],
         }
         return params
+
+
+class CreateExperiment(CreateResource):
+    def _get_create_url(self):
+        return "/experiments/"
+
+
+class RunExperiment(CreateExperiment):
+    def _get_create_url(self):
+        return "/experiments/create_and_start/"
+
+
+class StartExperiment(StartResource):
+    VALIDATION_ERROR_MESSAGE = "Failed to start experiment"
+
+    def get_request_url(self, id_):
+        url = "/experiments/{}/start/".format(id_)
+        return url
+
+
+class StopExperiment(StopResource):
+    VALIDATION_ERROR_MESSAGE = "Failed to stop experiment"
+
+    def get_request_url(self, id_):
+        url = "/experiments/{}/stop/".format(id_)
+        return url

@@ -4,10 +4,12 @@ from ..clients import http_client
 
 
 class BaseClient(object):
+    HOST_URL = config.CONFIG_EXPERIMENTS_HOST
+
     def __init__(
             self, api_key,
             logger=sdk_logger.MuteLogger(),
-            api_url=config.CONFIG_EXPERIMENTS_HOST,
+            api_url=HOST_URL
     ):
         """
 

@@ -1,12 +1,13 @@
 import attr
 
+from gradient import constants
+
 
 @attr.s
-class _Experiment(object):
+class BaseExperiment(object):
     name = attr.ib(type=str, default=None)
     ports = attr.ib(type=str, default=None)
     workspace_url = attr.ib(type=str, default=None)
-    ignore_files = attr.ib(type=list, default=list)
     working_directory = attr.ib(type=str, default=None)
     artifact_directory = attr.ib(type=str, default=None)
     cluster_id = attr.ib(type=int, default=None)
@@ -19,23 +20,24 @@ class _Experiment(object):
 
 
 @attr.s
-class SingleNodeExperiment(_Experiment):
+class SingleNodeExperiment(BaseExperiment):
     container = attr.ib(type=str, default=None)
     machine_type = attr.ib(type=str, default=None)
     command = attr.ib(type=str, default=None)
     container_user = attr.ib(type=str, default=None)
     registry_username = attr.ib(type=str, default=None)
     registry_password = attr.ib(type=str, default=None)
-    experiment_type_id = attr.ib(type=int, default=1)
+    experiment_type_id = attr.ib(type=int, default=constants.ExperimentType.SINGLE_NODE)
 
     @experiment_type_id.validator
     def experiment_type_id_validator(self, attribute, value):
-        if value is not 1:
-            raise ValueError("Single node experiment's type must equal 1")
+        if value is not constants.ExperimentType.SINGLE_NODE:
+            raise ValueError("Single node experiment's type must equal {}".
+                             format(constants.ExperimentType.SINGLE_NODE))
 
 
 @attr.s
-class MultiNodeExperiment(_Experiment):
+class MultiNodeExperiment(BaseExperiment):
     experiment_type_id = attr.ib(type=int, default=None)
     worker_container = attr.ib(type=str, default=None)
     worker_machine_type = attr.ib(type=str, default=None)
@@ -51,3 +53,11 @@ class MultiNodeExperiment(_Experiment):
     parameter_server_container_user = attr.ib(type=str, default=None)
     parameter_server_registry_container_user = attr.ib(type=str, default=None)
     parameter_server_registry_password = attr.ib(type=str, default=None)
+
+    @experiment_type_id.validator
+    def experiment_type_id_validator(self, attribute, value):
+        if value not in (constants.ExperimentType.GRPC_MULTI_NODE,
+                         constants.ExperimentType.MPI_MULTI_NODE):
+            raise ValueError("Multi node experiment's type must equal {} or {}".
+                             format(constants.ExperimentType.GRPC_MULTI_NODE,
+                                    constants.ExperimentType.MPI_MULTI_NODE))

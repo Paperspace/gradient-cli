@@ -1,17 +1,15 @@
 from gradient import constants, config
 from .base_client import BaseClient
+from .. import repositories, models, serializers
 from ..clients import http_client
-from ..exceptions import GradientSdkError
-from ..models import SingleNodeExperiment, MultiNodeExperiment
-from ..repositories.experiments import ListExperiments, GetExperiment, ListExperimentLogs
-from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema
-from ..utils import MessageExtractor
 
 
 class ExperimentsClient(BaseClient):
+    HOST_URL = config.config.CONFIG_LOG_HOST
+
     def __init__(self, *args, **kwargs):
         super(ExperimentsClient, self).__init__(*args, **kwargs)
-        self.logs_client = http_client.API(config.config.CONFIG_LOG_HOST,
+        self.logs_client = http_client.API(api_url=self.api_url,
                                            api_key=self.api_key,
                                            logger=self.logger)
 
@@ -23,7 +21,6 @@ class ExperimentsClient(BaseClient):
             command,
             ports=None,
             workspace_url=None,
-            ignore_files=None,
             working_directory=None,
             artifact_directory=None,
             cluster_id=None,
@@ -43,7 +40,6 @@ class ExperimentsClient(BaseClient):
         :param str command:
         :param str ports:
         :param str workspace_url:
-        :param list[str] ignore_files:
         :param str working_directory:
         :param str artifact_directory:
         :param str cluster_id:
@@ -55,20 +51,17 @@ class ExperimentsClient(BaseClient):
         :param str registry_username:
         :param str registry_password:
 
+        :returns: experiment handle
         :rtype: str
         """
 
-        if ignore_files is None:
-            ignore_files = []
-
-        experiment = SingleNodeExperiment(
+        experiment = models.SingleNodeExperiment(
             experiment_type_id=constants.ExperimentType.SINGLE_NODE,
             name=name,
             project_id=project_id,
             machine_type=machine_type,
             ports=ports,
             workspace_url=workspace_url,
-            ignore_files=ignore_files,
             working_directory=working_directory,
             artifact_directory=artifact_directory,
             cluster_id=cluster_id,
@@ -82,7 +75,7 @@ class ExperimentsClient(BaseClient):
             registry_password=registry_password,
         )
 
-        handle = self._create(experiment, SingleNodeExperimentSchema)
+        handle = self._create(experiment, serializers.SingleNodeExperimentSchema)
         return handle
 
     def create_multi_node(
@@ -100,7 +93,6 @@ class ExperimentsClient(BaseClient):
             parameter_server_count,
             ports=None,
             workspace_url=None,
-            ignore_files=None,
             working_directory=None,
             artifact_directory=None,
             cluster_id=None,
@@ -129,7 +121,6 @@ class ExperimentsClient(BaseClient):
         :param int parameter_server_count:
         :param str ports:
         :param str workspace_url:
-        :param list[str] ignore_files:
         :param str working_directory:
         :param str artifact_directory:
         :param str cluster_id:
@@ -143,10 +134,10 @@ class ExperimentsClient(BaseClient):
         :param str parameter_server_registry_container_user:
         :param str parameter_server_registry_password:
 
+        :returns: experiment handle
         :rtype: str
-
         """
-        experiment = MultiNodeExperiment(
+        experiment = models.MultiNodeExperiment(
             name=name,
             project_id=project_id,
             experiment_type_id=experiment_type_id,
@@ -160,7 +151,6 @@ class ExperimentsClient(BaseClient):
             parameter_server_count=parameter_server_count,
             ports=ports,
             workspace_url=workspace_url,
-            ignore_files=ignore_files,
             working_directory=working_directory,
             artifact_directory=artifact_directory,
             cluster_id=cluster_id,
@@ -175,7 +165,7 @@ class ExperimentsClient(BaseClient):
             parameter_server_registry_password=parameter_server_registry_password,
         )
 
-        handle = self._create(experiment, MultiNodeExperimentSchema)
+        handle = self._create(experiment, serializers.MultiNodeExperimentSchema)
         return handle
 
     def run_single_node(
@@ -186,7 +176,6 @@ class ExperimentsClient(BaseClient):
             command,
             ports=None,
             workspace_url=None,
-            ignore_files=None,
             working_directory=None,
             artifact_directory=None,
             cluster_id=None,
@@ -206,7 +195,6 @@ class ExperimentsClient(BaseClient):
         :param str command:
         :param str ports:
         :param str workspace_url:
-        :param list[str] ignore_files:
         :param str working_directory:
         :param str artifact_directory:
         :param str cluster_id:
@@ -218,17 +206,17 @@ class ExperimentsClient(BaseClient):
         :param str registry_username:
         :param str registry_password:
 
+        :returns: experiment handle
         :rtype: str
         """
 
-        experiment = SingleNodeExperiment(
+        experiment = models.SingleNodeExperiment(
             experiment_type_id=constants.ExperimentType.SINGLE_NODE,
             name=name,
             project_id=project_id,
             machine_type=machine_type,
             ports=ports,
             workspace_url=workspace_url,
-            ignore_files=ignore_files,
             working_directory=working_directory,
             artifact_directory=artifact_directory,
             cluster_id=cluster_id,
@@ -242,7 +230,7 @@ class ExperimentsClient(BaseClient):
             registry_password=registry_password,
         )
 
-        handle = self._run(experiment, SingleNodeExperimentSchema)
+        handle = self._run(experiment, serializers.SingleNodeExperimentSchema)
         return handle
 
     def run_multi_node(
@@ -260,7 +248,6 @@ class ExperimentsClient(BaseClient):
             parameter_server_count,
             ports=None,
             workspace_url=None,
-            ignore_files=None,
             working_directory=None,
             artifact_directory=None,
             cluster_id=None,
@@ -289,7 +276,6 @@ class ExperimentsClient(BaseClient):
         :param int parameter_server_count:
         :param str ports:
         :param str workspace_url:
-        :param list[str] ignore_files:
         :param str working_directory:
         :param str artifact_directory:
         :param str cluster_id:
@@ -303,10 +289,11 @@ class ExperimentsClient(BaseClient):
         :param str parameter_server_registry_container_user:
         :param str parameter_server_registry_password:
 
+        :returns: experiment handle
         :rtype: str
 
         """
-        experiment = MultiNodeExperiment(
+        experiment = models.MultiNodeExperiment(
             name=name,
             project_id=project_id,
             experiment_type_id=experiment_type_id,
@@ -320,7 +307,6 @@ class ExperimentsClient(BaseClient):
             parameter_server_count=parameter_server_count,
             ports=ports,
             workspace_url=workspace_url,
-            ignore_files=ignore_files,
             working_directory=working_directory,
             artifact_directory=artifact_directory,
             cluster_id=cluster_id,
@@ -335,28 +321,22 @@ class ExperimentsClient(BaseClient):
             parameter_server_registry_password=parameter_server_registry_password,
         )
 
-        handle = self._run(experiment, MultiNodeExperimentSchema)
+        handle = self._run(experiment, serializers.MultiNodeExperimentSchema)
         return handle
 
     def start(self, experiment_id):
         """Start existing experiment
 
         :param str experiment_id:
-        :rtype: http_client.GradientResponse
         """
-        response = self._get_start_response(experiment_id)
-        gradient_response = self._interpret_response(response)
-        return gradient_response
+        repositories.StartExperiment(self.client).start(experiment_id)
 
     def stop(self, experiment_id):
         """Stop running experiment
 
         :param str experiment_id:
-        :rtype: http_client.GradientResponse
         """
-        response = self._get_stop_response(experiment_id)
-        gradient_response = self._interpret_response(response)
-        return gradient_response
+        repositories.StopExperiment(self.client).stop(experiment_id)
 
     def list(self, project_id=None):
         """Get a list of experiments. Optionally filter by project ID
@@ -364,7 +344,7 @@ class ExperimentsClient(BaseClient):
         :param str|list|None project_id:
         :rtype: list[SingleNodeExperiment|MultiNodeExperiment]
         """
-        experiments = ListExperiments(self.client).list(project_id=project_id)
+        experiments = repositories.ListExperiments(self.client).list(project_id=project_id)
         return experiments
 
     def get(self, experiment_id):
@@ -373,7 +353,7 @@ class ExperimentsClient(BaseClient):
         :param str experiment_id:
         :rtype: SingleNodeExperiment|MultiNodeExperiment
         """
-        experiment = GetExperiment(self.client).get(experiment_id=experiment_id)
+        experiment = repositories.GetExperiment(self.client).get(experiment_id=experiment_id)
         return experiment
 
     def logs(self, experiment_id, line=0, limit=10000):
@@ -382,8 +362,11 @@ class ExperimentsClient(BaseClient):
         :param str experiment_id:
         :param int line:
         :param int limit:
+
+        :returns: list of LogRows
+        :rtype: list[models.LogRow]
         """
-        logs = ListExperimentLogs(self.logs_client).list(experiment_id, line, limit)
+        logs = repositories.ListExperimentLogs(self.logs_client).list(experiment_id, line, limit)
         return logs
 
     def yield_logs(self, experiment_id, line=0, limit=10000):
@@ -392,73 +375,17 @@ class ExperimentsClient(BaseClient):
         :param str experiment_id:
         :param int line:
         :param int limit:
+
+        :returns: generator yielding LogRow instances
+        :rtype: Iterator[models.LogRow]
         """
-        logs_generator = ListExperimentLogs(self.logs_client).yield_logs(experiment_id, line, limit)
+        logs_generator = repositories.ListExperimentLogs(client=self.logs_client).yield_logs(experiment_id, line, limit)
         return logs_generator
 
     def _create(self, experiment, schema_cls):
-        experiment_dict = self._get_experiment_dict(experiment, schema_cls)
-        response = self._get_create_response(experiment_dict)
-        handle = self._process_response(response)
+        handle = repositories.CreateExperiment(client=self.client).create(experiment, schema_cls)
         return handle
-
-    @staticmethod
-    def _list_to_comma_separated(lst):
-        comma_separated_str = ".".join(lst)
-        return comma_separated_str
 
     def _run(self, experiment, schema_cls):
-        experiment_dict = self._get_experiment_dict(experiment, schema_cls)
-        response = self._get_run_response(experiment_dict)
-        handle = self._process_response(response)
+        handle = repositories.RunExperiment(client=self.client).create(experiment, schema_cls)
         return handle
-
-    def _get_create_response(self, experiment_dict):
-        response = self.client.post("/experiments/", json=experiment_dict)
-        return response
-
-    def _get_run_response(self, experiment_dict):
-        response = self.client.post("/experiments/create_and_start/", json=experiment_dict)
-        return response
-
-    def _process_response(self, response):
-        if response.ok:
-            return response.json()["handle"]
-
-        msg = self._get_error_message(response)
-        raise GradientSdkError(msg)
-
-    @staticmethod
-    def _get_error_message(response):
-        try:
-            response_data = response.json()
-        except ValueError:
-            return "Unknown error"
-
-        msg = MessageExtractor().get_message_from_response_data(response_data)
-        return msg
-
-    def _get_experiment_dict(self, experiment, schema_cls):
-        experiment_schema = schema_cls()
-        experiment_dict = experiment_schema.dump(experiment).data
-
-        ignore_files = experiment_dict.pop("ignore_files", None)
-        if ignore_files:
-            experiment_dict["ignore_files"] = self._list_to_comma_separated(ignore_files)
-
-        return experiment_dict
-
-    @staticmethod
-    def _interpret_response(response):
-        gradient_response = http_client.GradientResponse.interpret_response(response)
-        return gradient_response
-
-    def _get_start_response(self, experiment_id):
-        url = "/experiments/{}/start/".format(experiment_id)
-        response = self.client.put(url)
-        return response
-
-    def _get_stop_response(self, experiment_id):
-        url = "/experiments/{}/stop/".format(experiment_id)
-        response = self.client.put(url)
-        return response
