@@ -68,7 +68,7 @@ setup(
         'click-didyoumean',
         'click-help-colors',
         'click-completion',
-        'colorama',
+        'colorama==0.3.9',
         'requests-toolbelt',
         'progressbar2',
         'halo',
