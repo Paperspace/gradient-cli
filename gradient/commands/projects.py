@@ -1,7 +1,36 @@
-from gradient.commands import common
+import abc
+
+import halo
+import six
+
+from gradient import api_sdk
+from . import common
+from .common import BaseCommand, ListCommand
 
 
-class ListProjectsCommand(common.ListCommand):
+@six.add_metaclass(abc.ABCMeta)
+class BaseProjectCommand(BaseCommand):
+    def _get_client(self, api_key, logger):
+        client = api_sdk.clients.ProjectsClient(api_key=api_key, logger=logger)
+        return client
+
+
+class CreateProjectCommand(BaseProjectCommand):
+    SPINNER_MESSAGE = "Creating new project"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "Project created with ID: {}"
+
+    def execute(self, project_dict):
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
+            try:
+                project_id = self.client.create(**project_dict)
+            except api_sdk.GradientSdkError as e:
+                self.logger.error(e)
+                return
+
+        self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(project_id))
+
+
+class ListProjectsCommand(ListCommand):
     @property
     def request_url(self):
         return "/projects/"
@@ -43,16 +72,3 @@ class ProjectCommandBase(common.CommandBase):
                 self.logger.log_error_response(data)
             except ValueError:
                 self.logger.error(error_msg)
-
-
-class CreateProjectCommand(ProjectCommandBase):
-    def execute(self, project):
-        # TODO: remove the `project["teamId"] = "0"` once the API does not require it anymore
-        # this is necessary since the API still requires the teamId but does not use it anymore
-        project["teamId"] = "0"
-
-        response = self.api.post("/projects/", json=project)
-
-        self._log_message(response,
-                          "Project created with ID: {handle}",
-                          "Unknown error while creating new project")

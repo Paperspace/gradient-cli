@@ -283,18 +283,18 @@ class TestStopDeployment(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_stop_used_with_wrong_id(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_400, 400, "fake content")
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
+        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_ID, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_ID
         assert result.exit_code == 0

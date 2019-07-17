@@ -1,5 +1,5 @@
 from . import base_client
-from .. import models, repositories, serializers
+from .. import models, repositories
 
 
 class HyperparameterJobsClient(base_client.BaseClient):
@@ -81,8 +81,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
             use_dockerfile=use_dockerfile,
         )
 
-        handle = repositories.CreateHyperparameterJob(client=self.client) \
-            .create(hyperparameter, serializers.HyperparameterSchema)
+        handle = repositories.CreateHyperparameterJob(client=self.client).create(hyperparameter)
         return handle
 
     def run(
@@ -163,8 +162,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
             use_dockerfile=use_dockerfile,
         )
 
-        handle = repositories.CreateAndStartHyperparameterJob(client=self.client) \
-            .create(hyperparameter, serializers.HyperparameterSchema)
+        handle = repositories.CreateAndStartHyperparameterJob(client=self.client).create(hyperparameter)
         return handle
 
     def get(self, id_):

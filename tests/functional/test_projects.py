@@ -111,7 +111,7 @@ class TestCreateProject(object):
         "projects", "create",
         "--name", "some_name",
     ]
-    EXPECTED_REQUEST_JSON = {"teamId": "0", "name": "some_name"}
+    EXPECTED_REQUEST_JSON = {"name": "some_name"}
     EXPECTED_RESPONSE_JSON = {
         "name": "some_name",
         "handle": "pru5a4dnu",
@@ -131,7 +131,6 @@ class TestCreateProject(object):
     ]
     EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED = {
         "repoUrl": "https://github.com/Paperspace/mnist-sample",
-        "teamId": "0",
         "name": "some_name",
         "repoName": "mnist-sample",
     }
@@ -164,7 +163,7 @@ class TestCreateProject(object):
             },
         },
     }
-    EXPECTED_STDOUT_WHEN_ERROR_RECEIVED = "The `project` instance is not valid. " \
+    EXPECTED_STDOUT_WHEN_ERROR_RECEIVED = "Failed to create resource: The `project` instance is not valid. " \
                                           "Details: `name` can't be blank (value: undefined).\n"
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
@@ -174,7 +173,7 @@ class TestCreateProject(object):
     ]
 
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 400, "message": "Invalid API token"}
-    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Invalid API token\n"
+    EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Failed to create resource: Invalid API token\n"
 
     @mock.patch("gradient.cli.projects.http_client.requests.post")
     def test_should_send_post_request_and_print_proper_message_when_create_command_was_used(self, post_patched):
@@ -276,5 +275,5 @@ class TestCreateProject(object):
                                              files=None,
                                              data=None)
 
-        assert result.output == "Unknown error while creating new project\n"
+        assert result.output == "Failed to create resource\n"
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"

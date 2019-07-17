@@ -81,7 +81,7 @@ class GetResource(BaseRepository):
     def _get_instance(self, response, **kwargs):
         try:
             objects = self._parse_object(response.data, **kwargs)
-        except KeyError as e:
+        except KeyError:
             msg = "Error parsing response data: {}".format(str(response.body))
             raise ResourceFetchingError(msg)
 
@@ -90,27 +90,29 @@ class GetResource(BaseRepository):
 
 @six.add_metaclass(abc.ABCMeta)
 class CreateResource(object):
+    SERIALIZER_CLS = None
+
     def __init__(self, client):
         """
         :param http_client.API client:
         """
         self.client = client
 
-    def create(self, instance, serializer_cls):
-        instance_dict = self._get_instance_dict(instance, serializer_cls)
+    def create(self, instance):
+        instance_dict = self._get_instance_dict(instance)
         response = self._send_create_request(instance_dict)
         self._validate_response(response)
         handle = self._process_response(response)
         return handle
 
-    def _get_instance_dict(self, instance, serializer_cls):
-        serializer = self._get_serializer(serializer_cls)
+    def _get_instance_dict(self, instance):
+        serializer = self._get_serializer()
         instance_dict = serializer.dump(instance).data
         instance_dict = self._process_instance_dict(instance_dict)
         return instance_dict
 
-    def _get_serializer(self, serializer_cls):
-        serializer = serializer_cls()
+    def _get_serializer(self):
+        serializer = self.SERIALIZER_CLS()
         return serializer
 
     def _send_create_request(self, instance_dict):

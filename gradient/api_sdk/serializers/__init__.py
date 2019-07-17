@@ -4,3 +4,4 @@ from .experiment import BaseExperimentSchema, MultiNodeExperimentSchema, SingleN
 from .hyperparameter import HyperparameterSchema
 from .log import LogRowSchema
 from .model import Model
+from .project import Project
