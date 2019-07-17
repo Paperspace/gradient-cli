@@ -3,9 +3,8 @@ import abc
 import halo
 import six
 
-from gradient import api_sdk
-from . import common
-from .common import BaseCommand, ListCommand
+from gradient import api_sdk, exceptions
+from .common import BaseCommand, ListCommandMixin
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -30,45 +29,18 @@ class CreateProjectCommand(BaseProjectCommand):
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(project_id))
 
 
-class ListProjectsCommand(ListCommand):
-    @property
-    def request_url(self):
-        return "/projects/"
+class ListProjectsCommand(ListCommandMixin, BaseProjectCommand):
+    def _get_instances(self, kwargs):
+        try:
+            instances = self.client.list()
+        except api_sdk.GradientSdkError as e:
+            raise exceptions.ReceivingDataFailedError(e)
 
-    def _get_request_json(self, kwargs):
-        # TODO: PS_API should not require teamId but it does now, delete teamId from json when PS_API is fixed
-        return {"teamId": 666}
+        return instances
 
-    def _get_objects(self, response, kwargs):
-        data = super(ListProjectsCommand, self)._get_objects(response, kwargs)
-        objects = data["data"]
-        return objects
-
-    def _get_table_data(self, projects):
+    def _get_table_data(self, objects):
         data = [("ID", "Name", "Repository", "Created")]
-        for project in projects:
-            id_ = project.get("handle")
-            name = project.get("name")
-            repo_url = project.get("repoUrl")
-            created = project.get("dtCreated")
-            data.append((id_, name, repo_url, created))
+        for obj in objects:
+            data.append((obj.id, obj.name, obj.repository_url, obj.created))
 
         return data
-
-
-class ProjectCommandBase(common.CommandBase):
-    def _log_message(self, response, success_msg_template, error_msg):
-        if response.ok:
-            try:
-                j = response.json()
-            except (ValueError, KeyError):
-                self.logger.error(success_msg_template)
-            else:
-                msg = success_msg_template.format(**j)
-                self.logger.log(msg)
-        else:
-            try:
-                data = response.json()
-                self.logger.log_error_response(data)
-            except ValueError:
-                self.logger.error(error_msg)

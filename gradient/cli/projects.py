@@ -1,11 +1,8 @@
 import click
 
-from gradient import logger
-from gradient.api_sdk.clients import http_client
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.commands import projects as projects_commands
-from gradient.config import config
 from gradient.wizards.projects import run_create_project_wizard
 
 
@@ -17,8 +14,7 @@ def projects_group():
 @projects_group.command("list", help="List projects")
 @common.api_key_option
 def list_projects(api_key):
-    projects_api = http_client.API(config.CONFIG_HOST, api_key=api_key, logger=logger.Logger())
-    command = projects_commands.ListProjectsCommand(api=projects_api)
+    command = projects_commands.ListProjectsCommand(api_key=api_key)
     command.execute()
 
 

@@ -1,7 +1,6 @@
-from gradient.api_sdk import models, repositories
-
 from gradient.config import config
 from .base_client import BaseClient
+from .. import models, repositories
 
 
 class ProjectsClient(BaseClient):
@@ -26,3 +25,12 @@ class ProjectsClient(BaseClient):
 
         handle = repositories.CreateProject(self.client).create(project)
         return handle
+
+    def list(self):
+        """Get list of projects
+
+        :returns: list of projects
+        :rtype: list[models.Project]
+        """
+        projects = repositories.ListProjects(self.client).list()
+        return projects
