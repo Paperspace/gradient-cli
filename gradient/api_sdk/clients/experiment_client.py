@@ -329,6 +329,7 @@ class ExperimentsClient(BaseClient):
         """Start existing experiment
 
         :param str experiment_id:
+        :raises: exceptions.GradientSdkError
         """
         repositories.StartExperiment(self.client).start(experiment_id)
 
@@ -336,6 +337,7 @@ class ExperimentsClient(BaseClient):
         """Stop running experiment
 
         :param str experiment_id:
+        :raises: exceptions.GradientSdkError
         """
         repositories.StopExperiment(self.client).stop(experiment_id)
 

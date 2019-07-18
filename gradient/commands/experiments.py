@@ -107,7 +107,7 @@ class StopExperimentCommand(BaseExperimentCommand):
         """
         :param str experiment_id:
         """
-        self.client.start(experiment_id)
+        self.client.stop(experiment_id)
         self.logger.log("Experiment stopped")
 
 

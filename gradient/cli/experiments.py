@@ -360,7 +360,7 @@ def start_experiment(ctx, experiment_id, show_logs, api_key):
 @click.argument("experiment-id")
 @api_key_option
 def stop_experiment(experiment_id, api_key):
-    command = experiments_commands.StartExperimentCommand(api_key=api_key)
+    command = experiments_commands.StopExperimentCommand(api_key=api_key)
     command.execute(experiment_id)
 
 
