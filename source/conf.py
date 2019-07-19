@@ -19,7 +19,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = u'Gradient Python SDK'
+project = u'Gradient-CLI'
 copyright = u'2019, Paperspace'
 author = u'Paperspace'
 
