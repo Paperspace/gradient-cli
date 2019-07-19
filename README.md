@@ -187,6 +187,32 @@ Authentication options
     `gradient apiKey 1qks1hKsU7e1k...`
 
 
+Generating documentation from docstrings
+========================================
+1. Install dev dependencies
+    
+    When using pipenv:
+    
+    `pipenv install --dev`
+    
+    Otherwise:
+    
+    `pip install ".[dev]"`
+
+2. Automatically extract docstrings with
+
+    `sphinx-apidoc -f -o source gradient`
+    
+3. [OPTIONAL] To create HTML version from .rst files
+
+    `make html`
+    
+    The html version with basic search functionality should appear in `build` directory
+
+Note: Sphinx offers many more documentation formats via external plugins
+
+For more info visit [Sphinx web page](https://www.sphinx-doc.org)
+
 Contributing
 ============
 
