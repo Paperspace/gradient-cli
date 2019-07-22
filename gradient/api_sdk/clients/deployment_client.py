@@ -33,12 +33,32 @@ class DeploymentsClient(BaseClient):
         return id_
 
     def start(self, deployment_id):
+        """
+        Start deployment
+
+        :param deployment_id:
+        """
         return self._get_post_response(deployment_id)
 
     def stop(self, deployment_id):
+        """
+        Stop deployment
+
+        :param deployment_id:
+        """
         return self._get_post_response(deployment_id, is_running=False)
 
     def list(self, filters):
+        """
+        List deployments with optional filtering
+
+        Options:
+          --state [BUILDING|PROVISIONING|STARTING|RUNNING|STOPPING|STOPPED|ERROR] Filter by deployment state
+          --projectId TEXT Use to filter by project ID
+          --model_id TEXT Use to filter by model ID
+
+        :param state|projectId|model_id filters:
+        """
         return repositories.ListDeployments(self.client).list(filters=filters)
 
     @staticmethod
