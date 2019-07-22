@@ -55,7 +55,6 @@ class CreateAndStartHyperparameterCommand(BaseCreateExperimentCommandMixin, Base
         return handle
 
 
-@six.add_metaclass(abc.ABCMeta)
 class ListHyperparametersCommand(ListCommandMixin, BaseHyperparameterCommand):
     def _get_instances(self, kwargs):
         try:

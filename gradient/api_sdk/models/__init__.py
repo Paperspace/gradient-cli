@@ -3,3 +3,4 @@ from .experiment import BaseExperiment, MultiNodeExperiment, SingleNodeExperimen
 from .hyperparameter import Hyperparameter
 from .log import LogRow
 from .model import Model
+from .project import Project
