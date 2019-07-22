@@ -29,7 +29,7 @@ class DeploymentsClient(BaseClient):
             instance_count=instance_count
         )
 
-        id_ = self._create(deployment, serializers.DeploymentSchema)
+        id_ = repositories.CreateDeployment(self.client).create(deployment)
         return id_
 
     def start(self, deployment_id):

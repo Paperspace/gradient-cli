@@ -45,7 +45,7 @@ class TestDeploymentsCreate(object):
 
     RESPONSE_JSON_404_MODEL_NOT_FOUND = {"error": {"name": "Error", "status": 404, "message": "Unable to find model"}}
     RESPONSE_CONTENT_404_MODEL_NOT_FOUND = b'{"error":{"name":"Error","status":404,"message":"Unable to find model"}}\n'
-    EXPECTED_STDOUT_MODEL_NOT_FOUND = "Unable to find model\n"
+    EXPECTED_STDOUT_MODEL_NOT_FOUND = "Failed to create resource: Unable to find model\n"
 
     @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_deployment_with_basic_options(self, post_patched):
@@ -71,13 +71,13 @@ class TestDeploymentsCreate(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_API_KEY)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
