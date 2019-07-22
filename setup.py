@@ -85,6 +85,7 @@ setup(
             'pytest',
             'mock',
             'twine',
+            'sphinx',
         ],
     },
     cmdclass={
