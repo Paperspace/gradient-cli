@@ -1,6 +1,5 @@
 import click
 
-import gradient.utils
 from gradient.api_sdk.utils import MessageExtractor
 from .config import config
 
@@ -23,7 +22,7 @@ class Logger(object):
         self._log(message, color=color)
 
     def log_error_response(self, data):
-        msg = gradient.api_sdk.utils.MessageExtractor().get_message_from_response_data(data)
+        msg = MessageExtractor().get_message_from_response_data(data)
         if not msg:
             raise ValueError("No error messages found")
 

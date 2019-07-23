@@ -1,58 +1,46 @@
-from gradient.commands import common
+import abc
+
+import halo
+import six
+
+from gradient import api_sdk, exceptions
+from .common import BaseCommand, ListCommandMixin
 
 
-class ListProjectsCommand(common.ListCommand):
-    @property
-    def request_url(self):
-        return "/projects/"
+@six.add_metaclass(abc.ABCMeta)
+class BaseProjectCommand(BaseCommand):
+    def _get_client(self, api_key, logger):
+        client = api_sdk.clients.ProjectsClient(api_key=api_key, logger=logger)
+        return client
 
-    def _get_request_json(self, kwargs):
-        # TODO: PS_API should not require teamId but it does now, delete teamId from json when PS_API is fixed
-        return {"teamId": 666}
 
-    def _get_objects(self, response, kwargs):
-        data = super(ListProjectsCommand, self)._get_objects(response, kwargs)
-        objects = data["data"]
-        return objects
+class CreateProjectCommand(BaseProjectCommand):
+    SPINNER_MESSAGE = "Creating new project"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "Project created with ID: {}"
 
-    def _get_table_data(self, projects):
+    def execute(self, project_dict):
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
+            try:
+                project_id = self.client.create(**project_dict)
+            except api_sdk.GradientSdkError as e:
+                self.logger.error(e)
+                return
+
+        self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(project_id))
+
+
+class ListProjectsCommand(ListCommandMixin, BaseProjectCommand):
+    def _get_instances(self, kwargs):
+        try:
+            instances = self.client.list()
+        except api_sdk.GradientSdkError as e:
+            raise exceptions.ReceivingDataFailedError(e)
+
+        return instances
+
+    def _get_table_data(self, objects):
         data = [("ID", "Name", "Repository", "Created")]
-        for project in projects:
-            id_ = project.get("handle")
-            name = project.get("name")
-            repo_url = project.get("repoUrl")
-            created = project.get("dtCreated")
-            data.append((id_, name, repo_url, created))
+        for obj in objects:
+            data.append((obj.id, obj.name, obj.repository_url, obj.created))
 
         return data
-
-
-class ProjectCommandBase(common.CommandBase):
-    def _log_message(self, response, success_msg_template, error_msg):
-        if response.ok:
-            try:
-                j = response.json()
-            except (ValueError, KeyError):
-                self.logger.error(success_msg_template)
-            else:
-                msg = success_msg_template.format(**j)
-                self.logger.log(msg)
-        else:
-            try:
-                data = response.json()
-                self.logger.log_error_response(data)
-            except ValueError:
-                self.logger.error(error_msg)
-
-
-class CreateProjectCommand(ProjectCommandBase):
-    def execute(self, project):
-        # TODO: remove the `project["teamId"] = "0"` once the API does not require it anymore
-        # this is necessary since the API still requires the teamId but does not use it anymore
-        project["teamId"] = "0"
-
-        response = self.api.post("/projects/", json=project)
-
-        self._log_message(response,
-                          "Project created with ID: {handle}",
-                          "Unknown error while creating new project")

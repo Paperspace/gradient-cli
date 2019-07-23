@@ -9,6 +9,7 @@ from gradient.api_sdk.utils import print_dict_recursive
 from gradient.commands import common
 from gradient.exceptions import BadResponseError
 from gradient.utils import get_terminal_lines
+from gradient.workspace import MultipartEncoder, WorkspaceHandler
 
 
 class JobsCommandBase(object):
@@ -170,6 +171,26 @@ class JobLogsCommand(JobsCommandBase):
 class CreateJobCommand(JobsCommandBase):
 
     def execute(self, json_):
+        url = "/jobs/createJob/"
+        data = None
+        self.set_project_if_not_provided(json_)
+
+        workspace_url = self._workspace_handler.handle(json_)
+        if workspace_url:
+            if self._workspace_handler.archive_path:
+                data = self._get_multipart_data(json_)
+            else:
+                json_["workspaceFileName"] = workspace_url
+
+        json_.pop("workspaceArchive", None)
+        json_.pop("workspaceUrl", None)
+        json_.pop("workspace", None)
+        if workspace_url:
+            if workspace_url != "none":
+                json_["workspaceUrl"] = workspace_url
+            else:
+                json_["workspace"] = workspace_url
+
         self.logger.log("Creating job...")
         response = self.job_client.create(json_)
         self._log_message(response,

@@ -1,17 +1,14 @@
 import marshmallow
 
-from gradient.api_sdk import models
 from . import BaseSchema
+from .. import models
 
 
-class _ExperimentSchema(BaseSchema):
+class BaseExperimentSchema(BaseSchema):
     experiment_type_id = marshmallow.fields.Int(required=True, dump_to="experimentTypeId", load_from="experimentTypeId")
     name = marshmallow.fields.Str(required=True)
     ports = marshmallow.fields.Str()
-    workspace = marshmallow.fields.Str()
-    workspace_archive = marshmallow.fields.Str(dump_to="workspaceArchive", load_from="workspaceArchive")
     workspace_url = marshmallow.fields.Str(dump_to="workspaceUrl", load_from="workspaceUrl")
-    ignore_files = marshmallow.fields.List(marshmallow.fields.String(), )
     working_directory = marshmallow.fields.Str(dump_to="workingDirectory", load_from="workingDirectory")
     artifact_directory = marshmallow.fields.Str(dump_to="artifactDirectory", load_from="artifactDirectory")
     cluster_id = marshmallow.fields.Int(dump_to="clusterId", load_from="clusterId")
@@ -31,11 +28,11 @@ class _ExperimentSchema(BaseSchema):
         if isinstance(ports, int):
             obj_dict["ports"] = str(ports)
 
-        instance = super(_ExperimentSchema, self).get_instance(obj_dict)
+        instance = super(BaseExperimentSchema, self).get_instance(obj_dict)
         return instance
 
 
-class SingleNodeExperimentSchema(_ExperimentSchema):
+class SingleNodeExperimentSchema(BaseExperimentSchema):
     MODEL = models.SingleNodeExperiment
 
     container = marshmallow.fields.Str(required=True, load_from="worker_container")
@@ -46,7 +43,7 @@ class SingleNodeExperimentSchema(_ExperimentSchema):
     registry_password = marshmallow.fields.Str(dump_to="registryPassword", load_from="registryPassword")
 
 
-class MultiNodeExperimentSchema(_ExperimentSchema):
+class MultiNodeExperimentSchema(BaseExperimentSchema):
     MODEL = models.MultiNodeExperiment
 
     worker_container = marshmallow.fields.Str(required=True, dump_to="workerContainer", load_from="workerContainer")

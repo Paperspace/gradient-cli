@@ -1,6 +1,15 @@
+import abc
+import pydoc
+
+import halo
+import six
 import terminaltables
 
+from gradient import api_sdk, exceptions
 from gradient.commands import common
+from gradient.commands.common import BaseCommand, ListCommandMixin
+from gradient.commands.experiments import BaseCreateExperimentCommandMixin
+from gradient.utils import get_terminal_lines
 
 
 class HyperparametersCommandBase(common.CommandBase):
@@ -21,96 +30,99 @@ class HyperparametersCommandBase(common.CommandBase):
                 self.logger.error(error_msg)
 
 
-class CreateHyperparameterCommand(HyperparametersCommandBase):
-    def execute(self, hyperparameter):
-        response = self.api.post("/hyperopt/", json=hyperparameter)
-        self._log_message(response,
-                          "Hyperparameter created with ID: {handle}",
-                          "Unknown error while creating hyperparameter")
+@six.add_metaclass(abc.ABCMeta)
+class BaseHyperparameterCommand(BaseCommand):
+    def _get_client(self, api_key, logger):
+        client = api_sdk.clients.HyperparameterJobsClient(api_key=api_key, logger=logger)
+        return client
 
 
-class CreateAndStartHyperparameterCommand(HyperparametersCommandBase):
-    def execute(self, hyperparameter):
-        response = self.api.post("/hyperopt/create_and_start/", json=hyperparameter)
-        self._log_message(response,
-                          "Hyperparameter created with ID: {handle} and started",
-                          "Unknown error while creating hyperparameter")
+class CreateHyperparameterCommand(BaseCreateExperimentCommandMixin, BaseHyperparameterCommand):
+    SPINNER_MESSAGE = "Creating hyperparameter tuning job"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "Hyperparameter tuning job created with ID: {}"
+
+    def _create(self, hyperparameter):
+        handle = self.client.create(**hyperparameter)
+        return handle
 
 
-class ListHyperparametersCommand(common.ListCommand):
-    @property
-    def request_url(self):
-        return "/hyperopt/"
+class CreateAndStartHyperparameterCommand(BaseCreateExperimentCommandMixin, BaseHyperparameterCommand):
+    SPINNER_MESSAGE = "Creating and starting hyperparameter tuning job"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "Hyperparameter tuning job created and started with ID: {}"
+
+    def _create(self, hyperparameter):
+        handle = self.client.run(**hyperparameter)
+        return handle
+
+
+class ListHyperparametersCommand(ListCommandMixin, BaseHyperparameterCommand):
+    def _get_instances(self, kwargs):
+        try:
+            instances = self.client.list()
+        except api_sdk.GradientSdkError as e:
+            raise exceptions.ReceivingDataFailedError(e)
+
+        return instances
 
     def _get_table_data(self, objects):
         data = [("Name", "ID", "Project ID")]
         for obj in objects:
-            name = obj["templateHistory"]["params"].get("name")
-            id_ = obj.get("handle")
-            project_id = obj["templateHistory"]["params"].get("project_handle")
-            data.append((name, id_, project_id))
-
+            data.append((obj.name, obj.id, obj.project_id))
         return data
 
-    def _get_objects(self, response, kwargs):
-        objects = super(ListHyperparametersCommand, self)._get_objects(response, kwargs)["data"]
-        return objects
 
-    def _get_request_params(self, kwargs):
-        params = {"limit": -1}
-        return params
+class HyperparameterDetailsCommand(BaseHyperparameterCommand):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
-
-class DeleteHyperparameterCommand(HyperparametersCommandBase):
     def execute(self, id_):
-        url = "/hyperopt/{}/".format(id_)
-        response = self.api.delete(url)
-        self._log_message(response,
-                          "Hyperparameter deleted",
-                          "Unknown error while deleting hyperparameter")
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            instance = self._get_instance(id_)
 
+        self._log_object(instance)
 
-class HyperparameterDetailsCommand(HyperparametersCommandBase):
-    def execute(self, id_):
-        url = "/hyperopt/{}/".format(id_)
-        response = self.api.get(url)
-
+    def _get_instance(self, id_):
+        """
+        :rtype: api_sdk.Hyperparameter
+        """
         try:
-            data = response.json()
-            if not response.ok:
-                self.logger.log_error_response(data)
-                return
+            instance = self.client.get(id_)
+        except api_sdk.GradientSdkError as e:
+            raise exceptions.ReceivingDataFailedError(e)
 
-            table = self.make_details_table(data)
-        except (ValueError, KeyError) as e:
-            self.logger.error("Error while parsing response data: {}".format(e))
-        else:
-            self.logger.log(table)
+        return instance
 
     @staticmethod
-    def make_details_table(obj):
+    def _make_table(obj):
+        """
+        :param api_sdk.Hyperparameter obj:
+        """
         data = (
-            ("ID", obj["data"].get("handle")),
-            ("Name", obj["data"]["templateHistory"]["params"].get("name")),
-            ("Ports", obj["data"]["templateHistory"]["params"].get("ports")),
-            ("Project ID", obj["data"]["templateHistory"]["params"].get("project_handle")),
-            ("Tuning command", obj["data"]["templateHistory"]["params"].get("tuning_command")),
-            ("Worker command", obj["data"]["templateHistory"]["params"].get("worker_command")),
-            ("Worker container", obj["data"]["templateHistory"]["params"].get("worker_container")),
-            ("Worker count", obj["data"]["templateHistory"]["params"].get("worker_count")),
-            ("Worker machine type", obj["data"]["templateHistory"]["params"].get("worker_machine_type")),
-            ("Worker use dockerfile", obj["data"]["templateHistory"]["params"].get("worker_use_dockerfile")),
-            ("Workspace URL", obj["data"]["templateHistory"]["params"].get("workspaceUrl")),
+            ("ID", obj.id),
+            ("Name", obj.name),
+            ("Ports", obj.ports),
+            ("Project ID", obj.project_id),
+            ("Tuning command", obj.tuning_command),
+            ("Worker command", obj.worker_command),
+            ("Worker container", obj.worker_container),
+            ("Worker count", obj.worker_count),
+            ("Worker machine type", obj.worker_machine_type),
+            ("Worker use dockerfile", obj.use_dockerfile or False),
+            ("Workspace URL", obj.workspace_url),
         )
         ascii_table = terminaltables.AsciiTable(data)
         table_string = ascii_table.table
         return table_string
 
+    def _log_object(self, instance):
 
-class HyperparameterStartCommand(HyperparametersCommandBase):
+        table_str = self._make_table(instance)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
+
+
+class HyperparameterStartCommand(BaseHyperparameterCommand):
     def execute(self, id_):
-        url = "/hyperopt/{}/start/".format(id_)
-        response = self.api.put(url)
-        self._log_message(response,
-                          "Hyperparameter tuning started",
-                          "Unknown error while starting hyperparameter tuning")
+        self.client.start(id_)
+        self.logger.log("Hyperparameter tuning started")

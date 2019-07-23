@@ -1,5 +1,21 @@
 # Gradient by Paperspace Release Notes
 
+# Release Notes for 0.2.3
+### Fixes
+* hardcoded `colorama` version to avoid errors during installation
+
+# Release Notes for 0.2.2
+##### Note: this list includes all changes made in alpha releases since 0.2.1
+### New features
+* deprecated `--workspaceArchive` and `--workspaceUrl` for `experiments create/run`, `run` and `jobs create` commands
+* single `--workspace` option for defining git, S3 and local workspaces
+* experimental wizard for creating projects
+* add looking for new client version
+* added `projects create` command
+* added spinner for some long running commands
+### Fixes
+* fix autocomplete executing prompt for password when double-tab on gradient apiKey
+
 # Release Notes for 0.2.2a3
 ### New features
 * deprecated `--workspaceArchive` and `--workspaceUrl` for `experiments create/run`, `run` and `jobs create` commands

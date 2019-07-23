@@ -3,7 +3,7 @@
 Gradient CLI
 =================
 
-Release 0.2.2a3
+Release 0.2.3
 
 See [releasenotes.md](https://github.com/Paperspace/gradient-cli/blob/master/releasenotes.md) for details on the current release, as well as release history.
 
@@ -78,7 +78,7 @@ You can run a Python script on a Paperspace server from the command line as foll
 
 You can also provide additional jobs options on the command line:
 
-    gradient run myscript.py --name my_new_job --project myproject --machineType P5000 \
+    gradient run myscript.py --name my_new_job --projectId myproject --machineType P5000 \
      --container paperspace/tensorflow-python`
 
 Note: this functionality is deprecated and will not be available in future releases
@@ -112,13 +112,13 @@ Basic Run Scenarios
 
     `gradient run -c "import os; print(os.getcwd())"`
 
-4. Run an executable or shell command remotely using the `--command` option:
+4. Run an executable or shell command remotely using the `--shell` option:
 
-    `gradient run --command "<executable or shell command>"`
+    `gradient run --shell "<executable or shell command>"`
 
    Example:
 
-    `gradient run --command "ls -al"`
+    `gradient run --shell "ls -al"`
 
 Run Options
 ===========
@@ -150,7 +150,7 @@ The `--ignoreFiles "<file-or-dir>,..."` option can be used specify a simple comm
 
 The following files and directories are ignored by default: `.git`, `.gitignore`, `__pycache__`.
 
-Other `jobs create` options can be specified, such as `--machineType <machine-type>`, `--container <container-image-reference>`, and `--project <project-name>`.
+Other `jobs create` options can be specified, such as `--machineType <machine-type>`, `--container <container-image-reference>`, and `--projectId <project-id>`.
 
 See the Paperspae API [jobs create](https://paperspace.github.io/paperspace-node/jobs.html#.create) documentation for a complete description of these options.
 
@@ -186,6 +186,32 @@ Authentication options
 
     `gradient apiKey 1qks1hKsU7e1k...`
 
+
+Generating documentation from docstrings
+========================================
+1. Install dev dependencies
+    
+    When using pipenv:
+    
+    `pipenv install --dev`
+    
+    Otherwise:
+    
+    `pip install ".[dev]"`
+
+2. Automatically extract docstrings with
+
+    `sphinx-apidoc -f -o source gradient`
+    
+3. [OPTIONAL] To create HTML version from .rst files
+
+    `make html`
+    
+    The html version with basic search functionality should appear in `build` directory
+
+Note: Sphinx offers many more documentation formats via external plugins
+
+For more info visit [Sphinx web page](https://www.sphinx-doc.org)
 
 Contributing
 ============

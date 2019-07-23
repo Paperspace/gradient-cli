@@ -1,35 +1,35 @@
-from gradient.commands import common
+import abc
+
+import six
+
+from gradient import api_sdk, exceptions
+from gradient.commands.common import BaseCommand, ListCommandMixin
 
 
-class ListModelsCommand(common.ListCommand):
-    @property
-    def request_url(self):
-        return "/mlModels/getModelList/"
+@six.add_metaclass(abc.ABCMeta)
+class BaseModelCommand(BaseCommand):
+    def _get_client(self, api_key, logger):
+        client = api_sdk.clients.ModelsClient(api_key=api_key, logger=logger)
+        return client
 
-    def _get_request_params(self, kwargs):
-        params = {"limit": -1}  # so the api returns full list without pagination
-        return params
 
-    def _get_request_json(self, kwargs):
-        filters = kwargs.get("filters")
-        if not filters:
-            return None
+class ListModelsCommand(ListCommandMixin, BaseModelCommand):
+    def _get_instances(self, kwargs):
+        try:
+            instances = self.client.list(**kwargs)
+        except api_sdk.GradientSdkError as e:
+            raise exceptions.ReceivingDataFailedError(e)
 
-        json_ = {"filter": {"where": {"and": [filters]}}}
-        return json_
-
-    def _get_objects(self, response, kwargs):
-        data = response.json()["modelList"]
-        return data
+        return instances
 
     def _get_table_data(self, models):
         data = [("Name", "ID", "Model Type", "Project ID", "Experiment ID")]
         for model in models:
-            name = model.get("name")
-            id_ = model.get("id")
-            model_type = model.get("modelType")
-            project_id = model.get("projectId")
-            experiment_id = model.get("experimentId")
+            name = model.name
+            id_ = model.id
+            project_id = model.project_id
+            experiment_id = model.experiment_id
+            model_type = model.model_type
             data.append((name, id_, model_type, project_id, experiment_id))
 
         return data
