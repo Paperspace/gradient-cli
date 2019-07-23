@@ -33,7 +33,7 @@ class ExperimentsClient(BaseClient):
             registry_username=None,
             registry_password=None,
     ):
-        """Create single node experiment, seba tu był
+        """Create single node experiment
 
         :param str name:
         :param str project_id:
