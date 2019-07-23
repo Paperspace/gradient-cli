@@ -33,7 +33,7 @@ class ExperimentsClient(BaseClient):
             registry_username=None,
             registry_password=None,
     ):
-        """Create single node experiment
+        """Create single node experiment, seba tu był
 
         :param str name:
         :param str project_id:
@@ -343,7 +343,8 @@ class ExperimentsClient(BaseClient):
         """Get a list of experiments. Optionally filter by project ID
 
         :param str|list|None project_id:
-        :rtype: list[SingleNodeExperiment|MultiNodeExperiment]
+        :return: experiments
+        :rtype: object
         """
         experiments = repositories.ListExperiments(self.client).list(project_id=project_id)
         return experiments
