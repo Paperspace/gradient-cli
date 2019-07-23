@@ -2,7 +2,7 @@ import click
 
 from gradient import utils, logger
 from gradient.api_sdk.clients import job_client
-from gradient.api_sdk.workspace import WorkspaceHandler
+from gradient.workspace import WorkspaceHandler
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.common import del_if_value_is_none, deprecated, jsonify_dicts

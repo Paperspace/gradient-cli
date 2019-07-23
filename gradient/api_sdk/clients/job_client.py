@@ -3,7 +3,6 @@ from .base_client import BaseClient
 from ..clients import http_client
 from ..models import Job
 from ..serializers import JobSchema
-from ..workspace import MultipartEncoder
 from ..repositories.jobs import ListJobs, ListJobLogs
 from ..utils import MessageExtractor
 

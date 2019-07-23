@@ -4,7 +4,7 @@ import click
 
 from gradient import utils, logger
 from gradient.api_sdk.clients import http_client, JobsClient
-from gradient.api_sdk.workspace import WorkspaceHandler
+from gradient.workspace import WorkspaceHandler
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts, deprecated
