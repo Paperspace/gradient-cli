@@ -11,6 +11,7 @@ class BaseClient(object):
             logger=sdk_logger.MuteLogger()
     ):
         """
+        Base class. All client classes inherit from it.
 
         :param str api_key:
         :param sdk_logger.Logger logger:
