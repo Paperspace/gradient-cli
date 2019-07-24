@@ -1,4 +1,4 @@
-from gradient import config
+from gradient.config import config
 from .base_client import BaseClient
 from ..clients import http_client
 from ..models import Job
@@ -8,14 +8,15 @@ from ..utils import MessageExtractor
 
 
 class JobsClient(BaseClient):
+    HOST_URL = config.CONFIG_HOST
 
     def __init__(self, *args, **kwargs):
         super(JobsClient, self).__init__(*args, **kwargs)
-        self.logs_client = http_client.API(config.config.CONFIG_LOG_HOST,
+        self.logs_client = http_client.API(config.CONFIG_LOG_HOST,
                                            api_key=self.api_key,
                                            logger=self.logger)
 
-    def create(self, json_):
+    def create(self, json_, data):
         """
         Method to create job in paperspace cloud.
 
@@ -24,7 +25,7 @@ class JobsClient(BaseClient):
         """
         job = Job(**json_)
         job_dict = JobSchema().dump(job).data
-        return self._create(job_dict)
+        return self._create(job_dict, data)
 
     def delete(self, job_id):
         url = self._get_action_url(job_id, "destroy")
@@ -43,51 +44,15 @@ class JobsClient(BaseClient):
         logs = ListJobLogs(self.logs_client).list(job_id=job_id, line=line, limit=limit)
         return logs
 
-    def _create(self, job_dict):
+    def _create(self, job_dict, data):
         """
 
         :param job_dict:
+        :param data:
         :return:
         """
-        json_, data = self._prepare_create_data(job_dict)
         response = self._get_create_response(job_dict, data)
         return response
-
-    def _prepare_create_data(self, job_dict):
-        """
-
-        :param job_dict:
-        :return:
-        """
-        data = None
-
-        self._set_project_if_not_provided(job_dict)
-        workspace_url = self.workspace_handler.handle(job_dict)
-        if workspace_url:
-            if self.workspace_handler.archive_path:
-                data = self._get_multipart_data(job_dict)
-            else:
-                job_dict["workspaceFileName"] = workspace_url
-
-        return job_dict, data
-
-    @staticmethod
-    def _set_project_if_not_provided(json_):
-        if not json_.get("projectId"):
-            json_["project"] = "gradient-project"
-
-    def _get_multipart_data(self, json_):
-        archive_basename = self.workspace_handler.archive_basename
-        json_["workspaceFileName"] = archive_basename
-        job_data = self._get_files_dict(archive_basename)
-        monitor = MultipartEncoder(job_data).get_monitor()
-        self.client.headers["Content-Type"] = monitor.content_type
-        data = monitor
-        return data
-
-    def _get_files_dict(self, archive_basename):
-        job_data = {'file': (archive_basename, open(self.workspace_handler.archive_path, 'rb'), 'text/plain')}
-        return job_data
 
     def _get_create_response(self, json_, data):
         """

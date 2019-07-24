@@ -1,21 +1,25 @@
+import abc
 import pydoc
 
+import six
 import terminaltables
 from click import style
 from halo import halo
 
-from gradient import logger, api_sdk, exceptions
+from gradient import api_sdk, exceptions
 from gradient.api_sdk.utils import print_dict_recursive
 from gradient.commands import common
+from gradient.commands.common import BaseCommand
 from gradient.exceptions import BadResponseError
 from gradient.utils import get_terminal_lines
-from gradient.workspace import MultipartEncoder, WorkspaceHandler
+from gradient.workspace import MultipartEncoder
 
 
-class JobsCommandBase(object):
-    def __init__(self, job_client, logger_=logger.Logger()):
-        self.job_client = job_client
-        self.logger = logger_
+@six.add_metaclass(abc.ABCMeta)
+class BaseJobCommand(BaseCommand):
+    def _get_client(self, api_key, logger_):
+        client = api_sdk.clients.JobsClient(api_key=api_key, logger=logger_)
+        return client
 
     def _log_message(self, response, success_msg_template, error_msg):
         if response.ok:
@@ -34,25 +38,87 @@ class JobsCommandBase(object):
                 self.logger.error(error_msg)
 
 
-class DeleteJobCommand(JobsCommandBase):
+@six.add_metaclass(abc.ABCMeta)
+class BaseCreateJobCommandMixin(object):
+    SPINNER_MESSAGE = "Creating new job"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "New job created with ID: {}"
+
+    def __init__(self, workspace_handler, *args, **kwargs):
+        super(BaseCreateJobCommandMixin, self).__init__(*args, **kwargs)
+        self.workspace_handler = workspace_handler
+
+    def execute(self, json_):
+        json_, data = self._handle_workspace(json_)
+
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
+            try:
+                job_id = self._create(json_, data)
+            except api_sdk.GradientSdkError as e:
+                self.logger.error(e)
+                return
+
+            self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(job_id))
+
+    def _handle_workspace(self, instance_dict):
+        """
+
+        :param instance_dict:
+        :return:
+        """
+        data = None
+
+        self._set_project_if_not_provided(instance_dict)
+        workspace_url = self.workspace_handler.handle(instance_dict)
+        if workspace_url:
+            if self.workspace_handler.archive_path:
+                data = self._get_multipart_data(instance_dict)
+            else:
+                instance_dict["workspace_file_name"] = workspace_url
+
+        return instance_dict, data
+
+    def _get_multipart_data(self, json_):
+        archive_basename = self.workspace_handler.archive_basename
+        json_["workspace_file_name"] = archive_basename
+        job_data = self._get_files_dict(archive_basename)
+        monitor = MultipartEncoder(job_data).get_monitor()
+        self.client.headers["Content-Type"] = monitor.content_type
+        data = monitor
+        return data
+
+    def _get_files_dict(self, archive_basename):
+        job_data = {'file': (archive_basename, open(self.workspace_handler.archive_path, 'rb'), 'text/plain')}
+        return job_data
+
+    @staticmethod
+    def _set_project_if_not_provided(json_):
+        if not json_.get("project_id"):
+            json_["project"] = "gradient-project"
+
+    @abc.abstractmethod
+    def _create(self, json_, data):
+        pass
+
+
+class DeleteJobCommand(BaseJobCommand):
 
     def execute(self, job_id):
-        response = self.job_client.delete(job_id)
+        response = self.client.delete(job_id)
         self._log_message(response,
                           "Job deleted",
                           "Unknown error while deleting job")
 
 
-class StopJobCommand(JobsCommandBase):
+class StopJobCommand(BaseJobCommand):
 
     def execute(self, job_id):
-        response = self.job_client.dtop(job_id)
+        response = self.client.dtop(job_id)
         self._log_message(response,
                           "Job stopped",
                           "Unknown error while stopping job")
 
 
-class ListJobsCommand(JobsCommandBase):
+class ListJobsCommand(BaseJobCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
     def execute(self, **kwargs):
@@ -65,7 +131,7 @@ class ListJobsCommand(JobsCommandBase):
         filters = self._get_request_json(kwargs)
 
         try:
-            instances = self.job_client.list(filters)
+            instances = self.client.list(filters)
         except api_sdk.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
@@ -115,7 +181,7 @@ class ListJobsCommand(JobsCommandBase):
     def _get_response(self, kwargs):
         json_ = self._get_request_json(kwargs)
         params = self._get_request_params(kwargs)
-        response = self.job_client.get(self.request_url, json=json_, params=params)
+        response = self.client.get(self.request_url, json=json_, params=params)
         return response
 
     @staticmethod
@@ -125,7 +191,7 @@ class ListJobsCommand(JobsCommandBase):
         return table_string
 
 
-class JobLogsCommand(JobsCommandBase):
+class JobLogsCommand(BaseJobCommand):
 
     def execute(self, job_id, line, limit, follow):
         if follow:
@@ -135,7 +201,7 @@ class JobLogsCommand(JobsCommandBase):
             self._log_table_of_logs(job_id, line, limit)
 
     def _log_table_of_logs(self, job_id, line, limit):
-        logs = self.job_client.logs(job_id, line, limit)
+        logs = self.client.logs(job_id, line, limit)
         if not logs:
             self.logger.log("No logs found")
             return
@@ -147,7 +213,7 @@ class JobLogsCommand(JobsCommandBase):
             self.logger.log(table_str)
 
     def _log_logs_continuously(self, job_id, line, limit):
-        logs_gen = self.job_client.yield_logs(job_id, line, limit)
+        logs_gen = self.client.yield_logs(job_id, line, limit)
         for log in logs_gen:
             log_msg = "{}\t{}\t{}".format(*self._format_row(job_id, log))
             self.logger.log(log_msg)
@@ -168,37 +234,14 @@ class JobLogsCommand(JobsCommandBase):
         return table.table
 
 
-class CreateJobCommand(JobsCommandBase):
+class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
 
-    def execute(self, json_):
-        url = "/jobs/createJob/"
-        data = None
-        self.set_project_if_not_provided(json_)
-
-        workspace_url = self._workspace_handler.handle(json_)
-        if workspace_url:
-            if self._workspace_handler.archive_path:
-                data = self._get_multipart_data(json_)
-            else:
-                json_["workspaceFileName"] = workspace_url
-
-        json_.pop("workspaceArchive", None)
-        json_.pop("workspaceUrl", None)
-        json_.pop("workspace", None)
-        if workspace_url:
-            if workspace_url != "none":
-                json_["workspaceUrl"] = workspace_url
-            else:
-                json_["workspace"] = workspace_url
-
-        self.logger.log("Creating job...")
-        response = self.job_client.create(json_)
-        self._log_message(response,
-                          "Job created - ID: {id}",
-                          "Unknown error while creating job")
+    def _create(self, json_, data):
+        response = self.client.create(json_, data)
+        return response.json_data.get('id')
 
 
-class ArtifactsDestroyCommand(JobsCommandBase):
+class ArtifactsDestroyCommand(BaseJobCommand):
     def execute(self, job_id, files=None):
         url = '/jobs/{}/artifactsDestroy'.format(job_id)
         params = None
@@ -208,7 +251,7 @@ class ArtifactsDestroyCommand(JobsCommandBase):
         self._log_message(response, "Artifacts destroyed", "Unknown error while destroying artifacts")
 
 
-class ArtifactsGetCommand(JobsCommandBase):
+class ArtifactsGetCommand(BaseJobCommand):
     def execute(self, job_id):
         url = '/jobs/artifactsGet'
         response = self.api.get(url, params={'jobId': job_id})

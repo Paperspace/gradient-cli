@@ -16,10 +16,14 @@ def get_job_client(api_key):
     job_client = JobsClient(
         api_key=api_key,
         logger=logger.Logger(),
-        api_url=config.CONFIG_HOST,
-        workspace_handler_cls=WorkspaceHandler
     )
     return job_client
+
+
+def get_workspace_handler():
+    logger_ = logger.Logger()
+    workspace_handler = WorkspaceHandler(logger_=logger_)
+    return workspace_handler
 
 
 @cli.group("jobs", help="Manage gradient jobs", cls=ClickGroup)
@@ -120,8 +124,7 @@ def create_job(ctx, api_key, **kwargs):
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
 
-    job_client = get_job_client(api_key)
-    command = jobs_commands.CreateJobCommand(job_client=job_client)
+    command = jobs_commands.CreateJobCommand(api_key=api_key, workspace_handler=get_workspace_handler())
     job = command.execute(kwargs)
     if job is not None:
         ctx.invoke(list_logs, job_id=job["handle"], line=0, limit=100, follow=True, api_key=api_key)

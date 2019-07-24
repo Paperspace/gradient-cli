@@ -11,6 +11,7 @@ class JobSchema(BaseSchema):
     name = marshmallow.fields.Str(required=True)
     state = marshmallow.fields.Str()
     workspace_url = marshmallow.fields.Str(dump_to="workspaceUrl", load_from="workspaceUrl")
+    workspace_file_name = marshmallow.fields.Str(dump_to="workspaceFileName", load_from="workspaceFileName")
     working_directory = marshmallow.fields.Str(dump_to="workingDirectory", load_from="workingDirectory")
     artifacts_directory = marshmallow.fields.Str(dump_to="artifactsDirectory", load_from="artifactsDirectory")
     entrypoint = marshmallow.fields.Str()
