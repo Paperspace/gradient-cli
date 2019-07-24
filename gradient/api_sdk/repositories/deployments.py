@@ -1,4 +1,4 @@
-from .common import ListResources
+from .common import ListResources, CreateResource
 from .. import serializers
 
 
@@ -27,3 +27,17 @@ class ListDeployments(ListResources):
 
         json_ = filters
         return json_
+
+
+class CreateDeployment(CreateResource):
+
+    SERIALIZER_CLS = serializers.DeploymentSchema
+
+    def _get_create_url(self):
+        return "/deployments/createDeployment/"
+
+    def _get_id_from_response(self, response):
+        handle = response.data["deployment"]["id"]
+        return handle
+
+

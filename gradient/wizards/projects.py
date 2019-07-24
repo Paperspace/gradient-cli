@@ -6,8 +6,8 @@ from gradient.wizards.wizard import get_application
 def run_create_project_wizard():
     w = wizard.Wizard(projects_commands.CreateProjectCommand, u"Create new project")
     w.add_text_questions(("name", u"Name: "),
-                         ("repoName", u"Repository name: "),
-                         ("repoUrl", u"Repository URL: "),
+                         ("repository_name", u"Repository name: "),
+                         ("repository_url", u"Repository URL: "),
                          ("api_key", u"apiKey: "), )
 
     root_container = w.get_layout()

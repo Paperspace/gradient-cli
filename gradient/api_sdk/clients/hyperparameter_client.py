@@ -1,5 +1,5 @@
 from . import base_client
-from .. import models, repositories, serializers
+from .. import models, repositories
 
 
 class HyperparameterJobsClient(base_client.BaseClient):
@@ -53,6 +53,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str working_directory:
         :param bool use_dockerfile:
 
+        :returns: ID of a new job
         :rtype str
         """
 
@@ -81,8 +82,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
             use_dockerfile=use_dockerfile,
         )
 
-        handle = repositories.CreateHyperparameterJob(client=self.client) \
-            .create(hyperparameter, serializers.HyperparameterSchema)
+        handle = repositories.CreateHyperparameterJob(client=self.client).create(hyperparameter)
         return handle
 
     def run(
@@ -135,6 +135,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str working_directory:
         :param bool use_dockerfile:
 
+        :returns: ID of a new job
         :rtype str
         """
 
@@ -163,8 +164,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
             use_dockerfile=use_dockerfile,
         )
 
-        handle = repositories.CreateAndStartHyperparameterJob(client=self.client) \
-            .create(hyperparameter, serializers.HyperparameterSchema)
+        handle = repositories.CreateAndStartHyperparameterJob(client=self.client).create(hyperparameter)
         return handle
 
     def get(self, id_):
@@ -172,6 +172,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
 
         :param str id_:
 
+        :returns: instance of Hyperparameter
         :rtype: models.Hyperparameter
         """
         job = repositories.GetHyperparameterTuningJob(self.client).get(id=id_)
@@ -181,6 +182,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         """Start existing hyperparameter tuning job
 
         :param str id_:
+        :raises: exceptions.GradientSdkError
         """
         repositories.StartHyperparameterTuningJob(self.client).start(id_=id_)
 

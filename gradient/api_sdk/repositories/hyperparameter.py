@@ -1,13 +1,16 @@
-from . import ParseExperimentDictMixin
 from .common import CreateResource, ListResources, GetResource, StartResource
+from .. import serializers
+from ..repositories.experiments import ParseExperimentDictMixin
 
 
 class CreateHyperparameterJob(CreateResource):
+    SERIALIZER_CLS = serializers.HyperparameterSchema
+
     def _get_create_url(self):
         return "/hyperopt/"
 
 
-class CreateAndStartHyperparameterJob(CreateResource):
+class CreateAndStartHyperparameterJob(CreateHyperparameterJob):
     def _get_create_url(self):
         return "/hyperopt/create_and_start/"
 

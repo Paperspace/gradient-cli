@@ -1,7 +1,7 @@
 from gradient import constants, config
 from . import http_client
 from .base_client import BaseClient
-from .. import repositories, models, serializers
+from .. import repositories, models
 
 
 class ExperimentsClient(BaseClient):
@@ -96,7 +96,7 @@ class ExperimentsClient(BaseClient):
             registry_password=registry_password,
         )
 
-        handle = self._create(experiment, serializers.SingleNodeExperimentSchema)
+        handle = repositories.CreateSingleNodeExperiment(self.client).create(experiment)
         return handle
 
     def create_multi_node(
@@ -187,7 +187,7 @@ class ExperimentsClient(BaseClient):
             parameter_server_registry_password=parameter_server_registry_password,
         )
 
-        handle = self._create(experiment, serializers.MultiNodeExperimentSchema)
+        handle = repositories.CreateMultiNodeExperiment(self.client).create(experiment)
         return handle
 
     def run_single_node(
@@ -257,7 +257,7 @@ class ExperimentsClient(BaseClient):
             registry_password=registry_password,
         )
 
-        handle = self._run(experiment, serializers.SingleNodeExperimentSchema)
+        handle = repositories.RunSingleNodeExperiment(self.client).create(experiment)
         return handle
 
     def run_multi_node(
@@ -348,13 +348,14 @@ class ExperimentsClient(BaseClient):
             parameter_server_registry_password=parameter_server_registry_password,
         )
 
-        handle = self._run(experiment, serializers.MultiNodeExperimentSchema)
+        handle = repositories.RunMultiNodeExperiment(self.client).create(experiment)
         return handle
 
     def start(self, experiment_id):
         """Start existing experiment
 
         :param str experiment_id:
+        :raises: exceptions.GradientSdkError
         """
         repositories.StartExperiment(self.client).start(experiment_id)
 
@@ -362,6 +363,7 @@ class ExperimentsClient(BaseClient):
         """Stop running experiment
 
         :param str experiment_id:
+        :raises: exceptions.GradientSdkError
         """
         repositories.StopExperiment(self.client).stop(experiment_id)
 
@@ -370,7 +372,7 @@ class ExperimentsClient(BaseClient):
 
         :param str|list|None project_id:
         :return: experiments
-        :rtype: object
+        :rtype: list[models.SingleNodeExperiment|models.MultiNodeExperiment]
         """
         experiments = repositories.ListExperiments(self.client).list(project_id=project_id)
         return experiments
@@ -379,7 +381,7 @@ class ExperimentsClient(BaseClient):
         """Get experiment instance
 
         :param str experiment_id:
-        :rtype: SingleNodeExperiment|MultiNodeExperiment
+        :rtype: models.SingleNodeExperiment|models.MultiNodeExperiment
         """
         experiment = repositories.GetExperiment(self.client).get(experiment_id=experiment_id)
         return experiment
@@ -407,13 +409,5 @@ class ExperimentsClient(BaseClient):
         :returns: generator yielding LogRow instances
         :rtype: Iterator[models.LogRow]
         """
-        logs_generator = repositories.ListExperimentLogs(client=self.logs_client).yield_logs(experiment_id, line, limit)
+        logs_generator = repositories.ListExperimentLogs(self.logs_client).yield_logs(experiment_id, line, limit)
         return logs_generator
-
-    def _create(self, experiment, schema_cls):
-        handle = repositories.CreateExperiment(client=self.client).create(experiment, schema_cls)
-        return handle
-
-    def _run(self, experiment, schema_cls):
-        handle = repositories.RunExperiment(client=self.client).create(experiment, schema_cls)
-        return handle

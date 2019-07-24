@@ -1,5 +1,5 @@
-from gradient.api_sdk.repositories import ListResources
 from .. import serializers
+from ..repositories.common import ListResources
 
 
 class ParseModelDictMixin(object):

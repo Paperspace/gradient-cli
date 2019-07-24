@@ -1,3 +1,7 @@
+import abc
+
+import six
+
 from .common import ListResources, GetResource, CreateResource, StartResource, StopResource
 from .. import serializers
 from ..serializers import utils
@@ -108,12 +112,26 @@ class ListExperimentLogs(ListResources):
         return params
 
 
-class CreateExperiment(CreateResource):
+@six.add_metaclass(abc.ABCMeta)
+class BaseCreateExperiment(CreateResource):
     def _get_create_url(self):
         return "/experiments/"
 
 
-class RunExperiment(CreateExperiment):
+class CreateSingleNodeExperiment(BaseCreateExperiment):
+    SERIALIZER_CLS = serializers.SingleNodeExperimentSchema
+
+
+class CreateMultiNodeExperiment(BaseCreateExperiment):
+    SERIALIZER_CLS = serializers.MultiNodeExperimentSchema
+
+
+class RunSingleNodeExperiment(CreateSingleNodeExperiment):
+    def _get_create_url(self):
+        return "/experiments/create_and_start/"
+
+
+class RunMultiNodeExperiment(CreateMultiNodeExperiment):
     def _get_create_url(self):
         return "/experiments/create_and_start/"
 

@@ -701,6 +701,45 @@ class TestStartExperiment(object):
                                             params=None)
 
 
+class TestStopExperiment(object):
+    URL = "https://services.paperspace.io/experiments/v1/experiments/some-id/stop/"
+    COMMAND = ["experiments", "stop", "some-id"]
+    EXPECTED_HEADERS = http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+    COMMAND_WITH_API_KEY = ["experiments", "stop", "some-id", "--apiKey", "some_key"]
+    RESPONSE_JSON = {"message": "success"}
+    START_STDOUT = "Experiment stopped\n"
+
+    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.put")
+    def test_should_send_put_request_and_print_confirmation(self, put_patched):
+        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
+        expected_headers = http_client.default_headers.copy()
+        expected_headers["X-API-Key"] = "some_key"
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.START_STDOUT, result.exc_info
+        put_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params=None)
+
+    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.put")
+    def test_should_send_put_request_with_changed_api_key_when_api_key_option_was_provided(self, put_patched):
+        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
+
+        assert result.output == self.START_STDOUT
+        put_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=None,
+                                            params=None)
+
+
 class TestExperimentLogs(object):
     URL = "https://logs.paperspace.io/jobs/logs"
     COMMAND = ["experiments", "logs", "--experimentId", "some_id"]
