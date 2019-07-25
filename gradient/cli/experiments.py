@@ -11,6 +11,7 @@ from gradient.cli.cli_types import json_string, ChoiceType
 from gradient.cli.common import api_key_option, ClickGroup, deprecated
 from gradient.commands import experiments as experiments_commands
 from gradient.config import config
+from gradient.utils import random_name_generator
 
 MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
     (
@@ -46,6 +47,7 @@ def common_experiments_create_options(f):
     options = [
         click.option(
             "--name",
+            default=random_name_generator(),
             required=True,
             help="Name of new experiment",
         ),
@@ -87,6 +89,11 @@ def common_experiments_create_options(f):
             "--clusterId",
             "cluster_id",
             help="Cluster ID",
+        ),
+        click.option(
+            "--vpc",
+            "gradient_vpc",
+            help="Use when running Gradient VPC",
         ),
         click.option(
             "--experimentEnv",

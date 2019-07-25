@@ -27,7 +27,7 @@ def get_help_colors_dict(use_colors, help_headers_color, help_options_color):
 
 _DEFAULT_CONFIG_HOST = "https://api.paperspace.io"
 _DEFAULT_CONFIG_LOG_HOST = "https://logs.paperspace.io"
-_DEFAULT_CONFIG_EXPERIMENTS_HOST = "https://services.paperspace.io/experiments/v1/"
+_DEFAULT_CONFIG_EXPERIMENTS_HOST = "https://services.paperspace.io/experiments/"
 _DEFAULT_CONFIG_DIR_PATH = "~/.paperspace"
 _DEFAULT_CONFIG_FILE_NAME = os.path.expanduser("config.json")
 _DEFAULT_HELP_HEADERS_COLOR = "yellow"

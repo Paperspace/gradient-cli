@@ -10,7 +10,7 @@ default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
 
 
 class API(object):
-    def __init__(self, api_url, headers=None, api_key=None, logger=sdk_logger.MuteLogger()):
+    def __init__(self, api_url, headers=None, api_key=None, logger=sdk_logger.MuteLogger(), vpc=False):
         """
 
         :type api_url: str
@@ -24,6 +24,7 @@ class API(object):
         if api_key:
             self.api_key = api_key
         self.logger = logger
+        self.vpc = vpc
 
     @property
     def api_key(self):

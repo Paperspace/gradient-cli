@@ -8,7 +8,8 @@ class BaseClient(object):
 
     def __init__(
             self, api_key,
-            logger=sdk_logger.MuteLogger()
+            logger=sdk_logger.MuteLogger(),
+            vpc=False
     ):
         """
 
@@ -18,3 +19,4 @@ class BaseClient(object):
         self.api_key = api_key
         self.client = http_client.API(self.HOST_URL, api_key=api_key, logger=logger)
         self.logger = logger
+        self.vpc = vpc

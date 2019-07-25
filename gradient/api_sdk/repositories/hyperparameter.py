@@ -7,17 +7,17 @@ class CreateHyperparameterJob(CreateResource):
     SERIALIZER_CLS = serializers.HyperparameterSchema
 
     def _get_create_url(self):
-        return "/hyperopt/"
+        return "/v1/hyperopt/"
 
 
 class CreateAndStartHyperparameterJob(CreateHyperparameterJob):
     def _get_create_url(self):
-        return "/hyperopt/create_and_start/"
+        return "/v1/hyperopt/create_and_start/"
 
 
 class ListHyperparameterJobs(ParseExperimentDictMixin, ListResources):
     def get_request_url(self, **kwargs):
-        return "/hyperopt/"
+        return "/v1/hyperopt/"
 
     def _parse_objects(self, data, **kwargs):
         experiments = []
@@ -35,7 +35,7 @@ class ListHyperparameterJobs(ParseExperimentDictMixin, ListResources):
 class GetHyperparameterTuningJob(ParseExperimentDictMixin, GetResource):
     def get_request_url(self, **kwargs):
         id_ = kwargs["id"]
-        url = "/hyperopt/{}/".format(id_)
+        url = "/v1/hyperopt/{}/".format(id_)
         return url
 
     def _parse_object(self, job_dict, **kwargs):
@@ -49,5 +49,5 @@ class StartHyperparameterTuningJob(StartResource):
     VALIDATION_ERROR_MESSAGE = "Failed to start hyperparameter tuning job"
 
     def get_request_url(self, id_):
-        url = "/hyperopt/{}/start/".format(id_)
+        url = "/v1/hyperopt/{}/start/".format(id_)
         return url

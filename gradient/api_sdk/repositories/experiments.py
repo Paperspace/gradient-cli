@@ -20,7 +20,7 @@ class ParseExperimentDictMixin(object):
 
 class ListExperiments(ParseExperimentDictMixin, ListResources):
     def get_request_url(self, **kwargs):
-        return "/experiments/"
+        return "/v1/experiments/"
 
     def _parse_objects(self, data, **kwargs):
         experiments_dicts = self._get_experiments_dicts_from_json_data(data, kwargs)
@@ -65,7 +65,7 @@ class GetExperiment(ParseExperimentDictMixin, GetResource):
 
     def get_request_url(self, **kwargs):
         experiment_id = kwargs["experiment_id"]
-        url = "/experiments/{}/".format(experiment_id)
+        url = "/v1/experiments/{}/".format(experiment_id)
         return url
 
 
@@ -115,7 +115,9 @@ class ListExperimentLogs(ListResources):
 @six.add_metaclass(abc.ABCMeta)
 class BaseCreateExperiment(CreateResource):
     def _get_create_url(self):
-        return "/experiments/"
+        if self.client.vpc:
+            return "/v2/experiments/"
+        return "/v1/experiments/"
 
 
 class CreateSingleNodeExperiment(BaseCreateExperiment):
@@ -128,25 +130,32 @@ class CreateMultiNodeExperiment(BaseCreateExperiment):
 
 class RunSingleNodeExperiment(CreateSingleNodeExperiment):
     def _get_create_url(self):
-        return "/experiments/create_and_start/"
+        if self.client.vpc:
+            return "/v2/experiments/run/"
+        return "/v1/experiments/create_and_start/"
 
 
 class RunMultiNodeExperiment(CreateMultiNodeExperiment):
     def _get_create_url(self):
-        return "/experiments/create_and_start/"
+        if self.client.vpc:
+            return "/v2/experiments/run/"
+        return "/v1/experiments/create_and_start/"
 
 
 class StartExperiment(StartResource):
     VALIDATION_ERROR_MESSAGE = "Failed to start experiment"
 
     def get_request_url(self, id_):
-        url = "/experiments/{}/start/".format(id_)
-        return url
+        if self.client.vpc:
+            return"/v2/experiments/{}/start/".format(id_)
+        return "/v1/experiments/{}/start/".format(id_)
+
 
 
 class StopExperiment(StopResource):
     VALIDATION_ERROR_MESSAGE = "Failed to stop experiment"
 
     def get_request_url(self, id_):
-        url = "/experiments/{}/stop/".format(id_)
-        return url
+        if self.client.vpc:
+            return "/v2/experiments/{}/stop/".format(id_)
+        return "/v1/experiments/{}/stop/".format(id_)

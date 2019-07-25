@@ -32,6 +32,7 @@ class ExperimentsClient(BaseClient):
             container_user=None,
             registry_username=None,
             registry_password=None,
+            gradient_vpc=False,
     ):
         """Create single node experiment
 
@@ -51,7 +52,7 @@ class ExperimentsClient(BaseClient):
         :param str container_user:
         :param str registry_username:
         :param str registry_password:
-
+        :param bool gradient_vpc:
         :returns: experiment handle
         :rtype: str
         """
@@ -74,6 +75,7 @@ class ExperimentsClient(BaseClient):
             container_user=container_user,
             registry_username=registry_username,
             registry_password=registry_password,
+            gradient_vpc=gradient_vpc,
         )
 
         handle = repositories.CreateSingleNodeExperiment(self.client).create(experiment)
@@ -106,6 +108,7 @@ class ExperimentsClient(BaseClient):
             parameter_server_container_user=None,
             parameter_server_registry_container_user=None,
             parameter_server_registry_password=None,
+            gradient_vpc=False,
     ):
         """Create multi node experiment
 
@@ -134,6 +137,7 @@ class ExperimentsClient(BaseClient):
         :param str parameter_server_container_user:
         :param str parameter_server_registry_container_user:
         :param str parameter_server_registry_password:
+        :param bool gradient_vpc:
 
         :returns: experiment handle
         :rtype: str
@@ -158,6 +162,7 @@ class ExperimentsClient(BaseClient):
             experiment_env=experiment_env,
             model_type=model_type,
             model_path=model_path,
+            gradient_vpc=gradient_vpc,
             worker_container_user=worker_container_user,
             worker_registry_username=worker_registry_username,
             worker_registry_password=worker_registry_password,
@@ -187,6 +192,7 @@ class ExperimentsClient(BaseClient):
             container_user=None,
             registry_username=None,
             registry_password=None,
+            gradient_vpc=False
     ):
         """Create and start single node experiment
 
@@ -206,6 +212,7 @@ class ExperimentsClient(BaseClient):
         :param str container_user:
         :param str registry_username:
         :param str registry_password:
+        :param bool gradient_vpc:
 
         :returns: experiment handle
         :rtype: str
@@ -229,6 +236,7 @@ class ExperimentsClient(BaseClient):
             container_user=container_user,
             registry_username=registry_username,
             registry_password=registry_password,
+            gradient_vpc=gradient_vpc
         )
 
         handle = repositories.RunSingleNodeExperiment(self.client).create(experiment)
@@ -261,6 +269,7 @@ class ExperimentsClient(BaseClient):
             parameter_server_container_user=None,
             parameter_server_registry_container_user=None,
             parameter_server_registry_password=None,
+            gradient_vpc=False,
     ):
         """Create and start multi node experiment
 
@@ -289,6 +298,7 @@ class ExperimentsClient(BaseClient):
         :param str parameter_server_container_user:
         :param str parameter_server_registry_container_user:
         :param str parameter_server_registry_password:
+        :param bool gradient_vpc:
 
         :returns: experiment handle
         :rtype: str
@@ -320,26 +330,27 @@ class ExperimentsClient(BaseClient):
             parameter_server_container_user=parameter_server_container_user,
             parameter_server_registry_container_user=parameter_server_registry_container_user,
             parameter_server_registry_password=parameter_server_registry_password,
+            gradient_vpc=gradient_vpc
         )
 
         handle = repositories.RunMultiNodeExperiment(self.client).create(experiment)
         return handle
 
-    def start(self, experiment_id):
+    def start(self, experiment_id, vpc):
         """Start existing experiment
 
         :param str experiment_id:
         :raises: exceptions.GradientSdkError
         """
-        repositories.StartExperiment(self.client).start(experiment_id)
+        repositories.StartExperiment(self.client).start(experiment_id, vpc)
 
-    def stop(self, experiment_id):
+    def stop(self, experiment_id, vpc):
         """Stop running experiment
 
         :param str experiment_id:
         :raises: exceptions.GradientSdkError
         """
-        repositories.StopExperiment(self.client).stop(experiment_id)
+        repositories.StopExperiment(self.client).stop(experiment_id, vpc)
 
     def list(self, project_id=None):
         """Get a list of experiments. Optionally filter by project ID
@@ -350,13 +361,13 @@ class ExperimentsClient(BaseClient):
         experiments = repositories.ListExperiments(self.client).list(project_id=project_id)
         return experiments
 
-    def get(self, experiment_id):
+    def get(self, experiment_id, vpc):
         """Get experiment instance
 
         :param str experiment_id:
         :rtype: models.SingleNodeExperiment|models.MultiNodeExperiment
         """
-        experiment = repositories.GetExperiment(self.client).get(experiment_id=experiment_id)
+        experiment = repositories.GetExperiment(self.client).get(experiment_id=experiment_id, vpc=vpc)
         return experiment
 
     def logs(self, experiment_id, line=0, limit=10000):

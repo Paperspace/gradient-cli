@@ -10,6 +10,7 @@ class BaseExperiment(object):
     workspace_url = attr.ib(type=str, default=None)
     working_directory = attr.ib(type=str, default=None)
     artifact_directory = attr.ib(type=str, default=None)
+    gradient_vpc = attr.ib(type=bool, default=False)
     cluster_id = attr.ib(type=int, default=None)
     experiment_env = attr.ib(type=dict, default=dict)
     project_id = attr.ib(type=str, default=None)
