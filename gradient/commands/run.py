@@ -9,8 +9,8 @@ from gradient.workspace import WorkspaceHandler
 
 class RunCommand(object):
 
-    def __init__(self, api=None, logger_=logger.Logger()):
-        self.api = api
+    def __init__(self, api_key=None, logger_=logger.Logger()):
+        self.api_key = api_key
         self.logger = logger_
 
     @staticmethod
@@ -53,5 +53,5 @@ class RunCommand(object):
         command = self._create_command(mode, script)
         json_['command'] = command
 
-        command = CreateJobCommand(api=self.api, workspace_handler=WorkspaceHandler())
+        command = CreateJobCommand(api_key=self.api_key, workspace_handler=WorkspaceHandler())
         command.execute(json_)

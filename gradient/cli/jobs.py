@@ -12,14 +12,6 @@ from gradient.commands import jobs as jobs_commands
 from gradient.config import config
 
 
-def get_job_client(api_key):
-    job_client = JobsClient(
-        api_key=api_key,
-        logger=logger.Logger(),
-    )
-    return job_client
-
-
 def get_workspace_handler():
     logger_ = logger.Logger()
     workspace_handler = WorkspaceHandler(logger_=logger_)
@@ -40,8 +32,7 @@ def jobs_group():
 )
 @api_key_option
 def delete_job(job_id, api_key=None):
-    job_client = get_job_client(api_key)
-    command = jobs_commands.DeleteJobCommand(job_client=job_client)
+    command = jobs_commands.DeleteJobCommand(api_key=api_key)
     command.execute(job_id)
 
 
@@ -54,8 +45,7 @@ def delete_job(job_id, api_key=None):
 )
 @api_key_option
 def stop_job(job_id, api_key=None):
-    job_client = get_job_client(api_key)
-    command = jobs_commands.StopJobCommand(job_client=job_client)
+    command = jobs_commands.StopJobCommand(api_key=api_key)
     command.execute(job_id)
 
 
@@ -78,8 +68,8 @@ def stop_job(job_id, api_key=None):
 @api_key_option
 def list_jobs(api_key, **filters):
     del_if_value_is_none(filters)
-    job_client = get_job_client(api_key)
-    command = jobs_commands.ListJobsCommand(job_client=job_client)
+
+    command = jobs_commands.ListJobsCommand(api_key=api_key)
     command.execute(filters=filters)
 
 
@@ -156,8 +146,7 @@ def create_job(ctx, api_key, **kwargs):
 )
 @api_key_option
 def list_logs(job_id, line, limit, follow, api_key=None):
-    job_client = get_job_client(api_key)
-    command = jobs_commands.JobLogsCommand(job_client=job_client)
+    command = jobs_commands.JobLogsCommand(api_key=api_key)
     command.execute(job_id, line, limit, follow)
 
 
@@ -171,8 +160,7 @@ def artifacts():
 @click.option("--files", "files")
 @api_key_option
 def destroy_artifacts(job_id, api_key=None, files=None):
-    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = jobs_commands.ArtifactsDestroyCommand(api=jobs_api)
+    command = jobs_commands.ArtifactsDestroyCommand(api_key=api_key)
     command.execute(job_id, files=files)
 
 
@@ -180,8 +168,7 @@ def destroy_artifacts(job_id, api_key=None, files=None):
 @click.argument("job_id")
 @api_key_option
 def get_artifacts(job_id, api_key=None):
-    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = jobs_commands.ArtifactsGetCommand(api=jobs_api)
+    command = jobs_commands.ArtifactsGetCommand(api_key=api_key)
     command.execute(job_id)
 
 

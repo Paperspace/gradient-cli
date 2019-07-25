@@ -18,7 +18,7 @@ class TestRunCommand(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
     @mock.patch("gradient.workspace.MultipartEncoder.get_monitor")
-    @mock.patch("gradient.api_sdk.clients.job_client.JobsClient._get_files_dict")
+    @mock.patch("gradient.commands.jobs.CreateJobCommand._get_files_dict")
     def test_run_simple_file_with_args(self, get_files_patched, get_moniror_patched, workspace_zip_patched, post_patched):
         get_files_patched.return_value = mock.MagicMock()
         workspace_zip_patched.return_value = '/foo/bar'

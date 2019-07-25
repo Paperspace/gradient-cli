@@ -82,7 +82,7 @@ class BaseCreateJobCommandMixin(object):
         json_["workspace_file_name"] = archive_basename
         job_data = self._get_files_dict(archive_basename)
         monitor = MultipartEncoder(job_data).get_monitor()
-        self.client.headers["Content-Type"] = monitor.content_type
+        self.client.client.headers["Content-Type"] = monitor.content_type
         data = monitor
         return data
 
@@ -238,7 +238,10 @@ class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
 
     def _create(self, json_, data):
         response = self.client.create(json_, data)
-        return response.json_data.get('id')
+        job_id = None
+        if response.json_data:
+            job_id = response.json_data.get('id')
+        return job_id
 
 
 class ArtifactsDestroyCommand(BaseJobCommand):
