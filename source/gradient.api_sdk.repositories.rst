@@ -44,6 +44,14 @@ gradient.api\_sdk.repositories.models module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.repositories.projects module
+----------------------------------------------
+
+.. automodule:: gradient.api_sdk.repositories.projects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Module contents
 ---------------

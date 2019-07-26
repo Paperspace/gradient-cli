@@ -52,6 +52,14 @@ gradient.api\_sdk.serializers.model module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.serializers.project module
+--------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.project
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.serializers.utils module
 ------------------------------------------
 

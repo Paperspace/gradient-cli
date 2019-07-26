@@ -458,7 +458,7 @@ class ExperimentsClient(BaseClient):
 
         :param str experiment_id: Experiment ID
         :param int line:
-        :param int limit:
+        :param int limit: line limit default set to 10 000
 
         :returns: list of LogRows
         :rtype: list[models.LogRow]
@@ -471,7 +471,7 @@ class ExperimentsClient(BaseClient):
 
         :param str experiment_id:
         :param int line:
-        :param int limit:
+        :param int limit: line limit default set to 10 000
 
         :returns: generator yielding LogRow instances
         :rtype: Iterator[models.LogRow]

@@ -52,6 +52,14 @@ gradient.api\_sdk.clients.model\_client module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.clients.project\_client module
+------------------------------------------------
+
+.. automodule:: gradient.api_sdk.clients.project_client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.clients.sdk\_client module
 --------------------------------------------
 

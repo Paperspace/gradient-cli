@@ -13,7 +13,11 @@ class BaseClient(object):
         """
         Base class. All client classes inherit from it.
 
-        :param str api_key:
+        Api Key can be created on paperspace.com after you sign in to your account. Then after obtaining it you can set
+        it in CLI using command ``gradient apiKey XXXXXXXXXXXXXXXXXXX`` or you can include your API key for each command
+        ,for example: ``gradient experiments run ... --apiKey XXXXXXXXXXXXXXXXXXX``
+
+        :param str api_key: your api token
         :param sdk_logger.Logger logger:
         """
         self.api_key = api_key
