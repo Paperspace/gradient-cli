@@ -58,7 +58,7 @@ class DeploymentsClient(BaseClient):
 
             gradient deployments start --id <your-deployment-id>
 
-        :param deployment_id: Deployment ID
+        :param str deployment_id: Deployment ID
         """
         return self._get_post_response(deployment_id)
 
