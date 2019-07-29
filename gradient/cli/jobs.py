@@ -179,6 +179,6 @@ def get_artifacts(job_id, api_key=None):
 @click.option("--files", "files", help="Get only given file (use at the end * as a wildcard)")
 @api_key_option
 def list_artifacts(job_id, size, links, files, api_key=None):
-    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = jobs_commands.ArtifactsListCommand(api=jobs_api)
+    # jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
+    command = jobs_commands.ArtifactsListCommand(api_key=api_key)
     command.execute(job_id=job_id, size=size, links=links, files=files)

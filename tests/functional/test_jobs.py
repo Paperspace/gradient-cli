@@ -306,7 +306,7 @@ class TestJobArtifactsCommands(TestJobs):
                                        params={"jobId": job_id})
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.jobs.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_get_request_with_all_parameters_for_a_list_of_artifacts(self, get_patched):
         get_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"

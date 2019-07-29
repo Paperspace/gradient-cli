@@ -55,3 +55,14 @@ class ListJobLogs(ListResources):
             'limit': kwargs['limit']
         }
         return params
+
+
+class ListJobArtifacts(ListResources):
+    def _parse_objects(self, data, **kwargs):
+        return data
+
+    def get_request_url(self, **kwargs):
+        return '/jobs/artifactsList'
+
+    def _get_request_params(self, kwargs):
+        return kwargs.get('filters')

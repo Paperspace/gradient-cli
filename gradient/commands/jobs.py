@@ -112,7 +112,7 @@ class DeleteJobCommand(BaseJobCommand):
 class StopJobCommand(BaseJobCommand):
 
     def execute(self, job_id):
-        response = self.client.dtop(job_id)
+        response = self.client.stop(job_id)
         self._log_message(response,
                           "Job stopped",
                           "Unknown error while stopping job")
@@ -215,7 +215,7 @@ class JobLogsCommand(BaseJobCommand):
     def _log_logs_continuously(self, job_id, line, limit):
         logs_gen = self.client.yield_logs(job_id, line, limit)
         for log in logs_gen:
-            log_msg = "{}\t{}\t{}".format(*self._format_row(job_id, log))
+            log_msg = "{}\t{}".format(*self._format_row(log))
             self.logger.log(log_msg)
 
     @staticmethod
@@ -246,18 +246,17 @@ class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
 
 class ArtifactsDestroyCommand(BaseJobCommand):
     def execute(self, job_id, files=None):
-        url = '/jobs/{}/artifactsDestroy'.format(job_id)
         params = None
         if files:
             params = {'files': files}
-        response = self.api.post(url, params=params)
+
+        response = self.client.artifacts_delete(job_id, params)
         self._log_message(response, "Artifacts destroyed", "Unknown error while destroying artifacts")
 
 
 class ArtifactsGetCommand(BaseJobCommand):
     def execute(self, job_id):
-        url = '/jobs/artifactsGet'
-        response = self.api.get(url, params={'jobId': job_id})
+        response = self.client.artifacts_get(job_id)
 
         self._log_artifacts(response)
 
@@ -273,18 +272,27 @@ class ArtifactsGetCommand(BaseJobCommand):
             self.logger.error("Error occurred while getting artifacts: {}".format(str(e)))
 
 
-class ArtifactsListCommand(common.ListCommand):
-    kwargs = {}
+class ArtifactsListCommand(BaseJobCommand):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
     def execute(self, **kwargs):
-        self.kwargs = kwargs
-        return super(ArtifactsListCommand, self).execute(**kwargs)
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            instances = self._get_instances(**kwargs)
 
-    @property
-    def request_url(self):
-        return '/jobs/artifactsList'
+        self._log_objects_list(instances)
 
-    def _get_request_params(self, kwargs):
+    def _get_instances(self, **kwargs):
+        filters = self._get_request_params(kwargs)
+
+        try:
+            instances = self.client.artifacts_list(filters)
+        except api_sdk.GradientSdkError as e:
+            raise exceptions.ReceivingDataFailedError(e)
+
+        return instances
+
+    @staticmethod
+    def _get_request_params(kwargs):
         params = {'jobId': kwargs['job_id']}
 
         files = kwargs.get('files')
@@ -315,3 +323,21 @@ class ArtifactsListCommand(common.ListCommand):
                 row.append(artifact['url'])
             data.append(tuple(row))
         return data
+
+    def _log_objects_list(self, objects):
+        if not objects:
+            self.logger.warning("No data found")
+            return
+
+        table_data = self._get_table_data(objects)
+        table_str = self._make_table(table_data)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
+
+    @staticmethod
+    def _make_table(table_data):
+        ascii_table = terminaltables.AsciiTable(table_data)
+        table_string = ascii_table.table
+        return table_string

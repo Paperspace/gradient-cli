@@ -3,7 +3,7 @@ from .base_client import BaseClient
 from ..clients import http_client
 from ..models import Job
 from ..serializers import JobSchema
-from ..repositories.jobs import ListJobs, ListJobLogs
+from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts
 from ..utils import MessageExtractor
 
 
@@ -44,6 +44,19 @@ class JobsClient(BaseClient):
         logs = ListJobLogs(self.logs_client).list(job_id=job_id, line=line, limit=limit)
         return logs
 
+    def artifacts_delete(self, job_id, params):
+        url = self._get_action_url(job_id, "artifactsDestroy", ending_slash=False)
+        response = self.client.post(url, params=params)
+        return response
+
+    def artifacts_get(self, job_id):
+        url = '/jobs/artifactsGet'
+        response = self.client.get(url, params={'jobId': job_id})
+        return response
+
+    def artifacts_list(self, filters):
+        return ListJobArtifacts(self.client).list(filters=filters)
+
     def _create(self, job_dict, data):
         """
 
@@ -74,5 +87,12 @@ class JobsClient(BaseClient):
         return msg
 
     @staticmethod
-    def _get_action_url(job_id, action):
-        return "/jobs/{}/{}/".format(job_id, action)
+    def _get_action_url(job_id, action, ending_slash=True):
+        template_with_ending_slash = "/jobs/{}/{}/"
+        template_without_ending_slash = "/jobs/{}/{}"
+
+        if ending_slash:
+            template = template_with_ending_slash
+        else:
+            template = template_without_ending_slash
+        return template.format(job_id, action)
