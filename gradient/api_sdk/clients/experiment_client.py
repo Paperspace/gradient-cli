@@ -36,18 +36,18 @@ class ExperimentsClient(BaseClient):
         """
         Create single node experiment
 
-        *EXAMPLE:*
+        *EXAMPLE*::
 
-        | gradient experiments create singlenode
-        | --projectId <your-project-id>
-        | --name singleEx
-        | --experimentEnv "{"EPOCHS_EVAL":5,"TRAIN_EPOCHS":10,"MAX_STEPS":1000,"EVAL_SECS":10}"
-        | --container tensorflow/tensorflow:1.13.1-gpu-py3
-        | --machineType K80
-        | --command "python mnist.py"
-        | --workspaceUrl https://github.com/Paperspace/mnist-sample.git
-        | --modelType Tensorflow
-        | --modelPath /artifacts
+            gradient experiments create singlenode
+            --projectId <your-project-id>
+            --name singleEx
+            --experimentEnv "{"EPOCHS_EVAL":5,"TRAIN_EPOCHS":10,"MAX_STEPS":1000,"EVAL_SECS":10}"
+            --container tensorflow/tensorflow:1.13.1-gpu-py3
+            --machineType K80
+            --command "python mnist.py"
+            --workspaceUrl https://github.com/Paperspace/mnist-sample.git
+            --modelType Tensorflow
+            --modelPath /artifacts
 
         Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model,
         since Deployments currently only use Tensorflow Serving to serve models. Also, ``--modelPath /artifacts``
@@ -129,18 +129,18 @@ class ExperimentsClient(BaseClient):
         """
         Create multi node experiment
 
-        *EXAMPLE:*
+        *EXAMPLE*::
 
-        | gradient experiments create singlenode
-        | --projectId <your-project-id>
-        | --name singleEx
-        | --experimentEnv "{"EPOCHS_EVAL":5,"TRAIN_EPOCHS":10,"MAX_STEPS":1000,"EVAL_SECS":10}"
-        | --container tensorflow/tensorflow:1.13.1-gpu-py3
-        | --machineType K80
-        | --command "python mnist.py"
-        | --workspaceUrl https://github.com/Paperspace/mnist-sample.git
-        | --modelType Tensorflow
-        | --modelPath /artifacts
+            gradient experiments create singlenode
+            --projectId <your-project-id>
+            --name singleEx
+            --experimentEnv "{"EPOCHS_EVAL":5,"TRAIN_EPOCHS":10,"MAX_STEPS":1000,"EVAL_SECS":10}"
+            --container tensorflow/tensorflow:1.13.1-gpu-py3
+            --machineType K80
+            --command "python mnist.py"
+            --workspaceUrl https://github.com/Paperspace/mnist-sample.git
+            --modelType Tensorflow
+            --modelPath /artifacts
 
         Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model,
         since Deployments currently only use Tensorflow Serving to serve models. Also, ``--modelPath /artifacts``
@@ -229,18 +229,18 @@ class ExperimentsClient(BaseClient):
     ):
         """Create and start single node experiment
 
-        *EXAMPLE:*
+        *EXAMPLE*::
 
-        | gradient experiments run singlenode
-        | --projectId <your-project-id>
-        | --name singleEx
-        | --experimentEnv "{"EPOCHS_EVAL":5,"TRAIN_EPOCHS":10,"MAX_STEPS":1000,"EVAL_SECS":10}"
-        | --container tensorflow/tensorflow:1.13.1-gpu-py3
-        | --machineType K80
-        | --command "python mnist.py"
-        | --workspaceUrl https://github.com/Paperspace/mnist-sample.git
-        | --modelType Tensorflow
-        | --modelPath /artifacts
+            gradient experiments run singlenode
+            --projectId <your-project-id>
+            --name singleEx
+            --experimentEnv "{"EPOCHS_EVAL":5,"TRAIN_EPOCHS":10,"MAX_STEPS":1000,"EVAL_SECS":10}"
+            --container tensorflow/tensorflow:1.13.1-gpu-py3
+            --machineType K80
+            --command "python mnist.py"
+            --workspaceUrl https://github.com/Paperspace/mnist-sample.git
+            --modelType Tensorflow
+            --modelPath /artifacts
 
         Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model,
         since Deployments currently only use Tensorflow Serving to serve models. Also, ``--modelPath /artifacts``
@@ -325,22 +325,22 @@ class ExperimentsClient(BaseClient):
         Project identified by the --projectId option. (Note: in some early versions of the CLI this option was called
         --projectHandle.)
 
-        *EXAMPLE*
+        *EXAMPLE*::
 
-        | gradient experiments run multinode
-        | --name multiEx
-        | --projectId <your-project-id>
-        | --experimentType GRPC
-        | --workerContainer tensorflow/tensorflow:1.13.1-gpu-py3
-        | --workerMachineType K80
-        | --workerCommand "python mnist.py"
-        | --workerCount 2
-        | --parameterServerContainer tensorflow/tensorflow:1.13.1-gpu-py3
-        | --parameterServerMachineType K80
-        | --parameterServerCommand "python mnist.py"
-        | --parameterServerCount 1
-        | --workspaceUrl https://github.com/Paperspace/mnist-sample.git
-        | --modelType Tensorflow
+            gradient experiments run multinode
+            --name multiEx
+            --projectId <your-project-id>
+            --experimentType GRPC
+            --workerContainer tensorflow/tensorflow:1.13.1-gpu-py3
+            --workerMachineType K80
+            --workerCommand "python mnist.py"
+            --workerCount 2
+            --parameterServerContainer tensorflow/tensorflow:1.13.1-gpu-py3
+            --parameterServerMachineType K80
+            --parameterServerCommand "python mnist.py"
+            --parameterServerCount 1
+            --workspaceUrl https://github.com/Paperspace/mnist-sample.git
+            --modelType Tensorflow
 
         Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model, since
         Deployments currently only use Tensorflow Serving to serve models.
@@ -409,9 +409,9 @@ class ExperimentsClient(BaseClient):
     def start(self, experiment_id):
         """Start existing experiment
 
-        *EXAMPLE*
+        *EXAMPLE*::
 
-        ''gradient experiments start <experiment_id>''
+            gradient experiments start <experiment_id>
 
         :param str experiment_id: Experiment ID
         :raises: exceptions.GradientSdkError
@@ -421,9 +421,9 @@ class ExperimentsClient(BaseClient):
     def stop(self, experiment_id):
         """Stop running experiment
 
-        *EXAMPLE*
+        *EXAMPLE*::
 
-        ''gradient experiments stop <experiment_id>''
+            gradient experiments stop <experiment_id>
 
         :param str experiment_id: Experiment ID
         :raises: exceptions.GradientSdkError
@@ -432,6 +432,26 @@ class ExperimentsClient(BaseClient):
 
     def list(self, project_id=None):
         """Get a list of experiments. Optionally filter by project ID
+
+        *EXAMPLE*::
+
+            gradient experiments list
+
+        *EXAMPLE RETURN*::
+
+            +-----------------------------+----------------+----------+
+            | Name                        | ID             | Status   |
+            +-----------------------------+----------------+----------+
+            | mnist-multinode             | experiment-id  | canceled |
+            | mnist-multinode             | experiment-id  | failed   |
+            | mnist-multinode             | experiment-id  | created  |
+            | mnist-multinode             | experiment-id  | canceled |
+            | mnist-multinode             | experiment-id  | canceled |
+            | mnist-multinode             | experiment-id  | canceled |
+            | mnist-multinode             | experiment-id  | canceled |
+            | mnist                       | experiment-id  | stopped  |
+            +-----------------------------+----------------+----------+
+
 
         :param str|list|None project_id:
         :return: experiments
@@ -452,9 +472,9 @@ class ExperimentsClient(BaseClient):
     def logs(self, experiment_id, line=0, limit=10000):
         """Get list of logs for an experiment
 
-        *EXAMPLE*
+        *EXAMPLE*::
 
-        ``gradient experiments logs [OPTIONS]``
+            gradient experiments logs --experimentId
 
         :param str experiment_id: Experiment ID
         :param int line:

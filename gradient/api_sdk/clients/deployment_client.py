@@ -16,15 +16,15 @@ class DeploymentsClient(BaseClient):
         and specify all of the following parameters: deployment type, base image, name, machine type, and container
         image for serving, as well as the instance count:
 
-        *EXAMPLE*
+        *EXAMPLE*::
 
-        | gradient deployments create
-        | --deploymentType TFServing
-        | --modelId <your-model-id>
-        | --name "Sample Model"
-        | --machineType K80
-        | --imageUrl tensorflow/serving:latest-gpu
-        | --instanceCount 2
+            gradient deployments create
+            --deploymentType TFServing
+            --modelId <your-model-id>
+            --name "Sample Model"
+            --machineType K80
+            --imageUrl tensorflow/serving:latest-gpu
+            --instanceCount 2
 
 
         To obtain your Model ID, you can use the ``command gradient models list`` and copy the target Model ID from
@@ -54,9 +54,9 @@ class DeploymentsClient(BaseClient):
         """
         Start deployment
 
-        *EXAMPLE*
+        *EXAMPLE*::
 
-        ``gradient deployments start --id <your-deployment-id>``
+            gradient deployments start --id <your-deployment-id>
 
         :param deployment_id: Deployment ID
         """
@@ -66,9 +66,9 @@ class DeploymentsClient(BaseClient):
         """
         Stop deployment
 
-        *EXAMPLE*
+        *EXAMPLE*::
 
-        ``gradient deployments stop --id <your-deployment-id>``
+            gradient deployments stop --id <your-deployment-id>
 
         :param deployment_id: Deployment ID
         """
@@ -78,12 +78,12 @@ class DeploymentsClient(BaseClient):
         """
         List deployments with optional filtering
 
-        *EXAMPLE*
+        To view all running deployments in your team, run::
 
-        To view all running deployments in your team, run:
-        | ``gradient list --state RUNNING``
+            gradient list --state RUNNING
 
-        Options:
+        Options::
+
           --state [BUILDING|PROVISIONING|STARTING|RUNNING|STOPPING|STOPPED|ERROR] Filter by deployment state
           --projectId TEXT Use to filter by project ID
           --model_id TEXT Use to filter by model ID

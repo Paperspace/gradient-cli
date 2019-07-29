@@ -9,8 +9,8 @@ class ModelsClient(BaseClient):
     def list(self, experiment_id=None, project_id=None):
         """Get list of models
 
-        :param str experiment_id:
-        :param str project_id:
+        :param str experiment_id: Experiment id
+        :param str project_id: Project id
 
         :rtype: list[models.Model]
         """
