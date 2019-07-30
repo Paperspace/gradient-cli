@@ -15,7 +15,7 @@ class API(object):
 
         :type str api_url: url you want to connect
         :type dict headers: headers
-        :type str api_key: your api Key
+        :type str api_key: your API key
         :type sdk_logger.Logger logger:
         """
         self.api_url = api_url

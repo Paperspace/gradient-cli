@@ -10,7 +10,7 @@ class DeploymentsClient(BaseClient):
 
     def create(self, deployment_type, model_id, name, machine_type, image_url, instance_count):
         """
-        Method to create deployment instance.
+        Method to create a Deployment instance.
 
         To create a new Deployment, you must first create a Model. With a Model available, use the ``create`` subcommand
         and specify all of the following parameters: deployment type, base image, name, machine type, and container
@@ -27,14 +27,14 @@ class DeploymentsClient(BaseClient):
             --instanceCount 2
 
 
-        To obtain your Model ID, you can use the ``command gradient models list`` and copy the target Model ID from
+        To obtain your Model ID, you can run ``command gradient models list`` and copy the target Model ID from
         your available Models.
 
-        :param deployment_type: Model deployment type. Only TensorFlow Model deployment type. Only TensorFlow models can currently be deployed  [required]
+        :param deployment_type: Model deployment type. Only TensorFlow Model deployment type is currently supported  [required]
         :param model_id: ID of a trained model [required]
         :param name: Human-friendly name for new model deployment [required]
         :param machine_type: [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]
-        :param image_url: Docker image for model serving  [required]
+        :param image_url: Docker image for model deployment  [required]
         :param instance_count: Number of machine instances  [required]
         :return: Created deployment id
         """
