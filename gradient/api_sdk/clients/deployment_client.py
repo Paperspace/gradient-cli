@@ -34,7 +34,7 @@ class DeploymentsClient(BaseClient):
         :param model_id: ID of a trained model [required]
         :param name: Human-friendly name for new model deployment [required]
         :param machine_type: [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]
-        :param image_url: Docker image for model serving  [required]
+        :param image_url: Docker image for model deployment  [required]
         :param instance_count: Number of machine instances  [required]
         :return: Created deployment id
         """
