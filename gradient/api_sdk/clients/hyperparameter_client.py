@@ -36,14 +36,14 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str worker_container: Worker container  [required]
         :param str worker_machine_type: Worker machine type  [required]
         :param str worker_command: Worker command  [required]
-        :param str worker_count: Worker count  [required]
+        :param int worker_count: Worker count  [required]
         :param bool is_preemptible: Flag: is preemptible
         :param list[str] ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
         :param str artifact_directory: Artifacts directory
         :param str cluster_id: Cluster ID
         :param dict experiment_env: Environment variables (in JSON)
-        :param str trigger_event_id:
+        :param str trigger_event_id: GradientCI trigger event id
         :param str model_type: Model type
         :param str model_path: Model path
         :param str dockerfile_path: Path to dockerfile in project
@@ -138,13 +138,13 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str artifact_directory: Artifacts directory
         :param str cluster_id: Cluster ID
         :param dict experiment_env: Environment variables (in JSON)
-        :param str trigger_event_id:
+        :param str trigger_event_id: GradientCI trigger event id
         :param str model_type: Model type
         :param str model_path: Model path
         :param str dockerfile_path: Path to dockerfile
-        :param str registry_username: Hyperparameter server registry username
-        :param str registry_password: Hyperparameter server registry password
-        :param str container_user: Hyperparameter server container user
+        :param str registry_username: container registry username
+        :param str registry_password: container registry password
+        :param str container_user: container user
         :param str working_directory: Working directory for the experiment
         :param bool use_dockerfile: Flag: use dockerfile
 

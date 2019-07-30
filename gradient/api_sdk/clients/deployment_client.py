@@ -86,7 +86,7 @@ class DeploymentsClient(BaseClient):
 
           --state [BUILDING|PROVISIONING|STARTING|RUNNING|STOPPING|STOPPED|ERROR] Filter by deployment state
           --projectId TEXT Use to filter by project ID
-          --model_id TEXT Use to filter by model ID
+          --modelId TEXT Use to filter by model ID
 
         :param state|projectId|model_id filters:
         """

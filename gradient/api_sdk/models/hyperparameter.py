@@ -9,24 +9,24 @@ class Hyperparameter(BaseExperiment):
     """
     Hyperparameter job class. Inherits from ``BaseExperiment`` class
 
-    :param int experiment_type_id:
-    :param str tuning_command:
-    :param str worker_container:
-    :param str worker_machine_type:
-    :param str worker_command:
-    :param int worker_count:
-    :param bool worker_use_dockerfile:
-    :param str worker_dockerfile_path:
-    :param str hyperparameter_server_registry_username:
-    :param str hyperparameter_server_registry_password:
-    :param str hyperparameter_server_container_user:
-    :param bool is_preemptible:
-    :param str trigger_event_id:
-    :param str dockerfile_path:
-    :param str registry_username:
-    :param str registry_password:
-    :param str container_user:
-    :param bool use_dockerfile:
+    :param int experiment_type_id: experiment type, for hyperparameter experiment set to 4
+    :param str tuning_command: Tuning command
+    :param str worker_container: Worker container
+    :param str worker_machine_type: Worker machine type
+    :param str worker_command: Worker command
+    :param int worker_count: Worker count
+    :param bool worker_use_dockerfile: Flag: use dockerfile
+    :param str worker_dockerfile_path: path to dockerfile, if not set default is project root directory
+    :param str hyperparameter_server_registry_username: Hyperparameter server registry username
+    :param str hyperparameter_server_registry_password: Hyperparameter server registry password
+    :param str hyperparameter_server_container_user: Hyperparameter server container user
+    :param bool is_preemptible: Flag: is preemptible
+    :param str trigger_event_id: GradientCI trigger event id
+    :param str dockerfile_path: Path to dockerfile
+    :param str registry_username: container registry username
+    :param str registry_password: container registry password
+    :param str container_user: container user
+    :param bool use_dockerfile: Flag: use dockerfile
     """
     experiment_type_id = attr.ib(type=int, default=constants.ExperimentType.HYPERPARAMETER_TUNING)
     tuning_command = attr.ib(type=str, default=None)
