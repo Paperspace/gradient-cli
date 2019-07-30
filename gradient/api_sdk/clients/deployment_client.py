@@ -10,7 +10,7 @@ class DeploymentsClient(BaseClient):
 
     def create(self, deployment_type, model_id, name, machine_type, image_url, instance_count):
         """
-        Method to create deployment instance.
+        Method to create a Deployment instance.
 
         To create a new Deployment, you must first create a Model. With a Model available, use the ``create`` subcommand
         and specify all of the following parameters: deployment type, base image, name, machine type, and container
