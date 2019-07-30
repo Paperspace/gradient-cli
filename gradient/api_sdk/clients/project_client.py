@@ -9,13 +9,13 @@ class ProjectsClient(BaseClient):
     def create(self, name, repository_name=None, repository_url=None):
         """Create new project
 
-        *EXAMPLE*
+        *EXAMPLE*::
 
-        ``gradient projects create --name new-project``
+            gradient projects create --name new-project
 
-        *EXAMPLE RETURN*
+        *EXAMPLE RETURN*::
 
-        ``Project created with ID: <your-project-id>``
+            Project created with ID: <your-project-id>
 
         :param str name: Name of new project [required]
         :param str repository_name: Name of the repository

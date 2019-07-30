@@ -80,7 +80,7 @@ class DeploymentsClient(BaseClient):
 
         To view all running deployments in your team, run::
 
-            gradient list --state RUNNING
+            gradient deployments list --state RUNNING
 
         Options::
 

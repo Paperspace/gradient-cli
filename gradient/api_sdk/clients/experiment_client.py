@@ -127,20 +127,24 @@ class ExperimentsClient(BaseClient):
             parameter_server_registry_password=None,
     ):
         """
-        Create multi node experiment
+        Create multinode experiment
 
         *EXAMPLE*::
 
-            gradient experiments create singlenode
+            gradient experiments create multinode
+            --name multiEx
             --projectId <your-project-id>
-            --name singleEx
-            --experimentEnv "{"EPOCHS_EVAL":5,"TRAIN_EPOCHS":10,"MAX_STEPS":1000,"EVAL_SECS":10}"
-            --container tensorflow/tensorflow:1.13.1-gpu-py3
-            --machineType K80
-            --command "python mnist.py"
+            --experimentType GRPC
+            --workerContainer tensorflow/tensorflow:1.13.1-gpu-py3
+            --workerMachineType K80
+            --workerCommand "python mnist.py"
+            --workerCount 2
+            --parameterServerContainer tensorflow/tensorflow:1.13.1-gpu-py3
+            --parameterServerMachineType K80
+            --parameterServerCommand "python mnist.py"
+            --parameterServerCount 1
             --workspaceUrl https://github.com/Paperspace/mnist-sample.git
             --modelType Tensorflow
-            --modelPath /artifacts
 
         Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model,
         since Deployments currently only use Tensorflow Serving to serve models. Also, ``--modelPath /artifacts``
@@ -319,7 +323,7 @@ class ExperimentsClient(BaseClient):
             parameter_server_registry_container_user=None,
             parameter_server_registry_password=None,
     ):
-        """Create and start multi node experiment
+        """Create and start multinode experiment
 
         The following command creates and starts a multinode experiment called multiEx and places it within the Gradient
         Project identified by the --projectId option. (Note: in some early versions of the CLI this option was called
@@ -407,7 +411,7 @@ class ExperimentsClient(BaseClient):
         return handle
 
     def start(self, experiment_id):
-        """Start existing experiment
+        """Start existing experiment that has no run
 
         *EXAMPLE*::
 
@@ -470,15 +474,15 @@ class ExperimentsClient(BaseClient):
         return experiment
 
     def logs(self, experiment_id, line=0, limit=10000):
-        """Get list of logs for an experiment
+        """Show list of latest logs from the specified experiment.
 
         *EXAMPLE*::
 
             gradient experiments logs --experimentId
 
         :param str experiment_id: Experiment ID
-        :param int line:
-        :param int limit: line limit default set to 10 000
+        :param int line: line number at which logs starts to display on screen
+        :param int limit: maximum lines displayed on screen, default set to 10 000
 
         :returns: list of LogRows
         :rtype: list[models.LogRow]
@@ -490,8 +494,8 @@ class ExperimentsClient(BaseClient):
         """Get log generator. Polls the API for new logs
 
         :param str experiment_id:
-        :param int line:
-        :param int limit: line limit default set to 10 000
+        :param int line: line number at which logs starts to display on screen
+        :param int limit: maximum lines displayed on screen, default set to 10 000
 
         :returns: generator yielding LogRow instances
         :rtype: Iterator[models.LogRow]
