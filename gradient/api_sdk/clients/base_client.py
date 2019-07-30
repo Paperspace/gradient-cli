@@ -18,7 +18,7 @@ class BaseClient(object):
             ``gradient apiKey XXXXXXXXXXXXXXXXXXX``
         or you can provide your API key in any command, for example:: ``gradient experiments run ... --apiKey XXXXXXXXXXXXXXXXXXX``
 
-        :param str api_key: your api token
+        :param str api_key: your API key
         :param sdk_logger.Logger logger:
         """
         self.api_key = api_key
