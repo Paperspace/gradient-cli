@@ -14,7 +14,7 @@ class BaseClient(object):
         Base class. All client classes inherit from it.
 
         An API key can be created at paperspace.com after you sign in to your account. After obtaining it, you can set
-        it in CLI using command::
+        it in the CLI using the command::
             ``gradient apiKey XXXXXXXXXXXXXXXXXXX``
         or you can include your API key for each command ,for example:: ``gradient experiments run ... --apiKey XXXXXXXXXXXXXXXXXXX``
 
