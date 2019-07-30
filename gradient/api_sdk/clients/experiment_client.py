@@ -127,7 +127,7 @@ class ExperimentsClient(BaseClient):
             parameter_server_registry_password=None,
     ):
         """
-        Create multi node experiment
+        Create multinode experiment
 
         *EXAMPLE*::
 
