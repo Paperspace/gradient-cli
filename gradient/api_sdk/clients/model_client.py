@@ -10,7 +10,7 @@ class ModelsClient(BaseClient):
         """Get list of models
 
         :param str experiment_id: Experiment ID
-        :param str project_id: Project id
+        :param str project_id: Project ID
 
         :rtype: list[models.Model]
         """
