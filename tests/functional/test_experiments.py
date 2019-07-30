@@ -255,7 +255,7 @@ class TestExperimentsCreateMultiNode(object):
 
 
 class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
-    URL = "https://services.paperspace.io/experiments/v1/experiments/create_and_start/"
+    URL = "https://services.paperspace.io/experiments/v1/experiments/run/"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "run", "singlenode",
         "--name", "exp1",
@@ -290,7 +290,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
 
 
 class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
-    URL = "https://services.paperspace.io/experiments/v1/experiments/create_and_start/"
+    URL = "https://services.paperspace.io/experiments/v1/experiments/run/"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "run", "multinode",
         "--name", "multinode_mpi",
