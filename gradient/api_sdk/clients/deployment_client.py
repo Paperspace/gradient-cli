@@ -30,7 +30,7 @@ class DeploymentsClient(BaseClient):
         To obtain your Model ID, you can run ``command gradient models list`` and copy the target Model ID from
         your available Models.
 
-        :param deployment_type: Model deployment type. Only TensorFlow Model deployment type. Only TensorFlow models can currently be deployed  [required]
+        :param deployment_type: Model deployment type. Only TensorFlow Model deployment type is currently supported  [required]
         :param model_id: ID of a trained model [required]
         :param name: Human-friendly name for new model deployment [required]
         :param machine_type: [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]
