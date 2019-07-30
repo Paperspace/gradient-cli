@@ -137,7 +137,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str workspace_url: Project git repository url
         :param str artifact_directory: Artifacts directory
         :param str cluster_id: Cluster ID
-        :param dict experiment_env: Environment variables in a JSON
+        :param dict experiment_env: Environment variables (in JSON)
         :param str trigger_event_id:
         :param str model_type: Model type
         :param str model_path: Model path
