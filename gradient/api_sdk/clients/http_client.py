@@ -13,10 +13,10 @@ class API(object):
     def __init__(self, api_url, headers=None, api_key=None, logger=sdk_logger.MuteLogger()):
         """
 
-        :type api_url: str
-        :type headers: dict
-        :type api_key: str
-        :type logger: sdk_logger.Logger
+        :type str api_url: url you want to connect
+        :type dict headers: headers
+        :type str api_key: your API key
+        :type sdk_logger.Logger logger:
         """
         self.api_url = api_url
         headers = headers or default_headers

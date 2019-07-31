@@ -3,6 +3,21 @@ import attr
 
 @attr.s
 class Model(object):
+    """
+    Model class
+
+    :param str id:
+    :param str name:
+    :param str project_id:
+    :param str experiment_id:
+    :param list tags:
+    :param str model_type:
+    :param str url:
+    :param str model_path:
+    :param str deployment_state:
+    :param str summary:
+    :param str detail:
+    """
     id = attr.ib(type=str, default=None)
     name = attr.ib(type=str, default=None)
     project_id = attr.ib(type=str, default=None)

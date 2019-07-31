@@ -7,7 +7,7 @@ from .. import logger as sdk_logger
 class SdkClient(object):
     def __init__(self, api_key, logger=sdk_logger.MuteLogger()):
         """
-        :param str api_key:
+        :param str api_key: API key
         :param sdk_logger.Logger logger:
         """
         self.experiments = ExperimentsClient(api_key=api_key, logger=logger)

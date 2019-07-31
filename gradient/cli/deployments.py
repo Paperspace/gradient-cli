@@ -105,8 +105,8 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
     help="Use to filter by project ID",
 )
 @click.option(
-    "--model_id",
-    "modelId",
+    "--modelId",
+    "model_id",
     help="Use to filter by model ID",
 )
 @api_key_option

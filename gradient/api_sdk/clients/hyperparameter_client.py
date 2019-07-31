@@ -30,31 +30,31 @@ class HyperparameterJobsClient(base_client.BaseClient):
     ):
         """Create hyperparameter tuning job
 
-        :param str name:
-        :param str project_id:
-        :param str tuning_command:
-        :param str worker_container:
-        :param str worker_machine_type:
-        :param str worker_command:
-        :param str worker_count:
-        :param bool is_preemptible:
-        :param list[str] ports:
-        :param str workspace_url:
-        :param str artifact_directory:
-        :param str cluster_id:
-        :param dict experiment_env:
-        :param str trigger_event_id:
-        :param str model_type:
-        :param str model_path:
-        :param str dockerfile_path:
-        :param str registry_username:
-        :param str registry_password:
-        :param str container_user:
-        :param str working_directory:
-        :param bool use_dockerfile:
+        :param str name: Name of new experiment [required]
+        :param str project_id: Project ID [required]
+        :param str tuning_command: Tuning command [required]
+        :param str worker_container: Worker container  [required]
+        :param str worker_machine_type: Worker machine type  [required]
+        :param str worker_command: Worker command  [required]
+        :param int worker_count: Worker count  [required]
+        :param bool is_preemptible: Flag: is preemptible
+        :param list[str] ports: Port to use in new experiment
+        :param str workspace_url: Project git repository url
+        :param str artifact_directory: Artifacts directory
+        :param str cluster_id: Cluster ID
+        :param dict experiment_env: Environment variables (in JSON)
+        :param str trigger_event_id: GradientCI trigger event id
+        :param str model_type: Model type
+        :param str model_path: Model path
+        :param str dockerfile_path: Path to dockerfile in project
+        :param str registry_username: Hyperparameter server registry username
+        :param str registry_password: Hyperparameter server registry password
+        :param str container_user: Hyperparameter server container user
+        :param str working_directory: Working directory for the experiment
+        :param bool use_dockerfile: Flag: use dockerfile
 
         :returns: ID of a new job
-        :rtype str
+        :rtype: str
         """
 
         hyperparameter = models.Hyperparameter(
@@ -112,31 +112,44 @@ class HyperparameterJobsClient(base_client.BaseClient):
     ):
         """Create and start hyperparameter tuning job
 
-        :param str name:
-        :param str project_id:
-        :param str tuning_command:
-        :param str worker_container:
-        :param str worker_machine_type:
-        :param str worker_command:
-        :param str worker_count:
-        :param bool is_preemptible:
-        :param list[str] ports:
-        :param str workspace_url:
-        :param str artifact_directory:
-        :param str cluster_id:
-        :param dict experiment_env:
-        :param str trigger_event_id:
-        :param str model_type:
-        :param str model_path:
-        :param str dockerfile_path:
-        :param str registry_username:
-        :param str registry_password:
-        :param str container_user:
-        :param str working_directory:
-        :param bool use_dockerfile:
+        *EXAMPLE*::
+
+            gradient hyperparameters run
+            --name HyperoptKerasExperimentCLI1
+            --projectId <your-project-id>
+            --tuningCommand 'make run_hyperopt'
+            --workerContainer tensorflow/tensorflow:1.13.1-gpu-py3
+            --workerMachineType K80
+            --workerCommand 'make run_hyperopt_worker'
+            --workerCount 2
+            --workspaceUrl git+https://github.com/Paperspace/hyperopt-keras-sample
+
+
+        :param str name: Name of new experiment  [required]
+        :param str project_id: Project ID  [required]
+        :param str tuning_command: Tuning command  [required]
+        :param str worker_container: Worker container  [required]
+        :param str worker_machine_type: Worker machine type  [required]
+        :param str worker_command: Worker command  [required]
+        :param str worker_count: Worker count  [required]
+        :param bool is_preemptible: Flag: is preemptible
+        :param list[str] ports: Port to use in new experiment
+        :param str workspace_url: Project git repository url
+        :param str artifact_directory: Artifacts directory
+        :param str cluster_id: Cluster ID
+        :param dict experiment_env: Environment variables (in JSON)
+        :param str trigger_event_id: GradientCI trigger event id
+        :param str model_type: Model type
+        :param str model_path: Model path
+        :param str dockerfile_path: Path to dockerfile
+        :param str registry_username: container registry username
+        :param str registry_password: container registry password
+        :param str container_user: container user
+        :param str working_directory: Working directory for the experiment
+        :param bool use_dockerfile: Flag: use dockerfile
 
         :returns: ID of a new job
-        :rtype str
+        :rtype: str
         """
 
         hyperparameter = models.Hyperparameter(
@@ -170,7 +183,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
     def get(self, id_):
         """Get Hyperparameter tuning job's instance
 
-        :param str id_:
+        :param str id_: Hyperparameter job id
 
         :returns: instance of Hyperparameter
         :rtype: models.Hyperparameter
@@ -181,13 +194,30 @@ class HyperparameterJobsClient(base_client.BaseClient):
     def start(self, id_):
         """Start existing hyperparameter tuning job
 
-        :param str id_:
+        :param str id_: Hyperparameter job id
         :raises: exceptions.GradientSdkError
         """
         repositories.StartHyperparameterTuningJob(self.client).start(id_=id_)
 
     def list(self):
         """Get a list of hyperparameter tuning jobs
+
+        *EXAMPLE*::
+
+            gradient hyperparameters list
+
+        *EXAMPLE RETURN*::
+
+            +--------------------------------+----------------+------------+
+            | Name                           | ID             | Project ID |
+            +--------------------------------+----------------+------------+
+            | name-of-your-experiment-job    | job-id         | project-id |
+            | name-of-your-experiment-job    | job-id         | project-id |
+            | name-of-your-experiment-job    | job-id         | project-id |
+            | name-of-your-experiment-job    | job-id         | project-id |
+            | name-of-your-experiment-job    | job-id         | project-id |
+            +--------------------------------+----------------+------------+
+
 
         :rtype: list[models.Hyperparameter]
         """
