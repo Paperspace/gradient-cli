@@ -36,6 +36,14 @@ gradient.api\_sdk.repositories.hyperparameter module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.repositories.jobs module
+------------------------------------------
+
+.. automodule:: gradient.api_sdk.repositories.jobs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.repositories.models module
 --------------------------------------------
 

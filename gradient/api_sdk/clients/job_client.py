@@ -1,3 +1,6 @@
+"""
+Dupa Jasia
+"""
 from gradient.config import config
 from .base_client import BaseClient
 from ..clients import http_client
@@ -9,7 +12,7 @@ from ..utils import MessageExtractor
 
 class JobsClient(BaseClient):
     """
-
+    Cycki Toma
     """
 
     def create(
@@ -29,7 +32,7 @@ class JobsClient(BaseClient):
             ignore_files=None,
             experiment_id=None,
             job_env=None,
-            use_docerfile=None,
+            use_dockerfile=None,
             is_preemptible=None,
             project=None,
             started_by_user_id=None,
@@ -43,14 +46,76 @@ class JobsClient(BaseClient):
         """
         Method to create job in paperspace gradient.
 
-        :param machine_type: Type
-        :param container:
-        :param project_id:
+        :param str machine_type: Type of machine on which job should run. This field is **required**.
+
+            Choose one of this:
+
+            .. code-block::
+
+                K80
+                P100
+                TPU
+                GV100
+                GV100x8
+                G1
+                G6
+                G12
+
+        :param str container: name of docker container that should be used to run job. This field is **required**.
+
+            Example value: ``tensorflow/tensorflow:1.13.1-gpu-py3``
+        :param str project_id:
         :param data:
+        :param name:
+        :param command:
+        :param ports:
+        :param is_public:
+        :param workspace:
+        :param workspace_archive:
+        :param workspace_url:
+        :param working_directory:
+        :param ignore_files:
+        :param experiment_id:
+        :param job_env:
+        :param use_dockerfile:
+        :param is_preemptible:
+        :param project:
+        :param started_by_user_id:
+        :param rel_dockerfile_path:
+        :param registry_username:
+        :param registry_password:
+        :param cluster:
+        :param cluster_id:
+        :param node_attrs:
 
         :return: job handle if created with success
         """
-        job = Job(**json_)
+        job = Job(
+            machine_type=machine_type,
+            container=container,
+            project_id=project_id,
+            name=name,
+            command=command,
+            ports=ports,
+            is_public=is_public,
+            workspace=workspace,
+            workspace_archive=workspace_archive,
+            workspace_url=workspace_url,
+            working_directory=working_directory,
+            ignore_files=ignore_files,
+            experiment_id=experiment_id,
+            job_env=job_env,
+            use_dockerfile=use_dockerfile,
+            is_preemptible=is_preemptible,
+            project=project,
+            started_by_user_id=started_by_user_id,
+            rel_dockerfile_path=rel_dockerfile_path,
+            registry_username=registry_username,
+            registry_password=registry_password,
+            cluster=cluster,
+            cluster_id=cluster_id,
+            target_node_attrs=node_attrs,
+        )
         job_dict = JobSchema().dump(job).data
         return self._create(job_dict, data)
 

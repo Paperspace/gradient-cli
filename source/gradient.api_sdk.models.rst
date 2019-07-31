@@ -28,6 +28,14 @@ gradient.api\_sdk.models.hyperparameter module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.models.job module
+-----------------------------------
+
+.. automodule:: gradient.api_sdk.models.job
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.models.log module
 -----------------------------------
 

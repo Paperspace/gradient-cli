@@ -36,6 +36,14 @@ gradient.api\_sdk.serializers.hyperparameter module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.serializers.job module
+----------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.job
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.serializers.log module
 ----------------------------------------
 

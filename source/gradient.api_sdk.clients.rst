@@ -44,6 +44,14 @@ gradient.api\_sdk.clients.hyperparameter\_client module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.clients.job\_client module
+--------------------------------------------
+
+.. automodule:: gradient.api_sdk.clients.job_client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.clients.model\_client module
 ----------------------------------------------
 
