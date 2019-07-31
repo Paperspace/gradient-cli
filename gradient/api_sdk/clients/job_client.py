@@ -8,6 +8,52 @@ from ..utils import MessageExtractor
 
 
 class JobsClient(BaseClient):
+    """
+
+    """
+
+    def create(
+            self,
+            machine_type,
+            container,
+            project_id,
+            data,
+            name=None,
+            command=None,
+            ports=None,
+            is_public=None,
+            workspace=None,
+            workspace_archive=None,
+            workspace_url=None,
+            working_directory=None,
+            ignore_files=None,
+            experiment_id=None,
+            job_env=None,
+            use_docerfile=None,
+            is_preemptible=None,
+            project=None,
+            started_by_user_id=None,
+            rel_dockerfile_path=None,
+            registry_username=None,
+            registry_password=None,
+            cluster=None,
+            cluster_id=None,
+            node_attrs=None,
+    ):
+        """
+        Method to create job in paperspace gradient.
+
+        :param machine_type: Type
+        :param container:
+        :param project_id:
+        :param data:
+
+        :return: job handle if created with success
+        """
+        job = Job(**json_)
+        job_dict = JobSchema().dump(job).data
+        return self._create(job_dict, data)
+
     HOST_URL = config.CONFIG_HOST
 
     def __init__(self, *args, **kwargs):
@@ -16,23 +62,22 @@ class JobsClient(BaseClient):
                                            api_key=self.api_key,
                                            logger=self.logger)
 
-    def create(self, json_, data):
-        """
-        Method to create job in paperspace cloud.
-
-        :param json_: dict with values for job
-        :return: job handle if created with success
-        """
-        job = Job(**json_)
-        job_dict = JobSchema().dump(job).data
-        return self._create(job_dict, data)
-
     def delete(self, job_id):
+        """
+
+        :param job_id:
+        :return:
+        """
         url = self._get_action_url(job_id, "destroy")
         response = self.client.post(url)
         return response
 
     def stop(self, job_id):
+        """
+
+        :param job_id:
+        :return:
+        """
         url = self._get_action_url(job_id, "stop")
         response = self.client.post(url)
         return response

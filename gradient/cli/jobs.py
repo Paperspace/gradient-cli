@@ -3,13 +3,11 @@ import functools
 import click
 
 from gradient import utils, logger
-from gradient.api_sdk.clients import http_client, JobsClient
 from gradient.workspace import WorkspaceHandler
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts, deprecated
 from gradient.commands import jobs as jobs_commands
-from gradient.config import config
 
 
 def get_workspace_handler():
@@ -75,23 +73,25 @@ def list_jobs(api_key, **filters):
 
 def common_jobs_create_options(f):
     options = [
-        click.option("--name", "name", help="Job name", required=True),
-        click.option("--machineType", "machine_type", help="Virtual machine type"),
-        click.option("--container", "container", default="paperspace/tensorflow-python", help="Docker container"),
+        click.option("--name", "name", help="Job name"),
+        click.option("--machineType", "machine_type", help="Virtual machine type",
+                     required=True),
+        click.option("--container", "container", default="paperspace/tensorflow-python", help="Docker container",
+                     required=True),
         click.option("--command", "command", help="Job command/entrypoint"),
         click.option("--ports", "ports", help="Mapped ports"),
         click.option("--isPublic", "is_public", help="Flag: is job public"),
-        click.option("--workspace", "workspace", required=False, help="Path to workspace directory"),
-        click.option("--workspaceArchive", "workspace_archive", required=False, help="Path to workspace archive"),
-        click.option("--workspaceUrl", "workspace_url", required=False, help="Project git repository url"),
-        click.option("--workingDirectory", "working_directory", help="Working directory for the experiment", ),
+        click.option("--workspace", "workspace", help="Path to workspace directory"),
+        click.option("--workspaceArchive", "workspace_archive", help="Path to workspace archive"),
+        click.option("--workspaceUrl", "workspace_url", help="Project git repository url"),
+        click.option("--workingDirectory", "working_directory", help="Working directory for the experiment",),
         click.option("--ignoreFiles", "ignore_files", help="Ignore certain files from uploading"),
         click.option("--experimentId", "experiment_id", help="Experiment Id"),
         click.option("--jobEnv", "job_env", type=json_string, help="Environmental variables "),
         click.option("--useDockerfile", "use_dockerfile", help="Flag: using Dockerfile"),
         click.option("--isPreemptible", "is_preemptible", help="Flag: isPreemptible"),
         click.option("--project", "project", help="Project name"),
-        click.option("--projectId", "project_id", help="Project ID"),
+        click.option("--projectId", "project_id", help="Project ID", required=True),
         click.option("--startedByUserId", "started_by_user_id", help="User ID"),
         click.option("--relDockerfilePath", "rel_dockerfile_path", help="Relative path to Dockerfile"),
         click.option("--registryUsername", "registry_username", help="Docker registry username"),
