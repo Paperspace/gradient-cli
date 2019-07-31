@@ -8,3 +8,7 @@ class ResourceFetchingError(GradientSdkError):
 
 class ResourceCreatingError(GradientSdkError):
     pass
+
+
+class ResourceCreatingDataError(ResourceCreatingError):
+    pass
