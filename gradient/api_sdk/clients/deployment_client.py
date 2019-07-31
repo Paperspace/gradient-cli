@@ -31,7 +31,7 @@ class DeploymentsClient(BaseClient):
         your available Models.
 
         :param deployment_type: Model deployment type. Only TensorFlow Model deployment type is currently supported  [required]
-        :param model_id: ID of a trained model [required]
+        :param modelId: ID of a trained model [required]
         :param name: Human-friendly name for new model deployment [required]
         :param machine_type: [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]
         :param image_url: Docker image for model deployment  [required]
@@ -88,7 +88,7 @@ class DeploymentsClient(BaseClient):
           --projectId TEXT Use to filter by project ID
           --modelId TEXT Use to filter by model ID
 
-        :param state|projectId|model_id filters:
+        :param state|projectId|modelId filters:
         """
         return repositories.ListDeployments(self.client).list(filters=filters)
 
