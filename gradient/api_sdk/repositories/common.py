@@ -107,7 +107,10 @@ class CreateResource(object):
 
     def _get_instance_dict(self, instance):
         serializer = self._get_serializer()
-        instance_dict = serializer.dump(instance).data
+        serialization_result = serializer.dump(instance)
+        instance_dict = serialization_result.data
+        if serialization_result.errors:
+            raise exceptions.ResourceCreatingDataError(str(serialization_result.errors))
         instance_dict = self._process_instance_dict(instance_dict)
         return instance_dict
 
