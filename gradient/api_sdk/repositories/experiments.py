@@ -128,12 +128,12 @@ class CreateMultiNodeExperiment(BaseCreateExperiment):
 
 class RunSingleNodeExperiment(CreateSingleNodeExperiment):
     def _get_create_url(self):
-        return "/experiments/create_and_start/"
+        return "/experiments/run/"
 
 
 class RunMultiNodeExperiment(CreateMultiNodeExperiment):
     def _get_create_url(self):
-        return "/experiments/create_and_start/"
+        return "/experiments/run/"
 
 
 class StartExperiment(StartResource):
