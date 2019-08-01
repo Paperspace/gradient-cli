@@ -24,7 +24,7 @@ Gradient supports any ML/DL framework (TensorFlow, PyTorch, XGBoost, etc).
 
 <hr>
 
-![PyPI](https://img.shields.io/pypi/v/gradient)
+[!PyPI](https://img.shields.io/pypi/v/gradient)
 
 See [releasenotes.md](https://github.com/Paperspace/gradient-cli/blob/master/releasenotes.md) for details on the current release, as well as release history.
 
