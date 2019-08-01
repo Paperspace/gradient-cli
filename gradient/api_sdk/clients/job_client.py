@@ -1,5 +1,5 @@
 """
-Dupa Jasia
+Jobs related client handler logic.
 """
 from gradient.config import config
 from .base_client import BaseClient
@@ -12,8 +12,25 @@ from ..utils import MessageExtractor
 
 class JobsClient(BaseClient):
     """
-    Cycki Toma
+    Client to handle job related actions.
+
+    Available actions:
+        - create
+        - delete
+        - stop
+        - list
+        - logs
+        - artifacts_delete
+        - artifacts_get
+        - artifacts_list
     """
+    HOST_URL = config.CONFIG_HOST
+
+    def __init__(self, *args, **kwargs):
+        super(JobsClient, self).__init__(*args, **kwargs)
+        self.logs_client = http_client.API(config.CONFIG_LOG_HOST,
+                                           api_key=self.api_key,
+                                           logger=self.logger)
 
     def create(
             self,
@@ -64,7 +81,9 @@ class JobsClient(BaseClient):
         :param str container: name of docker container that should be used to run job. This field is **required**.
 
             Example value: ``tensorflow/tensorflow:1.13.1-gpu-py3``
-        :param str project_id:
+
+        :param str project_id: Identify to which project job should be connected. This field is **required**.
+
         :param data:
         :param name:
         :param command:
@@ -118,14 +137,6 @@ class JobsClient(BaseClient):
         )
         job_dict = JobSchema().dump(job).data
         return self._create(job_dict, data)
-
-    HOST_URL = config.CONFIG_HOST
-
-    def __init__(self, *args, **kwargs):
-        super(JobsClient, self).__init__(*args, **kwargs)
-        self.logs_client = http_client.API(config.CONFIG_LOG_HOST,
-                                           api_key=self.api_key,
-                                           logger=self.logger)
 
     def delete(self, job_id):
         """
