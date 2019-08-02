@@ -17,6 +17,18 @@ class ProjectsClient(BaseClient):
 
             Project created with ID: <your-project-id>
 
+
+        in sdk::
+
+            from gradient.api_sdk.clients import ProjectsClient
+
+            api_key = 'your-api-key'
+            projects_client = ProjectsClient(api_key)
+
+            new_project = projects_client.create('your-project-name')
+
+            print(new_project)
+
         :param str name: Name of new project [required]
         :param str repository_name: Name of the repository
         :param str repository_url: URL to the repository
@@ -51,6 +63,18 @@ class ProjectsClient(BaseClient):
             | project-id| <name-of-project>| None       | 2019-07-17 13:21:12.770000 |
             | project-id| <name-of-project>| None       | 2019-07-29 09:26:49.105000 |
             +-----------+------------------+------------+----------------------------+
+
+        in sdk::
+
+            from gradient.api_sdk.clients import ProjectsClient
+
+            api_key = 'your-api-key'
+            projects_client = ProjectsClient(api_key)
+
+            projects_list = projects_client.list()
+
+            for project in project_list:
+                print(project)
 
 
         :returns: list of projects

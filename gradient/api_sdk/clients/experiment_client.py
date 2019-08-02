@@ -413,7 +413,7 @@ class ExperimentsClient(BaseClient):
         return handle
 
     def start(self, experiment_id):
-        """Start existing experiment that has no run
+        """Start existing experiment that has not run
 
         *EXAMPLE*::
 
