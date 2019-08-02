@@ -2,7 +2,6 @@ import abc
 
 import six
 
-from gradient.api_sdk import exceptions
 from ..clients import http_client
 from ..exceptions import ResourceFetchingError
 from ..utils import MessageExtractor
