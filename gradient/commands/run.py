@@ -1,7 +1,7 @@
 import os
 import sys
 
-from gradient import logger
+from gradient.logger import Logger
 from gradient.commands.jobs import CreateJobCommand
 from gradient.constants import RunMode
 from gradient.workspace import WorkspaceHandler
@@ -9,7 +9,7 @@ from gradient.workspace import WorkspaceHandler
 
 class RunCommand(object):
 
-    def __init__(self, api_key=None, logger_=logger.Logger()):
+    def __init__(self, api_key=None, logger_=Logger()):
         self.api_key = api_key
         self.logger = logger_
 
