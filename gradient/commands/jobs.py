@@ -236,7 +236,7 @@ class JobLogsCommand(BaseJobCommand):
 class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
 
     def _create(self, json_, data):
-        response = self.client.create(json_, data)
+        response = self.client.create(**json_, data=data)
         job_id = None
         if response.json_data:
             job_id = response.json_data.get('id')

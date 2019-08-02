@@ -59,6 +59,7 @@ class JobsClient(BaseClient):
             cluster=None,
             cluster_id=None,
             node_attrs=None,
+            workspace_file_name=None,
     ):
         """
         Method to create job in paperspace gradient.
@@ -110,6 +111,7 @@ class JobsClient(BaseClient):
         :param cluster:
         :param cluster_id:
         :param node_attrs:
+        :param workspace_file_name:
 
         :return: job handle if created with success
         """
@@ -138,6 +140,7 @@ class JobsClient(BaseClient):
             cluster=cluster,
             cluster_id=cluster_id,
             target_node_attrs=node_attrs,
+            workspace_file_name=workspace_file_name,
         )
         job_dict = JobSchema().dump(job).data
         return self._create(job_dict, data)
