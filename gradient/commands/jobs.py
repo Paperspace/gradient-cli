@@ -8,7 +8,6 @@ from halo import halo
 
 from gradient import api_sdk, exceptions
 from gradient.api_sdk.utils import print_dict_recursive
-from gradient.commands import common
 from gradient.commands.common import BaseCommand
 from gradient.exceptions import BadResponseError
 from gradient.utils import get_terminal_lines

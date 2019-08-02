@@ -1,4 +1,4 @@
-import functools
+from functools import reduce
 
 import click
 
@@ -100,7 +100,7 @@ def common_jobs_create_options(f):
         click.option("--clusterId", "cluster_id", help="Cluster id"),
         click.option("--nodeAttrs", "node_attrs", type=json_string, help="Cluster node details"),
     ]
-    return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
+    return reduce(lambda x, opt: opt(x), reversed(options), f)
 
 
 @deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
