@@ -3,11 +3,34 @@
 Gradient CLI
 =================
 
-Release 0.2.3
+<br>
+
+**Get started:** [Create Account](https://www.paperspace.com/account/signup?gradient=true) • [Install CLI](https://docs.paperspace.com/gradient/get-started/install-the-cli) • [Tutorials](https://docs.paperspace.com/gradient/tutorials/training-and-deploying-an-ml-model-with-gradient-cli) • [Docs](https://docs.paperspace.com/gradient)
+
+**Resources:** [Website](https://gradient.paperspace.com/) • [Blog](https://blog.paperspace.com/) • [Support](https://support.paperspace.com/hc/en-us) • [Contact Sales](https://use.paperspace.com/contact-sales)
+
+<br>
+
+Gradient is an an end-to-end MLOps platform that enables individuals and organizations to quickly develop, train, and deploy Deep Learning models.  The Gradient software stack runs on any infrastructure e.g. AWS, GCP, on-premise and low-cost [Paperspace GPUs](https://gradient.paperspace.com/instances).  Leverage automatic versioning, distributed training, built-in graphs & metrics, hyperparameter search, GradientCI, 1-click Jupyter Notebooks, our Python SDK, and more. 
+
+Key components:
+
+* [Notebooks](https://gradient.paperspace.com/notebooks): 1-click Jupyter Notebooks.
+* [Experiments](https://gradient.paperspace.com/experiments): Run experiments from a web interface, CLI, SDK, or [GradientCI](https://gradient.paperspace.com/gradientci) bot.
+* [Models](https://gradient.paperspace.com/models): Store, analyze, and version models.
+* [Inference](https://gradient.paperspace.com/inference): Deploy models as API endpoints.
+
+Gradient supports any ML/DL framework (TensorFlow, PyTorch, XGBoost, etc).
+
+<hr>
+
+![PyPI](https://img.shields.io/pypi/v/gradient)
 
 See [releasenotes.md](https://github.com/Paperspace/gradient-cli/blob/master/releasenotes.md) for details on the current release, as well as release history.
 
 [![codecov](https://codecov.io/gh/Paperspace/gradient-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/Paperspace/gradient-cli)
+
+<br>
 
 Getting Started
 ===============
