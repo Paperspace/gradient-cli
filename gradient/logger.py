@@ -1,4 +1,4 @@
-import click
+from click import secho
 
 from gradient.api_sdk.utils import MessageExtractor
 from .config import config
@@ -8,7 +8,7 @@ class Logger(object):
     def _log(self, message, color=None, err=False):
         message = str(message)
         color = color if config.USE_CONSOLE_COLORS else None
-        click.secho(message, fg=color, err=err)
+        secho(message, fg=color, err=err)
 
     def log(self, message, color=None, err=False):
         self._log(message, color=color, err=err)

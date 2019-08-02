@@ -10,12 +10,14 @@ from tests import MockResponse
 
 class TestRunCommand(object):
     command_name = 'run'
-    common_commands = ["--name", "test", "--projectId", "projectId", "--apiKey", "some_key"]
+    common_commands = [
+        "--name", "test", "--projectId", "projectId", "--apiKey", "some_key", "--machineType", "G1",
+    ]
     url = "https://api.paperspace.io/jobs/createJob/"
     headers = default_headers.copy()
     headers["X-API-Key"] = "some_key"
 
-    @mock.patch("gradient.cli.run.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
     @mock.patch("gradient.workspace.MultipartEncoder.get_monitor")
     @mock.patch("gradient.commands.jobs.CreateJobCommand._get_files_dict")
@@ -37,17 +39,22 @@ class TestRunCommand(object):
             'Content-Type': "mock/multipart"
         })
         post_patched.assert_called_with(self.url,
-                                        params={'name': u'test', 'projectId': u'projectId',
-                                                'workspaceFileName': 'bar',
-                                                'workspaceUrl': '/foo/bar',
-                                                'command': 'python{} myscript.py a b'.format(str(sys.version_info[0])),
-                                                'container': u'paperspace/tensorflow-python'},
+                                        params={
+                                            'name': u'test',
+                                            'projectId': u'projectId',
+                                            'workspaceFileName': 'bar',
+                                            'command': 'python{} myscript.py a b'.format(str(sys.version_info[0])),
+                                            'container': u'paperspace/tensorflow-python',
+                                            'machineType': 'G1',
+                                        },
                                         data=mock.ANY,
                                         files=None,
                                         headers=expected_headers,
                                         json=None)
 
-    @mock.patch("gradient.cli.run.http_client.requests.post")
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_run_python_command_with_args_and_no_workspace(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
 
@@ -57,17 +64,21 @@ class TestRunCommand(object):
 
         expected_headers = self.headers.copy()
         post_patched.assert_called_with(self.url,
-                                        params={'name': u'test', 'projectId': u'projectId',
-                                                'workspaceFileName': 'none',
-                                                'workspace': 'none',
-                                                'command': 'python{} -c print(foo)'.format(str(sys.version_info[0])),
-                                                'container': u'paperspace/tensorflow-python'},
+                                        params={
+                                            'name': u'test',
+                                            'projectId': u'projectId',
+                                            'workspaceFileName': 'none',
+                                            'workspace': 'none',
+                                            'command': 'python{} -c print(foo)'.format(str(sys.version_info[0])),
+                                            'container': u'paperspace/tensorflow-python',
+                                            'machineType': 'G1',
+                                        },
                                         data=None,
                                         files=None,
                                         headers=expected_headers,
                                         json=None)
 
-    @mock.patch("gradient.cli.run.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
     def test_run_shell_command_with_args_with_s3_workspace(self, workspace_zip_patched, post_patched):
         workspace_zip_patched.return_value = '/foo/bar'
@@ -80,11 +91,15 @@ class TestRunCommand(object):
 
         expected_headers = self.headers.copy()
         post_patched.assert_called_with(self.url,
-                                        params={'name': u'test', 'projectId': u'projectId',
-                                                'workspaceFileName': 's3://bucket/object',
-                                                'workspaceUrl': 's3://bucket/object',
-                                                'command': 'echo foo',
-                                                'container': u'paperspace/tensorflow-python'},
+                                        params={
+                                            'name': u'test',
+                                            'projectId': u'projectId',
+                                            'workspaceFileName': 's3://bucket/object',
+                                            'workspaceUrl': 's3://bucket/object',
+                                            'command': 'echo foo',
+                                            'container': u'paperspace/tensorflow-python',
+                                            'machineType': 'G1',
+                                        },
                                         data=None,
                                         files=None,
                                         headers=expected_headers,

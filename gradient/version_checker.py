@@ -1,10 +1,10 @@
-import platform
+from platform import system
 import sys
 from distutils.version import StrictVersion
 
 import six
 
-from gradient import logger
+from gradient.logger import Logger
 from gradient.version import version
 
 if six.PY2:
@@ -13,7 +13,7 @@ else:
     import xmlrpc.client as xmlrpclib
 
 
-logger = logger.Logger()
+logger = Logger()
 
 
 class PackageNotFoundError(Exception):
@@ -42,7 +42,7 @@ class GradientVersionChecker(object):
         if not cls._should_check_version():
             return
 
-        if not platform.system() == "Linux":
+        if not system() == "Linux":
             cls.look_for_new_version()
             return
 

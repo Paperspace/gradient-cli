@@ -10,7 +10,8 @@ from prompt_toolkit.layout import VSplit, HSplit, Layout
 from prompt_toolkit.styles import Style
 from prompt_toolkit.widgets import Frame, Label, TextArea, RadioList, Box, Button, HorizontalLine
 
-from gradient import logger, commands
+from gradient import commands
+from gradient.logger import Logger
 from gradient.cli import common
 
 if not six.PY2:
@@ -93,7 +94,7 @@ class Questions(object):
                 for field_name, question in self._questions.items()}
 
 
-class WizardLogger(logger.Logger):
+class WizardLogger(Logger):
     def __init__(self, output_field):
         self.output_field = output_field
 

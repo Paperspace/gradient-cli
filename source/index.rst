@@ -10,6 +10,8 @@ Welcome to Gradient Python SDK's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   gradient
+   modules
 
 
 Indices and tables

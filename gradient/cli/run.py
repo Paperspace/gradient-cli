@@ -1,13 +1,12 @@
 import click
 
-from gradient import utils
-from gradient.api_sdk.clients import http_client
+from gradient import utils, logger
+from gradient.api_sdk.clients import job_client
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.common import del_if_value_is_none, deprecated, jsonify_dicts
 from gradient.cli.jobs import common_jobs_create_options
 from gradient.commands.run import RunCommand
-from gradient.config import config
 from gradient.constants import RunMode
 
 
@@ -26,6 +25,5 @@ def run(api_key, **kwargs):
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
 
-    jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = RunCommand(api=jobs_api)
+    command = RunCommand(api_key=api_key)
     command.execute(**kwargs)
