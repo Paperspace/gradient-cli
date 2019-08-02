@@ -2,7 +2,7 @@ from gradient import config, version, client
 from gradient.commands import common
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
-                   "ps_client_name": "paperspace-python",
+                   "ps_client_name": "gradient-cli",
                    "ps_client_version": version.version}
 deployments_api = client.API(config.CONFIG_HOST, headers=default_headers)
 
