@@ -36,7 +36,9 @@ class ExperimentsClient(BaseClient):
         """
         Create single node experiment
 
-        *EXAMPLE*::
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 3,5
 
             gradient experiments create singlenode
             --projectId <your-project-id>

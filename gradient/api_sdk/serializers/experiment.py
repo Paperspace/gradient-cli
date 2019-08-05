@@ -11,7 +11,7 @@ class BaseExperimentSchema(BaseSchema):
     workspace_url = marshmallow.fields.Str(dump_to="workspaceUrl", load_from="workspaceUrl")
     working_directory = marshmallow.fields.Str(dump_to="workingDirectory", load_from="workingDirectory")
     artifact_directory = marshmallow.fields.Str(dump_to="artifactDirectory", load_from="artifactDirectory")
-    cluster_id = marshmallow.fields.Int(dump_to="clusterId", load_from="clusterId")
+    cluster_id = marshmallow.fields.String(dump_to="clusterId", load_from="clusterId")
     experiment_env = marshmallow.fields.Dict(dump_to="experimentEnv", load_from="experimentEnv")
     project_id = marshmallow.fields.Str(required=True, dump_to="projectHandle", load_from="project_handle")
     model_type = marshmallow.fields.Str(dump_to="modelType", load_from="modelType")

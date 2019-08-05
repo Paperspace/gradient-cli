@@ -6,7 +6,7 @@ import click
 import requests
 import six
 
-from gradient import exceptions
+from gradient.exceptions import WrongPathError
 
 
 def get_terminal_lines(fallback=48):
@@ -75,7 +75,7 @@ class PathParser(object):
         if cls.is_s3_url(path):
             return cls.S3_URL
 
-        raise exceptions.WrongPathError("Given path is neither local path, nor valid URL")
+        raise WrongPathError("Given path is neither local path, nor valid URL")
 
     @staticmethod
     def is_local_dir(path):

@@ -6,7 +6,8 @@ import progressbar
 import requests
 from requests_toolbelt.multipart import encoder
 
-from gradient import logger, utils
+from gradient import utils
+from gradient.logger import Logger
 from gradient.exceptions import S3UploadFailedError, ProjectAccessDeniedError, PresignedUrlAccessDeniedError, \
     PresignedUrlUnreachableError, PresignedUrlConnectionError, PresignedUrlMalformedResponseError, PresignedUrlError
 
@@ -44,7 +45,7 @@ class WorkspaceHandler(object):
 
         :param logger_: gradient.logger
         """
-        self.logger = logger_ or logger.Logger()
+        self.logger = logger_ or Logger()
         self.archive_path = None
         self.archive_basename = None
 

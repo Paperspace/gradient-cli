@@ -4,7 +4,7 @@ import mock
 import pytest
 
 import gradient.api_sdk.utils
-from gradient import exceptions
+from gradient.exceptions import WrongPathError
 from gradient.utils import PathParser
 
 output_response = ""
@@ -106,5 +106,5 @@ class TestPathParser(object):
     def test_should_raise_exception_when_local_path_was_given_but_does_not_exist(self, _, __, ___):
         path_str = "/home/usr/some/path.zip"
 
-        with pytest.raises(exceptions.WrongPathError):
+        with pytest.raises(WrongPathError):
             PathParser.parse_path(path_str)

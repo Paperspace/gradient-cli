@@ -5,3 +5,4 @@ from .hyperparameter import HyperparameterSchema
 from .log import LogRowSchema
 from .model import Model
 from .project import Project
+from .job import JobSchema

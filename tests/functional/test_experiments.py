@@ -28,7 +28,7 @@ class TestExperimentsCreateSingleNode(object):
         "--workspaceUrl", "wsp.url",
         "--workingDirectory", "/work/dir/",
         "--artifactDirectory", "/artifact/dir/",
-        "--clusterId", 42,
+        "--clusterId", "42c",
         "--experimentEnv", '{"key":"val"}',
         "--projectId", "testHandle",
         "--container", "testContainer",
@@ -54,7 +54,7 @@ class TestExperimentsCreateSingleNode(object):
         "workspaceUrl": u"wsp.url",
         "workingDirectory": u"/work/dir/",
         "artifactDirectory": u"/artifact/dir/",
-        "clusterId": 42,
+        "clusterId": "42c",
         "experimentEnv": {u"key": u"val"},
         "projectHandle": u"testHandle",
         "container": u"testContainer",
@@ -155,7 +155,7 @@ class TestExperimentsCreateMultiNode(object):
         "--workspaceUrl", "wurl",
         "--workingDirectory", "/dir",
         "--artifactDirectory", "/artdir",
-        "--clusterId", 2,
+        "--clusterId", '2a',
         "--experimentEnv", '{"key":"val"}',
         "--projectId", "prq70zy79",
         "--experimentType", "MPI",
@@ -196,7 +196,7 @@ class TestExperimentsCreateMultiNode(object):
         "workspaceUrl": u"wurl",
         "workingDirectory": u"/dir",
         "artifactDirectory": u"/artdir",
-        "clusterId": 2,
+        "clusterId": '2a',
         "experimentEnv": {"key": "val"},
         "projectHandle": "prq70zy79",
         "experimentTypeId": 3,
@@ -255,7 +255,7 @@ class TestExperimentsCreateMultiNode(object):
 
 
 class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
-    URL = "https://services.paperspace.io/experiments/v1/experiments/create_and_start/"
+    URL = "https://services.paperspace.io/experiments/v1/experiments/run/"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "run", "singlenode",
         "--name", "exp1",
@@ -273,7 +273,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--workspaceUrl", "wsp.url",
         "--workingDirectory", "/work/dir/",
         "--artifactDirectory", "/artifact/dir/",
-        "--clusterId", 42,
+        "--clusterId", "42c",
         "--experimentEnv", '{"key":"val"}',
         "--projectId", 987654,
         "--projectId", "testHandle",
@@ -290,7 +290,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
 
 
 class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
-    URL = "https://services.paperspace.io/experiments/v1/experiments/create_and_start/"
+    URL = "https://services.paperspace.io/experiments/v1/experiments/run/"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "run", "multinode",
         "--name", "multinode_mpi",
@@ -315,7 +315,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--workspaceUrl", "wurl",
         "--workingDirectory", "/dir",
         "--artifactDirectory", "/artdir",
-        "--clusterId", 2,
+        "--clusterId", '2a',
         "--experimentEnv", '{"key":"val"}',
         "--projectId", 34,
         "--projectId", "prq70zy79",
@@ -376,7 +376,7 @@ class TestExperimentDetail(object):
                 "id": 6297,
                 "params": {
                     "artifactDirectory": "/artdir",
-                    "clusterId": 2,
+                    "clusterId": '2a',
                     "experimentEnv": {
                         "key": "val"
                     },
@@ -475,7 +475,7 @@ class TestExperimentDetail(object):
 | ID                            | ew69ls0vy3eto  |
 | State                         | created        |
 | Artifact directory            | /artdir        |
-| Cluster ID                    | 2              |
+| Cluster ID                    | 2a             |
 | Experiment Env                | {'key': 'val'} |
 | Experiment Type               | MPI multi node |
 | Model Type                    | None           |

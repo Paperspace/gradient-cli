@@ -4,3 +4,4 @@ from .hyperparameter import Hyperparameter
 from .log import LogRow
 from .model import Model
 from .project import Project
+from .job import Job

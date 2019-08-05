@@ -5,13 +5,13 @@ import six
 import terminaltables
 from halo import halo
 
-from gradient import logger as gradient_logger
+from gradient.logger import Logger
 from gradient.utils import get_terminal_lines
 
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseCommand:
-    def __init__(self, api_key, logger=gradient_logger.Logger()):
+    def __init__(self, api_key, logger=Logger()):
         self.client = self._get_client(api_key, logger)
         self.logger = logger
 
@@ -62,7 +62,7 @@ class ListCommandMixin(object):
 
 
 class CommandBase(object):
-    def __init__(self, api=None, logger_=gradient_logger.Logger()):
+    def __init__(self, api=None, logger_=Logger()):
         self.api = api
         self.logger = logger_
 
