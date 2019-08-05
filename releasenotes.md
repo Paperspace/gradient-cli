@@ -1,5 +1,11 @@
 # Gradient by Paperspace Release Notes
 
+# Release Notes for 0.3.0a1
+###New features
+* Introduced Python SDK package
+* Added ClusterID function to support new VPC
+* New Hyperparameter functions added
+
 # Release Notes for 0.2.3
 ### Fixes
 * hardcoded `colorama` version to avoid errors during installation
