@@ -1,4 +1,16 @@
-# Gradient by Paperspace Release Notes
+# Gradient CLI Release Notes
+
+# Release Notes for 0.3.0a1
+### New features
+* Introduced Python SDK package
+* Added `ClusterID` function to support new VPCs
+* Hyperparameter private registry and custom container functions added \
+`--hyperparameterServerContainer` \
+`--hyperparameterServerRegistryPassword` \
+`--hyperparameterServerRegistryUsername`
+* Automated documentation generation based on sphinx
+* Updated documentation and docstrings for SDK based functions
+* Improved `--help` functions
 
 # Release Notes for 0.2.3
 ### Fixes
