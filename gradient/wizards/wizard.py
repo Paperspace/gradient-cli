@@ -10,7 +10,8 @@ from prompt_toolkit.layout import VSplit, HSplit, Layout
 from prompt_toolkit.styles import Style
 from prompt_toolkit.widgets import Frame, Label, TextArea, RadioList, Box, Button, HorizontalLine
 
-from gradient import client, config, logger
+from gradient import commands
+from gradient.logger import Logger
 from gradient.cli import common
 
 if not six.PY2:
@@ -93,7 +94,7 @@ class Questions(object):
                 for field_name, question in self._questions.items()}
 
 
-class WizardLogger(logger.Logger):
+class WizardLogger(Logger):
     def __init__(self, output_field):
         self.output_field = output_field
 
@@ -111,7 +112,7 @@ class Wizard(object):
     def __init__(self, command_cls, header):
         """
 
-        :type command_cls: CommandBase
+        :param type[commands.BaseCommand] command_cls:
         :type header: unicode
         """
         self.command_cls = command_cls
@@ -163,9 +164,7 @@ class Wizard(object):
         api_key = project.pop("api_key", None)
         common.del_if_value_is_none(project)
 
-        projects_api = client.API(config.CONFIG_HOST, api_key=api_key)
-
-        command = self.command_cls(api=projects_api, logger_=self.logger)
+        command = self.command_cls(api_key=api_key)
 
         self.logger.debug("Executing command...")
 

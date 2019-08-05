@@ -12,10 +12,10 @@ api_key_option = click.option(
 )
 
 
-def del_if_value_is_none(dict_):
+def del_if_value_is_none(dict_, del_all_falsy=False):
     """Remove all elements with value == None"""
     for key, val in list(dict_.items()):
-        if val is None:
+        if val is None or (del_all_falsy and not val):
             del dict_[key]
 
 

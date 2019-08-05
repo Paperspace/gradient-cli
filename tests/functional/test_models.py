@@ -1,7 +1,7 @@
 import mock
 from click.testing import CliRunner
 
-import gradient.client
+import gradient.api_sdk.clients.http_client
 from gradient.cli import cli
 from tests import example_responses, MockResponse
 
@@ -9,8 +9,8 @@ from tests import example_responses, MockResponse
 class TestModelsList(object):
     URL = "https://api.paperspace.io/mlModels/getModelList/"
     COMMAND = ["models", "list"]
-    EXPECTED_HEADERS = gradient.client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.client.default_headers.copy()
+    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     COMMAND_WITH_FILTERING_BY_EXPERIMENT_ID = [
@@ -32,22 +32,22 @@ class TestModelsList(object):
 
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 401, "message": "No such API token"}
 
-    @mock.patch("gradient.client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON, 200, "fake content")
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params={"limit": -1})
 
-        assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
     def test_should_replate_api_key_in_headers_when_api_key_parameter_was_used(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON, 200, "fake content")
 
@@ -62,7 +62,7 @@ class TestModelsList(object):
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_models_filtered_experiment_id(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON, 200)
 
@@ -76,7 +76,7 @@ class TestModelsList(object):
 
         assert result.output == self.EXPECTED_STDOUT
 
-    @mock.patch("gradient.client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
     def test_should_send_get_request_and_print_proper_message_when_no_models_were_found(
             self, get_patched):
         get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND, 200)
@@ -91,7 +91,7 @@ class TestModelsList(object):
 
         assert result.output == "No data found\n"
 
-    @mock.patch("gradient.client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
 
@@ -103,4 +103,4 @@ class TestModelsList(object):
                                             json=None,
                                             params={"limit": -1})
 
-        assert result.output == "No such API token\n"
+        assert result.output == "Failed to fetch data: No such API token\n"

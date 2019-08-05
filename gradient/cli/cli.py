@@ -1,14 +1,28 @@
 import click
 import click_completion
 
-from gradient import config
+from gradient.logger import Logger
+from gradient.api_sdk.exceptions import GradientSdkError
 from gradient.cli import common
 from gradient.commands import login as login_commands
+from gradient.config import config
+from gradient.exceptions import ApplicationError
 
 click_completion.init()
 
 
-@click.group(cls=common.ClickGroup, **config.HELP_COLORS_DICT)
+class GradientGroup(common.ClickGroup):
+    def main(self, *args, **kwargs):
+        try:
+            super(GradientGroup, self).main(*args, **kwargs)
+        except (ApplicationError, GradientSdkError) as e:
+            if config.DEBUG:
+                raise
+
+            Logger().error(e)
+
+
+@click.group(cls=GradientGroup, **config.HELP_COLORS_DICT)
 def cli():
     pass
 

@@ -1,6 +1,8 @@
 import requests
 
-from gradient import logger, config, version
+from gradient import version
+from gradient.config import config
+from .. import logger as sdk_logger
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "gradient-cli",
@@ -8,13 +10,20 @@ default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
 
 
 class API(object):
-    def __init__(self, api_url, headers=None, api_key=None, logger_=logger.Logger()):
+    def __init__(self, api_url, headers=None, api_key=None, logger=sdk_logger.MuteLogger()):
+        """
+
+        :type str api_url: url you want to connect
+        :type dict headers: headers
+        :type str api_key: your API key
+        :type sdk_logger.Logger logger:
+        """
         self.api_url = api_url
         headers = headers or default_headers
         self.headers = headers.copy()
         if api_key:
             self.api_key = api_key
-        self.logger = logger_
+        self.logger = logger
 
     @property
     def api_key(self):
@@ -64,3 +73,30 @@ class API(object):
         self.logger.debug("Response status code: {}".format(response.status_code))
         self.logger.debug("Response content: {}".format(response.content))
         return response
+
+
+class GradientResponse(object):
+    def __init__(self, body, code, headers, data):
+        self.body = body
+        self.code = code
+        self.headers = headers
+        self.data = data
+
+    @property
+    def ok(self):
+        return 200 <= self.code < 400
+
+    @classmethod
+    def interpret_response(cls, response):
+        """
+        :type response: requests.Response
+        :rtype: GradientResponse
+        """
+        try:
+            data = response.json()
+        except ValueError:
+            content = response.content
+            data = content or None
+
+        gradient_response = cls(response.content, response.status_code, response.headers, data)
+        return gradient_response

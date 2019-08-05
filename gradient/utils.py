@@ -6,7 +6,7 @@ import click
 import requests
 import six
 
-from gradient import exceptions
+from gradient.exceptions import WrongPathError
 
 
 def get_terminal_lines(fallback=48):
@@ -39,6 +39,22 @@ def status_code_to_error_obj(status_code):
     return { 'error': True, 'message': message, 'status': status_code }
 
 
+def validate_workspace_input(input_data):
+    workspace_url = input_data.get('workspaceUrl')
+    workspace_path = input_data.get('workspace')
+    workspace_archive = input_data.get('workspaceArchive')
+
+    if (workspace_archive and workspace_path) \
+            or (workspace_archive and workspace_url) \
+            or (workspace_path and workspace_url):
+        raise click.UsageError("Use either:"
+                               "\n\t--workspace https://path.to/git/repository.git  - to point to a repository URL"
+                               "\n\t--workspace /path/to/local/directory            - to point to a project directory"
+                               "\n\t--workspace /path/to/local/archive.zip          - to point to a .zip archive"
+                               "\n\t--workspace none                                - to use no workspace"
+                               "\n or neither to use current directory")
+
+
 class PathParser(object):
     LOCAL_DIR = 0
     LOCAL_FILE = 1
@@ -59,7 +75,7 @@ class PathParser(object):
         if cls.is_s3_url(path):
             return cls.S3_URL
 
-        raise exceptions.WrongPathError("Given path is neither local path, nor valid URL")
+        raise WrongPathError("Given path is neither local path, nor valid URL")
 
     @staticmethod
     def is_local_dir(path):
@@ -76,19 +92,3 @@ class PathParser(object):
     @staticmethod
     def is_s3_url(path):
         return not os.path.exists(path) and path.lower().startswith("s3:")
-
-
-def validate_workspace_input(input_data):
-    workspace_url = input_data.get('workspaceUrl')
-    workspace_path = input_data.get('workspace')
-    workspace_archive = input_data.get('workspaceArchive')
-
-    if (workspace_archive and workspace_path) \
-            or (workspace_archive and workspace_url) \
-            or (workspace_path and workspace_url):
-        raise click.UsageError("Use either:"
-                               "\n\t--workspace https://path.to/git/repository.git  - to point to a repository URL"
-                               "\n\t--workspace /path/to/local/directory            - to point to a project directory"
-                               "\n\t--workspace /path/to/local/archive.zip          - to point to a .zip archive"
-                               "\n\t--workspace none                                - to use no workspace"
-                               "\n or neither to use current directory")

@@ -34,6 +34,10 @@ class S3UploadFailedError(ApplicationError):
     pass
 
 
+class ReceivingDataFailedError(ApplicationError):
+    pass
+
+
 class WrongPathError(ApplicationError):
     pass
 

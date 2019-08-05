@@ -1,252 +1,283 @@
+import abc
 import pydoc
 
+import six
 import terminaltables
 from click import style
 from halo import halo
 
-from gradient import logger, constants, client, config
-from gradient.commands import common
+from gradient import constants, api_sdk, exceptions
+from gradient.commands.common import BaseCommand, ListCommandMixin
 from gradient.utils import get_terminal_lines
-from gradient.workspace import S3WorkspaceHandler
-
-experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, headers=client.default_headers)
 
 
-class ExperimentCommand(common.CommandBase):
-    def __init__(self, workspace_handler=None, **kwargs):
-        super(ExperimentCommand, self).__init__(**kwargs)
-        self._workspace_handler = workspace_handler or S3WorkspaceHandler(experiments_api=self.api, logger_=self.logger)
+@six.add_metaclass(abc.ABCMeta)
+class BaseExperimentCommand(BaseCommand):
+    def _get_client(self, api_key, logger):
+        client = api_sdk.clients.ExperimentsClient(api_key=api_key, logger=logger)
+        return client
 
-    def _log_create_experiment(self, response, success_msg_template, error_msg):
-        if response.ok:
-            j = response.json()
-            id_ = j["handle"]
-            msg = success_msg_template.format(id_)
-            self.logger.log(msg)
-        else:
+
+@six.add_metaclass(abc.ABCMeta)
+class BaseCreateExperimentCommandMixin(object):
+    SPINNER_MESSAGE = "Creating new experiment"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created with ID: {}"
+
+    def __init__(self, workspace_handler, *args, **kwargs):
+        super(BaseCreateExperimentCommandMixin, self).__init__(*args, **kwargs)
+        self.workspace_handler = workspace_handler
+
+    def execute(self, json_):
+        if "ignore_files" in json_:
+            json_["ignore_files"] = self._parse_comma_separated_to_list(json_["ignore_files"])
+
+        self._handle_workspace(json_)
+
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
             try:
-                data = response.json()
-                self.logger.log_error_response(data)
-            except ValueError:
-                self.logger.error(error_msg)
+                experiment_id = self._create(json_)
+            except api_sdk.GradientSdkError as e:
+                self.logger.error(e)
+                return
+
+        self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(experiment_id))
+
+    def _handle_workspace(self, instance_dict):
+        handler = self.workspace_handler.handle(instance_dict)
+        instance_dict.pop("workspace", None)
+        instance_dict.pop("workspace_archive", None)
+        instance_dict.pop("workspace_url", None)
+        if handler and handler != "none":
+            instance_dict["workspace_url"] = handler
+
+    @abc.abstractmethod
+    def _create(self, json_):
+        pass
+
+    @staticmethod
+    def _parse_comma_separated_to_list(s):
+        if not s:
+            return []
+
+        list_of_str = [s.strip() for s in s.split(",")]
+        return list_of_str
 
 
-class CreateExperimentCommand(ExperimentCommand):
-
-    def execute(self, json_):
-        workspace_url = self._workspace_handler.handle(json_)
-        if workspace_url:
-            json_['workspaceUrl'] = workspace_url
-
-        with halo.Halo(text="Creating new experiment", spinner="dots"):
-            response = self.api.post("/experiments/", json=json_)
-
-        self._log_create_experiment(response,
-                                    "New experiment created with ID: {}",
-                                    "Unknown error while creating the experiment")
+class CreateSingleNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
+    def _create(self, json_):
+        handle = self.client.create_single_node(**json_)
+        return handle
 
 
-class CreateAndStartExperimentCommand(ExperimentCommand):
-    def execute(self, json_):
-        workspace_url = self._workspace_handler.handle(json_)
-        if workspace_url:
-            json_['workspaceUrl'] = workspace_url
-
-        response = self.api.post("/experiments/create_and_start/", json=json_)
-        self._log_create_experiment(response,
-                                    "New experiment created and started with ID: {}",
-                                    "Unknown error while creating/starting the experiment")
-        if response.ok:
-            return response.json()
-        return None
+class CreateMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
+    def _create(self, json_):
+        handle = self.client.create_multi_node(**json_)
+        return handle
 
 
-def start_experiment(experiment_id, api=experiments_api, logger_=logger.Logger()):
-    url = "/experiments/{}/start/".format(experiment_id)
-    response = api.put(url)
-    logger_.log_response(response, "Experiment started", "Unknown error while starting the experiment")
+class CreateAndStartMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
+    SPINNER_MESSAGE = "Creating and starting new experiment"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
+
+    def _create(self, json_):
+        handle = self.client.run_multi_node(**json_)
+        return handle
 
 
-def stop_experiment(experiment_id, api=experiments_api, logger_=logger.Logger()):
-    url = "/experiments/{}/stop/".format(experiment_id)
-    response = api.put(url)
-    logger_.log_response(response, "Experiment stopped", "Unknown error while stopping the experiment")
+class CreateAndStartSingleNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
+    SPINNER_MESSAGE = "Creating and starting new experiment"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
+
+    def _create(self, json_):
+        handle = self.client.run_single_node(**json_)
+        return handle
 
 
-class ListExperimentsCommand(common.ListCommand):
-    @property
-    def request_url(self):
-        return "/experiments/"
+class StartExperimentCommand(BaseExperimentCommand):
+    def execute(self, experiment_id):
+        """
+        :param str experiment_id:
+        """
+        self.client.start(experiment_id)
+        self.logger.log("Experiment started")
 
-    def _get_request_params(self, kwargs):
-        params = {"limit": -1}  # so the API sends back full list without pagination
 
-        project_ids = kwargs.get("project_ids")
-        if project_ids:
-            for i, experiment_id in enumerate(project_ids):
-                key = "projectHandle[{}]".format(i)
-                params[key] = experiment_id
+class StopExperimentCommand(BaseExperimentCommand):
+    def execute(self, experiment_id):
+        """
+        :param str experiment_id:
+        """
+        self.client.stop(experiment_id)
+        self.logger.log("Experiment stopped")
 
-        return params
+
+class ListExperimentsCommand(ListCommandMixin, BaseExperimentCommand):
+    def _get_instances(self, kwargs):
+        project_id = kwargs.get("project_id")
+        try:
+            instances = self.client.list(project_id)
+        except api_sdk.GradientSdkError as e:
+            raise exceptions.ReceivingDataFailedError(e)
+
+        return instances
 
     def _get_table_data(self, experiments):
         data = [("Name", "ID", "Status")]
         for experiment in experiments:
-            name = experiment["templateHistory"]["params"].get("name")
-            handle = experiment["handle"]
-            status = constants.ExperimentState.get_state_str(experiment["state"])
+            name = experiment.name
+            handle = experiment.id
+            status = constants.ExperimentState.get_state_str(experiment.state)
             data.append((name, handle, status))
 
         return data
 
-    def _get_objects(self, response, kwargs):
-        data = super(ListExperimentsCommand, self)._get_objects(response, kwargs)
 
-        filtered = bool(kwargs.get("project_ids"))
-        if not filtered:  # If filtering by project ID response data has different format...
-            return data["data"]
+class GetExperimentCommand(BaseExperimentCommand):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
-        experiments = []
-        for project_experiments in data["data"]:
-            for experiment in project_experiments["data"]:
-                experiments.append(experiment)
-        return experiments
+    def execute(self, id_):
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            instance = self._get_instance(id_)
 
+        self._log_object(instance)
 
-def _make_details_table(experiment):
-    if experiment["experimentTypeId"] == constants.ExperimentType.SINGLE_NODE:
-        data = (
-            ("Name", experiment["templateHistory"]["params"].get("name")),
-            ("ID", experiment.get("handle")),
-            ("State", constants.ExperimentState.get_state_str(experiment.get("state"))),
-            ("Ports", experiment["templateHistory"]["params"].get("ports")),
-            ("Project ID", experiment["templateHistory"]["params"].get("project_handle")),
-            ("Worker Command", experiment["templateHistory"]["params"].get("worker_command")),
-            ("Worker Container", experiment["templateHistory"]["params"].get("worker_container")),
-            ("Worker Machine Type", experiment["templateHistory"]["params"].get("worker_machine_type")),
-            ("Working Directory", experiment["templateHistory"]["params"].get("workingDirectory")),
-            ("Workspace URL", experiment["templateHistory"]["params"].get("workspaceUrl")),
-            ("Model Type", experiment["templateHistory"]["params"].get("modelType")),
-            ("Model Path", experiment["templateHistory"]["params"].get("modelPath")),
-        )
-    elif experiment["experimentTypeId"] in (constants.ExperimentType.GRPC_MULTI_NODE,
-                                            constants.ExperimentType.MPI_MULTI_NODE):
-        data = (
-            ("Name", experiment["templateHistory"]["params"].get("name")),
-            ("ID", experiment.get("handle")),
-            ("State", constants.ExperimentState.get_state_str(experiment.get("state"))),
-            ("Artifact directory", experiment["templateHistory"]["params"].get("artifactDirectory")),
-            ("Cluster ID", experiment["templateHistory"]["params"].get("clusterId")),
-            ("Experiment Env", experiment["templateHistory"]["params"].get("experimentEnv")),
-            ("Experiment Type",
-             constants.ExperimentType.get_type_str(experiment["templateHistory"]["params"].get("experimentTypeId"))),
-            ("Model Type", experiment["templateHistory"]["params"].get("modelType")),
-            ("Model Path", experiment["templateHistory"]["params"].get("modelPath")),
-            ("Parameter Server Command", experiment["templateHistory"]["params"].get("parameter_server_command")),
-            ("Parameter Server Container", experiment["templateHistory"]["params"].get("parameter_server_container")),
-            ("Parameter Server Count", experiment["templateHistory"]["params"].get("parameter_server_count")),
-            ("Parameter Server Machine Type",
-             experiment["templateHistory"]["params"].get("parameter_server_machine_type")),
-            ("Ports", experiment["templateHistory"]["params"].get("ports")),
-            ("Project ID", experiment["templateHistory"]["params"].get("project_handle")),
-            ("Worker Command", experiment["templateHistory"]["params"].get("worker_command")),
-            ("Worker Container", experiment["templateHistory"]["params"].get("worker_container")),
-            ("Worker Count", experiment["templateHistory"]["params"].get("worker_count")),
-            ("Worker Machine Type", experiment["templateHistory"]["params"].get("worker_machine_type")),
-            ("Working Directory", experiment["templateHistory"]["params"].get("workingDirectory")),
-            ("Workspace URL", experiment["templateHistory"]["params"].get("workspaceUrl")),
-        )
-    else:
-        raise ValueError("Wrong experiment type: {}".format(experiment["experimentTypeId"]))
-
-    ascii_table = terminaltables.AsciiTable(data)
-    table_string = ascii_table.table
-    return table_string
-
-
-def get_experiment_details(experiment_id, api=experiments_api, logger_=logger.Logger()):
-    url = "/experiments/{}/".format(experiment_id)
-    response = api.get(url)
-    details = response.content
-    if response.ok:
+    def _get_instance(self, id_):
+        """
+        :rtype: api_sdk.SingleNodeExperiment|api_sdk.MultiNodeExperiment
+        """
         try:
-            experiment = response.json()["data"]
-            details = _make_details_table(experiment)
-        except (ValueError, KeyError):
-            logger_.error("Error parsing response data")
+            instance = self.client.get(id_)
+        except api_sdk.GradientSdkError as e:
+            raise exceptions.ReceivingDataFailedError(e)
 
-    logger_.log_response(response, details, "Unknown error while retrieving details of the experiment")
+        return instance
+
+    def _log_object(self, instance):
+
+        table_str = self._make_table(instance)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
+
+    def _make_table(self, experiment):
+        """
+        :param api_sdk.BaseExperiment:
+        """
+        data = self._get_experiment_table_data(experiment)
+        ascii_table = terminaltables.AsciiTable(data)
+        table_string = ascii_table.table
+        return table_string
+
+    def _get_experiment_table_data(self, experiment):
+        if experiment.experiment_type_id == constants.ExperimentType.SINGLE_NODE:
+            return self._get_single_node_data(experiment)
+
+        if experiment.experiment_type_id in (constants.ExperimentType.GRPC_MULTI_NODE,
+                                             constants.ExperimentType.MPI_MULTI_NODE):
+            return self._get_multi_node_data(experiment)
+
+        if experiment.experiment_type_id == constants.ExperimentType.HYPERPARAMETER_TUNING:
+            return self._get_hyperparameter_data(experiment)
+
+        raise ValueError("Wrong experiment type: {}".format(experiment.experiment_type_id))
+
+    @staticmethod
+    def _get_single_node_data(experiment):
+        """
+        :param api_sdk.SingleNodeExperiment experiment:
+        """
+        data = (
+            ("Name", experiment.name),
+            ("ID", experiment.id),
+            ("State", constants.ExperimentState.get_state_str(experiment.state)),
+            ("Ports", experiment.ports),
+            ("Project ID", experiment.project_id),
+            ("Worker Command", experiment.command),
+            ("Worker Container", experiment.container),
+            ("Worker Machine Type", experiment.machine_type),
+            ("Working Directory", experiment.working_directory),
+            ("Workspace URL", experiment.workspace_url),
+            ("Model Type", experiment.model_type),
+            ("Model Path", experiment.model_path),
+        )
+        return data
+
+    @staticmethod
+    def _get_multi_node_data(experiment):
+        """
+        :param api_sdk.MultiNodeExperiment experiment:
+        """
+        data = (
+            ("Name", experiment.name),
+            ("ID", experiment.id),
+            ("State", constants.ExperimentState.get_state_str(experiment.state)),
+            ("Artifact directory", experiment.artifact_directory),
+            ("Cluster ID", experiment.cluster_id),
+            ("Experiment Env", experiment.experiment_env),
+            ("Experiment Type", constants.ExperimentType.get_type_str(experiment.experiment_type_id)),
+            ("Model Type", experiment.model_type),
+            ("Model Path", experiment.model_path),
+            ("Parameter Server Command", experiment.parameter_server_command),
+            ("Parameter Server Container", experiment.parameter_server_container),
+            ("Parameter Server Count", experiment.parameter_server_count),
+            ("Parameter Server Machine Type", experiment.parameter_server_machine_type),
+            ("Ports", experiment.ports),
+            ("Project ID", experiment.project_id),
+            ("Worker Command", experiment.worker_command),
+            ("Worker Container", experiment.worker_container),
+            ("Worker Count", experiment.worker_count),
+            ("Worker Machine Type", experiment.worker_machine_type),
+            ("Working Directory", experiment.working_directory),
+            ("Workspace URL", experiment.workspace_url),
+        )
+        return data
+
+    @staticmethod
+    def _get_hyperparameter_data(experiment):
+        """
+        :param api_sdk.Hyperparameter experiment:
+        """
 
 
-class ExperimentLogsCommand(common.CommandBase):
-    last_line_number = 0
-    base_url = "/jobs/logs"
-
-    is_logs_complete = False
-
+class ExperimentLogsCommand(BaseExperimentCommand):
     def execute(self, experiment_id, line, limit, follow):
         if follow:
             self.logger.log("Awaiting logs...")
+            self._log_logs_continuously(experiment_id, line, limit)
+        else:
+            self._log_table_of_logs(experiment_id, line, limit)
 
-        self.last_line_number = line
+    def _log_table_of_logs(self, experiment_id, line, limit):
+        logs = self.client.logs(experiment_id, line, limit)
+        if not logs:
+            self.logger.log("No logs found")
+            return
+
+        table_str = self._make_table(logs, experiment_id)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
+
+    def _log_logs_continuously(self, experiment_id, line, limit):
+        logs_gen = self.client.yield_logs(experiment_id, line, limit)
+        for log in logs_gen:
+            log_msg = "{}\t{}\t{}".format(*self._format_row(experiment_id, log))
+            self.logger.log(log_msg)
+
+    def _make_table(self, logs, experiment_id):
         table_title = "Experiment %s logs" % experiment_id
         table_data = [("JOB ID", "LINE", "MESSAGE")]
         table = terminaltables.AsciiTable(table_data, title=table_title)
 
-        while not self.is_logs_complete:
-            response = self._get_logs(experiment_id, self.last_line_number, limit)
-
-            try:
-                data = response.json()
-                if not response.ok:
-                    self.logger.log_error_response(data)
-                    return
-            except (ValueError, KeyError) as e:
-                if response.status_code == 204:
-                    continue
-                self.logger.log("Error while parsing response data: {}".format(e))
-                return
-            else:
-                self._log_logs_list(data, table, table_data, follow)
-
-            if not follow:
-                self.is_logs_complete = True
-
-    def _get_logs(self, experiment_id, line, limit):
-        params = {
-            'experimentId': experiment_id,
-            'line': line,
-            'limit': limit
-        };
-        return self.api.get(self.base_url, params=params)
-
-    def _log_logs_list(self, data, table, table_data, follow):
-        if not data:
-            self.logger.log("No logs found")
-            return
-        if follow:
-            # TODO track number of jobs seen to look for PSEOF
-            if data[-1].get("message") == "PSEOF":
-                self.is_logs_complete = True
-            else:
-                self.last_line_number = data[-1].get("line")
-            for log in data:
-                log_str = "{}\t{}\t{}"
-                self.logger.log(log_str.format(style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
-        else:
-            table_str = self._make_table(data, table, table_data)
-            if len(table_str.splitlines()) > get_terminal_lines():
-                pydoc.pager(table_str)
-            else:
-                self.logger.log(table_str)
-
-    def _make_table(self, logs, table, table_data):
-        if logs[-1].get("message") == "PSEOF":
-            self.is_logs_complete = True
-        else:
-            self.last_line_number = logs[-1].get("line")
-
         for log in logs:
-            table_data.append((style(fg="blue", text=str(log.get("jobId"))), style(fg="red", text=str(log.get("line"))), log.get("message")))
+            table_data.append(self._format_row(experiment_id, log))
 
         return table.table
+
+    @staticmethod
+    def _format_row(experiment_id, log_row):
+        return (style(fg="blue", text=experiment_id),
+                style(fg="red", text=str(log_row.line)),
+                log_row.message)

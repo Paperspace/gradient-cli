@@ -1,4 +1,4 @@
-from gradient import login, logout
+from gradient.login import login, logout
 from gradient.commands.common import CommandBase
 from gradient.login import set_apikey
 from gradient.version import version

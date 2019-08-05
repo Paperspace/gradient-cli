@@ -73,9 +73,11 @@ setup(
         'progressbar2',
         'halo',
         'prompt_toolkit<3.0',
+        'marshmallow<3.0',
+        'attrs<=19',
     ],
     entry_points={'console_scripts': [
-        'gradient = gradient:main',
+        'gradient = gradient:main.main',
     ]},
     extras_require={
         "dev": [
@@ -83,6 +85,7 @@ setup(
             'pytest',
             'mock',
             'twine',
+            'sphinx',
         ],
     },
     cmdclass={

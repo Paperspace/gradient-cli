@@ -1,8 +1,43 @@
+from collections import OrderedDict
+
 import mock
 import pytest
 
-from gradient import exceptions
+import gradient.api_sdk.utils
+from gradient.exceptions import WrongPathError
 from gradient.utils import PathParser
+
+output_response = ""
+
+
+class TestPrintDictRecursive(object):
+    def test_json_print(self):
+        global output_response
+        output_response = ""
+
+        def log_to_var(message):
+            global output_response
+            output_response = "{}{}\n".format(output_response, message)
+
+        logger_ = mock.MagicMock()
+        logger_.log = log_to_var
+
+        input_dict = {
+            "foo": {
+                'bar': {
+                    "baz": "faz"
+                }
+            }
+        }
+        expected_string = """foo:
+  bar:
+    baz:
+      faz
+"""
+
+        gradient.api_sdk.utils.print_dict_recursive(OrderedDict(input_dict), logger_)
+
+        assert output_response == expected_string
 
 
 class TestPathParser(object):
@@ -71,5 +106,5 @@ class TestPathParser(object):
     def test_should_raise_exception_when_local_path_was_given_but_does_not_exist(self, _, __, ___):
         path_str = "/home/usr/some/path.zip"
 
-        with pytest.raises(exceptions.WrongPathError):
+        with pytest.raises(WrongPathError):
             PathParser.parse_path(path_str)

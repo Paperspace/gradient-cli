@@ -3339,3 +3339,1068 @@ HYPERPARAMETERS_DETAILS_RESPONSE_JSON = {
     },
     "message": "success"
 }
+
+LIST_OF_LOGS_FOR_EXPERIMENT = [
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 1,
+    "timestamp": "2019-07-08T12:40:59.139Z",
+    "message": "2019-07-08 12:40:59.139494: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 2,
+    "timestamp": "2019-07-08T12:40:59.271Z",
+    "message": "2019-07-08 12:40:59.270783: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:998] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 3,
+    "timestamp": "2019-07-08T12:40:59.271Z",
+    "message": "2019-07-08 12:40:59.271379: I tensorflow/compiler/xla/service/service.cc:150] XLA service 0x5642a00 executing computations on platform CUDA. Devices:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 4,
+    "timestamp": "2019-07-08T12:40:59.271Z",
+    "message": "2019-07-08 12:40:59.271427: I tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device (0): Tesla K80, Compute Capability 3.7"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 5,
+    "timestamp": "2019-07-08T12:40:59.274Z",
+    "message": "2019-07-08 12:40:59.274589: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2200000000 Hz"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 6,
+    "timestamp": "2019-07-08T12:40:59.275Z",
+    "message": "2019-07-08 12:40:59.274952: I tensorflow/compiler/xla/service/service.cc:150] XLA service 0x56aba20 executing computations on platform Host. Devices:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 7,
+    "timestamp": "2019-07-08T12:40:59.275Z",
+    "message": "2019-07-08 12:40:59.274983: I tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device (0): \u003cundefined\u003e, \u003cundefined\u003e"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 8,
+    "timestamp": "2019-07-08T12:40:59.275Z",
+    "message": "2019-07-08 12:40:59.275358: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1433] Found device 0 with properties: "
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 9,
+    "timestamp": "2019-07-08T12:40:59.275Z",
+    "message": "name: Tesla K80 major: 3 minor: 7 memoryClockRate(GHz): 0.8235"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 10,
+    "timestamp": "2019-07-08T12:40:59.275Z",
+    "message": "pciBusID: 0000:00:04.0"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 11,
+    "timestamp": "2019-07-08T12:40:59.275Z",
+    "message": "totalMemory: 11.17GiB freeMemory: 11.09GiB"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 12,
+    "timestamp": "2019-07-08T12:40:59.275Z",
+    "message": "2019-07-08 12:40:59.275392: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1512] Adding visible gpu devices: 0"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 13,
+    "timestamp": "2019-07-08T12:40:59.276Z",
+    "message": "2019-07-08 12:40:59.276439: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] Device interconnect StreamExecutor with strength 1 edge matrix:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 14,
+    "timestamp": "2019-07-08T12:40:59.276Z",
+    "message": "2019-07-08 12:40:59.276473: I tensorflow/core/common_runtime/gpu/gpu_device.cc:990]      0 "
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 15,
+    "timestamp": "2019-07-08T12:40:59.276Z",
+    "message": "2019-07-08 12:40:59.276483: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1003] 0:   N "
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 16,
+    "timestamp": "2019-07-08T12:40:59.276Z",
+    "message": "2019-07-08 12:40:59.276778: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/device:GPU:0 with 10787 MB memory) -\u003e physical GPU (device: 0, name: Tesla K80, pci bus id: 0000:00:04.0, compute capability: 3.7)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 17,
+    "timestamp": "2019-07-08T12:40:59.28Z",
+    "message": "WARNING: Logging before flag parsing goes to stderr."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 18,
+    "timestamp": "2019-07-08T12:40:59.28Z",
+    "message": "I0708 12:40:59.280403 140451862599424 mnist.py:265] ==================== Environment Variables ===================="
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 19,
+    "timestamp": "2019-07-08T12:40:59.28Z",
+    "message": "I0708 12:40:59.280700 140451862599424 mnist.py:267] NVIDIA_VISIBLE_DEVICES: all"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 20,
+    "timestamp": "2019-07-08T12:40:59.281Z",
+    "message": "I0708 12:40:59.280864 140451862599424 mnist.py:267] PS_DOCKER_AGENT: 6136343261613365"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 21,
+    "timestamp": "2019-07-08T12:40:59.281Z",
+    "message": "I0708 12:40:59.280993 140451862599424 mnist.py:267] EVAL_SECS: 10"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 22,
+    "timestamp": "2019-07-08T12:40:59.281Z",
+    "message": "I0708 12:40:59.281114 140451862599424 mnist.py:267] PATH: /usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 23,
+    "timestamp": "2019-07-08T12:40:59.281Z",
+    "message": "I0708 12:40:59.281230 140451862599424 mnist.py:267] PS_HOST_PRIVATE_IP_ADDRESS: 10.138.0.15"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 24,
+    "timestamp": "2019-07-08T12:40:59.281Z",
+    "message": "I0708 12:40:59.281354 140451862599424 mnist.py:267] PS_HOSTNAME: gradient-host-1562589161"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 25,
+    "timestamp": "2019-07-08T12:40:59.281Z",
+    "message": "I0708 12:40:59.281510 140451862599424 mnist.py:267] HOSTNAME: 9b41cad9ccda"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 26,
+    "timestamp": "2019-07-08T12:40:59.281Z",
+    "message": "I0708 12:40:59.281623 140451862599424 mnist.py:267] EPOCHS_EVAL: 5"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 27,
+    "timestamp": "2019-07-08T12:40:59.281Z",
+    "message": "I0708 12:40:59.281736 140451862599424 mnist.py:267] PS_JOBSPACE: /storage"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 28,
+    "timestamp": "2019-07-08T12:40:59.281Z",
+    "message": "I0708 12:40:59.281847 140451862599424 mnist.py:267] PS_JOB_RUNNER: 1"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 29,
+    "timestamp": "2019-07-08T12:40:59.282Z",
+    "message": "I0708 12:40:59.281965 140451862599424 mnist.py:267] NVIDIA_REQUIRE_CUDA: cuda\u003e=10.0 brand=tesla,driver\u003e=384,driver\u003c385 brand=tesla,driver\u003e=410,driver\u003c411"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 30,
+    "timestamp": "2019-07-08T12:40:59.282Z",
+    "message": "I0708 12:40:59.282079 140451862599424 mnist.py:267] CUDA_PKG_VERSION: 10-0=10.0.130-1"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 31,
+    "timestamp": "2019-07-08T12:40:59.282Z",
+    "message": "I0708 12:40:59.282189 140451862599424 mnist.py:267] LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 32,
+    "timestamp": "2019-07-08T12:40:59.282Z",
+    "message": "I0708 12:40:59.282299 140451862599424 mnist.py:267] TYPE: master"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 33,
+    "timestamp": "2019-07-08T12:40:59.282Z",
+    "message": "I0708 12:40:59.282416 140451862599424 mnist.py:267] PS_DATASETS: /datasets"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 34,
+    "timestamp": "2019-07-08T12:40:59.282Z",
+    "message": "I0708 12:40:59.282531 140451862599424 mnist.py:267] TRAIN_EPOCHS: 10"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 35,
+    "timestamp": "2019-07-08T12:40:59.282Z",
+    "message": "I0708 12:40:59.282641 140451862599424 mnist.py:267] MAX_STEPS: 1000"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 36,
+    "timestamp": "2019-07-08T12:40:59.282Z",
+    "message": "I0708 12:40:59.282753 140451862599424 mnist.py:267] PS_HOME: /paperspace"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 37,
+    "timestamp": "2019-07-08T12:40:59.283Z",
+    "message": "I0708 12:40:59.282861 140451862599424 mnist.py:267] INDEX: 0"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 38,
+    "timestamp": "2019-07-08T12:40:59.283Z",
+    "message": "I0708 12:40:59.282970 140451862599424 mnist.py:267] CUDA_VERSION: 10.0.130"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 39,
+    "timestamp": "2019-07-08T12:40:59.283Z",
+    "message": "I0708 12:40:59.283078 140451862599424 mnist.py:267] PORTS: 5000"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 40,
+    "timestamp": "2019-07-08T12:40:59.283Z",
+    "message": "I0708 12:40:59.283186 140451862599424 mnist.py:267] PS_ARTIFACTS: /artifacts"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 41,
+    "timestamp": "2019-07-08T12:40:59.283Z",
+    "message": "I0708 12:40:59.283293 140451862599424 mnist.py:267] NVIDIA_DRIVER_CAPABILITIES: compute,utility"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 42,
+    "timestamp": "2019-07-08T12:40:59.283Z",
+    "message": "I0708 12:40:59.283408 140451862599424 mnist.py:267] PS_HOST_PUBLIC_IP_ADDRESS: 35.233.198.134"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 43,
+    "timestamp": "2019-07-08T12:40:59.283Z",
+    "message": "I0708 12:40:59.283516 140451862599424 mnist.py:267] LANG: C.UTF-8"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 44,
+    "timestamp": "2019-07-08T12:40:59.283Z",
+    "message": "I0708 12:40:59.283623 140451862599424 mnist.py:267] PS_JOB_ID: jsy2ibsz1l026y"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 45,
+    "timestamp": "2019-07-08T12:40:59.283Z",
+    "message": "I0708 12:40:59.283730 140451862599424 mnist.py:267] HOME: /root"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 46,
+    "timestamp": "2019-07-08T12:40:59.862Z",
+    "message": "I0708 12:40:59.862003 140451862599424 run_config.py:532] Initializing RunConfig with distribution strategies."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 47,
+    "timestamp": "2019-07-08T12:40:59.862Z",
+    "message": "I0708 12:40:59.862317 140451862599424 estimator_training.py:166] Not using Distribute Coordinator."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 48,
+    "timestamp": "2019-07-08T12:40:59.863Z",
+    "message": "I0708 12:40:59.862842 140451862599424 estimator.py:201] Using config: {'_master': '', '_num_worker_replicas': 1, '_num_ps_replicas': 0, '_save_checkpoints_secs': None, '_log_step_count_steps': 100, '_train_distribute': \u003ctensorflow.contrib.distribute.python.one_device_strategy.OneDeviceStrategy object at 0x7fbcb5adecc0\u003e, '_protocol': None, '_session_config': allow_soft_placement: true"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 49,
+    "timestamp": "2019-07-08T12:40:59.863Z",
+    "message": ", '_tf_random_seed': None, '_global_id_in_cluster': 0, '_is_chief': True, '_keep_checkpoint_max': 5, '_keep_checkpoint_every_n_hours': 10000, '_model_dir': '/paperspace/models/mnist', '_save_summary_steps': 100, '_service': None, '_experimental_distribute': None, '_cluster_spec': \u003ctensorflow.python.training.server_lib.ClusterSpec object at 0x7fbcb34f7828\u003e, '_save_checkpoints_steps': 600, '_evaluation_master': '', '_eval_distribute': None, '_task_id': 0, '_distribute_coordinator_mode': None, '_task_type': 'worker', '_device_fn': None}"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 50,
+    "timestamp": "2019-07-08T12:40:59.863Z",
+    "message": "I0708 12:40:59.863682 140451862599424 estimator_training.py:185] Not using Distribute Coordinator."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 51,
+    "timestamp": "2019-07-08T12:40:59.864Z",
+    "message": "I0708 12:40:59.864074 140451862599424 training.py:610] Running training and evaluation locally (non-distributed)."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 52,
+    "timestamp": "2019-07-08T12:40:59.864Z",
+    "message": "I0708 12:40:59.864597 140451862599424 training.py:698] Start train and evaluate loop. The evaluate will happen after every checkpoint. Checkpoint frequency is determined based on RunConfig arguments: save_checkpoints_steps 600 or save_checkpoints_secs None."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 53,
+    "timestamp": "2019-07-08T12:41:01.276Z",
+    "message": "W0708 12:41:01.276278 140451862599424 deprecation.py:323] From /usr/local/lib/python3.5/dist-packages/tensorflow/python/data/ops/dataset_ops.py:1419: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 54,
+    "timestamp": "2019-07-08T12:41:01.276Z",
+    "message": "Instructions for updating:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 55,
+    "timestamp": "2019-07-08T12:41:01.276Z",
+    "message": "Colocations handled automatically by placer."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 56,
+    "timestamp": "2019-07-08T12:41:01.292Z",
+    "message": "I0708 12:41:01.291953 140451862599424 estimator.py:1111] Calling model_fn."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 57,
+    "timestamp": "2019-07-08T12:41:01.389Z",
+    "message": "W0708 12:41:01.389566 140451862599424 deprecation.py:506] From /usr/local/lib/python3.5/dist-packages/tensorflow/python/keras/layers/core.py:143: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 58,
+    "timestamp": "2019-07-08T12:41:01.389Z",
+    "message": "Instructions for updating:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 59,
+    "timestamp": "2019-07-08T12:41:01.389Z",
+    "message": "Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 60,
+    "timestamp": "2019-07-08T12:41:01.537Z",
+    "message": "W0708 12:41:01.536658 140451862599424 deprecation.py:323] From /usr/local/lib/python3.5/dist-packages/tensorflow/python/ops/losses/losses_impl.py:209: to_float (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 61,
+    "timestamp": "2019-07-08T12:41:01.537Z",
+    "message": "Instructions for updating:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 62,
+    "timestamp": "2019-07-08T12:41:01.537Z",
+    "message": "Use tf.cast instead."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 63,
+    "timestamp": "2019-07-08T12:41:01.86Z",
+    "message": "I0708 12:41:01.860109 140451862599424 estimator.py:1113] Done calling model_fn."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 64,
+    "timestamp": "2019-07-08T12:41:01.909Z",
+    "message": "I0708 12:41:01.909625 140451862599424 basic_session_run_hooks.py:527] Create CheckpointSaverHook."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 65,
+    "timestamp": "2019-07-08T12:41:02.104Z",
+    "message": "I0708 12:41:02.104314 140451862599424 monitored_session.py:222] Graph was finalized."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 66,
+    "timestamp": "2019-07-08T12:41:02.105Z",
+    "message": "2019-07-08 12:41:02.105148: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1512] Adding visible gpu devices: 0"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 67,
+    "timestamp": "2019-07-08T12:41:02.105Z",
+    "message": "2019-07-08 12:41:02.105239: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] Device interconnect StreamExecutor with strength 1 edge matrix:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 68,
+    "timestamp": "2019-07-08T12:41:02.105Z",
+    "message": "2019-07-08 12:41:02.105274: I tensorflow/core/common_runtime/gpu/gpu_device.cc:990]      0 "
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 69,
+    "timestamp": "2019-07-08T12:41:02.105Z",
+    "message": "2019-07-08 12:41:02.105290: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1003] 0:   N "
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 70,
+    "timestamp": "2019-07-08T12:41:02.105Z",
+    "message": "2019-07-08 12:41:02.105612: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10787 MB memory) -\u003e physical GPU (device: 0, name: Tesla K80, pci bus id: 0000:00:04.0, compute capability: 3.7)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 71,
+    "timestamp": "2019-07-08T12:41:03.052Z",
+    "message": "I0708 12:41:03.051607 140451862599424 session_manager.py:491] Running local_init_op."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 72,
+    "timestamp": "2019-07-08T12:41:03.064Z",
+    "message": "I0708 12:41:03.064292 140451862599424 session_manager.py:493] Done running local_init_op."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 73,
+    "timestamp": "2019-07-08T12:41:03.405Z",
+    "message": "I0708 12:41:03.404671 140451862599424 basic_session_run_hooks.py:594] Saving checkpoints for 0 into /paperspace/models/mnist/model.ckpt."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 74,
+    "timestamp": "2019-07-08T12:41:03.616Z",
+    "message": "I0708 12:41:03.616098 140451862599424 util.py:164] Initialize strategy"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 75,
+    "timestamp": "2019-07-08T12:41:03.715Z",
+    "message": "2019-07-08 12:41:03.715695: I tensorflow/stream_executor/dso_loader.cc:152] successfully opened CUDA library libcublas.so.10.0 locally"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 76,
+    "timestamp": "2019-07-08T12:41:09.915Z",
+    "message": "I0708 12:41:09.915456 140451862599424 basic_session_run_hooks.py:249] cross_entropy = 2.3025289, learning_rate = 1e-04, train_accuracy = 0.08"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 77,
+    "timestamp": "2019-07-08T12:41:09.916Z",
+    "message": "I0708 12:41:09.915941 140451862599424 basic_session_run_hooks.py:249] loss = 2.3025289, step = 0"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 78,
+    "timestamp": "2019-07-08T12:41:11.313Z",
+    "message": "I0708 12:41:11.313229 140451862599424 basic_session_run_hooks.py:680] global_step/sec: 71.5095"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 79,
+    "timestamp": "2019-07-08T12:41:11.314Z",
+    "message": "I0708 12:41:11.314374 140451862599424 basic_session_run_hooks.py:247] cross_entropy = 0.3830725, learning_rate = 1e-04, train_accuracy = 0.49 (1.399 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 80,
+    "timestamp": "2019-07-08T12:41:11.314Z",
+    "message": "I0708 12:41:11.314673 140451862599424 basic_session_run_hooks.py:247] loss = 0.3830725, step = 100 (1.399 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 81,
+    "timestamp": "2019-07-08T12:41:12.369Z",
+    "message": "I0708 12:41:12.368999 140451862599424 basic_session_run_hooks.py:680] global_step/sec: 94.7225"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 82,
+    "timestamp": "2019-07-08T12:41:12.37Z",
+    "message": "I0708 12:41:12.370402 140451862599424 basic_session_run_hooks.py:247] cross_entropy = 0.19424663, learning_rate = 1e-04, train_accuracy = 0.6433333 (1.056 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 83,
+    "timestamp": "2019-07-08T12:41:12.371Z",
+    "message": "I0708 12:41:12.370768 140451862599424 basic_session_run_hooks.py:247] loss = 0.19424663, step = 200 (1.056 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 84,
+    "timestamp": "2019-07-08T12:41:13.424Z",
+    "message": "I0708 12:41:13.423866 140451862599424 basic_session_run_hooks.py:680] global_step/sec: 94.7932"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 85,
+    "timestamp": "2019-07-08T12:41:13.425Z",
+    "message": "I0708 12:41:13.425122 140451862599424 basic_session_run_hooks.py:247] cross_entropy = 0.20186995, learning_rate = 1e-04, train_accuracy = 0.7125 (1.055 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 86,
+    "timestamp": "2019-07-08T12:41:13.425Z",
+    "message": "I0708 12:41:13.425472 140451862599424 basic_session_run_hooks.py:247] loss = 0.20186995, step = 300 (1.055 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 87,
+    "timestamp": "2019-07-08T12:41:14.457Z",
+    "message": "I0708 12:41:14.457170 140451862599424 basic_session_run_hooks.py:680] global_step/sec: 96.7791"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 88,
+    "timestamp": "2019-07-08T12:41:14.458Z",
+    "message": "I0708 12:41:14.458280 140451862599424 basic_session_run_hooks.py:247] cross_entropy = 0.14686151, learning_rate = 1e-04, train_accuracy = 0.762 (1.033 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 89,
+    "timestamp": "2019-07-08T12:41:14.458Z",
+    "message": "I0708 12:41:14.458536 140451862599424 basic_session_run_hooks.py:247] loss = 0.14686151, step = 400 (1.033 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 90,
+    "timestamp": "2019-07-08T12:41:15.531Z",
+    "message": "I0708 12:41:15.530984 140451862599424 basic_session_run_hooks.py:680] global_step/sec: 93.1259"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 91,
+    "timestamp": "2019-07-08T12:41:15.532Z",
+    "message": "I0708 12:41:15.532083 140451862599424 basic_session_run_hooks.py:247] cross_entropy = 0.115687564, learning_rate = 1e-04, train_accuracy = 0.795 (1.074 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 92,
+    "timestamp": "2019-07-08T12:41:15.532Z",
+    "message": "I0708 12:41:15.532342 140451862599424 basic_session_run_hooks.py:247] loss = 0.115687564, step = 500 (1.074 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 93,
+    "timestamp": "2019-07-08T12:41:16.563Z",
+    "message": "I0708 12:41:16.563513 140451862599424 basic_session_run_hooks.py:594] Saving checkpoints for 600 into /paperspace/models/mnist/model.ckpt."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 94,
+    "timestamp": "2019-07-08T12:41:17.176Z",
+    "message": "I0708 12:41:17.176506 140451862599424 estimator.py:1111] Calling model_fn."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 95,
+    "timestamp": "2019-07-08T12:41:17.385Z",
+    "message": "I0708 12:41:17.385438 140451862599424 estimator.py:1113] Done calling model_fn."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 96,
+    "timestamp": "2019-07-08T12:41:17.41Z",
+    "message": "I0708 12:41:17.410446 140451862599424 evaluation.py:257] Starting evaluation at 2019-07-08T12:41:17Z"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 97,
+    "timestamp": "2019-07-08T12:41:17.517Z",
+    "message": "I0708 12:41:17.517657 140451862599424 monitored_session.py:222] Graph was finalized."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 98,
+    "timestamp": "2019-07-08T12:41:17.518Z",
+    "message": "2019-07-08 12:41:17.518354: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1512] Adding visible gpu devices: 0"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 99,
+    "timestamp": "2019-07-08T12:41:17.518Z",
+    "message": "2019-07-08 12:41:17.518419: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] Device interconnect StreamExecutor with strength 1 edge matrix:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 100,
+    "timestamp": "2019-07-08T12:41:17.518Z",
+    "message": "2019-07-08 12:41:17.518438: I tensorflow/core/common_runtime/gpu/gpu_device.cc:990]      0 "
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 101,
+    "timestamp": "2019-07-08T12:41:17.518Z",
+    "message": "2019-07-08 12:41:17.518451: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1003] 0:   N "
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 102,
+    "timestamp": "2019-07-08T12:41:17.518Z",
+    "message": "2019-07-08 12:41:17.518626: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10787 MB memory) -\u003e physical GPU (device: 0, name: Tesla K80, pci bus id: 0000:00:04.0, compute capability: 3.7)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 103,
+    "timestamp": "2019-07-08T12:41:17.519Z",
+    "message": "W0708 12:41:17.519085 140451862599424 deprecation.py:323] From /usr/local/lib/python3.5/dist-packages/tensorflow/python/training/saver.py:1266: checkpoint_exists (from tensorflow.python.training.checkpoint_management) is deprecated and will be removed in a future version."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 104,
+    "timestamp": "2019-07-08T12:41:17.519Z",
+    "message": "Instructions for updating:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 105,
+    "timestamp": "2019-07-08T12:41:17.519Z",
+    "message": "Use standard file APIs to check for files with this prefix."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 106,
+    "timestamp": "2019-07-08T12:41:17.52Z",
+    "message": "I0708 12:41:17.520449 140451862599424 saver.py:1270] Restoring parameters from /paperspace/models/mnist/model.ckpt-600"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 107,
+    "timestamp": "2019-07-08T12:41:17.572Z",
+    "message": "I0708 12:41:17.572486 140451862599424 session_manager.py:491] Running local_init_op."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 108,
+    "timestamp": "2019-07-08T12:41:17.584Z",
+    "message": "I0708 12:41:17.584268 140451862599424 session_manager.py:493] Done running local_init_op."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 109,
+    "timestamp": "2019-07-08T12:41:19.062Z",
+    "message": "I0708 12:41:19.062499 140451862599424 evaluation.py:277] Finished evaluation at 2019-07-08-12:41:19"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 110,
+    "timestamp": "2019-07-08T12:41:19.063Z",
+    "message": "I0708 12:41:19.062822 140451862599424 estimator.py:1979] Saving dict for global step 600: accuracy = 0.9691, global_step = 600, loss = 0.10409811"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 111,
+    "timestamp": "2019-07-08T12:41:19.113Z",
+    "message": "I0708 12:41:19.113427 140451862599424 estimator.py:2039] Saving 'checkpoint_path' summary for global step 600: /paperspace/models/mnist/model.ckpt-600"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 112,
+    "timestamp": "2019-07-08T12:41:19.126Z",
+    "message": "I0708 12:41:19.125805 140451862599424 basic_session_run_hooks.py:680] global_step/sec: 27.817"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 113,
+    "timestamp": "2019-07-08T12:41:19.126Z",
+    "message": "I0708 12:41:19.126667 140451862599424 basic_session_run_hooks.py:247] cross_entropy = 0.108451165, learning_rate = 1e-04, train_accuracy = 0.82285714 (3.595 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 114,
+    "timestamp": "2019-07-08T12:41:19.127Z",
+    "message": "I0708 12:41:19.126947 140451862599424 basic_session_run_hooks.py:247] loss = 0.108451165, step = 600 (3.595 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 115,
+    "timestamp": "2019-07-08T12:41:20.185Z",
+    "message": "I0708 12:41:20.185327 140451862599424 basic_session_run_hooks.py:680] global_step/sec: 94.39"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 116,
+    "timestamp": "2019-07-08T12:41:20.186Z",
+    "message": "I0708 12:41:20.186514 140451862599424 basic_session_run_hooks.py:247] cross_entropy = 0.122035645, learning_rate = 1e-04, train_accuracy = 0.8425 (1.060 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 117,
+    "timestamp": "2019-07-08T12:41:20.186Z",
+    "message": "I0708 12:41:20.186774 140451862599424 basic_session_run_hooks.py:247] loss = 0.122035645, step = 700 (1.060 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 118,
+    "timestamp": "2019-07-08T12:41:21.256Z",
+    "message": "I0708 12:41:21.255784 140451862599424 basic_session_run_hooks.py:680] global_step/sec: 93.4188"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 119,
+    "timestamp": "2019-07-08T12:41:21.257Z",
+    "message": "I0708 12:41:21.256838 140451862599424 basic_session_run_hooks.py:247] cross_entropy = 0.07952806, learning_rate = 1e-04, train_accuracy = 0.8577778 (1.070 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 120,
+    "timestamp": "2019-07-08T12:41:21.257Z",
+    "message": "I0708 12:41:21.257101 140451862599424 basic_session_run_hooks.py:247] loss = 0.07952806, step = 800 (1.070 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 121,
+    "timestamp": "2019-07-08T12:41:22.288Z",
+    "message": "I0708 12:41:22.287836 140451862599424 basic_session_run_hooks.py:680] global_step/sec: 96.8942"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 122,
+    "timestamp": "2019-07-08T12:41:22.289Z",
+    "message": "I0708 12:41:22.288971 140451862599424 basic_session_run_hooks.py:247] cross_entropy = 0.12382953, learning_rate = 1e-04, train_accuracy = 0.868 (1.032 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 123,
+    "timestamp": "2019-07-08T12:41:22.289Z",
+    "message": "I0708 12:41:22.289424 140451862599424 basic_session_run_hooks.py:247] loss = 0.12382953, step = 900 (1.032 sec)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 124,
+    "timestamp": "2019-07-08T12:41:23.297Z",
+    "message": "I0708 12:41:23.297554 140451862599424 basic_session_run_hooks.py:594] Saving checkpoints for 1000 into /paperspace/models/mnist/model.ckpt."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 125,
+    "timestamp": "2019-07-08T12:41:23.399Z",
+    "message": "I0708 12:41:23.398564 140451862599424 training.py:525] Skip the current checkpoint eval due to throttle secs (10 secs)."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 126,
+    "timestamp": "2019-07-08T12:41:23.451Z",
+    "message": "I0708 12:41:23.450761 140451862599424 estimator.py:1111] Calling model_fn."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 127,
+    "timestamp": "2019-07-08T12:41:23.655Z",
+    "message": "I0708 12:41:23.655447 140451862599424 estimator.py:1113] Done calling model_fn."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 128,
+    "timestamp": "2019-07-08T12:41:23.681Z",
+    "message": "I0708 12:41:23.681046 140451862599424 evaluation.py:257] Starting evaluation at 2019-07-08T12:41:23Z"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 129,
+    "timestamp": "2019-07-08T12:41:23.872Z",
+    "message": "I0708 12:41:23.871646 140451862599424 monitored_session.py:222] Graph was finalized."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 130,
+    "timestamp": "2019-07-08T12:41:23.872Z",
+    "message": "2019-07-08 12:41:23.872269: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1512] Adding visible gpu devices: 0"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 131,
+    "timestamp": "2019-07-08T12:41:23.872Z",
+    "message": "2019-07-08 12:41:23.872324: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] Device interconnect StreamExecutor with strength 1 edge matrix:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 132,
+    "timestamp": "2019-07-08T12:41:23.872Z",
+    "message": "2019-07-08 12:41:23.872338: I tensorflow/core/common_runtime/gpu/gpu_device.cc:990]      0 "
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 133,
+    "timestamp": "2019-07-08T12:41:23.872Z",
+    "message": "2019-07-08 12:41:23.872353: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1003] 0:   N "
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 134,
+    "timestamp": "2019-07-08T12:41:23.872Z",
+    "message": "2019-07-08 12:41:23.872548: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10787 MB memory) -\u003e physical GPU (device: 0, name: Tesla K80, pci bus id: 0000:00:04.0, compute capability: 3.7)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 135,
+    "timestamp": "2019-07-08T12:41:23.874Z",
+    "message": "I0708 12:41:23.874099 140451862599424 saver.py:1270] Restoring parameters from /paperspace/models/mnist/model.ckpt-1000"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 136,
+    "timestamp": "2019-07-08T12:41:23.932Z",
+    "message": "I0708 12:41:23.932351 140451862599424 session_manager.py:491] Running local_init_op."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 137,
+    "timestamp": "2019-07-08T12:41:23.946Z",
+    "message": "I0708 12:41:23.946145 140451862599424 session_manager.py:493] Done running local_init_op."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 138,
+    "timestamp": "2019-07-08T12:41:25.49Z",
+    "message": "I0708 12:41:25.490408 140451862599424 evaluation.py:277] Finished evaluation at 2019-07-08-12:41:25"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 139,
+    "timestamp": "2019-07-08T12:41:25.491Z",
+    "message": "I0708 12:41:25.490850 140451862599424 estimator.py:1979] Saving dict for global step 1000: accuracy = 0.9787, global_step = 1000, loss = 0.0693267"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 140,
+    "timestamp": "2019-07-08T12:41:25.491Z",
+    "message": "I0708 12:41:25.491545 140451862599424 estimator.py:2039] Saving 'checkpoint_path' summary for global step 1000: /paperspace/models/mnist/model.ckpt-1000"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 141,
+    "timestamp": "2019-07-08T12:41:25.492Z",
+    "message": "I0708 12:41:25.492296 140451862599424 training.py:928] Calling exporter with the `is_the_final_export=True`."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 142,
+    "timestamp": "2019-07-08T12:41:25.492Z",
+    "message": "I0708 12:41:25.492531 140451862599424 util.py:168] Finalize strategy."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 143,
+    "timestamp": "2019-07-08T12:41:25.572Z",
+    "message": "I0708 12:41:25.571871 140451862599424 estimator.py:359] Loss for final step: 0.03955281."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 144,
+    "timestamp": "2019-07-08T12:41:25.572Z",
+    "message": "I0708 12:41:25.572580 140451862599424 mnist.py:240] Starting to Export model to /paperspace/models"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 145,
+    "timestamp": "2019-07-08T12:41:25.583Z",
+    "message": "I0708 12:41:25.583298 140451862599424 estimator.py:1111] Calling model_fn."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 146,
+    "timestamp": "2019-07-08T12:41:25.744Z",
+    "message": "I0708 12:41:25.744162 140451862599424 estimator.py:1113] Done calling model_fn."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 147,
+    "timestamp": "2019-07-08T12:41:25.744Z",
+    "message": "W0708 12:41:25.744491 140451862599424 deprecation.py:323] From /usr/local/lib/python3.5/dist-packages/tensorflow/python/saved_model/signature_def_utils_impl.py:205: build_tensor_info (from tensorflow.python.saved_model.utils_impl) is deprecated and will be removed in a future version."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 148,
+    "timestamp": "2019-07-08T12:41:25.744Z",
+    "message": "Instructions for updating:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 149,
+    "timestamp": "2019-07-08T12:41:25.744Z",
+    "message": "This function will only be available through the v1 compatibility library as tf.compat.v1.saved_model.utils.build_tensor_info or tf.compat.v1.saved_model.build_tensor_info."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 150,
+    "timestamp": "2019-07-08T12:41:25.745Z",
+    "message": "I0708 12:41:25.745018 140451862599424 export.py:587] Signatures INCLUDED in export for Regress: None"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 151,
+    "timestamp": "2019-07-08T12:41:25.745Z",
+    "message": "I0708 12:41:25.745139 140451862599424 export.py:587] Signatures INCLUDED in export for Train: None"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 152,
+    "timestamp": "2019-07-08T12:41:25.745Z",
+    "message": "I0708 12:41:25.745274 140451862599424 export.py:587] Signatures INCLUDED in export for Predict: ['serving_default', 'classify']"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 153,
+    "timestamp": "2019-07-08T12:41:25.745Z",
+    "message": "I0708 12:41:25.745424 140451862599424 export.py:587] Signatures INCLUDED in export for Classify: None"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 154,
+    "timestamp": "2019-07-08T12:41:25.745Z",
+    "message": "I0708 12:41:25.745549 140451862599424 export.py:587] Signatures INCLUDED in export for Eval: None"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 155,
+    "timestamp": "2019-07-08T12:41:25.746Z",
+    "message": "2019-07-08 12:41:25.746041: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1512] Adding visible gpu devices: 0"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 156,
+    "timestamp": "2019-07-08T12:41:25.746Z",
+    "message": "2019-07-08 12:41:25.746099: I tensorflow/core/common_runtime/gpu/gpu_device.cc:984] Device interconnect StreamExecutor with strength 1 edge matrix:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 157,
+    "timestamp": "2019-07-08T12:41:25.746Z",
+    "message": "2019-07-08 12:41:25.746110: I tensorflow/core/common_runtime/gpu/gpu_device.cc:990]      0 "
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 158,
+    "timestamp": "2019-07-08T12:41:25.746Z",
+    "message": "2019-07-08 12:41:25.746126: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1003] 0:   N "
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 159,
+    "timestamp": "2019-07-08T12:41:25.746Z",
+    "message": "2019-07-08 12:41:25.746278: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10787 MB memory) -\u003e physical GPU (device: 0, name: Tesla K80, pci bus id: 0000:00:04.0, compute capability: 3.7)"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 160,
+    "timestamp": "2019-07-08T12:41:25.779Z",
+    "message": "I0708 12:41:25.778900 140451862599424 saver.py:1270] Restoring parameters from /paperspace/models/mnist/model.ckpt-1000"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 161,
+    "timestamp": "2019-07-08T12:41:25.814Z",
+    "message": "I0708 12:41:25.814109 140451862599424 builder_impl.py:654] Assets added to graph."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 162,
+    "timestamp": "2019-07-08T12:41:25.814Z",
+    "message": "I0708 12:41:25.814344 140451862599424 builder_impl.py:449] No assets to write."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 163,
+    "timestamp": "2019-07-08T12:41:25.878Z",
+    "message": "I0708 12:41:25.877661 140451862599424 builder_impl.py:414] SavedModel written to: /paperspace/models/temp-b'1562589685'/saved_model.pb"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 164,
+    "timestamp": "2019-07-08T12:41:25.878Z",
+    "message": "I0708 12:41:25.878680 140451862599424 mnist.py:247] Model Exported"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 165,
+    "timestamp": "2019-07-08T12:41:25.879Z",
+    "message": "Gradient SDK not installed. Distributed training is not possible"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 166,
+    "timestamp": "2019-07-08T12:41:25.879Z",
+    "message": ""
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 167,
+    "timestamp": "2019-07-08T12:41:25.879Z",
+    "message": "WARNING: The TensorFlow contrib module will not be included in TensorFlow 2.0."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 168,
+    "timestamp": "2019-07-08T12:41:25.879Z",
+    "message": "For more information, please see:"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 169,
+    "timestamp": "2019-07-08T12:41:25.879Z",
+    "message": "  * https://github.com/tensorflow/community/blob/master/rfcs/20180907-contrib-sunset.md"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 170,
+    "timestamp": "2019-07-08T12:41:25.879Z",
+    "message": "  * https://github.com/tensorflow/addons"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 171,
+    "timestamp": "2019-07-08T12:41:25.879Z",
+    "message": "If you depend on functionality not listed there, please file an issue."
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 172,
+    "timestamp": "2019-07-08T12:41:25.879Z",
+    "message": ""
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 173,
+    "timestamp": "2019-07-08T12:41:25.879Z",
+    "message": "Downloading https://storage.googleapis.com/cvdf-datasets/mnist/train-images-idx3-ubyte.gz to /tmp/tmp5a21acuc.gz"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 174,
+    "timestamp": "2019-07-08T12:41:25.879Z",
+    "message": "Downloading https://storage.googleapis.com/cvdf-datasets/mnist/train-labels-idx1-ubyte.gz to /tmp/tmpl6cdsahk.gz"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 175,
+    "timestamp": "2019-07-08T12:41:25.879Z",
+    "message": "Downloading https://storage.googleapis.com/cvdf-datasets/mnist/t10k-images-idx3-ubyte.gz to /tmp/tmplh4ob02m.gz"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 176,
+    "timestamp": "2019-07-08T12:41:25.879Z",
+    "message": "Downloading https://storage.googleapis.com/cvdf-datasets/mnist/t10k-labels-idx1-ubyte.gz to /tmp/tmpbrss4txl.gz"
+  },
+  {
+    "jobId": "jsy2ibsz1l026y",
+    "line": 177,
+    "timestamp": "2019-07-08T12:41:36.525Z",
+    "message": "PSEOF"
+  }
+]

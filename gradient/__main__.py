@@ -1,4 +1,4 @@
-from gradient import main
+from gradient.main import main
 
 if __name__ == '__main__':
     main()

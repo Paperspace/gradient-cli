@@ -2,10 +2,11 @@ import functools
 
 import click
 
-from gradient import client, config
-from gradient.cli import common, cli_types
+from gradient import utils
+from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.common import ClickGroup
+from gradient.cli.experiments import common_experiments_create_options, get_workspace_handler
 from gradient.commands import hyperparameters as hyperparameters_commands
 
 
@@ -24,117 +25,89 @@ def hyperparameters_group():
 def common_hyperparameter_create_options(f):
     options = [
         click.option(
-            "--name",
-            "name",
-            required=True,
-            help="Job name",
-        ),
-        click.option(
-            "--projectId",
-            "projectHandle",
-            required=True,
-            help="Project ID",
-        ),
-        click.option(
             "--tuningCommand",
-            "tuningCommand",
+            "tuning_command",
             required=True,
             help="Tuning command",
         ),
         click.option(
             "--workerContainer",
-            "workerContainer",
+            "worker_container",
             required=True,
-            help="Worker Docker image",
+            help="Worker container",
+        ),
+        click.option(
+            "--workerContainerUser",
+            "worker_container_user",
+            required=False,
+            help="Worker container user",
         ),
         click.option(
             "--workerMachineType",
-            "workerMachineType",
+            "worker_machine_type",
             required=True,
             help="Worker machine type",
         ),
         click.option(
+            "--hyperparameterServerMachineType",
+            "hyperparameter_server_machine_type",
+            required=False,
+            help="Hyperparameter Server machine type",
+        ),
+        click.option(
             "--workerCommand",
-            "workerCommand",
+            "worker_command",
             required=True,
             help="Worker command",
         ),
         click.option(
             "--workerCount",
-            "workerCount",
+            "worker_count",
             required=True,
             type=int,
             help="Worker count",
         ),
         click.option(
-            "--isPreemptible",
-            "isPreemptible",
+            "--workerUseDockerfile",
+            "use_dockerfile",
             type=bool,
             is_flag=True,
-            help="Flag: isPreemptible",
+            default=False,
+            help="Flag: use dockerfile",
         ),
         click.option(
-            "--ports",
-            "ports",
-            help="Port to use in new job",
+            "--workerDockerfilePath",
+            "dockerfile_path",
+            help="Path to "
         ),
         click.option(
-            "--workspaceUrl",
-            "workspaceUrl",
-            help="Project git repository url",
+            "--workerRegistryUsername",
+            "worker_registry_username",
+            help="Worker registry username",
         ),
         click.option(
-            "--artifactDirectory",
-            "artifactDirectory",
-            help="Artifacts directory",
+            "--workerRegistryPassword",
+            "worker_registry_password",
+            help="Worker registry password",
         ),
         click.option(
-            "--clusterId",
-            "clusterId",
-            type=int,
-            help="Cluster ID",
-        ),
-        click.option(
-            "--experimentEnv",
-            "experimentEnv",
-            type=cli_types.json_string,
-            help="Environment variables in a JSON",
-        ),
-        click.option(
-            "--triggerEventId",
-            "triggerEventId",
-            type=int,
-            help="Trigger event ID",
-        ),
-        click.option(
-            "--modelType",
-            "modelType",
-            help="Model type",
-        ),
-        click.option(
-            "--modelPath",
-            "modelPath",
-            help="Model path",
-        ),
-        click.option(
-            "--dockerfilePath",
-            "dockerfilePath",
-            callback=add_use_docker_file_flag_if_used,
-            help="Path to Dockerfile",
-        ),
-        click.option(
-            "--serverRegistryUsername",
-            "hyperparameterServerRegistryUsername",
+            "--hyperparameterServerRegistryUsername",
+            "hyperparameter_server_registry_username",
             help="Hyperparameter server registry username",
         ),
         click.option(
-            "--serverRegistryPassword",
-            "hyperparameterServerRegistryPassword",
+            "--hyperparameterServerRegistryPassword",
+            "hyperparameter_server_registry_password",
             help="Hyperparameter server registry password",
         ),
         click.option(
-            "--serverContainerUser",
-            "hyperparameterServerContainerUser",
+            "--hyperparameterServerContainer",
+            "hyperparameter_server_container",
+            help="Hyperparameter server container",
+        ),
+        click.option(
+            "--hyperparameterServerContainerUser",
+            "hyperparameter_server_container_user",
             help="Hyperparameter server container user",
         ),
     ]
@@ -142,45 +115,40 @@ def common_hyperparameter_create_options(f):
 
 
 @hyperparameters_group.command("create", help="Create hyperparameter")
+@common_experiments_create_options
 @common_hyperparameter_create_options
 @common.api_key_option
 def create_hyperparameter(api_key, **hyperparameter):
-    common.del_if_value_is_none(hyperparameter)
-    hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = hyperparameters_commands.CreateHyperparameterCommand(api=hyperparameters_api)
+    utils.validate_workspace_input(hyperparameter)
+    common.del_if_value_is_none(hyperparameter, del_all_falsy=True)
+
+    command = hyperparameters_commands.CreateHyperparameterCommand(
+        api_key=api_key,
+        workspace_handler=get_workspace_handler(api_key),
+    )
     command.execute(hyperparameter)
 
 
 @hyperparameters_group.command("run", help="Create and start hyperparameter tuning job")
+@common_experiments_create_options
 @common_hyperparameter_create_options
 @common.api_key_option
 def create_and_start_hyperparameter(api_key, **hyperparameter):
-    common.del_if_value_is_none(hyperparameter)
-    hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = hyperparameters_commands.CreateAndStartHyperparameterCommand(api=hyperparameters_api)
+    utils.validate_workspace_input(hyperparameter)
+    common.del_if_value_is_none(hyperparameter, del_all_falsy=True)
+
+    command = hyperparameters_commands.CreateAndStartHyperparameterCommand(
+        api_key=api_key,
+        workspace_handler=get_workspace_handler(api_key),
+    )
     command.execute(hyperparameter)
 
 
 @hyperparameters_group.command("list", help="List hyperparameters")
 @common.api_key_option
 def list_hyperparameters(api_key):
-    hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = hyperparameters_commands.ListHyperparametersCommand(api=hyperparameters_api)
+    command = hyperparameters_commands.ListHyperparametersCommand(api_key=api_key)
     command.execute()
-
-
-# TODO: 'unhidden' command and test it when api is updated to support deleting hyperparameters
-@hyperparameters_group.command("delete", help="Delete hyperparameter", hidden=True)
-@click.option(
-    "--id",
-    "id_",
-    required=True,
-)
-@common.api_key_option
-def delete_hyperparameter(api_key, id_):
-    hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = hyperparameters_commands.DeleteHyperparameterCommand(api=hyperparameters_api)
-    command.execute(id_)
 
 
 @hyperparameters_group.command("details", help="Show details of hyperparameter")
@@ -191,8 +159,7 @@ def delete_hyperparameter(api_key, id_):
 )
 @common.api_key_option
 def get_hyperparameter_details(api_key, id_):
-    hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = hyperparameters_commands.HyperparameterDetailsCommand(api=hyperparameters_api)
+    command = hyperparameters_commands.HyperparameterDetailsCommand(api_key=api_key)
     command.execute(id_)
 
 
@@ -204,6 +171,5 @@ def get_hyperparameter_details(api_key, id_):
 )
 @common.api_key_option
 def start_hyperparameter_tuning(api_key, id_):
-    hyperparameters_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = hyperparameters_commands.HyperparameterStartCommand(api=hyperparameters_api)
+    command = hyperparameters_commands.HyperparameterStartCommand(api_key=api_key)
     command.execute(id_)

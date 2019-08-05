@@ -6,10 +6,10 @@ import progressbar
 import requests
 from requests_toolbelt.multipart import encoder
 
-from gradient import logger, utils
-from gradient.exceptions import S3UploadFailedError, PresignedUrlUnreachableError, \
-    PresignedUrlAccessDeniedError, PresignedUrlConnectionError, ProjectAccessDeniedError, \
-    PresignedUrlMalformedResponseError, PresignedUrlError
+from gradient import utils
+from gradient.logger import Logger
+from gradient.exceptions import S3UploadFailedError, ProjectAccessDeniedError, PresignedUrlAccessDeniedError, \
+    PresignedUrlUnreachableError, PresignedUrlConnectionError, PresignedUrlMalformedResponseError, PresignedUrlError
 
 
 class MultipartEncoder(object):
@@ -20,6 +20,12 @@ class MultipartEncoder(object):
     def get_monitor(self):
         return self.monitor
 
+    @staticmethod
+    def _create_callback(encoder_obj):
+        pass
+
+
+class MultipartEncoderWithProgressbar(MultipartEncoder):
     @staticmethod
     def _create_callback(encoder_obj):
         bar = progressbar.ProgressBar(max_value=encoder_obj.len)
@@ -39,7 +45,7 @@ class WorkspaceHandler(object):
 
         :param logger_: gradient.logger
         """
-        self.logger = logger_ or logger.Logger()
+        self.logger = logger_ or Logger()
         self.archive_path = None
         self.archive_basename = None
 
@@ -84,18 +90,22 @@ class WorkspaceHandler(object):
         self.logger.log('Creating zip archive: %s' % zip_file_name)
         zip_file = zipfile.ZipFile(zip_file_path, 'w')
 
-        bar = progressbar.ProgressBar(max_value=len(file_paths))
+        self._zip_files(zip_file, file_paths)
 
+        self.logger.log('\nFinished creating archive: %s' % zip_file_name)
+        return zip_file_path
+
+    def _zip_files(self, zip_file, file_paths):
         with zip_file:
             i = 0
             for relpath, abspath in file_paths.items():
                 i += 1
                 self.logger.debug('Adding %s to archive' % relpath)
                 zip_file.write(abspath, arcname=relpath)
-                bar.update(i)
-        bar.finish()
-        self.logger.log('\nFinished creating archive: %s' % zip_file_name)
-        return zip_file_path
+                self._zip_files_iterate_callback(i)
+
+    def _zip_files_iterate_callback(self, i):
+        pass
 
     def handle(self, input_data):
         workspace_archive, workspace_path, workspace_url = self._validate_input(input_data)
@@ -121,36 +131,38 @@ class WorkspaceHandler(object):
     def _validate_input(input_data):
         utils.validate_workspace_input(input_data)
 
-        workspace_url = input_data.get('workspaceUrl')
+        workspace_url = input_data.get('workspaceUrl') or input_data.get("workspace_url")
         workspace_path = input_data.get('workspace')
-        workspace_archive = input_data.get('workspaceArchive')
+        workspace_archive = input_data.get('workspaceArchive') or input_data.get("workspace_archive")
 
         if workspace_path not in ("none", None):
             path_type = utils.PathParser().parse_path(workspace_path)
 
-            if path_type == utils.PathParser.LOCAL_DIR:
-                input_data["workspace"] = workspace_path
-            else:
+            if path_type != utils.PathParser.LOCAL_DIR:
                 if path_type == utils.PathParser.LOCAL_FILE:
-                    input_data["workspaceArchive"] = workspace_archive = workspace_path
+                    workspace_archive = workspace_path
                 elif path_type in (utils.PathParser.GIT_URL, utils.PathParser.S3_URL):
-                    input_data["workspaceUrl"] = workspace_url = workspace_path
+                    workspace_url = workspace_path
 
                 workspace_path = None
-                input_data.pop("workspace", None)
 
         return workspace_archive, workspace_path, workspace_url
 
 
 class S3WorkspaceHandler(WorkspaceHandler):
-    def __init__(self, experiments_api, logger_=None):
+    DEFAULT_MULTIPART_ENCODER_CLS = MultipartEncoder
+
+    def __init__(self, experiments_api, logger_=None,
+                 multipart_encoder_cls=DEFAULT_MULTIPART_ENCODER_CLS):
         """
 
-        :param experiments_api: gradient.client.API
-        :param logger_: gradient.logger
+        :param gradient.api_sdk.clients.http_client.API experiments_api:
+        :param logger.Logger logger_:
+        :param type[MultipartEncoder] multipart_encoder_cls:
         """
         super(S3WorkspaceHandler, self).__init__(logger_=logger_)
         self.experiments_api = experiments_api
+        self.multipart_encoder_cls = multipart_encoder_cls
 
     def handle(self, input_data):
         workspace = super(S3WorkspaceHandler, self).handle(input_data)
@@ -158,7 +170,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
             return workspace
         archive_path = workspace
         file_name = os.path.basename(archive_path)
-        project_handle = input_data['projectHandle']
+        project_handle = input_data.get('projectHandle') or input_data["project_id"]
 
         s3_upload_data = self._get_upload_data(file_name, project_handle)
 
@@ -178,7 +190,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
         fields = OrderedDict(s3_upload_data['fields'])
         fields.update(files)
 
-        monitor = MultipartEncoder(fields).get_monitor()
+        monitor = self.multipart_encoder_cls(fields).get_monitor()
         s3_response = requests.post(s3_upload_data['url'], data=monitor, headers={'Content-Type': monitor.content_type})
         self.logger.debug("S3 upload response: {}".format(s3_response.headers))
         if not s3_response.ok:
@@ -209,3 +221,15 @@ class S3WorkspaceHandler(WorkspaceHandler):
         if response_message != 'success':
             raise PresignedUrlError(response)
         return response_data
+
+
+class S3WorkspaceHandlerWithProgressbar(S3WorkspaceHandler):
+    DEFAULT_MULTIPART_ENCODER_CLS = MultipartEncoderWithProgressbar
+
+    def _zip_files(self, zip_file, file_paths):
+        self.bar = progressbar.ProgressBar(max_value=len(file_paths))
+        super(S3WorkspaceHandlerWithProgressbar, self)._zip_files(zip_file, file_paths)
+        self.bar.finish()
+
+    def _zip_files_iterate_callback(self, i):
+        self.bar.update(i)

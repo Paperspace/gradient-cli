@@ -3,11 +3,14 @@ import functools
 
 import click
 
-from gradient import client, config, constants, utils
+from gradient import constants, utils, logger, workspace
+from gradient.api_sdk.clients import http_client
+from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
-from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, deprecated
+from gradient.cli.common import api_key_option, ClickGroup, deprecated
 from gradient.commands import experiments as experiments_commands
+from gradient.config import config
 
 MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
     (
@@ -15,6 +18,13 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
         ("MPI", constants.ExperimentType.MPI_MULTI_NODE),
     )
 )
+
+
+def get_workspace_handler(api_key):
+    client = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
+    logger_ = logger.Logger()
+    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(experiments_api=client, logger_=logger_)
+    return workspace_handler
 
 
 @cli.group("experiments", help="Manage experiments", cls=ClickGroup)
@@ -50,12 +60,12 @@ def common_experiments_create_options(f):
         ),
         click.option(
             "--workspaceArchive",
-            "workspaceArchive",
+            "workspace_archive",
             help="Path to workspace .zip archive",
         ),
         click.option(
             "--workspaceUrl",
-            "workspaceUrl",
+            "workspace_url",
             help="Project git repository url",
         ),
         click.option(
@@ -65,40 +75,47 @@ def common_experiments_create_options(f):
         ),
         click.option(
             "--workingDirectory",
-            "workingDirectory",
+            "working_directory",
             help="Working directory for the experiment",
         ),
         click.option(
             "--artifactDirectory",
-            "artifactDirectory",
+            "artifact_directory",
             help="Artifacts directory",
         ),
         click.option(
             "--clusterId",
-            "clusterId",
+            "cluster_id",
             help="Cluster ID",
         ),
         click.option(
             "--experimentEnv",
-            "experimentEnv",
+            "experiment_env",
             type=json_string,
             help="Environment variables in a JSON",
         ),
         click.option(
             "--projectId",
-            "projectHandle",
+            "project_id",
             required=True,
             help="Project ID",
         ),
         click.option(
             "--modelType",
-            "modelType",
+            "model_type",
             help="Model type",
         ),
         click.option(
             "--modelPath",
-            "modelPath",
+            "model_path",
             help="Model path",
+        ),
+        click.option(
+            "--isPreemptible",
+            "is_preemptible",
+            type=bool,
+            is_flag=True,
+            help="Flag: is preemptible",
         ),
         api_key_option
     ]
@@ -109,90 +126,100 @@ def common_experiment_create_multi_node_options(f):
     options = [
         click.option(
             "--experimentType",
-            "experimentTypeId",
+            "experiment_type_id",
             type=ChoiceType(MULTI_NODE_EXPERIMENT_TYPES_MAP, case_sensitive=False),
             required=True,
             help="Experiment Type",
         ),
         click.option(
             "--workerContainer",
-            "workerContainer",
+            "worker_container",
             required=True,
             help="Worker container",
         ),
         click.option(
             "--workerMachineType",
-            "workerMachineType",
+            "worker_machine_type",
             required=True,
             help="Worker machine type",
         ),
         click.option(
             "--workerCommand",
-            "workerCommand",
+            "worker_command",
             required=True,
             help="Worker command",
         ),
         click.option(
             "--workerCount",
-            "workerCount",
+            "worker_count",
             type=int,
             required=True,
             help="Worker count",
         ),
         click.option(
             "--parameterServerContainer",
-            "parameterServerContainer",
+            "parameter_server_container",
             required=True,
             help="Parameter server container",
         ),
         click.option(
             "--parameterServerMachineType",
-            "parameterServerMachineType",
+            "parameter_server_machine_type",
             required=True,
             help="Parameter server machine type",
         ),
         click.option(
             "--parameterServerCommand",
-            "parameterServerCommand",
+            "parameter_server_command",
             required=True,
             help="Parameter server command",
         ),
         click.option(
             "--parameterServerCount",
-            "parameterServerCount",
+            "parameter_server_count",
             type=int,
             required=True,
             help="Parameter server count",
         ),
         click.option(
             "--workerContainerUser",
-            "workerContainerUser",
+            "worker_container_user",
             help="Worker container user",
         ),
         click.option(
             "--workerRegistryUsername",
-            "workerRegistryUsername",
+            "worker_registry_username",
             help="Worker container registry username",
         ),
         click.option(
             "--workerRegistryPassword",
-            "workerRegistryPassword",
+            "worker_registry_password",
             help="Worker registry password",
         ),
         click.option(
+            "--workerRegistryUrl",
+            "worker_registry_url",
+            help="Worker registry URL",
+        ),
+        click.option(
             "--parameterServerContainerUser",
-            "parameterServerContainerUser",
+            "parameter_server_container_user",
             help="Parameter server container user",
         ),
         click.option(
-            "--parameterServerRegistryContainerUser",
-            "parameterServerRegistryContainerUser",
-            help="Parameter server registry container user",
+            "--parameterServerRegistryUsername",
+            "parameter_server_registry_username",
+            help="Parameter server registry username",
         ),
         click.option(
             "--parameterServerRegistryPassword",
-            "parameterServerRegistryPassword",
+            "parameter_server_registry_password",
             help="Parameter server registry password",
+        ),
+        click.option(
+            "--parameterServerRegistryUrl",
+            "parameter_server_registry_url",
+            help="Parameter server registry URL",
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
@@ -207,7 +234,7 @@ def common_experiments_create_single_node_options(f):
         ),
         click.option(
             "--machineType",
-            "machineType",
+            "machine_type",
             required=True,
             help="Machine type",
         ),
@@ -218,18 +245,23 @@ def common_experiments_create_single_node_options(f):
         ),
         click.option(
             "--containerUser",
-            "containerUser",
+            "container_user",
             help="Container user",
         ),
         click.option(
             "--registryUsername",
-            "registryUsername",
+            "registry_username",
             help="Registry username",
         ),
         click.option(
             "--registryPassword",
-            "registryPassword",
+            "registry_password",
             help="Registry password",
+        ),
+        click.option(
+            "--registryUrl",
+            "registry_url",
+            help="Registry URL",
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
@@ -242,9 +274,12 @@ def common_experiments_create_single_node_options(f):
 @common_experiment_create_multi_node_options
 def create_multi_node(api_key, **kwargs):
     utils.validate_workspace_input(kwargs)
-    del_if_value_is_none(kwargs)
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = experiments_commands.CreateExperimentCommand(api=experiments_api)
+    common.del_if_value_is_none(kwargs, del_all_falsy=True)
+
+    command = experiments_commands.CreateMultiNodeExperimentCommand(
+        api_key=api_key,
+        workspace_handler=get_workspace_handler(api_key),
+    )
     command.execute(kwargs)
 
 
@@ -255,10 +290,12 @@ def create_multi_node(api_key, **kwargs):
 @common_experiments_create_single_node_options
 def create_single_node(api_key, **kwargs):
     utils.validate_workspace_input(kwargs)
-    kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
-    del_if_value_is_none(kwargs)
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = experiments_commands.CreateExperimentCommand(api=experiments_api)
+    common.del_if_value_is_none(kwargs, del_all_falsy=True)
+
+    command = experiments_commands.CreateSingleNodeExperimentCommand(
+        api_key=api_key,
+        workspace_handler=get_workspace_handler(api_key),
+    )
     command.execute(kwargs)
 
 
@@ -278,9 +315,12 @@ def create_single_node(api_key, **kwargs):
 @click.pass_context
 def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
     utils.validate_workspace_input(kwargs)
-    del_if_value_is_none(kwargs)
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = experiments_commands.CreateAndStartExperimentCommand(api=experiments_api)
+    common.del_if_value_is_none(kwargs, del_all_falsy=True)
+
+    command = experiments_commands.CreateAndStartMultiNodeExperimentCommand(
+        api_key=api_key,
+        workspace_handler=get_workspace_handler(api_key),
+    )
     experiment = command.execute(kwargs)
     if experiment and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
@@ -302,10 +342,12 @@ def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
 @click.pass_context
 def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
     utils.validate_workspace_input(kwargs)
-    kwargs["experimentTypeId"] = constants.ExperimentType.SINGLE_NODE
-    del_if_value_is_none(kwargs)
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = experiments_commands.CreateAndStartExperimentCommand(api=experiments_api)
+    common.del_if_value_is_none(kwargs, del_all_falsy=True)
+
+    command = experiments_commands.CreateAndStartSingleNodeExperimentCommand(
+        api_key=api_key,
+        workspace_handler=get_workspace_handler(api_key),
+    )
     experiment = command.execute(kwargs)
     if experiment and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
@@ -322,8 +364,9 @@ def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
 )
 @click.pass_context
 def start_experiment(ctx, experiment_id, show_logs, api_key):
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    experiments_commands.start_experiment(experiment_id, api=experiments_api)
+    command = experiments_commands.StartExperimentCommand(api_key=api_key)
+    command.execute(experiment_id)
+
     if show_logs:
         ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
@@ -332,25 +375,24 @@ def start_experiment(ctx, experiment_id, show_logs, api_key):
 @click.argument("experiment-id")
 @api_key_option
 def stop_experiment(experiment_id, api_key):
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    experiments_commands.stop_experiment(experiment_id, api=experiments_api)
+    command = experiments_commands.StopExperimentCommand(api_key=api_key)
+    command.execute(experiment_id)
 
 
 @experiments.command("list", help="List experiments")
 @click.option("--projectId", "-p", "project_ids", multiple=True)
 @api_key_option
 def list_experiments(project_ids, api_key):
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    command = experiments_commands.ListExperimentsCommand(api=experiments_api)
-    command.execute(project_ids=project_ids)
+    command = experiments_commands.ListExperimentsCommand(api_key=api_key)
+    command.execute(project_id=project_ids)
 
 
 @experiments.command("details", help="Show detail of an experiment")
 @click.argument("experiment-id")
 @api_key_option
 def get_experiment_details(experiment_id, api_key):
-    experiments_api = client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-    experiments_commands.get_experiment_details(experiment_id, api=experiments_api)
+    command = experiments_commands.GetExperimentCommand(api_key=api_key)
+    command.execute(experiment_id)
 
 
 @experiments.command("logs", help="List experiment logs")
@@ -379,6 +421,5 @@ def get_experiment_details(experiment_id, api_key):
 )
 @api_key_option
 def list_logs(experiment_id, line, limit, follow, api_key=None):
-    logs_api = client.API(config.CONFIG_LOG_HOST, api_key=api_key)
-    command = experiments_commands.ExperimentLogsCommand(api=logs_api)
+    command = experiments_commands.ExperimentLogsCommand(api_key=api_key)
     command.execute(experiment_id, line, limit, follow)

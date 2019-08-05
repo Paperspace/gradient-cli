@@ -2,12 +2,14 @@ import collections
 
 import click
 
-from gradient import constants, client, config
+from gradient import constants
+from gradient.api_sdk.clients import http_client
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
 from gradient.cli.validators import validate_email, validate_mutually_exclusive
 from gradient.commands import machines as machines_commands
+from gradient.config import config
 
 REGIONS_MAP = collections.OrderedDict(
     (
@@ -45,7 +47,7 @@ check_machine_availability_help = "Get machine availability for the given region
 )
 @api_key_option
 def check_machine_availability(region, machine_type, api_key):
-    machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.CheckAvailabilityCommand(api=machines_api)
     command.execute(region, machine_type)
 
@@ -178,7 +180,7 @@ def create_machine(api_key, **kwargs):
     validate_mutually_exclusive([team_id], [email, password, first_name, last_name],
                                 "--userId is mutually exclusive with --email, --password, --firstName and --lastName")
 
-    machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.CreateMachineCommand(api=machines_api)
     command.execute(kwargs)
 
@@ -206,7 +208,7 @@ destroy_machine_help = "Destroy the machine with the given id. When this action 
 )
 @api_key_option
 def destroy_machine(machine_id, release_public_ip, api_key):
-    machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.DestroyMachineCommand(api=machines_api)
     command.execute(machine_id, release_public_ip)
 
@@ -358,7 +360,7 @@ def list_machines(api_key, params, **kwargs):
     validate_mutually_exclusive(params.values(), kwargs.values(),
                                 "You can use either --params dictionary or single filter arguments")
 
-    machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.ListMachinesCommand(api=machines_api)
     filters = params or kwargs
     command.execute(filters=filters)
@@ -378,7 +380,7 @@ restart_machine_help = "Restart an individual machine. If the machine is already
 )
 @api_key_option
 def restart_machine(machine_id, api_key):
-    machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.RestartMachineCommand(api=machines_api)
     command.execute(machine_id)
 
@@ -395,7 +397,7 @@ show_machine_details_help = "Show machine information for the machine with the g
 )
 @api_key_option
 def show_machine_details(machine_id, api_key):
-    machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.ShowMachineCommand(api=machines_api)
     command.execute(machine_id)
 
@@ -454,7 +456,7 @@ update_machine_help = "Update attributes of a machine"
 @api_key_option
 def update_machine(machine_id, api_key, **kwargs):
     del_if_value_is_none(kwargs)
-    machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.UpdateMachineCommand(api=machines_api)
     command.execute(machine_id, kwargs)
 
@@ -473,7 +475,7 @@ start_machine_help = "Start up an individual machine. If the machine is already 
 )
 @api_key_option
 def start_machine(machine_id, api_key):
-    machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.StartMachineCommand(api=machines_api)
     command.execute(machine_id)
 
@@ -492,7 +494,7 @@ stop_machine_help = "Stop an individual machine. If the machine is already stopp
 )
 @api_key_option
 def stop_machine(machine_id, api_key):
-    machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.StopMachineCommand(api=machines_api)
     command.execute(machine_id)
 
@@ -516,7 +518,7 @@ show_machine_utilization_help = "Get machine utilization data for the machine wi
 )
 @api_key_option
 def show_machine_utilization(machine_id, billing_month, api_key):
-    machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.ShowMachineUtilisationCommand(api=machines_api)
     command.execute(machine_id, billing_month)
 
@@ -542,6 +544,6 @@ wait_for_machine_state_help = "Wait for the machine with the given id to enter a
 )
 @api_key_option
 def wait_for_machine_state(machine_id, state, api_key):
-    machines_api = client.API(config.CONFIG_HOST, api_key=api_key)
+    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = machines_commands.WaitForMachineStateCommand(api=machines_api)
     command.execute(machine_id, state)

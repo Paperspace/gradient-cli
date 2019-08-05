@@ -1,7 +1,7 @@
 import mock
 from click.testing import CliRunner
 
-import gradient.client
+from gradient.api_sdk.clients import http_client
 from gradient.cli import cli
 from gradient.commands import deployments as deployments_commands
 from tests import example_responses, MockResponse
@@ -11,7 +11,7 @@ EXPECTED_HEADERS = deployments_commands.default_headers
 
 class TestDeploymentsCreate(object):
     URL = "https://api.paperspace.io/deployments/createDeployment/"
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     BASIC_OPTIONS_COMMAND = [
         "deployments", "create",
@@ -45,41 +45,42 @@ class TestDeploymentsCreate(object):
 
     RESPONSE_JSON_404_MODEL_NOT_FOUND = {"error": {"name": "Error", "status": 404, "message": "Unable to find model"}}
     RESPONSE_CONTENT_404_MODEL_NOT_FOUND = b'{"error":{"name":"Error","status":404,"message":"Unable to find model"}}\n'
-    EXPECTED_STDOUT_MODEL_NOT_FOUND = "Unable to find model\n"
+    EXPECTED_STDOUT_MODEL_NOT_FOUND = "Failed to create resource: Unable to find model\n"
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.post")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_deployment_with_basic_options(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT
+
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.post")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
     def test_should_send_different_api_key_when_api_key_parameter_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_API_KEY)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.post")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_wrong_model_id_was_given(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_404_MODEL_NOT_FOUND, 404,
                                                  self.RESPONSE_CONTENT_404_MODEL_NOT_FOUND)
@@ -104,7 +105,7 @@ class TestDeploymentsList(object):
     LIST_JSON = example_responses.LIST_DEPLOYMENTS
 
     COMMAND_WITH_API_KEY = ["deployments", "list", "--apiKey", "some_key"]
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     COMMAND_WITH_FILTER_WITH_STATE = ["deployments", "list", "--state", "Stopped"]
@@ -122,7 +123,7 @@ class TestDeploymentsList(object):
 +-----------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+
 """
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -135,7 +136,7 @@ class TestDeploymentsList(object):
                                             params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     def test_should_send_get_request_with_custom_api_key_when_api_key_parameter_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -148,8 +149,8 @@ class TestDeploymentsList(object):
                                             params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.common.pydoc")
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.pydoc")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
                                                                                                      pydoc_patched):
         list_json = {"deploymentList": self.LIST_JSON["deploymentList"] * 40}
@@ -165,7 +166,7 @@ class TestDeploymentsList(object):
         pydoc_patched.pager.assert_called_once()
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments_filtered_by_state(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -178,7 +179,7 @@ class TestDeploymentsList(object):
                                        params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments_filtered_with_state_but_none_found(
             self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND, 200,
@@ -193,7 +194,7 @@ class TestDeploymentsList(object):
                                             params=None)
         assert result.output == "No data found\n"
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"},
                                                 400)
@@ -205,7 +206,7 @@ class TestDeploymentsList(object):
                                             headers=EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
-        assert result.output == "Invalid API token\n"
+        assert result.output == "Failed to fetch data: Invalid API token\n", result.exc_info
 
 
 class TestStartDeployment(object):
@@ -215,20 +216,20 @@ class TestStartDeployment(object):
     REQUEST_JSON = {"isRunning": True, "id": u"some_id"}
     EXPECTED_STDOUT = "Deployment started\n"
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.post")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_start_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=204)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
 
@@ -244,13 +245,13 @@ class TestStopDeployment(object):
         "--id", "some_id",
         "--apiKey", "some_key",
     ]
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_400 = {"error": {"name": "Error", "status": 400, "message": "Unable to access deployment"}}
     EXPECTED_STDOUT_WITH_WRONG_ID = "Unable to access deployment\n"
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.post")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_stop_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=204)
 
@@ -266,7 +267,7 @@ class TestStopDeployment(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.post")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
     def test_should_send_proper_data_with_custom_api_key_when_api_key_parameter_was_provided(self, post_patched):
         post_patched.return_value = MockResponse(status_code=204)
 
@@ -282,18 +283,18 @@ class TestStopDeployment(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_stop_used_with_wrong_id(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_400, 400, "fake content")
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
+        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_ID, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_ID
         assert result.exit_code == 0
