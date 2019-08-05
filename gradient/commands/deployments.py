@@ -13,7 +13,7 @@ from gradient.utils import get_terminal_lines
 
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
-                   "ps_client_name": "paperspace-python",
+                   "ps_client_name": "gradient-cli",
                    "ps_client_version": version.version}
 deployments_api = http_client.API(config.CONFIG_HOST, headers=default_headers)
 

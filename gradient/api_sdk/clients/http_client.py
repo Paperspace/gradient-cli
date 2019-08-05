@@ -5,7 +5,7 @@ from gradient.config import config
 from .. import logger as sdk_logger
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
-                   "ps_client_name": "paperspace-python",
+                   "ps_client_name": "gradient-cli",
                    "ps_client_version": version.version}
 
 

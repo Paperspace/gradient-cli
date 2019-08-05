@@ -3,6 +3,7 @@ PIP=pip3
 
 clean-tests:
 	rm -rf .tox paperspace.egg-info
+	rm -rf tests/.coverage
 
 run-tests: clean-tests
 	tox
