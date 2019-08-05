@@ -37,6 +37,7 @@ class TestExperimentsCreateSingleNode(object):
         "--containerUser", "conUser",
         "--registryUsername", "userName",
         "--registryPassword", "passwd",
+        "--registryUrl", "registryUrl",
         "--apiKey", "some_key",
     ]
     BASIC_OPTIONS_REQUEST = {
@@ -63,6 +64,7 @@ class TestExperimentsCreateSingleNode(object):
         "containerUser": u"conUser",
         "registryUsername": u"userName",
         "registryPassword": u"passwd",
+        "registryUrl": u"registryUrl",
         "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
     }
     RESPONSE_JSON_200 = {"handle": "sadkfhlskdjh", "message": "success"}
@@ -170,9 +172,11 @@ class TestExperimentsCreateMultiNode(object):
         "--workerContainerUser", "usr",
         "--workerRegistryUsername", "rusr",
         "--workerRegistryPassword", "rpass",
+        "--workerRegistryUrl", "rurl",
         "--parameterServerContainerUser", "pscuser",
-        "--parameterServerRegistryContainerUser", "psrcus",
+        "--parameterServerRegistryUsername", "psrcus",
         "--parameterServerRegistryPassword", "psrpass",
+        "--parameterServerRegistryUrl", "psrurl",
         "--apiKey", "some_key",
     ]
     BASIC_OPTIONS_REQUEST = {
@@ -211,9 +215,11 @@ class TestExperimentsCreateMultiNode(object):
         "workerContainerUser": u"usr",
         "workerRegistryUsername": u"rusr",
         "workerRegistryPassword": u"rpass",
+        "workerRegistryUrl": u"rurl",
         "parameterServerContainerUser": u"pscuser",
-        "parameterServerRegistryContainerUser": u"psrcus",
+        "parameterServerRegistryUsername": u"psrcus",
         "parameterServerRegistryPassword": u"psrpass",
+        "parameterServerRegistryUrl": u"psrurl",
     }
     RESPONSE_JSON_200 = {"handle": "sadkfhlskdjh", "message": "success"}
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
@@ -283,6 +289,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--containerUser", "conUser",
         "--registryUsername", "userName",
         "--registryPassword", "passwd",
+        "--registryUrl", "registryUrl",
         "--apiKey", "some_key",
         "--no-logs",
     ]
@@ -331,9 +338,11 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--workerContainerUser", "usr",
         "--workerRegistryUsername", "rusr",
         "--workerRegistryPassword", "rpass",
+        "--workerRegistryUrl", "rurl",
         "--parameterServerContainerUser", "pscuser",
-        "--parameterServerRegistryContainerUser", "psrcus",
+        "--parameterServerRegistryUsername", "psrcus",
         "--parameterServerRegistryPassword", "psrpass",
+        "--parameterServerRegistryUrl", "psrurl",
         "--apiKey", "some_key",
         "--no-logs",
     ]
@@ -389,6 +398,7 @@ class TestExperimentDetail(object):
                     "parameter_server_machine_type": "psmtype",
                     "parameter_server_registry_password": "psrpass",
                     "parameter_server_registry_username": "psrcus",
+                    "parameter_server_registry_url": "psrurl",
                     "ports": 3456,
                     "project_handle": "prq70zy79",
                     "project_id": 34,
@@ -400,6 +410,7 @@ class TestExperimentDetail(object):
                     "worker_machine_type": "mty",
                     "worker_registry_password": "rpass",
                     "worker_registry_username": "rusr",
+                    "worker_registry_url": "rurl",
                     "workingDirectory": "/dir",
                     "workspaceUrl": "wurl"
                 },

@@ -32,6 +32,7 @@ class ExperimentsClient(BaseClient):
             container_user=None,
             registry_username=None,
             registry_password=None,
+            registry_url=None,
     ):
         """
         Create single node experiment
@@ -72,6 +73,7 @@ class ExperimentsClient(BaseClient):
         :param str container_user: Container user for running the specified command in the container. If no containerUser is specified, the user will default to 'root' in the container.
         :param str registry_username: Registry username for accessing private docker registry container if nessesary
         :param str registry_password: Registry password for accessing private docker registry container if nessesary
+        :param str registry_url: Registry server URL for accessing private docker registry container if nessesary
 
         :returns: experiment handle
         :rtype: str
@@ -95,6 +97,7 @@ class ExperimentsClient(BaseClient):
             container_user=container_user,
             registry_username=registry_username,
             registry_password=registry_password,
+            registry_url=registry_url,
         )
 
         handle = repositories.CreateSingleNodeExperiment(self.client).create(experiment)
@@ -124,9 +127,11 @@ class ExperimentsClient(BaseClient):
             worker_container_user=None,
             worker_registry_username=None,
             worker_registry_password=None,
+            worker_registry_url=None,
             parameter_server_container_user=None,
-            parameter_server_registry_container_user=None,
+            parameter_server_registry_username=None,
             parameter_server_registry_password=None,
+            parameter_server_registry_url=None,
     ):
         """
         Create multinode experiment
@@ -176,9 +181,11 @@ class ExperimentsClient(BaseClient):
         :param str worker_container_user: Worker container user
         :param str worker_registry_username: Registry username for accessing private docker registry container if nessesary
         :param str worker_registry_password: Registry password for accessing private docker registry container if nessesary
+        :param str worker_registry_url: Registry server URL for accessing private docker registry container if nessesary
         :param str parameter_server_container_user: Parameter server container user
-        :param str parameter_server_registry_container_user: Registry username for accessing private docker registry container if nessesary
+        :param str parameter_server_registry_username: Registry username for accessing private docker registry container if nessesary
         :param str parameter_server_registry_password: Registry password for accessing private docker registry container if nessesary
+        :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if nessesary
 
         :returns: experiment handle
         :rtype: str
@@ -206,9 +213,11 @@ class ExperimentsClient(BaseClient):
             worker_container_user=worker_container_user,
             worker_registry_username=worker_registry_username,
             worker_registry_password=worker_registry_password,
+            worker_registry_url=worker_registry_url,
             parameter_server_container_user=parameter_server_container_user,
-            parameter_server_registry_container_user=parameter_server_registry_container_user,
+            parameter_server_registry_username=parameter_server_registry_username,
             parameter_server_registry_password=parameter_server_registry_password,
+            parameter_server_registry_url=parameter_server_registry_url,
         )
 
         handle = repositories.CreateMultiNodeExperiment(self.client).create(experiment)
@@ -232,6 +241,7 @@ class ExperimentsClient(BaseClient):
             container_user=None,
             registry_username=None,
             registry_password=None,
+            registry_url=None,
     ):
         """Create and start single node experiment
 
@@ -269,6 +279,7 @@ class ExperimentsClient(BaseClient):
         :param str container_user: Container user for running the specified command in the container. If no containerUser is specified, the user will default to 'root' in the container.
         :param str registry_username: Registry username for accessing private docker registry container if nessesary
         :param str registry_password: Registry password for accessing private docker registry container if nessesary
+        :param str registry_url: Registry server URL for accessing private docker registry container if nessesary
 
         :returns: experiment handle
         :rtype: str
@@ -292,6 +303,7 @@ class ExperimentsClient(BaseClient):
             container_user=container_user,
             registry_username=registry_username,
             registry_password=registry_password,
+            registry_url=registry_url,
         )
 
         handle = repositories.RunSingleNodeExperiment(self.client).create(experiment)
@@ -321,9 +333,11 @@ class ExperimentsClient(BaseClient):
             worker_container_user=None,
             worker_registry_username=None,
             worker_registry_password=None,
+            worker_registry_url=None,
             parameter_server_container_user=None,
-            parameter_server_registry_container_user=None,
+            parameter_server_registry_username=None,
             parameter_server_registry_password=None,
+            parameter_server_registry_url=None,
     ):
         """Create and start multinode experiment
 
@@ -373,9 +387,11 @@ class ExperimentsClient(BaseClient):
         :param str worker_container_user: Worker container user
         :param str worker_registry_username: Registry username for accessing private docker registry container if nessesary
         :param str worker_registry_password: Registry password for accessing private docker registry container if nessesary
+        :param str worker_registry_url: Registry server URL for accessing private docker registry container if nessesary
         :param str parameter_server_container_user: Parameter server container user
-        :param str parameter_server_registry_container_user: Registry username for accessing private docker registry container if nessesary
+        :param str parameter_server_registry_username: Registry username for accessing private docker registry container if nessesary
         :param str parameter_server_registry_password: Registry password for accessing private docker registry container if nessesary
+        :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if nessesary
 
         :returns: experiment handle
         :rtype: str
@@ -404,9 +420,11 @@ class ExperimentsClient(BaseClient):
             worker_container_user=worker_container_user,
             worker_registry_username=worker_registry_username,
             worker_registry_password=worker_registry_password,
+            worker_registry_url=worker_registry_url,
             parameter_server_container_user=parameter_server_container_user,
-            parameter_server_registry_container_user=parameter_server_registry_container_user,
+            parameter_server_registry_username=parameter_server_registry_username,
             parameter_server_registry_password=parameter_server_registry_password,
+            parameter_server_registry_url=parameter_server_registry_url,
         )
 
         handle = repositories.RunMultiNodeExperiment(self.client).create(experiment)
