@@ -1,7 +1,7 @@
 # Gradient by Paperspace Release Notes
 
 # Release Notes for 0.3.0a1
-###New features
+### New features
 * Introduced Python SDK package
 * Added `ClusterID` function to support new VPCs
 * Hyperparameter private registry and custom container functions added \
