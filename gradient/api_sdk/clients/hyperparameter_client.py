@@ -12,6 +12,9 @@ class HyperparameterJobsClient(base_client.BaseClient):
             worker_machine_type,
             worker_command,
             worker_count,
+            worker_container_user=None,
+            worker_registry_username=None,
+            worker_registry_password=None,
             is_preemptible=True,
             ports=None,
             workspace_url=None,
@@ -22,14 +25,15 @@ class HyperparameterJobsClient(base_client.BaseClient):
             model_type=None,
             model_path=None,
             dockerfile_path=None,
-            registry_username=None,
-            registry_password=None,
-            container_user=None,
+            hyperparameter_server_registry_username=None,
+            hyperparameter_server_registry_password=None,
+            hyperparameter_server_container=None,
+            hyperparameter_server_container_user=None,
+            hyperparameter_server_machine_type=None,
             working_directory=None,
-            use_dockerfile=False,
+            use_dockerfile=False
     ):
         """Create hyperparameter tuning job
-
         :param str name: Name of new experiment [required]
         :param str project_id: Project ID [required]
         :param str tuning_command: Tuning command [required]
@@ -37,6 +41,9 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str worker_machine_type: Worker machine type  [required]
         :param str worker_command: Worker command  [required]
         :param int worker_count: Worker count  [required]
+        :param str worker_container_user: Worker Container user
+        :param str worker_registry_username: Worker registry username
+        :param str worker_registry_password: Worker registry password
         :param bool is_preemptible: Flag: is preemptible
         :param list[str] ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
@@ -47,9 +54,11 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str model_type: Model type
         :param str model_path: Model path
         :param str dockerfile_path: Path to dockerfile in project
-        :param str registry_username: Hyperparameter server registry username
-        :param str registry_password: Hyperparameter server registry password
-        :param str container_user: Hyperparameter server container user
+        :param str hyperparameter_server_registry_username: Hyperparameter server registry username
+        :param str hyperparameter_server_registry_password: Hyperparameter server registry password
+        :param str hyperparameter_server_container: Hyperparameter server container
+        :param str hyperparameter_server_container_user: Hyperparameter server container user
+        :param str hyperparameter_server_machine_type: Hyperparameter server machine type
         :param str working_directory: Working directory for the experiment
         :param bool use_dockerfile: Flag: use dockerfile
 
@@ -62,9 +71,12 @@ class HyperparameterJobsClient(base_client.BaseClient):
             project_id=project_id,
             tuning_command=tuning_command,
             worker_container=worker_container,
+            worker_container_user=worker_container_user,
             worker_machine_type=worker_machine_type,
             worker_command=worker_command,
             worker_count=worker_count,
+            worker_registry_username=worker_registry_username,
+            worker_registry_password=worker_registry_password,
             is_preemptible=is_preemptible,
             ports=ports,
             workspace_url=workspace_url,
@@ -75,9 +87,11 @@ class HyperparameterJobsClient(base_client.BaseClient):
             model_type=model_type,
             model_path=model_path,
             dockerfile_path=dockerfile_path,
-            registry_username=registry_username,
-            registry_password=registry_password,
-            container_user=container_user,
+            hyperparameter_server_machine_type=hyperparameter_server_machine_type,
+            hyperparameter_server_registry_username=hyperparameter_server_registry_username,
+            hyperparameter_server_registry_password=hyperparameter_server_registry_password,
+            hyperparameter_server_container=hyperparameter_server_container,
+            hyperparameter_server_container_user=hyperparameter_server_container_user,
             working_directory=working_directory,
             use_dockerfile=use_dockerfile,
         )
@@ -94,6 +108,9 @@ class HyperparameterJobsClient(base_client.BaseClient):
             worker_machine_type,
             worker_command,
             worker_count,
+            worker_registry_username=None,
+            worker_registry_password=None,
+            worker_container_user=None,
             is_preemptible=True,
             ports=None,
             workspace_url=None,
@@ -104,9 +121,11 @@ class HyperparameterJobsClient(base_client.BaseClient):
             model_type=None,
             model_path=None,
             dockerfile_path=None,
-            registry_username=None,
-            registry_password=None,
-            container_user=None,
+            hyperparameter_server_registry_username=None,
+            hyperparameter_server_registry_password=None,
+            hyperparameter_server_container_user=None,
+            hyperparameter_server_container=None,
+            hyperparameter_server_machine_type=None,
             working_directory=None,
             use_dockerfile=False,
     ):
@@ -124,14 +143,16 @@ class HyperparameterJobsClient(base_client.BaseClient):
             --workerCount 2
             --workspaceUrl git+https://github.com/Paperspace/hyperopt-keras-sample
 
-
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
         :param str tuning_command: Tuning command  [required]
         :param str worker_container: Worker container  [required]
         :param str worker_machine_type: Worker machine type  [required]
         :param str worker_command: Worker command  [required]
-        :param str worker_count: Worker count  [required]
+        :param int worker_count: Worker count  [required]
+        :param str worker_container_user: Worker container user
+        :param worker_registry_password: Worker registry password
+        :param worker_registry_username: Worker registry username
         :param bool is_preemptible: Flag: is preemptible
         :param list[str] ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
@@ -142,9 +163,11 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str model_type: Model type
         :param str model_path: Model path
         :param str dockerfile_path: Path to dockerfile
-        :param str registry_username: container registry username
-        :param str registry_password: container registry password
-        :param str container_user: container user
+        :param str hyperparameter_server_registry_username: container registry username
+        :param str hyperparameter_server_registry_password: container registry password
+        :param str hyperparameter_server_container_user: hps container user
+        :param str hyperparameter_server_container: hps container
+        :param str hyperparameter_server_machine_type: hps machine type
         :param str working_directory: Working directory for the experiment
         :param bool use_dockerfile: Flag: use dockerfile
 
@@ -160,6 +183,9 @@ class HyperparameterJobsClient(base_client.BaseClient):
             worker_machine_type=worker_machine_type,
             worker_command=worker_command,
             worker_count=worker_count,
+            worker_container_user=worker_container_user,
+            worker_registry_username=worker_registry_username,
+            worker_registry_password=worker_registry_password,
             is_preemptible=is_preemptible,
             ports=ports,
             workspace_url=workspace_url,
@@ -170,9 +196,11 @@ class HyperparameterJobsClient(base_client.BaseClient):
             model_type=model_type,
             model_path=model_path,
             dockerfile_path=dockerfile_path,
-            registry_username=registry_username,
-            registry_password=registry_password,
-            container_user=container_user,
+            hyperparameter_server_registry_username=hyperparameter_server_registry_username,
+            hyperparameter_server_registry_password=hyperparameter_server_registry_password,
+            hyperparameter_server_container_user=hyperparameter_server_container_user,
+            hyperparameter_server_container=hyperparameter_server_container,
+            hyperparameter_server_machine_type=hyperparameter_server_machine_type,
             working_directory=working_directory,
             use_dockerfile=use_dockerfile,
         )

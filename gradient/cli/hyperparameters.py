@@ -37,10 +37,22 @@ def common_hyperparameter_create_options(f):
             help="Worker container",
         ),
         click.option(
+            "--workerContainerUser",
+            "worker_container_user",
+            required=False,
+            help="Worker container user",
+        ),
+        click.option(
             "--workerMachineType",
             "worker_machine_type",
             required=True,
             help="Worker machine type",
+        ),
+        click.option(
+            "--hyperparameterServerMachineType",
+            "hyperparameter_server_machine_type",
+            required=False,
+            help="Hyperparameter Server machine type",
         ),
         click.option(
             "--workerCommand",
@@ -69,18 +81,33 @@ def common_hyperparameter_create_options(f):
             help="Path to "
         ),
         click.option(
-            "--serverRegistryUsername",
-            "registry_username",
+            "--workerRegistryUsername",
+            "worker_registry_username",
+            help="Worker registry username",
+        ),
+        click.option(
+            "--workerRegistryPassword",
+            "worker_registry_password",
+            help="Worker registry password",
+        ),
+        click.option(
+            "--hyperparameterServerRegistryUsername",
+            "hyperparameter_server_registry_username",
             help="Hyperparameter server registry username",
         ),
         click.option(
-            "--serverRegistryPassword",
-            "registry_password",
+            "--hyperparameterServerRegistryPassword",
+            "hyperparameter_server_registry_password",
             help="Hyperparameter server registry password",
         ),
         click.option(
-            "--serverContainerUser",
-            "container_user",
+            "--hyperparameterServerContainer",
+            "hyperparameter_server_container",
+            help="Hyperparameter server container",
+        ),
+        click.option(
+            "--hyperparameterServerContainerUser",
+            "hyperparameter_server_container_user",
             help="Hyperparameter server container user",
         ),
     ]
