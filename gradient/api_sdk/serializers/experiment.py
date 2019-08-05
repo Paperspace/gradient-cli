@@ -41,6 +41,7 @@ class SingleNodeExperimentSchema(BaseExperimentSchema):
     container_user = marshmallow.fields.Str(dump_to="containerUser", load_from="containerUser")
     registry_username = marshmallow.fields.Str(dump_to="registryUsername", load_from="registryUsername")
     registry_password = marshmallow.fields.Str(dump_to="registryPassword", load_from="registryPassword")
+    registry_url = marshmallow.fields.Str(dump_to="registryUrl", load_from="registryUrl")
 
 
 class MultiNodeExperimentSchema(BaseExperimentSchema):
@@ -64,9 +65,13 @@ class MultiNodeExperimentSchema(BaseExperimentSchema):
                                                       load_from="workerRegistryUsername")
     worker_registry_password = marshmallow.fields.Str(dump_to="workerRegistryPassword",
                                                       load_from="workerRegistryPassword")
+    worker_registry_url = marshmallow.fields.Str(dump_to="workerRegistryUrl",
+                                                 load_from="workerRegistryUrl")
     parameter_server_container_user = marshmallow.fields.Str(required=True, dump_to="parameterServerContainerUser",
                                                              load_from="parameterServerContainerUser")
-    parameter_server_registry_container_user = marshmallow.fields.Str(dump_to="parameterServerRegistryContainerUser",
-                                                                      load_from="parameterServerRegistryContainerUser")
+    parameter_server_registry_username = marshmallow.fields.Str(dump_to="parameterServerRegistryUsername",
+                                                                load_from="parameterServerRegistryUsername")
     parameter_server_registry_password = marshmallow.fields.Str(dump_to="parameterServerRegistryPassword",
                                                                 load_from="parameterServerRegistryPassword")
+    parameter_server_registry_url = marshmallow.fields.Str(dump_to="parameterServerRegistryUrl",
+                                                           load_from="parameterServerRegistryUrl")

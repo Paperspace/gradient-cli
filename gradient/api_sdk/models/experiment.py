@@ -102,6 +102,7 @@ class SingleNodeExperiment(BaseExperiment):
     container_user = attr.ib(type=str, default=None)
     registry_username = attr.ib(type=str, default=None)
     registry_password = attr.ib(type=str, default=None)
+    registry_url = attr.ib(type=str, default=None)
     experiment_type_id = attr.ib(type=int, default=constants.ExperimentType.SINGLE_NODE)
 
     @experiment_type_id.validator
@@ -145,7 +146,7 @@ class MultiNodeExperiment(BaseExperiment):
     :param str worker_registry_username: Registry username for accessing private docker registry container if nessesary
     :param str worker_registry_password: Registry password for accessing private docker registry container if nessesary
     :param str parameter_server_container_user: Parameter server container user
-    :param str parameter_server_registry_container_user: Registry username for accessing private docker registry container if nessesary
+    :param str parameter_server_registry_username: Registry username for accessing private docker registry container if nessesary
     :param str parameter_server_registry_password: Registry password for accessing private docker registry container if nessesary
     """
     experiment_type_id = attr.ib(type=int, default=None)
@@ -160,9 +161,11 @@ class MultiNodeExperiment(BaseExperiment):
     worker_container_user = attr.ib(type=str, default=None)
     worker_registry_username = attr.ib(type=str, default=None)
     worker_registry_password = attr.ib(type=str, default=None)
+    worker_registry_url = attr.ib(type=str, default=None)
     parameter_server_container_user = attr.ib(type=str, default=None)
-    parameter_server_registry_container_user = attr.ib(type=str, default=None)
+    parameter_server_registry_username = attr.ib(type=str, default=None)
     parameter_server_registry_password = attr.ib(type=str, default=None)
+    parameter_server_registry_url = attr.ib(type=str, default=None)
 
     @experiment_type_id.validator
     def experiment_type_id_validator(self, attribute, value):

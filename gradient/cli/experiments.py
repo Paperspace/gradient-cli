@@ -197,19 +197,29 @@ def common_experiment_create_multi_node_options(f):
             help="Worker registry password",
         ),
         click.option(
+            "--workerRegistryUrl",
+            "worker_registry_url",
+            help="Worker registry URL",
+        ),
+        click.option(
             "--parameterServerContainerUser",
             "parameter_server_container_user",
             help="Parameter server container user",
         ),
         click.option(
-            "--parameterServerRegistryContainerUser",
-            "parameter_server_registry_container_user",
-            help="Parameter server registry container user",
+            "--parameterServerRegistryUsername",
+            "parameter_server_registry_username",
+            help="Parameter server registry username",
         ),
         click.option(
             "--parameterServerRegistryPassword",
             "parameter_server_registry_password",
             help="Parameter server registry password",
+        ),
+        click.option(
+            "--parameterServerRegistryUrl",
+            "parameter_server_registry_url",
+            help="Parameter server registry URL",
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
@@ -247,6 +257,11 @@ def common_experiments_create_single_node_options(f):
             "--registryPassword",
             "registry_password",
             help="Registry password",
+        ),
+        click.option(
+            "--registryUrl",
+            "registry_url",
+            help="Registry URL",
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
