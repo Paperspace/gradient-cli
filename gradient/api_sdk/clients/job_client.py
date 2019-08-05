@@ -16,23 +16,13 @@ class JobsClient(BaseClient):
     """
     Client to handle job related actions.
 
-    Available actions:
-        - create
-        - delete
-        - stop
-        - list
-        - logs
-        - artifacts_delete
-        - artifacts_get
-        - artifacts_list
-
     How to create instance of job client:
 
     .. code-block:: python
         :linenos:
         :emphasize-lines: 4
 
-        from gradient import JobClient
+        from gradient import JobsClient
 
         job_client = JobClient(
             api_key='your_api_key_here'
@@ -96,8 +86,7 @@ class JobsClient(BaseClient):
                 workspace_url='git+https://github.com/Paperspace/mnist-sample.git',
                 job_env={
                     'CUSTOM_ENV'='Some value that will be set as system environment',
-                },
-
+                }
             )
 
         :param str machine_type: Type of machine on which job should run. This field is **required**.
@@ -131,21 +120,23 @@ class JobsClient(BaseClient):
 
         :param bool is_public: bool flag to select if job should be available by default None
         :param str workspace: this field is used with CLI to upload folder as your workspace. You can provide here path
-            that you wish to upload.
-        :param str workspace_archive:
-        :param str workspace_url: url to repo with code to run inside of job. By default None
+            that you wish to upload. (Soon also will support a path to a workspace archive or git repository URL.)
+        :param str workspace_archive: Path to workspace archive. (Currently being deprecated in an upcoming version.)
+        :param str workspace_url: url to repo with code to run inside of job.
+            (Currently being deprecated in an upcoming version.)
         :param str working_directory: location of code to run. By default ``/paperspace``
         :param str ignore_files: This field is used with CLI to upload workspace from your computer without specified
             files. Provide string with `,` separated name of files that should be ignored with upload of workspace.
         :param str experiment_id: Id of experiment to which job should be connected. If not provided there will be
             created new experiment for this job.
         :param dict job_env: key value collection of envs that are used in code
-        :param bool use_dockerfile:
+        :param bool use_dockerfile: determines whether to build from Dockerfile (default false).
+            Do not include a --container argument when using this flag.
         :param bool is_preemptible: flag if we you want to use spot instance. By default False
         :param str project: name of project that job is linked to.
         :param str started_by_user_id: id of user that started job. By default it take user id from access token
             or api key.
-        :param str rel_dockerfile_path: location to your dockerfile if its location is other than root of your workspace
+        :param str rel_dockerfile_path: relative location to your dockerfile. Default set to ``./Dockerfile``
         :param str registry_username: username for custom docker registry
         :param str registry_password: password for custom docker registry
         :param str cluster: name of cluster that job should be run on.
@@ -191,6 +182,14 @@ class JobsClient(BaseClient):
         """
         Method to remove job.
 
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 2
+
+            job = job_client.delete(
+                job_id='Your_job_id_here'
+            )
+
         :param str job_id: id of job that you want to remove
         :returns: json response after delete was complete
         :rtype: dict
@@ -203,6 +202,14 @@ class JobsClient(BaseClient):
         """
         Method to stop working job
 
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 2
+
+            job = job_client.stop(
+                job_id='Your_job_id_here'
+            )
+
         :param job_id: id of job that we want to stop
         :returns: json response after stop was complete
         :rtype: dict
@@ -213,19 +220,60 @@ class JobsClient(BaseClient):
 
     def list(self, filters):
         """
+        Method to list jobs.
 
-        :param filters:
-        :return:
+        To retrieve all user jobs:
+
+        .. code-block:: python
+            :linenos:
+
+            jobs = job_client.list()
+
+        To list jobs from project:
+
+        .. code-block:: python
+            :linenos:
+
+            filters = {
+                "filters": {
+                    "projectId": "Your_project_id_here",
+                }
+            }
+
+            job = job_client.list(
+                filters=filters
+            )
+
+        Possible options to use in filters:
+            - projectId
+            - project
+            - experimentId
+
+        :param dict filters: dict of filters that will be used to retrieve jobs.
+
+        :returns: list of jobs dicts
+        :rtype: list
         """
         return ListJobs(self.client).list(filters=filters)
 
     def logs(self, job_id, line=0, limit=10000):
         """
+        Method to retrieve job logs.
 
-        :param job_id:
-        :param line:
-        :param limit:
-        :return:
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 2
+
+            job = job_client.logs(
+                job_id='Your_job_id_here'
+            )
+
+        :param str job_id: id of job that we want to retrieve logs
+        :param int line: from what line you want to retrieve logs. Default 0
+        :param int limit: how much lines you want to retrieve logs. Default 10000
+
+        :returns:
+        :rtype:
         """
         logs = ListJobLogs(self.logs_client).list(job_id=job_id, line=line, limit=limit)
         return logs
