@@ -1,4 +1,4 @@
-# Gradient by Paperspace Release Notes
+# Gradient CLI Release Notes
 
 # Release Notes for 0.3.0a1
 ### New features
