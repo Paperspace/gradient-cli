@@ -1,5 +1,7 @@
 """
 Jobs related client handler logic.
+
+Remember that in code snippets all highlighted lines are required other are optional
 """
 from gradient.config import config
 from .base_client import BaseClient
@@ -23,6 +25,19 @@ class JobsClient(BaseClient):
         - artifacts_delete
         - artifacts_get
         - artifacts_list
+
+    How to create instance of job client:
+
+    .. code-block:: python
+        :linenos:
+        :emphasize-lines: 4
+
+        from gradient import JobClient
+
+        job_client = JobClient(
+            api_key='your_api_key_here'
+        )
+
     """
     HOST_URL = config.CONFIG_HOST
 
@@ -62,7 +77,28 @@ class JobsClient(BaseClient):
             workspace_file_name=None,
     ):
         """
-        Method to create job in paperspace gradient.
+        Method to create and start job in paperspace gradient.
+
+        Example create job:
+
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 2,3,4,5
+
+            job = job_client.create(
+                machine_type='K80',
+                container='tensorflow/tensorflow:1.13.1-gpu-py3',
+                project_id='Som3ProjecTiD',
+                data=data,
+                name='Example job',
+                command='pip install -r requirements.txt && python mnist.py',
+                ports='5000:5000',
+                workspace_url='git+https://github.com/Paperspace/mnist-sample.git',
+                job_env={
+                    'CUSTOM_ENV'='Some value that will be set as system environment',
+                },
+
+            )
 
         :param str machine_type: Type of machine on which job should run. This field is **required**.
 
@@ -93,27 +129,33 @@ class JobsClient(BaseClient):
 
             Example value: ``5000:5000,8080:8080``
 
-        :param  bool is_public:
-        :param workspace:
-        :param workspace_archive:
-        :param workspace_url:
-        :param working_directory:
-        :param ignore_files:
-        :param experiment_id:
-        :param job_env:
-        :param use_dockerfile:
-        :param is_preemptible:
-        :param project:
-        :param started_by_user_id:
-        :param rel_dockerfile_path:
-        :param registry_username:
-        :param registry_password:
-        :param cluster:
-        :param cluster_id:
-        :param node_attrs:
-        :param workspace_file_name:
+        :param bool is_public: bool flag to select if job should be available by default None
+        :param str workspace: this field is used with CLI to upload folder as your workspace. You can provide here path
+            that you wish to upload.
+        :param str workspace_archive:
+        :param str workspace_url: url to repo with code to run inside of job. By default None
+        :param str working_directory: location of code to run. By default ``/paperspace``
+        :param str ignore_files: This field is used with CLI to upload workspace from your computer without specified
+            files. Provide string with `,` separated name of files that should be ignored with upload of workspace.
+        :param str experiment_id: Id of experiment to which job should be connected. If not provided there will be
+            created new experiment for this job.
+        :param dict job_env: key value collection of envs that are used in code
+        :param bool use_dockerfile:
+        :param bool is_preemptible: flag if we you want to use spot instance. By default False
+        :param str project: name of project that job is linked to.
+        :param str started_by_user_id: id of user that started job. By default it take user id from access token
+            or api key.
+        :param str rel_dockerfile_path: location to your dockerfile if its location is other than root of your workspace
+        :param str registry_username: username for custom docker registry
+        :param str registry_password: password for custom docker registry
+        :param str cluster: name of cluster that job should be run on.
+        :param str cluster_id: id of cluster that job should be run on. If you use one of recommended machine type
+            cluster will be chosen so you do not need to provide it.
+        :param dict node_attrs:
+        :param str workspace_file_name:
 
-        :return: job handle if created with success
+        :returns: json with response after job creation request
+        :rtype: dict
         """
         job = Job(
             machine_type=machine_type,
@@ -147,9 +189,11 @@ class JobsClient(BaseClient):
 
     def delete(self, job_id):
         """
+        Method to remove job.
 
-        :param job_id:
-        :return:
+        :param str job_id: id of job that you want to remove
+        :returns: json response after delete was complete
+        :rtype: dict
         """
         url = self._get_action_url(job_id, "destroy")
         response = self.client.post(url)
@@ -157,32 +201,62 @@ class JobsClient(BaseClient):
 
     def stop(self, job_id):
         """
+        Method to stop working job
 
-        :param job_id:
-        :return:
+        :param job_id: id of job that we want to stop
+        :returns: json response after stop was complete
+        :rtype: dict
         """
         url = self._get_action_url(job_id, "stop")
         response = self.client.post(url)
         return response
 
     def list(self, filters):
+        """
+
+        :param filters:
+        :return:
+        """
         return ListJobs(self.client).list(filters=filters)
 
     def logs(self, job_id, line=0, limit=10000):
+        """
+
+        :param job_id:
+        :param line:
+        :param limit:
+        :return:
+        """
         logs = ListJobLogs(self.logs_client).list(job_id=job_id, line=line, limit=limit)
         return logs
 
     def artifacts_delete(self, job_id, params):
+        """
+
+        :param job_id:
+        :param params:
+        :return:
+        """
         url = self._get_action_url(job_id, "artifactsDestroy", ending_slash=False)
         response = self.client.post(url, params=params)
         return response
 
     def artifacts_get(self, job_id):
+        """
+
+        :param job_id:
+        :return:
+        """
         url = '/jobs/artifactsGet'
         response = self.client.get(url, params={'jobId': job_id})
         return response
 
     def artifacts_list(self, filters):
+        """
+
+        :param filters:
+        :return:
+        """
         return ListJobArtifacts(self.client).list(filters=filters)
 
     def _create(self, job_dict, data):
