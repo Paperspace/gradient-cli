@@ -3,6 +3,9 @@
 Gradient CLI
 =================
 
+![PyPI](https://img.shields.io/pypi/v/gradient)
+[![codecov](https://codecov.io/gh/Paperspace/gradient-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/Paperspace/gradient-cli)
+
 <br>
 
 **Get started:** [Create Account](https://www.paperspace.com/account/signup?gradient=true) • [Install CLI](https://docs.paperspace.com/gradient/get-started/install-the-cli) • [Tutorials](https://docs.paperspace.com/gradient/tutorials/training-and-deploying-an-ml-model-with-gradient-cli) • [Docs](https://docs.paperspace.com/gradient)
@@ -24,11 +27,9 @@ Gradient supports any ML/DL framework (TensorFlow, PyTorch, XGBoost, etc).
 
 <hr>
 
-![PyPI](https://img.shields.io/pypi/v/gradient)
 
 See [releasenotes.md](https://github.com/Paperspace/gradient-cli/blob/master/releasenotes.md) for details on the current release, as well as release history.
 
-[![codecov](https://codecov.io/gh/Paperspace/gradient-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/Paperspace/gradient-cli)
 
 <br>
 
