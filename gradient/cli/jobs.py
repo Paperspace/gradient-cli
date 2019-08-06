@@ -115,9 +115,9 @@ def create_job(ctx, api_key, **kwargs):
     jsonify_dicts(kwargs)
 
     command = jobs_commands.CreateJobCommand(api_key=api_key, workspace_handler=get_workspace_handler())
-    job = command.execute(kwargs)
-    if job is not None:
-        ctx.invoke(list_logs, job_id=job["handle"], line=0, limit=100, follow=True, api_key=api_key)
+    job_handle = command.execute(kwargs)
+    if job_handle is not None:
+        ctx.invoke(list_logs, job_id=job_handle, line=0, limit=100, follow=True, api_key=api_key)
 
 
 @jobs_group.command("logs", help="List job logs")

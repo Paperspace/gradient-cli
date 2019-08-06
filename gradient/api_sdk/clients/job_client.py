@@ -145,8 +145,8 @@ class JobsClient(BaseClient):
         :param dict node_attrs:
         :param str workspace_file_name:
 
-        :returns: json with response after job creation request
-        :rtype: dict
+        :returns: Job handle
+        :rtype: str
         """
         job = Job(
             machine_type=machine_type,
@@ -211,8 +211,8 @@ class JobsClient(BaseClient):
             )
 
         :param job_id: id of job that we want to stop
-        :returns: json response after stop was complete
-        :rtype: dict
+        :returns: Response after stop was complete
+        :rtype: Response
         """
         url = self._get_action_url(job_id, "stop")
         response = self.client.post(url)
@@ -265,25 +265,45 @@ class JobsClient(BaseClient):
             :emphasize-lines: 2
 
             job = job_client.logs(
-                job_id='Your_job_id_here'
+                job_id='Your_job_id_here',
+                line=100,
+                limit=100
             )
 
         :param str job_id: id of job that we want to retrieve logs
         :param int line: from what line you want to retrieve logs. Default 0
         :param int limit: how much lines you want to retrieve logs. Default 10000
 
-        :returns:
-        :rtype:
+        :returns: list of formatted logs lines
+        :rtype: list
         """
         logs = ListJobLogs(self.logs_client).list(job_id=job_id, line=line, limit=limit)
         return logs
 
     def artifacts_delete(self, job_id, params):
         """
+        Method to delete job artifact.
 
-        :param job_id:
-        :param params:
-        :return:
+        # TODO what are files in artifacts delete
+
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 2
+
+            params = {
+                'files': files,
+            }
+
+            job = job_client.artifacts_delete(
+                job_id='Your_job_id_here',
+                params=params
+            )
+
+        :param str job_id: Id of job which artifact you want to delete
+        :param dict params:
+
+        :returns:
+        ":rtype:
         """
         url = self._get_action_url(job_id, "artifactsDestroy", ending_slash=False)
         response = self.client.post(url, params=params)
@@ -309,13 +329,14 @@ class JobsClient(BaseClient):
 
     def _create(self, job_dict, data):
         """
+        Inner method to make create job request.
 
-        :param job_dict:
-        :param data:
-        :return:
+        :param job_dict: dict with values for new job
+        :param data: encoded multipart data
+        :return: job handle
         """
         response = self._get_create_response(job_dict, data)
-        return response
+        return response.json().get("id")
 
     def _get_create_response(self, json_, data):
         """
