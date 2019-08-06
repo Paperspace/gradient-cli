@@ -1,8 +1,8 @@
 from gradient import config
-from gradient.api_sdk.utils import MessageExtractor
 from .base_client import BaseClient
-from .. import models, repositories, serializers
+from .. import models, repositories
 from ..exceptions import GradientSdkError
+from ..utils import MessageExtractor
 
 
 class DeploymentsClient(BaseClient):
@@ -31,7 +31,7 @@ class DeploymentsClient(BaseClient):
         your available Models.
 
         :param deployment_type: Model deployment type. Only TensorFlow Model deployment type is currently supported  [required]
-        :param modelId: ID of a trained model [required]
+        :param model_id: ID of a trained model [required]
         :param name: Human-friendly name for new model deployment [required]
         :param machine_type: [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]
         :param image_url: Docker image for model deployment  [required]

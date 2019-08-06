@@ -45,7 +45,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str worker_registry_username: Worker registry username
         :param str worker_registry_password: Worker registry password
         :param bool is_preemptible: Flag: is preemptible
-        :param list[str] ports: Port to use in new experiment
+        :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
         :param str artifact_directory: Artifacts directory
         :param str cluster_id: Cluster ID
@@ -154,7 +154,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param worker_registry_password: Worker registry password
         :param worker_registry_username: Worker registry username
         :param bool is_preemptible: Flag: is preemptible
-        :param list[str] ports: Port to use in new experiment
+        :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
         :param str artifact_directory: Artifacts directory
         :param str cluster_id: Cluster ID

@@ -1,7 +1,6 @@
 import click
 
-from gradient import utils, logger
-from gradient.api_sdk.clients import job_client
+from gradient import utils
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.common import del_if_value_is_none, deprecated, jsonify_dicts

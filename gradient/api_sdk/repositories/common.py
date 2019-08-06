@@ -3,7 +3,7 @@ import abc
 import six
 
 from ..clients import http_client
-from ..exceptions import ResourceFetchingError
+from ..exceptions import ResourceFetchingError, ResourceCreatingDataError, ResourceCreatingError
 from ..utils import MessageExtractor
 
 
@@ -109,7 +109,8 @@ class CreateResource(object):
         serialization_result = serializer.dump(instance)
         instance_dict = serialization_result.data
         if serialization_result.errors:
-            raise exceptions.ResourceCreatingDataError(str(serialization_result.errors))
+            raise ResourceCreatingDataError(str(serialization_result.errors))
+
         instance_dict = self._process_instance_dict(instance_dict)
         return instance_dict
 
@@ -142,7 +143,7 @@ class CreateResource(object):
         try:
             return self._get_id_from_response(response)
         except Exception as e:
-            raise exceptions.ResourceCreatingError(e)
+            raise ResourceCreatingError(e)
 
     def _get_id_from_response(self, response):
         handle = response.data["handle"]
