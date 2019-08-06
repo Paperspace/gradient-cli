@@ -3,7 +3,7 @@ import abc
 import six
 
 from ..clients import http_client
-from ..exceptions import ResourceFetchingError
+from ..exceptions import ResourceFetchingError, ResourceCreatingDataError, ResourceCreatingError
 from ..utils import MessageExtractor
 
 
@@ -90,6 +90,7 @@ class GetResource(BaseRepository):
 @six.add_metaclass(abc.ABCMeta)
 class CreateResource(object):
     SERIALIZER_CLS = None
+    HANDLE_FIELD = "handle"
 
     def __init__(self, client):
         """
@@ -109,7 +110,7 @@ class CreateResource(object):
         serialization_result = serializer.dump(instance)
         instance_dict = serialization_result.data
         if serialization_result.errors:
-            raise exceptions.ResourceCreatingDataError(str(serialization_result.errors))
+            raise ResourceCreatingDataError(str(serialization_result.errors))
         instance_dict = self._process_instance_dict(instance_dict)
         return instance_dict
 
@@ -142,10 +143,10 @@ class CreateResource(object):
         try:
             return self._get_id_from_response(response)
         except Exception as e:
-            raise exceptions.ResourceCreatingError(e)
+            raise ResourceCreatingError(e)
 
     def _get_id_from_response(self, response):
-        handle = response.data["handle"]
+        handle = response.data[self.HANDLE_FIELD]
         return handle
 
     def _process_instance_dict(self, instance_dict):
@@ -156,10 +157,10 @@ class CreateResource(object):
 class DeleteResource(BaseRepository):
     VALIDATION_ERROR_MESSAGE = "Failed to delete resource"
 
-    def delete(self, id_):
+    def delete(self, id_, **kwargs):
         url = self.get_request_url(id_=id_)
 
-        response = self.api.delete(url)
+        response = self.client.delete(url, json=kwargs.get("json"), params=kwargs.get("params"))
         self._validate_response(response)
 
 

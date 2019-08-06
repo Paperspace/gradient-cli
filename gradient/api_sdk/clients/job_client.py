@@ -7,8 +7,7 @@ from gradient.config import config
 from .base_client import BaseClient
 from ..clients import http_client
 from ..models import Job
-from ..serializers import JobSchema
-from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts
+from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts, CreateJob, DeleteJobArtifacts
 from ..utils import MessageExtractor
 
 
@@ -175,8 +174,8 @@ class JobsClient(BaseClient):
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
         )
-        job_dict = JobSchema().dump(job).data
-        return self._create(job_dict, data)
+        handle = CreateJob(self.client).create(job)
+        return handle
 
     def delete(self, job_id):
         """
@@ -191,12 +190,14 @@ class JobsClient(BaseClient):
             )
 
         :param str job_id: id of job that you want to remove
-        :returns: json response after delete was complete
-        :rtype: dict
+        :returns: tuple with:
+            - json response after delete was complete
+            - bool flag with information if request ended with success or error
+        :rtype: tuple
         """
         url = self._get_action_url(job_id, "destroy")
         response = self.client.post(url)
-        return response
+        return response.json(), response.ok
 
     def stop(self, job_id):
         """
@@ -211,12 +212,14 @@ class JobsClient(BaseClient):
             )
 
         :param job_id: id of job that we want to stop
-        :returns: Response after stop was complete
-        :rtype: Response
+        :returns: tuple with:
+            - json response after stop was complete
+            - bool flag with information if request ended with success or error
+        :rtype: tuple
         """
         url = self._get_action_url(job_id, "stop")
         response = self.client.post(url)
-        return response
+        return response.json(), response.ok
 
     def list(self, filters):
         """
@@ -251,7 +254,7 @@ class JobsClient(BaseClient):
 
         :param dict filters: dict of filters that will be used to retrieve jobs.
 
-        :returns: list of jobs dicts
+        :returns: list of job models
         :rtype: list
         """
         return ListJobs(self.client).list(filters=filters)
@@ -305,9 +308,7 @@ class JobsClient(BaseClient):
         :returns:
         ":rtype:
         """
-        url = self._get_action_url(job_id, "artifactsDestroy", ending_slash=False)
-        response = self.client.post(url, params=params)
-        return response
+        DeleteJobArtifacts(self.client).delete(id_=job_id, params=params)
 
     def artifacts_get(self, job_id):
         """
@@ -326,26 +327,6 @@ class JobsClient(BaseClient):
         :return:
         """
         return ListJobArtifacts(self.client).list(filters=filters)
-
-    def _create(self, job_dict, data):
-        """
-        Inner method to make create job request.
-
-        :param job_dict: dict with values for new job
-        :param data: encoded multipart data
-        :return: job handle
-        """
-        response = self._get_create_response(job_dict, data)
-        return response.json().get("id")
-
-    def _get_create_response(self, json_, data):
-        """
-
-        :param json_:
-        :param data:
-        :return:
-        """
-        return self.client.post("/jobs/createJob/", params=json_, data=data)
 
     @staticmethod
     def _get_error_message(response):

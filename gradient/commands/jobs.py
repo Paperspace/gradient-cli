@@ -20,10 +20,10 @@ class BaseJobCommand(BaseCommand):
         client = api_sdk.clients.JobsClient(api_key=api_key, logger=logger_)
         return client
 
-    def _log_message(self, response, success_msg_template, error_msg):
-        if response.ok:
+    def _log_message(self, response_data, is_response_ok, success_msg_template, error_msg):
+        if is_response_ok:
             try:
-                handle = response.json()
+                handle = response_data
             except (ValueError, KeyError):
                 self.logger.log(success_msg_template)
             else:
@@ -31,7 +31,7 @@ class BaseJobCommand(BaseCommand):
                 self.logger.log(msg)
         else:
             try:
-                data = response.json()
+                data = response_data
                 self.logger.log_error_response(data)
             except ValueError:
                 self.logger.error(error_msg)
@@ -102,8 +102,9 @@ class BaseCreateJobCommandMixin(object):
 class DeleteJobCommand(BaseJobCommand):
 
     def execute(self, job_id):
-        response = self.client.delete(job_id)
-        self._log_message(response,
+        response_json, is_response_ok = self.client.delete(job_id)
+        self._log_message(response_json,
+                          is_response_ok,
                           "Job deleted",
                           "Unknown error while deleting job")
 
@@ -111,8 +112,9 @@ class DeleteJobCommand(BaseJobCommand):
 class StopJobCommand(BaseJobCommand):
 
     def execute(self, job_id):
-        response = self.client.stop(job_id)
-        self._log_message(response,
+        response_json, is_response_ok = self.client.stop(job_id)
+        self._log_message(response_json,
+                          is_response_ok,
                           "Job stopped",
                           "Unknown error while stopping job")
 
@@ -243,10 +245,10 @@ class ArtifactsDestroyCommand(BaseJobCommand):
     def execute(self, job_id, files=None):
         params = None
         if files:
-            params = {'files': files}
+            params = {"files": files}
 
-        response = self.client.artifacts_delete(job_id, params)
-        self._log_message(response, "Artifacts destroyed", "Unknown error while destroying artifacts")
+        self.client.artifacts_delete(job_id, params)
+        self.logger.log("Job {} artifacts deleted".format(job_id))
 
 
 class ArtifactsGetCommand(BaseJobCommand):

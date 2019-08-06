@@ -1,8 +1,22 @@
-from .common import ListResources
-from .. import serializers
+from .common import ListResources, CreateResource, BaseRepository
+from ..serializers import JobSchema, LogRowSchema
 
 
-class ListJobs(ListResources):
+class ParseJobDictMixin(object):
+    @staticmethod
+    def _parse_object(job_dict, **kwargs):
+        """
+
+        :param job_dict:
+        :param kwargs:
+        :return:
+        :rtype: Job
+        """
+        job = JobSchema().get_instance(job_dict)
+        return job
+
+
+class ListJobs(ParseJobDictMixin, ListResources):
 
     def get_request_url(self, **kwargs):
         return "/jobs/getJobs/"
@@ -11,7 +25,7 @@ class ListJobs(ListResources):
         jobs = []
 
         for job_dict in data:
-            job = serializers.JobSchema().get_instance(job_dict)
+            job = self._parse_object(job_dict)
             jobs.append(job)
 
         return jobs
@@ -44,17 +58,25 @@ class ListJobLogs(ListResources):
                 yield log
 
     def _parse_objects(self, log_rows, **kwargs):
-        serializer = serializers.LogRowSchema()
+        serializer = LogRowSchema()
         log_rows = (serializer.get_instance(row) for row in log_rows)
         return log_rows
 
     def _get_request_params(self, kwargs):
         params = {
-            'jobId': kwargs['job_id'],
-            'line': kwargs['line'],
-            'limit': kwargs['limit']
+            "jobId": kwargs["job_id"],
+            "line": kwargs["line"],
+            "limit": kwargs["limit"]
         }
         return params
+
+
+class CreateJob(CreateResource):
+    SERIALIZER_CLS = JobSchema
+    HANDLE_FIELD = "id"
+
+    def _get_create_url(self):
+        return "/jobs/createJob/"
 
 
 class ListJobArtifacts(ListResources):
@@ -62,7 +84,20 @@ class ListJobArtifacts(ListResources):
         return data
 
     def get_request_url(self, **kwargs):
-        return '/jobs/artifactsList'
+        return "/jobs/artifactsList"
 
     def _get_request_params(self, kwargs):
-        return kwargs.get('filters')
+        return kwargs.get("filters")
+
+
+class DeleteJobArtifacts(BaseRepository):
+    VALIDATION_ERROR_MESSAGE = "Failed to delete resource"
+
+    def get_request_url(self, **kwargs):
+        return "/jobs/{}/artifactsDestroy/".format(kwargs.get("id_"))
+
+    def delete(self, id_, **kwargs):
+        url = self.get_request_url(id_=id_)
+
+        response = self.client.post(url, json=kwargs.get("json"), params=kwargs.get("params"))
+        self._validate_response(response)

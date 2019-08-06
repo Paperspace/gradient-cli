@@ -206,17 +206,16 @@ Error: Missing option "--jobId".
 
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
 
-    @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_command_should_not_send_request_without_required_parameters(self, get_patched):
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITHOUT_PARAMETERS)
-        print(result)
 
         get_patched.assert_not_called()
         assert result.exit_code == 2
         assert result.output == self.EXPECTED_STDOUT_WITHOUT_PARAMETERS
 
-    @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_get_request_and_print_available_logs(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
@@ -231,7 +230,7 @@ Error: Missing option "--jobId".
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_get_request_when_log_list_was_used_with_wrong_api_key(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
@@ -245,7 +244,7 @@ Error: Missing option "--jobId".
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_error_message_when_error_status_code_received_but_no_content_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(status_code=400)
 
@@ -264,7 +263,7 @@ class TestJobArtifactsCommands(TestJobs):
     runner = CliRunner()
     URL = "https://api.paperspace.io"
 
-    @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_valid_post_request_when_destroying_artifacts_with_files_specified(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
@@ -272,7 +271,7 @@ class TestJobArtifactsCommands(TestJobs):
         result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--files", file_names, "--apiKey",
                                               "some_key"])
 
-        post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy".format(self.URL, job_id),
+        post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy/".format(self.URL, job_id),
                                         files=None,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
@@ -280,13 +279,13 @@ class TestJobArtifactsCommands(TestJobs):
                                         data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_valid_post_request_when_destroying_artifacts_without_files_specified(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--apiKey", "some_key"])
 
-        post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy".format(self.URL, job_id),
+        post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy/".format(self.URL, job_id),
                                         files=None,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
@@ -294,7 +293,7 @@ class TestJobArtifactsCommands(TestJobs):
                                         data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_send_valid_get_request_and_receive_json_response(self, get_patched):
         get_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
@@ -323,7 +322,7 @@ class TestJobArtifactsCommands(TestJobs):
                                                "files": "foo"})
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @pytest.mark.parametrize('option,param', [("--size", "size"),
                                               ("-s", "size"),
                                               ("--links", "links"),
@@ -419,8 +418,8 @@ class TestJobsCreate(object):
 
         post_patched.assert_called_once_with(self.URL + '/jobs/createJob/',
                                              headers=self.EXPECTED_HEADERS,
-                                             json=None,
-                                             params=self.BASIC_OPTIONS_REQUEST,
+                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             params=None,
                                              files=None,
                                              data=None)
 
