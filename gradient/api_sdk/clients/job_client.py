@@ -7,7 +7,8 @@ from gradient.config import config
 from .base_client import BaseClient
 from ..clients import http_client
 from ..models import Job
-from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts, CreateJob, DeleteJobArtifacts
+from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts, CreateJob, DeleteJob, StopJob, \
+    DeleteJobArtifacts, GetJobArtifacts
 from ..utils import MessageExtractor
 
 
@@ -174,7 +175,7 @@ class JobsClient(BaseClient):
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
         )
-        handle = CreateJob(self.client).create(job)
+        handle = CreateJob(self.client).create_job(job, data)
         return handle
 
     def delete(self, job_id):
@@ -190,14 +191,9 @@ class JobsClient(BaseClient):
             )
 
         :param str job_id: id of job that you want to remove
-        :returns: tuple with:
-            - json response after delete was complete
-            - bool flag with information if request ended with success or error
-        :rtype: tuple
+        :raises: exceptions.GradientSdkError
         """
-        url = self._get_action_url(job_id, "destroy")
-        response = self.client.post(url)
-        return response.json(), response.ok
+        DeleteJob(self.client).delete(job_id)
 
     def stop(self, job_id):
         """
@@ -212,14 +208,9 @@ class JobsClient(BaseClient):
             )
 
         :param job_id: id of job that we want to stop
-        :returns: tuple with:
-            - json response after stop was complete
-            - bool flag with information if request ended with success or error
-        :rtype: tuple
+        :raises: exceptions.GradientSdkError
         """
-        url = self._get_action_url(job_id, "stop")
-        response = self.client.post(url)
-        return response.json(), response.ok
+        StopJob(self.client).stop(job_id)
 
     def list(self, filters):
         """
@@ -287,8 +278,6 @@ class JobsClient(BaseClient):
         """
         Method to delete job artifact.
 
-        # TODO what are files in artifacts delete
-
         .. code-block:: python
             :linenos:
             :emphasize-lines: 2
@@ -303,48 +292,48 @@ class JobsClient(BaseClient):
             )
 
         :param str job_id: Id of job which artifact you want to delete
-        :param dict params:
+        :param dict params: in params we can pass few options to extend our delete action:
+            - ``files`` if you wish to remove only few files from artifact pass string with names of this files
+                separated by ``,``
 
-        :returns:
-        ":rtype:
+        :raises: exceptions.GradientSdkError
         """
         DeleteJobArtifacts(self.client).delete(id_=job_id, params=params)
 
     def artifacts_get(self, job_id):
         """
+        Method to retrieve job artifacts bucket description.
 
-        :param job_id:
-        :return:
+        :param job_id: Id of job from which you want to retrieve artifacts
+        :returns: If exist return list of artifacts
+        :rtype: None or List
         """
-        url = '/jobs/artifactsGet'
-        response = self.client.get(url, params={'jobId': job_id})
-        return response
+        data = GetJobArtifacts(self.client).get(params={"jobId": job_id})
+        return data
 
     def artifacts_list(self, filters):
         """
+        Method to retrieve all artifacts files.
 
-        :param filters:
-        :return:
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 2
+
+            filters = {
+                'jobId': 'your_job_id_here',
+                'size': True,
+            }
+
+            artifacts = job_client.artifacts_list(
+                filters=filters
+            )
+
+        :param dict filters: in params we can pass few options to extend our list action:
+            - ``jobId`` to limit artifact from this job
+            - ``files`` to limit result only to file names provided. You can use wildcard option ``*``
+            - ``size`` boolean flag to show file size
+            - ``links`` boolean flag to show file url
+        :returns:
+        :rtype:
         """
-        return ListJobArtifacts(self.client).list(filters=filters)
-
-    @staticmethod
-    def _get_error_message(response):
-        try:
-            response_data = response.json()
-        except ValueError:
-            return "Unknown error"
-
-        msg = MessageExtractor().get_message_from_response_data(response_data)
-        return msg
-
-    @staticmethod
-    def _get_action_url(job_id, action, ending_slash=True):
-        template_with_ending_slash = "/jobs/{}/{}/"
-        template_without_ending_slash = "/jobs/{}/{}"
-
-        if ending_slash:
-            template = template_with_ending_slash
-        else:
-            template = template_without_ending_slash
-        return template.format(job_id, action)
+        return ListJobArtifacts(self.client).list(params=filters)

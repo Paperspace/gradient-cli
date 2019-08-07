@@ -102,21 +102,15 @@ class BaseCreateJobCommandMixin(object):
 class DeleteJobCommand(BaseJobCommand):
 
     def execute(self, job_id):
-        response_json, is_response_ok = self.client.delete(job_id)
-        self._log_message(response_json,
-                          is_response_ok,
-                          "Job deleted",
-                          "Unknown error while deleting job")
+        self.client.delete(job_id)
+        self.logger.log("Job {} deleted".format(job_id))
 
 
 class StopJobCommand(BaseJobCommand):
 
     def execute(self, job_id):
-        response_json, is_response_ok = self.client.stop(job_id)
-        self._log_message(response_json,
-                          is_response_ok,
-                          "Job stopped",
-                          "Unknown error while stopping job")
+        self.client.stop(job_id)
+        self.logger.log("Job {} stopped".format(job_id))
 
 
 class ListJobsCommand(BaseJobCommand):
@@ -253,20 +247,15 @@ class ArtifactsDestroyCommand(BaseJobCommand):
 
 class ArtifactsGetCommand(BaseJobCommand):
     def execute(self, job_id):
-        response = self.client.artifacts_get(job_id)
+        artifact = self.client.artifacts_get(job_id)
 
-        self._log_artifacts(response)
+        self._log_artifacts(artifact, job_id)
 
-    def _log_artifacts(self, response):
-        try:
-            artifacts_json = response.json()
-            if response.ok:
-                print_dict_recursive(artifacts_json, self.logger)
-            else:
-                raise BadResponseError(
-                    '{}: {}'.format(artifacts_json['error']['status'], artifacts_json['error']['message']))
-        except (ValueError, KeyError, BadResponseError) as e:
-            self.logger.error("Error occurred while getting artifacts: {}".format(str(e)))
+    def _log_artifacts(self, artifact, job_id):
+        if artifact:
+            print_dict_recursive(artifact, self.logger)
+        else:
+            self.logger.log("No artifacts found for job {}".format(job_id))
 
 
 class ArtifactsListCommand(BaseJobCommand):

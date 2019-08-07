@@ -1,4 +1,5 @@
-from .common import ListResources, CreateResource, BaseRepository
+from gradient.api_sdk.clients import http_client
+from .common import ListResources, CreateResource, BaseRepository, GetResource
 from ..serializers import JobSchema, LogRowSchema
 
 
@@ -78,6 +79,41 @@ class CreateJob(CreateResource):
     def _get_create_url(self):
         return "/jobs/createJob/"
 
+    def create_job(self, instance, data):
+        instance_dict = self._get_instance_dict(instance)
+        url = self._get_create_url()
+        response = self.client.post(url, json=instance_dict, data=data)
+        gradient_response = http_client.GradientResponse.interpret_response(response)
+        self._validate_response(gradient_response)
+        handle = self._process_response(response)
+        return handle
+
+    def _get_id_from_response(self, response):
+        handle = response.json()[self.HANDLE_FIELD]
+        return handle
+
+
+class DeleteJob(BaseRepository):
+
+    def get_request_url(self, **kwargs):
+        return "/job/{}/destroy/".format(kwargs.get("id_"))
+
+    def delete(self, id_, **kwargs):
+        url = self.get_request_url(id_=id_)
+        response = self.client.post(url)
+        self._validate_response(response)
+
+
+class StopJob(BaseRepository):
+
+    def get_request_url(self, **kwargs):
+        return "/job/{}/stop/".format(kwargs.get('id_'))
+
+    def stop(self, id_, **kwargs):
+        url = self.get_request_url(id_=id_)
+        response = self.client.post(url)
+        self._validate_response(response)
+
 
 class ListJobArtifacts(ListResources):
     def _parse_objects(self, data, **kwargs):
@@ -87,7 +123,7 @@ class ListJobArtifacts(ListResources):
         return "/jobs/artifactsList"
 
     def _get_request_params(self, kwargs):
-        return kwargs.get("filters")
+        return kwargs.get("params")
 
 
 class DeleteJobArtifacts(BaseRepository):
@@ -101,3 +137,14 @@ class DeleteJobArtifacts(BaseRepository):
 
         response = self.client.post(url, json=kwargs.get("json"), params=kwargs.get("params"))
         self._validate_response(response)
+
+
+class GetJobArtifacts(GetResource):
+    def _parse_object(self, data, **kwargs):
+        return data
+
+    def _get_request_params(self, kwargs):
+        return kwargs.get("params")
+
+    def get_request_url(self, **kwargs):
+        return "/jobs/artifactsGet"
