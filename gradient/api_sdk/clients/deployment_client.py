@@ -1,3 +1,8 @@
+"""
+Deployment related client handler logic.
+
+Remember that in code snippets all highlighted lines are required other lines are optional.
+"""
 from gradient import config
 from gradient.api_sdk.utils import MessageExtractor
 from .base_client import BaseClient
@@ -6,6 +11,21 @@ from ..exceptions import GradientSdkError
 
 
 class DeploymentsClient(BaseClient):
+    """
+    Client to handle deployment related actions.
+
+    How to create instance of deployment client:
+
+    .. code-block:: python
+        :linenos:
+        :emphasize-lines: 4
+
+        from gradient import DeploymentsClient
+
+        deployment_client = DeploymentsClient(
+            api_key='your_api_key_here'
+        )
+    """
     HOST_URL = config.config.CONFIG_HOST
 
     def create(self, deployment_type, model_id, name, machine_type, image_url, instance_count):
@@ -26,6 +46,16 @@ class DeploymentsClient(BaseClient):
             --imageUrl tensorflow/serving:latest-gpu
             --instanceCount 2
 
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 4
+
+            from gradient import DeploymentsClient
+
+            deployment_client = DeploymentsClient(
+                api_key='your_api_key_here'
+            )
+
 
         To obtain your Model ID, you can run ``command gradient models list`` and copy the target Model ID from
         your available Models.
@@ -36,7 +66,8 @@ class DeploymentsClient(BaseClient):
         :param machine_type: [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]
         :param image_url: Docker image for model deployment  [required]
         :param instance_count: Number of machine instances  [required]
-        :return: Created deployment id
+        :returns: Created deployment id
+        :rtype: str
         """
         deployment = models.Deployment(
             deployment_type=deployment_type,

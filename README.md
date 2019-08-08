@@ -232,6 +232,10 @@ Generating documentation from docstrings
     
     The html version with basic search functionality should appear in `build` directory
 
+4. [OPTIONAL] To generate github pages
+
+    `make gh-pages`
+
 Note: Sphinx offers many more documentation formats via external plugins
 
 For more info visit [Sphinx web page](https://www.sphinx-doc.org)
