@@ -55,12 +55,12 @@ def stop_job(job_id, api_key=None):
 )
 @click.option(
     "--projectId",
-    "projectId",
+    "project_id",
     help="Use to filter jobs by project ID",
 )
 @click.option(
     "--experimentId",
-    "experimentId",
+    "experiment_id",
     help="Use to filter jobs by experiment ID",
 )
 @api_key_option
@@ -68,7 +68,7 @@ def list_jobs(api_key, **filters):
     del_if_value_is_none(filters)
 
     command = jobs_commands.ListJobsCommand(api_key=api_key)
-    command.execute(filters=filters)
+    command.execute(**filters)
 
 
 def common_jobs_create_options(f):
@@ -175,7 +175,7 @@ def get_artifacts(job_id, api_key=None):
 @artifacts.command("list", help="List job's artifacts")
 @click.argument("job_id")
 @click.option("--size", "-s", "size", help="Show file size", is_flag=True)
-@click.option("--links", "-l", "links", help="Show file URL", is_flag=True)
+@click.option("--links", "-l", "links", help="Show file URL", is_flag=True, default=False)
 @click.option("--files", "files", help="Get only given file (use at the end * as a wildcard)")
 @api_key_option
 def list_artifacts(job_id, size, links, files, api_key=None):

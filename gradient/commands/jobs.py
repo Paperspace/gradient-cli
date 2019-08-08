@@ -123,24 +123,13 @@ class ListJobsCommand(BaseJobCommand):
         self._log_objects_list(instances)
 
     def _get_instances(self, **kwargs):
-        filters = self._get_request_json(kwargs)
 
         try:
-            instances = self.client.list(filters)
+            instances = self.client.list(**kwargs)
         except api_sdk.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
         return instances
-
-    @property
-    def request_url(self):
-        return "/jobs/getJobs/"
-
-    @staticmethod
-    def _get_request_json(kwargs):
-        filters = kwargs.get("filters")
-        json_ = filters or None
-        return json_
 
     @staticmethod
     def _get_table_data(jobs):
@@ -167,17 +156,6 @@ class ListJobsCommand(BaseJobCommand):
             pydoc.pager(table_str)
         else:
             self.logger.log(table_str)
-
-    @staticmethod
-    def _get_objects(response, kwargs):
-        data = response.json()
-        return data
-
-    def _get_response(self, kwargs):
-        json_ = self._get_request_json(kwargs)
-        params = self._get_request_params(kwargs)
-        response = self.client.get(self.request_url, json=json_, params=params)
-        return response
 
     @staticmethod
     def _make_table(table_data):
@@ -237,11 +215,7 @@ class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
 
 class ArtifactsDestroyCommand(BaseJobCommand):
     def execute(self, job_id, files=None):
-        params = None
-        if files:
-            params = {"files": files}
-
-        self.client.artifacts_delete(job_id, params)
+        self.client.artifacts_delete(job_id, files)
         self.logger.log("Job {} artifacts deleted".format(job_id))
 
 
@@ -263,35 +237,12 @@ class ArtifactsListCommand(BaseJobCommand):
 
     def execute(self, **kwargs):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            instances = self._get_instances(**kwargs)
+            try:
+                instances = self.client.artifacts_list(**kwargs)
+            except api_sdk.GradientSdkError as e:
+                raise exceptions.ReceivingDataFailedError(e)
 
         self._log_objects_list(instances)
-
-    def _get_instances(self, **kwargs):
-        filters = self._get_request_params(kwargs)
-
-        try:
-            instances = self.client.artifacts_list(filters)
-        except api_sdk.GradientSdkError as e:
-            raise exceptions.ReceivingDataFailedError(e)
-
-        return instances
-
-    @staticmethod
-    def _get_request_params(kwargs):
-        params = {'jobId': kwargs['job_id']}
-
-        files = kwargs.get('files')
-        if files:
-            params['files'] = files
-        size = kwargs.get('size', False)
-        if size:
-            params['size'] = size
-        links = kwargs.get('links', False)
-        if links:
-            params['links'] = links
-
-        return params
 
     def _get_table_data(self, artifacts):
         columns = ['Files']

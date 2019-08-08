@@ -32,7 +32,16 @@ class ListJobs(ParseJobDictMixin, ListResources):
         return jobs
 
     def _get_request_json(self, kwargs):
-        filters = kwargs.get("filters")
+        filters = dict()
+        if kwargs.get("project_id"):
+            filters["projectId"] = kwargs.get("project_id")
+
+        if kwargs.get("project"):
+            filters["project"] = kwargs.get("project")
+
+        if kwargs.get("experiment_id"):
+            filters["experimentId"] = kwargs.get("experiment_id")
+
         json_ = filters or None
         return json_
 
@@ -123,7 +132,20 @@ class ListJobArtifacts(ListResources):
         return "/jobs/artifactsList"
 
     def _get_request_params(self, kwargs):
-        return kwargs.get("params")
+        params = {
+            "jobId": kwargs.get("jobId"),
+        }
+
+        if kwargs.get("files"):
+            params["files"] = kwargs.get("files")
+
+        if kwargs.get("size"):
+            params["size"] = kwargs.get("size")
+
+        if kwargs.get("links"):
+            params["links"] = kwargs.get("links")
+
+        return params
 
 
 class DeleteJobArtifacts(BaseRepository):
@@ -135,8 +157,18 @@ class DeleteJobArtifacts(BaseRepository):
     def delete(self, id_, **kwargs):
         url = self.get_request_url(id_=id_)
 
-        response = self.client.post(url, json=kwargs.get("json"), params=kwargs.get("params"))
+        params = self._get_request_params(kwargs)
+
+        response = self.client.post(url, json=kwargs.get("json"), params=params)
         self._validate_response(response)
+
+    def _get_request_params(self, kwargs):
+        filters = dict()
+
+        if kwargs.get("files"):
+            filters["files"] = kwargs.get("files")
+
+        return filters or None
 
 
 class GetJobArtifacts(GetResource):
@@ -144,7 +176,9 @@ class GetJobArtifacts(GetResource):
         return data
 
     def _get_request_params(self, kwargs):
-        return kwargs.get("params")
+        return {
+            "jobId": kwargs.get("jobId")
+        }
 
     def get_request_url(self, **kwargs):
         return "/jobs/artifactsGet"
