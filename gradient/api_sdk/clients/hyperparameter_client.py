@@ -96,7 +96,8 @@ class HyperparameterJobsClient(base_client.BaseClient):
             use_dockerfile=use_dockerfile,
         )
 
-        handle = repositories.CreateHyperparameterJob(client=self.client).create(hyperparameter)
+        repository = repositories.CreateHyperparameterJob(api_key=self.api_key, logger=self.logger)
+        handle = repository.create(hyperparameter)
         return handle
 
     def run(
@@ -205,7 +206,8 @@ class HyperparameterJobsClient(base_client.BaseClient):
             use_dockerfile=use_dockerfile,
         )
 
-        handle = repositories.CreateAndStartHyperparameterJob(client=self.client).create(hyperparameter)
+        repository = repositories.CreateAndStartHyperparameterJob(api_key=self.api_key, logger=self.logger)
+        handle = repository.create(hyperparameter)
         return handle
 
     def get(self, id_):
@@ -216,7 +218,9 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :returns: instance of Hyperparameter
         :rtype: models.Hyperparameter
         """
-        job = repositories.GetHyperparameterTuningJob(self.client).get(id=id_)
+
+        repository = repositories.GetHyperparameterTuningJob(api_key=self.api_key, logger=self.logger)
+        job = repository.get(id=id_)
         return job
 
     def start(self, id_):
@@ -225,7 +229,9 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str id_: Hyperparameter job id
         :raises: exceptions.GradientSdkError
         """
-        repositories.StartHyperparameterTuningJob(self.client).start(id_=id_)
+
+        repository = repositories.StartHyperparameterTuningJob(api_key=self.api_key, logger=self.logger)
+        repository.start(id_=id_)
 
     def list(self):
         """Get a list of hyperparameter tuning jobs
@@ -249,5 +255,6 @@ class HyperparameterJobsClient(base_client.BaseClient):
 
         :rtype: list[models.Hyperparameter]
         """
-        experiments = repositories.ListHyperparameterJobs(self.client).list()
+        repository = repositories.ListHyperparameterJobs(api_key=self.api_key, logger=self.logger)
+        experiments = repository.list()
         return experiments

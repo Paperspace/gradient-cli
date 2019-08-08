@@ -221,6 +221,12 @@ def common_experiment_create_multi_node_options(f):
             "parameter_server_registry_url",
             help="Parameter server registry URL",
         ),
+        click.option(
+            "--vpc",
+            "use_vpc",
+            type=bool,
+            is_flag=True,
+        ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -263,6 +269,12 @@ def common_experiments_create_single_node_options(f):
             "registry_url",
             help="Registry URL",
         ),
+        click.option(
+            "--vpc",
+            "use_vpc",
+            type=bool,
+            is_flag=True,
+        ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -272,7 +284,7 @@ def common_experiments_create_single_node_options(f):
 @create_experiment.command(name="multinode", help="Create multi node experiment")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
-def create_multi_node(api_key, **kwargs):
+def create_multi_node(api_key, use_vpc, **kwargs):
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
@@ -280,7 +292,7 @@ def create_multi_node(api_key, **kwargs):
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    command.execute(kwargs)
+    command.execute(kwargs, use_vpc=use_vpc)
 
 
 @deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
@@ -288,7 +300,7 @@ def create_multi_node(api_key, **kwargs):
 @create_experiment.command(name="singlenode", help="Create single node experiment")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
-def create_single_node(api_key, **kwargs):
+def create_single_node(api_key, use_vpc, **kwargs):
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
@@ -296,7 +308,7 @@ def create_single_node(api_key, **kwargs):
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    command.execute(kwargs)
+    command.execute(kwargs, use_vpc=use_vpc)
 
 
 @deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
@@ -313,7 +325,7 @@ def create_single_node(api_key, **kwargs):
     help="Don't show logs. Only create, start and exit",
 )
 @click.pass_context
-def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
+def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, **kwargs):
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
@@ -321,7 +333,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    experiment = command.execute(kwargs)
+    experiment = command.execute(kwargs, use_vpc=use_vpc)
     if experiment and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
 
@@ -340,7 +352,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, **kwargs):
     help="Don't show logs. Only create, start and exit",
 )
 @click.pass_context
-def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
+def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, **kwargs):
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
@@ -348,7 +360,7 @@ def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    experiment = command.execute(kwargs)
+    experiment = command.execute(kwargs, use_vpc=use_vpc)
     if experiment and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
 
@@ -362,10 +374,16 @@ def create_and_start_single_node(ctx, api_key, show_logs, **kwargs):
     is_flag=True,
     help="Show logs",
 )
+@click.option(
+    "--vpc",
+    "use_vpc",
+    type=bool,
+    is_flag=True,
+)
 @click.pass_context
-def start_experiment(ctx, experiment_id, show_logs, api_key):
+def start_experiment(ctx, experiment_id, show_logs, api_key, use_vpc):
     command = experiments_commands.StartExperimentCommand(api_key=api_key)
-    command.execute(experiment_id)
+    command.execute(experiment_id, use_vpc=use_vpc)
 
     if show_logs:
         ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
@@ -374,9 +392,15 @@ def start_experiment(ctx, experiment_id, show_logs, api_key):
 @experiments.command("stop", help="Stop experiment")
 @click.argument("experiment-id")
 @api_key_option
-def stop_experiment(experiment_id, api_key):
+@click.option(
+    "--vpc",
+    "use_vpc",
+    type=bool,
+    is_flag=True,
+)
+def stop_experiment(experiment_id, api_key, use_vpc):
     command = experiments_commands.StopExperimentCommand(api_key=api_key)
-    command.execute(experiment_id)
+    command.execute(experiment_id, use_vpc=use_vpc)
 
 
 @experiments.command("list", help="List experiments")

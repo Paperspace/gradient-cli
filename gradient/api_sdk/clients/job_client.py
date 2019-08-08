@@ -3,10 +3,10 @@ Jobs related client handler logic.
 """
 from gradient.config import config
 from .base_client import BaseClient
+from .. import repositories
 from ..clients import http_client
 from ..models import Job
 from ..serializers import JobSchema
-from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts
 from ..utils import MessageExtractor
 
 
@@ -24,13 +24,10 @@ class JobsClient(BaseClient):
         - artifacts_get
         - artifacts_list
     """
-    HOST_URL = config.CONFIG_HOST
 
     def __init__(self, *args, **kwargs):
         super(JobsClient, self).__init__(*args, **kwargs)
-        self.logs_client = http_client.API(config.CONFIG_LOG_HOST,
-                                           api_key=self.api_key,
-                                           logger=self.logger)
+        self.client = http_client.API(config.CONFIG_HOST, api_key=self.api_key, logger=self.logger)
 
     def create(
             self,
@@ -166,10 +163,12 @@ class JobsClient(BaseClient):
         return response
 
     def list(self, filters):
-        return ListJobs(self.client).list(filters=filters)
+        repository = repositories.ListJobs(api_key=self.api_key, logger=self.logger)
+        return repository.list(filters=filters)
 
     def logs(self, job_id, line=0, limit=10000):
-        logs = ListJobLogs(self.logs_client).list(job_id=job_id, line=line, limit=limit)
+        repository = repositories.ListJobLogs(api_key=self.api_key, logger=self.logger)
+        logs = repository.list(job_id=job_id, line=line, limit=limit)
         return logs
 
     def artifacts_delete(self, job_id, params):
@@ -183,7 +182,8 @@ class JobsClient(BaseClient):
         return response
 
     def artifacts_list(self, filters):
-        return ListJobArtifacts(self.client).list(filters=filters)
+        repository = repositories.ListJobArtifacts(api_key=self.api_key, logger=self.logger)
+        return repository.list(filters=filters)
 
     def _create(self, job_dict, data):
         """

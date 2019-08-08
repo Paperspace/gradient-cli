@@ -110,7 +110,7 @@ class TestCreateHyperparameters(object):
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
     EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Failed to create resource: Incorrect API Key provided\nForbidden\n"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_get_request_and_print_proper_message_when_create_command_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE, 201)
 
@@ -127,7 +127,7 @@ class TestCreateHyperparameters(object):
 
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_get_request_and_print_proper_message_when_create_command_was_used_with_all_options(self,
                                                                                                             post_patched):
         post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE, 201)
@@ -145,7 +145,7 @@ class TestCreateHyperparameters(object):
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE, 201)
 
@@ -162,7 +162,7 @@ class TestCreateHyperparameters(object):
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_proper_message_when_error_message_received(self, post_patched):
         post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WITH_ERROR, 400)
 
@@ -178,7 +178,7 @@ class TestCreateHyperparameters(object):
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_ERROR_RECEIVED
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 403)
 
@@ -195,7 +195,7 @@ class TestCreateHyperparameters(object):
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_request_and_print_proper_message_when_error_code_returned_without_json_data(self,
                                                                                                      post_patched):
         post_patched.return_value = MockResponse(status_code=500)
@@ -316,7 +316,7 @@ class TestCreateAndStartHyperparameters(object):
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
     EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Failed to create resource: Incorrect API Key provided\nForbidden\n"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_get_request_and_print_proper_message_when_create_command_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE, 201)
 
@@ -333,7 +333,7 @@ class TestCreateAndStartHyperparameters(object):
 
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_get_request_and_print_proper_message_when_create_command_was_used_with_all_options(self,
                                                                                                             post_patched):
         post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE, 201)
@@ -351,7 +351,7 @@ class TestCreateAndStartHyperparameters(object):
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE, 201)
 
@@ -368,7 +368,7 @@ class TestCreateAndStartHyperparameters(object):
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_proper_message_when_error_message_received(self, post_patched):
         post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WITH_ERROR, 400)
 
@@ -384,7 +384,7 @@ class TestCreateAndStartHyperparameters(object):
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_ERROR_RECEIVED
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 403)
 
@@ -401,7 +401,7 @@ class TestCreateAndStartHyperparameters(object):
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_request_and_print_proper_message_when_error_code_returned_without_json_data(self,
                                                                                                      post_patched):
         post_patched.return_value = MockResponse(status_code=500)
@@ -444,7 +444,7 @@ class TestStartHyperparameters(object):
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
     EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Failed to start hyperparameter tuning job: Incorrect API Key provided\nForbidden\n"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_get_request_and_print_proper_message_when_start_command_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE, 201)
 
@@ -459,7 +459,7 @@ class TestStartHyperparameters(object):
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE, 201)
 
@@ -474,7 +474,7 @@ class TestStartHyperparameters(object):
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_print_proper_message_when_error_message_received(self, put_patched):
         put_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WITH_ERROR, 400)
 
@@ -488,7 +488,7 @@ class TestStartHyperparameters(object):
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_ERROR_RECEIVED
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, put_patched):
         put_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 403)
 
@@ -503,7 +503,7 @@ class TestStartHyperparameters(object):
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_request_and_print_proper_message_when_error_code_returned_without_json_data(self, put_patched):
         put_patched.return_value = MockResponse(status_code=500)
 
@@ -552,7 +552,7 @@ class TestHyperparametersList(object):
 
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 401, "message": "No such API token"}
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_hyperparameters(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_HYPERPARAMETERS_RESPONSE_JSON, 200)
 
@@ -567,7 +567,7 @@ class TestHyperparametersList(object):
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_HYPERPARAMETERS_RESPONSE_JSON, 200)
 
@@ -582,7 +582,7 @@ class TestHyperparametersList(object):
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_proper_message_when_no_objects_were_found(
             self, get_patched):
         get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WHEN_NO_OBJECTS_WERE_FOUND, 200)
@@ -597,7 +597,7 @@ class TestHyperparametersList(object):
 
         assert result.output == "No data found\n"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
 
@@ -645,7 +645,7 @@ class TestHyperparametersDetails(object):
 
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 401, "message": "No such API token"}
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_details_of_hyperparameters_job(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.HYPERPARAMETERS_DETAILS_RESPONSE_JSON, 200)
 
@@ -660,7 +660,7 @@ class TestHyperparametersDetails(object):
 
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.HYPERPARAMETERS_DETAILS_RESPONSE_JSON, 200)
 
@@ -675,7 +675,7 @@ class TestHyperparametersDetails(object):
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_proper_message_when_no_objects_were_found(self, get_patched):
         get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WHEN_NO_OBJECT_WAS_NOT_FOUND, 404)
 
@@ -689,7 +689,7 @@ class TestHyperparametersDetails(object):
 
         assert result.output == "Failed to fetch data: Hyperopt not found\n"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
 
@@ -703,7 +703,7 @@ class TestHyperparametersDetails(object):
 
         assert result.output == "Failed to fetch data: No such API token\n"
 
-    @mock.patch("gradient.api_sdk.clients.hyperparameter_client.base_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_proper_message_when_got_error_response_without_data(self, get_patched):
         get_patched.return_value = MockResponse(status_code=500)
 

@@ -1,21 +1,21 @@
 from .common import CreateResource, ListResources, GetResource, StartResource
 from .. import serializers
-from ..repositories.experiments import ParseExperimentDictMixin
+from ..repositories.experiments import ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin
 
 
-class CreateHyperparameterJob(CreateResource):
+class CreateHyperparameterJob(GetBaseExperimentApiUrlMixin, CreateResource):
     SERIALIZER_CLS = serializers.HyperparameterSchema
 
-    def _get_create_url(self):
+    def get_request_url(self, **_):
         return "/hyperopt/"
 
 
 class CreateAndStartHyperparameterJob(CreateHyperparameterJob):
-    def _get_create_url(self):
+    def get_request_url(self, **_):
         return "/hyperopt/create_and_start/"
 
 
-class ListHyperparameterJobs(ParseExperimentDictMixin, ListResources):
+class ListHyperparameterJobs(GetBaseExperimentApiUrlMixin, ParseExperimentDictMixin, ListResources):
     def get_request_url(self, **kwargs):
         return "/hyperopt/"
 
@@ -32,7 +32,7 @@ class ListHyperparameterJobs(ParseExperimentDictMixin, ListResources):
         return {"limit": -1}
 
 
-class GetHyperparameterTuningJob(ParseExperimentDictMixin, GetResource):
+class GetHyperparameterTuningJob(GetBaseExperimentApiUrlMixin, ParseExperimentDictMixin, GetResource):
     def get_request_url(self, **kwargs):
         id_ = kwargs["id"]
         url = "/hyperopt/{}/".format(id_)
@@ -45,9 +45,9 @@ class GetHyperparameterTuningJob(ParseExperimentDictMixin, GetResource):
         return instance
 
 
-class StartHyperparameterTuningJob(StartResource):
+class StartHyperparameterTuningJob(GetBaseExperimentApiUrlMixin, StartResource):
     VALIDATION_ERROR_MESSAGE = "Failed to start hyperparameter tuning job"
 
-    def get_request_url(self, id_):
+    def get_request_url(self, id_, **_):
         url = "/hyperopt/{}/start/".format(id_)
         return url

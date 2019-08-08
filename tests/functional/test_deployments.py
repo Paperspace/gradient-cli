@@ -11,6 +11,7 @@ EXPECTED_HEADERS = deployments_commands.default_headers
 
 class TestDeploymentsCreate(object):
     URL = "https://api.paperspace.io/deployments/createDeployment/"
+    URL_V2 = "https://api.paperspace.io/deployments/v2/createDeployment/"
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     BASIC_OPTIONS_COMMAND = [
@@ -21,6 +22,16 @@ class TestDeploymentsCreate(object):
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
+    ]
+    BASIC_OPTIONS_COMMAND_WITH_USE_VPC_FLAG = [
+        "deployments", "create",
+        "--deploymentType", "tfserving",
+        "--modelId", "some_model_id",
+        "--name", "some_name",
+        "--machineType", "G1",
+        "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--instanceCount", "666",
+        "--vpc",
     ]
     BASIC_OPTIONS_COMMAND_WITH_API_KEY = [
         "deployments", "create",
@@ -56,6 +67,23 @@ class TestDeploymentsCreate(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    def test_should_send_request_to_api_v2_when_vpc_flag_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_USE_VPC_FLAG)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
@@ -211,8 +239,12 @@ class TestDeploymentsList(object):
 
 class TestStartDeployment(object):
     URL = "https://api.paperspace.io/deployments/updateDeployment/"
+    URL_V2 = "https://api.paperspace.io/deployments/v2/updateDeployment/"
     COMMAND = ["deployments", "start",
                "--id", "some_id"]
+    COMMAND_WITH__VPC_FLAG = ["deployments", "start",
+                     "--id", "some_id",
+                     "--vpc"]
     REQUEST_JSON = {"isRunning": True, "id": u"some_id"}
     EXPECTED_STDOUT = "Deployment started\n"
 
@@ -232,11 +264,31 @@ class TestStartDeployment(object):
                                              data=None)
         assert result.exit_code == 0
 
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    def test_should_send_request_to_api_v2_when_vpc_flag_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(status_code=204)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH__VPC_FLAG)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.REQUEST_JSON,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+
 
 class TestStopDeployment(object):
     URL = "https://api.paperspace.io/deployments/updateDeployment/"
+    URL_V2 = "https://api.paperspace.io/deployments/v2/updateDeployment/"
     COMMAND = ["deployments", "stop",
                "--id", "some_id"]
+    COMMAND_WITH_VPC_FLAG = ["deployments", "stop",
+                             "--id", "some_id",
+                             "--vpc"]
     REQUEST_JSON = {"isRunning": False, "id": u"some_id"}
     EXPECTED_STDOUT = "Deployment stopped\n"
 
@@ -249,7 +301,7 @@ class TestStopDeployment(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_400 = {"error": {"name": "Error", "status": 400, "message": "Unable to access deployment"}}
-    EXPECTED_STDOUT_WITH_WRONG_ID = "Unable to access deployment\n"
+    EXPECTED_STDOUT_WITH_WRONG_ID = "Unable to stop instance: Unable to access deployment\n"
 
     @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_stop_was_used(self, post_patched):
@@ -259,6 +311,22 @@ class TestStopDeployment(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.REQUEST_JSON,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    def test_should_send_request_to_api_v2_when_vpc_flag_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(status_code=204)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_VPC_FLAG)
+
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
                                              params=None,

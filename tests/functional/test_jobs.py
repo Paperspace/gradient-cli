@@ -78,11 +78,11 @@ class TestListJobs(TestJobs):
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=None,
                                        params=None)
-        assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.get")

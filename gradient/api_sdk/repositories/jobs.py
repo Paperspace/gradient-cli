@@ -1,8 +1,14 @@
+from gradient import config
 from .common import ListResources
 from .. import serializers
 
 
-class ListJobs(ListResources):
+class GetBaseJobApiUrlMixin(object):
+    def _get_api_url(self, **_):
+        return config.config.CONFIG_HOST
+
+
+class ListJobs(GetBaseJobApiUrlMixin, ListResources):
 
     def get_request_url(self, **kwargs):
         return "/jobs/getJobs/"
@@ -23,6 +29,8 @@ class ListJobs(ListResources):
 
 
 class ListJobLogs(ListResources):
+    def _get_api_url(self, **_):
+        return config.config.CONFIG_LOG_HOST
 
     def get_request_url(self, **kwargs):
         return "/jobs/logs"
@@ -57,7 +65,7 @@ class ListJobLogs(ListResources):
         return params
 
 
-class ListJobArtifacts(ListResources):
+class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
     def _parse_objects(self, data, **kwargs):
         return data
 

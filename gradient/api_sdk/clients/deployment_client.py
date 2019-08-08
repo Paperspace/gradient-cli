@@ -1,14 +1,9 @@
-from gradient import config
 from .base_client import BaseClient
 from .. import models, repositories
-from ..exceptions import GradientSdkError
-from ..utils import MessageExtractor
 
 
 class DeploymentsClient(BaseClient):
-    HOST_URL = config.config.CONFIG_HOST
-
-    def create(self, deployment_type, model_id, name, machine_type, image_url, instance_count):
+    def create(self, deployment_type, model_id, name, machine_type, image_url, instance_count, use_vpc=False):
         """
         Method to create a Deployment instance.
 
@@ -36,6 +31,8 @@ class DeploymentsClient(BaseClient):
         :param machine_type: [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]
         :param image_url: Docker image for model deployment  [required]
         :param instance_count: Number of machine instances  [required]
+        :param bool use_vpc:
+
         :return: Created deployment id
         """
         deployment = models.Deployment(
@@ -47,10 +44,11 @@ class DeploymentsClient(BaseClient):
             instance_count=instance_count
         )
 
-        id_ = repositories.CreateDeployment(self.client).create(deployment)
-        return id_
+        repository = repositories.CreateDeployment(api_key=self.api_key, logger=self.logger)
+        deployment_id = repository.create(deployment, use_vpc=use_vpc)
+        return deployment_id
 
-    def start(self, deployment_id):
+    def start(self, deployment_id, use_vpc=False):
         """
         Start deployment
 
@@ -59,10 +57,13 @@ class DeploymentsClient(BaseClient):
             gradient deployments start --id <your-deployment-id>
 
         :param str deployment_id: Deployment ID
+        :param bool use_vpc:
         """
-        return self._get_post_response(deployment_id)
 
-    def stop(self, deployment_id):
+        repository = repositories.StartDeployment(api_key=self.api_key, logger=self.logger)
+        repository.start(deployment_id, use_vpc=use_vpc)
+
+    def stop(self, deployment_id, use_vpc=False):
         """
         Stop deployment
 
@@ -71,10 +72,13 @@ class DeploymentsClient(BaseClient):
             gradient deployments stop --id <your-deployment-id>
 
         :param deployment_id: Deployment ID
+        :param bool use_vpc:
         """
-        return self._get_post_response(deployment_id, is_running=False)
 
-    def list(self, filters):
+        repository = repositories.StopDeployment(api_key=self.api_key, logger=self.logger)
+        repository.stop(deployment_id, use_vpc=use_vpc)
+
+    def list(self, filters, use_vpc=False):
         """
         List deployments with optional filtering
 
@@ -89,46 +93,9 @@ class DeploymentsClient(BaseClient):
           --modelId TEXT Use to filter by model ID
 
         :param state|projectId|modelId filters:
+        :param bool use_vpc:
         """
-        return repositories.ListDeployments(self.client).list(filters=filters)
 
-    @staticmethod
-    def _get_deployment_dict(deployment, schema_cls):
-        deployment_schema = schema_cls()
-        deployment_dict = deployment_schema.dump(deployment).data
-
-        return deployment_dict
-
-    @staticmethod
-    def _get_error_message(response):
-        try:
-            response_data = response.json()
-        except ValueError:
-            return "Unknown error"
-
-        msg = MessageExtractor().get_message_from_response_data(response_data)
-        return msg
-
-    def _get_create_response(self, deployment_dict):
-        return self.client.post("/deployments/createDeployment/", json=deployment_dict)
-
-    def _process_response(self, response):
-        if response.ok:
-            return response.json()["deployment"]["id"]
-
-        msg = self._get_error_message(response)
-        # TODO prepare more detailed error type message
-        raise GradientSdkError(msg)
-
-    def _create(self, deployment, schema_cls):
-        deployment_dict = self._get_deployment_dict(deployment, schema_cls)
-        response = self._get_create_response(deployment_dict)
-        handle = self._process_response(response)
-        return handle
-
-    def _get_post_response(self, deployment_id, is_running=True):
-        data = {
-            "id": deployment_id,
-            "isRunning": is_running
-        }
-        return self.client.post("/deployments/updateDeployment/", json=data)
+        repository = repositories.ListDeployments(api_key=self.api_key, logger=self.logger)
+        deployments = repository.list(filters=filters, use_vpc=use_vpc)
+        return deployments

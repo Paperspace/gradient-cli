@@ -1,8 +1,14 @@
-from .common import ListResources, CreateResource
+from gradient import config
+from .common import ListResources, CreateResource, StartResource, StopResource
 from .. import serializers
 
 
-class ListDeployments(ListResources):
+class GetBaseDeploymentApiUrlMixin(object):
+    def _get_api_url(self, **_):
+        return config.config.CONFIG_HOST
+
+
+class ListDeployments(GetBaseDeploymentApiUrlMixin, ListResources):
     def get_request_url(self, **kwargs):
         return "/deployments/getDeploymentList/"
 
@@ -29,11 +35,13 @@ class ListDeployments(ListResources):
         return json_
 
 
-class CreateDeployment(CreateResource):
-
+class CreateDeployment(GetBaseDeploymentApiUrlMixin, CreateResource):
     SERIALIZER_CLS = serializers.DeploymentSchema
 
-    def _get_create_url(self):
+    def get_request_url(self, **kwargs):
+        if kwargs.get("use_vpc") or config.config.USE_VPC:
+            return "/deployments/v2/createDeployment/"
+
         return "/deployments/createDeployment/"
 
     def _get_id_from_response(self, response):
@@ -41,3 +49,39 @@ class CreateDeployment(CreateResource):
         return handle
 
 
+class StartDeployment(GetBaseDeploymentApiUrlMixin, StartResource):
+    def get_request_url(self, **kwargs):
+        if kwargs.get("use_vpc") or config.config.USE_VPC:
+            return "/deployments/v2/updateDeployment/"
+
+        return "/deployments/updateDeployment/"
+
+    def _get_request_json(self, kwargs):
+        data = {
+            "id": kwargs["id"],
+            "isRunning": True,
+        }
+        return data
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response
+
+
+class StopDeployment(GetBaseDeploymentApiUrlMixin, StopResource):
+    def get_request_url(self, **kwargs):
+        if kwargs.get("use_vpc") or config.config.USE_VPC:
+            return "/deployments/v2/updateDeployment/"
+
+        return "/deployments/updateDeployment/"
+
+    def _get_request_json(self, kwargs):
+        data = {
+            "id": kwargs["id"],
+            "isRunning": False,
+        }
+        return data
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response

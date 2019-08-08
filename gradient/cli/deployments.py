@@ -71,12 +71,18 @@ def get_deployment_client(api_key):
     required=True,
     help="Number of machine instances",
 )
+@click.option(
+    "--vpc",
+    "use_vpc",
+    type=bool,
+    is_flag=True,
+)
 @api_key_option
-def create_deployment(api_key=None, **kwargs):
+def create_deployment(api_key, use_vpc, **kwargs):
     del_if_value_is_none(kwargs)
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.CreateDeploymentCommand(deployment_client=deployment_client)
-    command.execute(**kwargs)
+    command.execute(use_vpc=use_vpc, **kwargs)
 
 
 DEPLOYMENT_STATES_MAP = collections.OrderedDict(
@@ -110,7 +116,7 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
     help="Use to filter by model ID",
 )
 @api_key_option
-def get_deployments_list(api_key=None, **filters):
+def get_deployments_list(api_key, **filters):
     del_if_value_is_none(filters)
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.ListDeploymentsCommand(deployment_client=deployment_client)
@@ -127,11 +133,17 @@ def get_deployments_list(api_key=None, **filters):
     required=True,
     help="Deployment ID",
 )
+@click.option(
+    "--vpc",
+    "use_vpc",
+    type=bool,
+    is_flag=True,
+)
 @api_key_option
-def start_deployment(id_, api_key=None):
+def start_deployment(id_, use_vpc, api_key=None):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.StartDeploymentCommand(deployment_client=deployment_client)
-    command.execute(deployment_id=id_)
+    command.execute(deployment_id=id_, use_vpc=use_vpc)
 
 
 @deployments.command("stop", help="Stop deployment")
@@ -141,8 +153,14 @@ def start_deployment(id_, api_key=None):
     required=True,
     help="Deployment ID",
 )
+@click.option(
+    "--vpc",
+    "use_vpc",
+    type=bool,
+    is_flag=True,
+)
 @api_key_option
-def stop_deployment(id_, api_key=None):
+def stop_deployment(id_, use_vpc, api_key=None):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.StopDeploymentCommand(deployment_client=deployment_client)
-    command.execute(deployment_id=id_)
+    command.execute(deployment_id=id_, use_vpc=use_vpc)

@@ -11,21 +11,40 @@ from ..utils import MessageExtractor
 class BaseRepository(object):
     VALIDATION_ERROR_MESSAGE = "Failed to fetch data"
 
-    def __init__(self, client, *args, **kwargs):
-        self.client = client
+    def __init__(self, api_key, logger):
+        self.api_key = api_key
+        self.logger = logger
 
     @abc.abstractmethod
     def get_request_url(self, **kwargs):
-        """
+        """Get url to the endpoint (without base api url)
+
         :rtype: str
         """
         pass
 
-    def _get(self, kwargs):
+    @abc.abstractmethod
+    def _get_api_url(self, use_vpc=False):
+        """Get base url to the api
+
+        :rtype: str
+        """
+        pass
+
+    def _get_client(self, use_vpc=False):
+        """
+        :rtype: http_client.API
+        """
+        api_url = self._get_api_url(use_vpc=use_vpc)
+        client = http_client.API(api_url=api_url, api_key=self.api_key, logger=self.logger)
+        return client
+
+    def _get(self, kwargs, use_vpc=False):
         json_ = self._get_request_json(kwargs)
         params = self._get_request_params(kwargs)
-        url = self.get_request_url(**kwargs)
-        response = self.client.get(url, json=json_, params=params)
+        url = self.get_request_url(use_vpc=use_vpc, **kwargs)
+        client = self._get_client()
+        response = client.get(url, json=json_, params=params)
         gradient_response = http_client.GradientResponse.interpret_response(response)
 
         return gradient_response
@@ -51,8 +70,8 @@ class ListResources(BaseRepository):
     def _parse_objects(self, data, **kwargs):
         pass
 
-    def list(self, **kwargs):
-        response = self._get(kwargs)
+    def list(self, use_vpc=False, **kwargs):
+        response = self._get(kwargs, use_vpc=use_vpc)
         self._validate_response(response)
         instances = self._get_instances(response, **kwargs)
         return instances
@@ -88,18 +107,13 @@ class GetResource(BaseRepository):
 
 
 @six.add_metaclass(abc.ABCMeta)
-class CreateResource(object):
+class CreateResource(BaseRepository):
     SERIALIZER_CLS = None
+    VALIDATION_ERROR_MESSAGE = "Failed to create resource"
 
-    def __init__(self, client):
-        """
-        :param http_client.API client:
-        """
-        self.client = client
-
-    def create(self, instance):
+    def create(self, instance, use_vpc=False):
         instance_dict = self._get_instance_dict(instance)
-        response = self._send_create_request(instance_dict)
+        response = self._send_create_request(instance_dict, use_vpc)
         self._validate_response(response)
         handle = self._process_response(response)
         return handle
@@ -118,26 +132,12 @@ class CreateResource(object):
         serializer = self.SERIALIZER_CLS()
         return serializer
 
-    def _send_create_request(self, instance_dict):
-        url = self._get_create_url()
-        response = self.client.post(url, json=instance_dict)
+    def _send_create_request(self, instance_dict, use_vpc):
+        url = self.get_request_url(use_vpc=use_vpc)
+        client = self._get_client(use_vpc=use_vpc)
+        response = client.post(url, json=instance_dict)
         gradient_response = http_client.GradientResponse.interpret_response(response)
         return gradient_response
-
-    @abc.abstractmethod
-    def _get_create_url(self):
-        """
-        :rtype str"""
-        return ""
-
-    @staticmethod
-    def _validate_response(response):
-        if not response.ok:
-            msg = "Failed to create resource"
-            errors = MessageExtractor().get_message_from_response_data(response.data)
-            if errors:
-                msg += ": " + errors
-            raise ResourceFetchingError(msg)
 
     def _process_response(self, response):
         try:
@@ -157,8 +157,8 @@ class CreateResource(object):
 class DeleteResource(BaseRepository):
     VALIDATION_ERROR_MESSAGE = "Failed to delete resource"
 
-    def delete(self, id_):
-        url = self.get_request_url(id_=id_)
+    def delete(self, id_, use_vpc=False):
+        url = self.get_request_url(id_=id_, use_vpc=use_vpc)
 
         response = self.api.delete(url)
         self._validate_response(response)
@@ -166,25 +166,41 @@ class DeleteResource(BaseRepository):
 
 @six.add_metaclass(abc.ABCMeta)
 class StartResource(BaseRepository):
-    def start(self, id_):
-        url = self.get_request_url(id_=id_)
-        response = self._send_start_request(url)
+    VALIDATION_ERROR_MESSAGE = "Unable to start instance"
+
+    def start(self, id_, use_vpc=False):
+        url = self.get_request_url(id_=id_, use_vpc=use_vpc)
+        response = self._send_start_request(url, id_, use_vpc=use_vpc)
         self._validate_response(response)
 
-    def _send_start_request(self, url):
-        response = self.client.put(url)
+    def _send_start_request(self, url, id_, use_vpc=False):
+        client = self._get_client(use_vpc=use_vpc)
+        json_data = self._get_request_json({"id": id_})
+        response = self._send_request(client, url, json_data=json_data)
         gradient_response = http_client.GradientResponse.interpret_response(response)
         return gradient_response
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.put(url, json=json_data)
+        return response
 
 
 @six.add_metaclass(abc.ABCMeta)
 class StopResource(BaseRepository):
-    def stop(self, id_):
-        url = self.get_request_url(id_=id_)
-        response = self._send_stop_request(url)
+    VALIDATION_ERROR_MESSAGE = "Unable to stop instance"
+
+    def stop(self, id_, use_vpc=False):
+        url = self.get_request_url(id_=id_, use_vpc=use_vpc)
+        response = self._send_stop_request(url, id_, use_vpc=use_vpc)
         self._validate_response(response)
 
-    def _send_stop_request(self, url):
-        response = self.client.put(url)
+    def _send_stop_request(self, url, id_, use_vpc=False):
+        client = self._get_client(use_vpc=use_vpc)
+        json_data = self._get_request_json({"id": id_})
+        response = self._send_request(client, url, json_data=json_data)
         gradient_response = http_client.GradientResponse.interpret_response(response)
         return gradient_response
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.put(url, json=json_data)
+        return response
