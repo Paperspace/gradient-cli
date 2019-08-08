@@ -367,7 +367,7 @@ class ExperimentsClient(BaseClient):
 
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
-        :param int experiment_type_id: Experiment Type ID [GRPC|MPI] [required]
+        :param int experiment_type_id: Experiment Type ID [required]
         :param str worker_container: Worker container (dockerfile) [required]
         :param str worker_machine_type: Worker machine type  [required]
         :param str worker_command: Worker command  [required]
