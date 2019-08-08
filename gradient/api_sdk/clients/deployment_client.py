@@ -1,7 +1,7 @@
 from gradient import config
 from gradient.api_sdk.utils import MessageExtractor
 from .base_client import BaseClient
-from .. import models, repositories, serializers
+from .. import models, repositories
 from ..exceptions import GradientSdkError
 
 
