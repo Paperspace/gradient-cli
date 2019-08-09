@@ -20,10 +20,10 @@ class BaseJobCommand(BaseCommand):
         client = api_sdk.clients.JobsClient(api_key=api_key, logger=logger_)
         return client
 
-    def _log_message(self, response, success_msg_template, error_msg):
-        if response.ok:
+    def _log_message(self, response_data, is_response_ok, success_msg_template, error_msg):
+        if is_response_ok:
             try:
-                handle = response.json()
+                handle = response_data
             except (ValueError, KeyError):
                 self.logger.log(success_msg_template)
             else:
@@ -31,7 +31,7 @@ class BaseJobCommand(BaseCommand):
                 self.logger.log(msg)
         else:
             try:
-                data = response.json()
+                data = response_data
                 self.logger.log_error_response(data)
             except ValueError:
                 self.logger.error(error_msg)
@@ -102,19 +102,15 @@ class BaseCreateJobCommandMixin(object):
 class DeleteJobCommand(BaseJobCommand):
 
     def execute(self, job_id):
-        response = self.client.delete(job_id)
-        self._log_message(response,
-                          "Job deleted",
-                          "Unknown error while deleting job")
+        self.client.delete(job_id)
+        self.logger.log("Job {} deleted".format(job_id))
 
 
 class StopJobCommand(BaseJobCommand):
 
     def execute(self, job_id):
-        response = self.client.stop(job_id)
-        self._log_message(response,
-                          "Job stopped",
-                          "Unknown error while stopping job")
+        self.client.stop(job_id)
+        self.logger.log("Job {} stopped".format(job_id))
 
 
 class ListJobsCommand(BaseJobCommand):
@@ -127,24 +123,13 @@ class ListJobsCommand(BaseJobCommand):
         self._log_objects_list(instances)
 
     def _get_instances(self, **kwargs):
-        filters = self._get_request_json(kwargs)
 
         try:
-            instances = self.client.list(filters)
+            instances = self.client.list(**kwargs)
         except api_sdk.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
         return instances
-
-    @property
-    def request_url(self):
-        return "/jobs/getJobs/"
-
-    @staticmethod
-    def _get_request_json(kwargs):
-        filters = kwargs.get("filters")
-        json_ = filters or None
-        return json_
 
     @staticmethod
     def _get_table_data(jobs):
@@ -171,17 +156,6 @@ class ListJobsCommand(BaseJobCommand):
             pydoc.pager(table_str)
         else:
             self.logger.log(table_str)
-
-    @staticmethod
-    def _get_objects(response, kwargs):
-        data = response.json()
-        return data
-
-    def _get_response(self, kwargs):
-        json_ = self._get_request_json(kwargs)
-        params = self._get_request_params(kwargs)
-        response = self.client.get(self.request_url, json=json_, params=params)
-        return response
 
     @staticmethod
     def _make_table(table_data):
@@ -236,39 +210,26 @@ class JobLogsCommand(BaseJobCommand):
 class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
 
     def _create(self, json_, data):
-        response = self.client.create(data=data, **json_)
-        job_id = None
-        if response.json_data:
-            job_id = response.json_data.get('id')
-        return job_id
+        return self.client.create(data=data, **json_)
 
 
 class ArtifactsDestroyCommand(BaseJobCommand):
     def execute(self, job_id, files=None):
-        params = None
-        if files:
-            params = {'files': files}
-
-        response = self.client.artifacts_delete(job_id, params)
-        self._log_message(response, "Artifacts destroyed", "Unknown error while destroying artifacts")
+        self.client.artifacts_delete(job_id, files)
+        self.logger.log("Job {} artifacts deleted".format(job_id))
 
 
 class ArtifactsGetCommand(BaseJobCommand):
     def execute(self, job_id):
-        response = self.client.artifacts_get(job_id)
+        artifact = self.client.artifacts_get(job_id)
 
-        self._log_artifacts(response)
+        self._log_artifacts(artifact, job_id)
 
-    def _log_artifacts(self, response):
-        try:
-            artifacts_json = response.json()
-            if response.ok:
-                print_dict_recursive(artifacts_json, self.logger)
-            else:
-                raise BadResponseError(
-                    '{}: {}'.format(artifacts_json['error']['status'], artifacts_json['error']['message']))
-        except (ValueError, KeyError, BadResponseError) as e:
-            self.logger.error("Error occurred while getting artifacts: {}".format(str(e)))
+    def _log_artifacts(self, artifact, job_id):
+        if artifact:
+            print_dict_recursive(artifact, self.logger)
+        else:
+            self.logger.log("No artifacts found for job {}".format(job_id))
 
 
 class ArtifactsListCommand(BaseJobCommand):
@@ -276,35 +237,12 @@ class ArtifactsListCommand(BaseJobCommand):
 
     def execute(self, **kwargs):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            instances = self._get_instances(**kwargs)
+            try:
+                instances = self.client.artifacts_list(**kwargs)
+            except api_sdk.GradientSdkError as e:
+                raise exceptions.ReceivingDataFailedError(e)
 
         self._log_objects_list(instances)
-
-    def _get_instances(self, **kwargs):
-        filters = self._get_request_params(kwargs)
-
-        try:
-            instances = self.client.artifacts_list(filters)
-        except api_sdk.GradientSdkError as e:
-            raise exceptions.ReceivingDataFailedError(e)
-
-        return instances
-
-    @staticmethod
-    def _get_request_params(kwargs):
-        params = {'jobId': kwargs['job_id']}
-
-        files = kwargs.get('files')
-        if files:
-            params['files'] = files
-        size = kwargs.get('size', False)
-        if size:
-            params['size'] = size
-        links = kwargs.get('links', False)
-        if links:
-            params['links'] = links
-
-        return params
 
     def _get_table_data(self, artifacts):
         columns = ['Files']

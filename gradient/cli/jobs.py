@@ -55,12 +55,12 @@ def stop_job(job_id, api_key=None):
 )
 @click.option(
     "--projectId",
-    "projectId",
+    "project_id",
     help="Use to filter jobs by project ID",
 )
 @click.option(
     "--experimentId",
-    "experimentId",
+    "experiment_id",
     help="Use to filter jobs by experiment ID",
 )
 @api_key_option
@@ -68,7 +68,7 @@ def list_jobs(api_key, **filters):
     del_if_value_is_none(filters)
 
     command = jobs_commands.ListJobsCommand(api_key=api_key)
-    command.execute(filters=filters)
+    command.execute(**filters)
 
 
 def common_jobs_create_options(f):
@@ -115,9 +115,9 @@ def create_job(ctx, api_key, **kwargs):
     jsonify_dicts(kwargs)
 
     command = jobs_commands.CreateJobCommand(api_key=api_key, workspace_handler=get_workspace_handler())
-    job = command.execute(kwargs)
-    if job is not None:
-        ctx.invoke(list_logs, job_id=job["handle"], line=0, limit=100, follow=True, api_key=api_key)
+    job_handle = command.execute(kwargs)
+    if job_handle is not None:
+        ctx.invoke(list_logs, job_id=job_handle, line=0, limit=100, follow=True, api_key=api_key)
 
 
 @jobs_group.command("logs", help="List job logs")
@@ -175,10 +175,9 @@ def get_artifacts(job_id, api_key=None):
 @artifacts.command("list", help="List job's artifacts")
 @click.argument("job_id")
 @click.option("--size", "-s", "size", help="Show file size", is_flag=True)
-@click.option("--links", "-l", "links", help="Show file URL", is_flag=True)
+@click.option("--links", "-l", "links", help="Show file URL", is_flag=True, default=False)
 @click.option("--files", "files", help="Get only given file (use at the end * as a wildcard)")
 @api_key_option
 def list_artifacts(job_id, size, links, files, api_key=None):
-    # jobs_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
     command = jobs_commands.ArtifactsListCommand(api_key=api_key)
     command.execute(job_id=job_id, size=size, links=links, files=files)

@@ -15,8 +15,12 @@ class BaseClient(object):
 
         An API key can be created at paperspace.com after you sign in to your account. After obtaining it, you can set
         it in the CLI using the command::
-            ``gradient apiKey XXXXXXXXXXXXXXXXXXX``
-        or you can provide your API key in any command, for example:: ``gradient experiments run ... --apiKey XXXXXXXXXXXXXXXXXXX``
+
+            gradient apiKey XXXXXXXXXXXXXXXXXXX
+
+        or you can provide your API key in any command, for example::
+
+            gradient experiments run ... --apiKey XXXXXXXXXXXXXXXXXXX
 
         :param str api_key: your API key
         :param sdk_logger.Logger logger:
