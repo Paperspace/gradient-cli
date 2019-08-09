@@ -1,5 +1,4 @@
-from . import DeploymentsClient, ExperimentsClient, HyperparameterJobsClient, ModelsClient
-from gradient.config import config
+from . import DeploymentsClient, ExperimentsClient, HyperparameterJobsClient, ModelsClient, ProjectsClient
 from .job_client import JobsClient
 from .. import logger as sdk_logger
 
@@ -14,8 +13,5 @@ class SdkClient(object):
         self.deployments = DeploymentsClient(api_key=api_key, logger=logger)
         self.hyperparameters = HyperparameterJobsClient(api_key=api_key, logger=logger)
         self.models = ModelsClient(api_key=api_key, logger=logger)
-        self.jobs = JobsClient(
-            api_key=api_key,
-            logger=logger,
-            api_url=config.CONFIG_HOST,
-        )
+        self.jobs = JobsClient(api_key=api_key, logger=logger)
+        self.projects = ProjectsClient(api_key=api_key, logger=logger)

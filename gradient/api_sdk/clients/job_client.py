@@ -28,13 +28,10 @@ class JobsClient(BaseClient):
         )
 
     """
-    HOST_URL = config.CONFIG_HOST
 
     def __init__(self, *args, **kwargs):
         super(JobsClient, self).__init__(*args, **kwargs)
-        self.logs_client = http_client.API(config.CONFIG_LOG_HOST,
-                                           api_key=self.api_key,
-                                           logger=self.logger)
+        self.client = http_client.API(config.CONFIG_HOST, api_key=self.api_key, logger=self.logger)
 
     def create(
             self,
@@ -174,7 +171,7 @@ class JobsClient(BaseClient):
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
         )
-        handle = CreateJob(self.client).create_job(job, data)
+        handle = CreateJob(self.api_key, self.logger).create_job(job, data)
         return handle
 
     def delete(self, job_id):
@@ -192,7 +189,7 @@ class JobsClient(BaseClient):
         :param str job_id: id of job that you want to remove
         :raises: exceptions.GradientSdkError
         """
-        DeleteJob(self.client).delete(job_id)
+        DeleteJob(self.api_key, self.logger).delete(job_id)
 
     def stop(self, job_id):
         """
@@ -209,7 +206,7 @@ class JobsClient(BaseClient):
         :param job_id: id of job that we want to stop
         :raises: exceptions.GradientSdkError
         """
-        StopJob(self.client).stop(job_id)
+        StopJob(self.api_key, self.logger).stop(job_id)
 
     def list(self, project_id=None, project=None, experiment_id=None):
         """
@@ -238,7 +235,8 @@ class JobsClient(BaseClient):
         :returns: list of job models
         :rtype: list
         """
-        return ListJobs(self.client).list(project_id=project_id, project=project, experiment_id=experiment_id)
+        return ListJobs(self.api_key, self.logger).list(project_id=project_id, project=project,
+                                                        experiment_id=experiment_id)
 
     def logs(self, job_id, line=0, limit=10000):
         """
@@ -261,7 +259,7 @@ class JobsClient(BaseClient):
         :returns: list of formatted logs lines
         :rtype: list
         """
-        logs = ListJobLogs(self.logs_client).list(job_id=job_id, line=line, limit=limit)
+        logs = ListJobLogs(self.api_key, self.logger).list(job_id=job_id, line=line, limit=limit)
         return logs
 
     def artifacts_delete(self, job_id, files=None):
@@ -283,7 +281,7 @@ class JobsClient(BaseClient):
 
         :raises: exceptions.GradientSdkError
         """
-        DeleteJobArtifacts(self.client).delete(id_=job_id, files=files)
+        DeleteJobArtifacts(self.api_key, self.logger).delete(id_=job_id, files=files)
 
     def artifacts_get(self, job_id):
         """
@@ -302,7 +300,7 @@ class JobsClient(BaseClient):
         :returns: Information about artifact place
         :rtype: dict
         """
-        data = GetJobArtifacts(self.client).get(jobId=job_id)
+        data = GetJobArtifacts(self.api_key, self.logger).get(jobId=job_id)
         return data
 
     def artifacts_list(self, job_id, files=None, size=False, links=True):
@@ -328,4 +326,4 @@ class JobsClient(BaseClient):
         :returns: list of files with description if specified from job artifacts.
         :rtype: list
         """
-        return ListJobArtifacts(self.client).list(jobId=job_id, files=files, links=links, size=size)
+        return ListJobArtifacts(self.api_key, self.logger).list(jobId=job_id, files=files, links=links, size=size)

@@ -1,15 +1,21 @@
+from gradient import config
 from .. import serializers
 from ..repositories.common import CreateResource, ListResources
 
 
-class CreateProject(CreateResource):
+class GetBaseProjectsApiUrlMixin(object):
+    def _get_api_url(self, **_):
+        return config.config.CONFIG_HOST
+
+
+class CreateProject(GetBaseProjectsApiUrlMixin, CreateResource):
     SERIALIZER_CLS = serializers.Project
 
-    def _get_create_url(self):
+    def get_request_url(self, **_):
         return "/projects/"
 
 
-class ListProjects(ListResources):
+class ListProjects(GetBaseProjectsApiUrlMixin, ListResources):
     def get_request_url(self, **kwargs):
         return "/projects/"
 

@@ -2,9 +2,23 @@ import abc
 
 import six
 
+from gradient import config
 from .common import ListResources, GetResource, CreateResource, StartResource, StopResource
 from .. import serializers
 from ..serializers import utils
+
+
+class GetBaseExperimentApiUrlMixin(object):
+    def _get_api_url(self, **_):
+        return config.config.CONFIG_EXPERIMENTS_HOST
+
+
+class GetBaseExperimentApiUrlBasedOnVpcSettingMixin(object):
+    def _get_api_url(self, **kwargs):
+        if kwargs.get("use_vpc") or config.config.USE_VPC:
+            return config.config.CONFIG_EXPERIMENTS_HOST_V2
+
+        return config.config.CONFIG_EXPERIMENTS_HOST
 
 
 class ParseExperimentDictMixin(object):
@@ -18,7 +32,7 @@ class ParseExperimentDictMixin(object):
         return experiment
 
 
-class ListExperiments(ParseExperimentDictMixin, ListResources):
+class ListExperiments(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, ListResources):
     def get_request_url(self, **kwargs):
         return "/experiments/"
 
@@ -57,7 +71,7 @@ class ListExperiments(ParseExperimentDictMixin, ListResources):
         return params
 
 
-class GetExperiment(ParseExperimentDictMixin, GetResource):
+class GetExperiment(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, GetResource):
     def _parse_object(self, experiment_dict, **kwargs):
         experiment_dict = experiment_dict["data"]
         experiment_dict.update(experiment_dict["templateHistory"]["params"])
@@ -69,7 +83,7 @@ class GetExperiment(ParseExperimentDictMixin, GetResource):
         return url
 
 
-class ListExperimentLogs(ListResources):
+class ListExperimentLogs(GetBaseExperimentApiUrlMixin, ListResources):
     def get_request_url(self, **kwargs):
         return "/jobs/logs"
 
@@ -113,8 +127,8 @@ class ListExperimentLogs(ListResources):
 
 
 @six.add_metaclass(abc.ABCMeta)
-class BaseCreateExperiment(CreateResource):
-    def _get_create_url(self):
+class BaseCreateExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, CreateResource):
+    def get_request_url(self, **_):
         return "/experiments/"
 
 
@@ -127,26 +141,26 @@ class CreateMultiNodeExperiment(BaseCreateExperiment):
 
 
 class RunSingleNodeExperiment(CreateSingleNodeExperiment):
-    def _get_create_url(self):
+    def get_request_url(self, **_):
         return "/experiments/run/"
 
 
 class RunMultiNodeExperiment(CreateMultiNodeExperiment):
-    def _get_create_url(self):
+    def get_request_url(self, **_):
         return "/experiments/run/"
 
 
-class StartExperiment(StartResource):
+class StartExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, StartResource):
     VALIDATION_ERROR_MESSAGE = "Failed to start experiment"
 
-    def get_request_url(self, id_):
+    def get_request_url(self, id_, **_):
         url = "/experiments/{}/start/".format(id_)
         return url
 
 
-class StopExperiment(StopResource):
+class StopExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, StopResource):
     VALIDATION_ERROR_MESSAGE = "Failed to stop experiment"
 
-    def get_request_url(self, id_):
+    def get_request_url(self, id_, **_):
         url = "/experiments/{}/stop/".format(id_)
         return url

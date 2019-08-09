@@ -9,6 +9,7 @@ from tests import example_responses, MockResponse
 
 class TestExperimentsCreateSingleNode(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/"
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -67,6 +68,16 @@ class TestExperimentsCreateSingleNode(object):
         "registryUrl": u"registryUrl",
         "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
     }
+    BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
+        "experiments", "create", "singlenode",
+        "--name", "exp1",
+        "--projectId", "testHandle",
+        "--container", "testContainer",
+        "--machineType", "testType",
+        "--command", "testCommand",
+        "--workspaceUrl", "some-workspace",
+        "--vpc",
+    ]
     RESPONSE_JSON_200 = {"handle": "sadkfhlskdjh", "message": "success"}
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
     EXPECTED_STDOUT = "New experiment created with ID: sadkfhlskdjh\n"
@@ -75,7 +86,7 @@ class TestExperimentsCreateSingleNode(object):
     RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'
     EXPECTED_STDOUT_PROJECT_NOT_FOUND = "handle: wrong_handle\nProject not found\n"
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
@@ -93,7 +104,24 @@ class TestExperimentsCreateSingleNode(object):
                                              data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_data_to_v2_url_when_vpc_switch_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(self,
                                                                                                         post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
@@ -111,7 +139,7 @@ class TestExperimentsCreateSingleNode(object):
         assert result.exit_code == 0
         assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_wrong_project_id_was_given(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_404_PROJECT_NOT_FOUND, 404,
                                                  self.RESPONSE_CONTENT_404_PROJECT_NOT_FOUND)
@@ -131,6 +159,7 @@ class TestExperimentsCreateSingleNode(object):
 
 class TestExperimentsCreateMultiNode(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/"
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -225,7 +254,25 @@ class TestExperimentsCreateMultiNode(object):
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
     EXPECTED_STDOUT = "New experiment created with ID: sadkfhlskdjh\n"
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.post")
+    BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
+        "experiments", "create", "multinode",
+        "--name", "multinode_mpi",
+        "--projectId", "prq70zy79",
+        "--experimentType", "GRPC",
+        "--workerContainer", "wcon",
+        "--workerMachineType", "mty",
+        "--workerCommand", "wcom",
+        "--workerCount", 2,
+        "--parameterServerContainer", "pscon",
+        "--parameterServerMachineType", "psmtype",
+        "--parameterServerCommand", "ls",
+        "--parameterServerCount", 2,
+        "--workerContainerUser", "usr",
+        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+        "--vpc",
+    ]
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
@@ -242,7 +289,7 @@ class TestExperimentsCreateMultiNode(object):
                                              data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(self,
                                                                                                         post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
@@ -259,9 +306,27 @@ class TestExperimentsCreateMultiNode(object):
         assert self.EXPECTED_STDOUT in result.output
         assert result.exit_code == 0
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_data_to_v2_url_when_vpc_switch_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+
 
 class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     URL = "https://services.paperspace.io/experiments/v1/experiments/run/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/run/"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "run", "singlenode",
         "--name", "exp1",
@@ -293,11 +358,22 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--apiKey", "some_key",
         "--no-logs",
     ]
+    BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
+        "experiments", "run", "singlenode",
+        "--name", "exp1",
+        "--projectId", "testHandle",
+        "--container", "testContainer",
+        "--machineType", "testType",
+        "--command", "testCommand",
+        "--workspaceUrl", "some-workspace",
+        "--vpc",
+    ]
     EXPECTED_STDOUT = "New experiment created and started with ID: sadkfhlskdjh\n"
 
 
 class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
     URL = "https://services.paperspace.io/experiments/v1/experiments/run/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/run/"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "run", "multinode",
         "--name", "multinode_mpi",
@@ -345,6 +421,23 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--parameterServerRegistryUrl", "psrurl",
         "--apiKey", "some_key",
         "--no-logs",
+    ]
+    BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
+        "experiments", "run", "multinode",
+        "--name", "multinode_mpi",
+        "--projectId", "prq70zy79",
+        "--experimentType", "GRPC",
+        "--workerContainer", "wcon",
+        "--workerMachineType", "mty",
+        "--workerCommand", "wcom",
+        "--workerCount", 2,
+        "--parameterServerContainer", "pscon",
+        "--parameterServerMachineType", "psmtype",
+        "--parameterServerCommand", "ls",
+        "--parameterServerCount", 2,
+        "--workerContainerUser", "usr",
+        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+        "--vpc",
     ]
     EXPECTED_STDOUT = "New experiment created and started with ID: sadkfhlskdjh\n"
 
@@ -522,7 +615,7 @@ class TestExperimentDetail(object):
 +---------------------+----------------+
 """
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_single_node_experiment_details_in_a_table(self, get_patched):
         get_patched.return_value = MockResponse(self.SINGLE_NODE_RESPONSE_JSON, 200, "fake content")
 
@@ -538,7 +631,7 @@ class TestExperimentDetail(object):
         assert result.exit_code == 0
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_multi_node_experiment_details_in_a_table(self, get_patched):
         get_patched.return_value = MockResponse(self.MULTI_NODE_DETAILS_JSON, 200, "fake content")
 
@@ -553,7 +646,7 @@ class TestExperimentDetail(object):
         assert result.output == self.MULTI_NODE_DETAILS_STDOUT, result.exc_info[1]
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_request_content_when_response_data_was_malformed(self, get_patched):
         get_patched.return_value = MockResponse({}, 200, "fake content")
         expected_output = "Error parsing response data: fake content\n"
@@ -588,7 +681,7 @@ class TestExperimentList(object):
     RESPONSE_JSON_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
     EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Failed to fetch data: Incorrect API Key provided\nForbidden\n"
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -604,7 +697,7 @@ class TestExperimentList(object):
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.commands.common.pydoc")
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
                                                                                                      pydoc_patched):
         list_json = {"data": self.LIST_JSON["data"] * 40}
@@ -621,7 +714,7 @@ class TestExperimentList(object):
         pydoc_patched.pager.assert_called_once()
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments_filtered_with_two_projects(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_OF_EXPERIMENTS_FILTERED_WITH_TWO_PROJECTS, 200,
                                                 "fake content")
@@ -638,7 +731,7 @@ class TestExperimentList(object):
 
         assert result.output == example_responses.LIST_OF_EXPERIMENTS_FILTERED_WITH_TWO_PROJECTS_STDOUT
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments_filtered_with_two_projects_but_none_found(
             self, get_patched):
         get_patched.return_value = MockResponse(example_responses.LIST_OF_EXPERIMENTS_FILTERED_BUT_NONE_FOUND, 200,
@@ -656,7 +749,7 @@ class TestExperimentList(object):
 
         assert result.output == "No data found\n"
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WHEN_WRONG_API_KEY_WAS_USED,
                                                 status_code=403)
@@ -675,7 +768,9 @@ class TestExperimentList(object):
 
 class TestStartExperiment(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/some-id/start/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/some-id/start/"
     COMMAND = ["experiments", "start", "some-id"]
+    COMMAND_WITH_VPC_FLAG = ["experiments", "start", "some-id", "--vpc"]
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -683,7 +778,7 @@ class TestStartExperiment(object):
     RESPONSE_JSON = {"message": "success"}
     START_STDOUT = "Experiment started\n"
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_put_request_and_print_confirmation(self, put_patched):
         put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
         expected_headers = http_client.default_headers.copy()
@@ -698,7 +793,22 @@ class TestStartExperiment(object):
                                             json=None,
                                             params=None)
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    def test_should_send_request_to_api_v2_when_vcp_flag_was_used(self, put_patched):
+        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
+        expected_headers = http_client.default_headers.copy()
+        expected_headers["X-API-Key"] = "some_key"
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_VPC_FLAG)
+
+        assert result.output == self.START_STDOUT, result.exc_info
+        put_patched.assert_called_once_with(self.URL_V2,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params=None)
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_put_request_with_changed_api_key_when_api_key_option_was_provided(self, put_patched):
         put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
 
@@ -714,15 +824,17 @@ class TestStartExperiment(object):
 
 class TestStopExperiment(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/some-id/stop/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/some-id/stop/"
     COMMAND = ["experiments", "stop", "some-id"]
+    COMMAND_WITH_VPC_FLAG = ["experiments", "stop", "some-id", "--vpc"]
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     COMMAND_WITH_API_KEY = ["experiments", "stop", "some-id", "--apiKey", "some_key"]
     RESPONSE_JSON = {"message": "success"}
-    START_STDOUT = "Experiment stopped\n"
+    EXPECTED_STDOUT = "Experiment stopped\n"
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_put_request_and_print_confirmation(self, put_patched):
         put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
         expected_headers = http_client.default_headers.copy()
@@ -731,20 +843,35 @@ class TestStopExperiment(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        assert result.output == self.START_STDOUT, result.exc_info
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         put_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    def test_should_send_request_to_api_v2_when_vcp_flag_was_used(self, put_patched):
+        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
+        expected_headers = http_client.default_headers.copy()
+        expected_headers["X-API-Key"] = "some_key"
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_VPC_FLAG)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        put_patched.assert_called_once_with(self.URL_V2,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params=None)
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_put_request_with_changed_api_key_when_api_key_option_was_provided(self, put_patched):
         put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
 
-        assert result.output == self.START_STDOUT
+        assert result.output == self.EXPECTED_STDOUT
         put_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
@@ -761,7 +888,7 @@ class TestExperimentLogs(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_all_received_logs_when_logs_command_was_used(self, get_patched):
         get_patched.return_value = MockResponse(json_data=example_responses.LIST_OF_LOGS_FOR_EXPERIMENT,
                                                 status_code=200)
@@ -772,7 +899,7 @@ class TestExperimentLogs(object):
         assert "Downloading https://storage.googleapis.com/cvdf-datasets/mnist/t10k-labels" \
                "-idx1-ubyte.gz to /tmp/tmpbrss4txl.gz" in result.output
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_all_received_logs_when_logs_command_was_used_with_follow_flag(self, get_patched):
         get_patched.return_value = MockResponse(json_data=example_responses.LIST_OF_LOGS_FOR_EXPERIMENT,
                                                 status_code=200)
@@ -783,7 +910,7 @@ class TestExperimentLogs(object):
         assert "Downloading https://storage.googleapis.com/cvdf-datasets/mnist/t10k-labels" \
                "-idx1-ubyte.gz to /tmp/tmpbrss4txl.gz" in result.output
 
-    @mock.patch("gradient.api_sdk.clients.experiment_client.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_error_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse(content="Authentication failed",
                                                 status_code=401)

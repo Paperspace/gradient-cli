@@ -1,3 +1,4 @@
+from gradient import config
 from .. import serializers
 from ..repositories.common import ListResources
 
@@ -12,7 +13,12 @@ class ParseModelDictMixin(object):
         return model
 
 
-class ListModels(ParseModelDictMixin, ListResources):
+class GetBaseModelsApiUrlMixin(object):
+    def _get_api_url(self, **_):
+        return config.config.CONFIG_HOST
+
+
+class ListModels(GetBaseModelsApiUrlMixin, ParseModelDictMixin, ListResources):
     def get_request_url(self, **kwargs):
         return "/mlModels/getModelList/"
 

@@ -41,6 +41,7 @@ class TestRunCommand(object):
         expected_headers.update({
             'Content-Type': "mock/multipart"
         })
+        assert result.exit_code == 0, result.exc_info
         post_patched.assert_called_with(self.url,
                                         params=None,
                                         data=mock.ANY,
@@ -54,8 +55,6 @@ class TestRunCommand(object):
                                             'container': u'paperspace/tensorflow-python',
                                             'machineType': 'G1',
                                         })
-
-        assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_run_python_command_with_args_and_no_workspace(self, post_patched):

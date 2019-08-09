@@ -7,10 +7,9 @@ from halo import halo
 
 from gradient import version, logger as gradient_logger, api_sdk, exceptions
 from gradient.api_sdk.clients import http_client
-from gradient.config import config
 from gradient.commands import common
+from gradient.config import config
 from gradient.utils import get_terminal_lines
-
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "gradient-cli",
@@ -49,10 +48,10 @@ class _DeploymentCommand(object):
 
 
 class CreateDeploymentCommand(_DeploymentCommand):
-    def execute(self, **kwargs):
+    def execute(self, use_vpc=False, **kwargs):
         with halo.Halo(text="Creating new experiment", spinner="dots"):
             try:
-                deployment_id = self.deployment_client.create(**kwargs)
+                deployment_id = self.deployment_client.create(use_vpc=use_vpc, **kwargs)
             except api_sdk.GradientSdkError as e:
                 self.logger.error(e)
             else:
@@ -62,16 +61,16 @@ class CreateDeploymentCommand(_DeploymentCommand):
 class ListDeploymentsCommand(_DeploymentCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
-    def execute(self, **kwargs):
+    def execute(self, use_vpc=False, **kwargs):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            instances = self._get_instances(**kwargs)
+            instances = self._get_instances(use_vpc=use_vpc, **kwargs)
 
         self._log_objects_list(instances)
 
-    def _get_instances(self, **kwargs):
+    def _get_instances(self, use_vpc=False, **kwargs):
         filters = self._get_request_json(kwargs)
         try:
-            instances = self.deployment_client.list(filters)
+            instances = self.deployment_client.list(filters=filters, use_vpc=use_vpc)
         except api_sdk.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
@@ -119,12 +118,12 @@ class ListDeploymentsCommand(_DeploymentCommand):
 
 
 class StartDeploymentCommand(_DeploymentCommand):
-    def execute(self, **kwargs):
-        response = self.deployment_client.start(**kwargs)
-        self.logger.log_response(response, "Deployment started", "Unknown error while starting the deployment")
+    def execute(self, use_vpc=False, **kwargs):
+        self.deployment_client.start(use_vpc=use_vpc, **kwargs)
+        self.logger.log("Deployment started")
 
 
 class StopDeploymentCommand(_DeploymentCommand):
-    def execute(self, **kwargs):
-        response = self.deployment_client.stop(**kwargs)
-        self.logger.log_response(response, "Deployment stopped", "Unknown error while stopping the deployment")
+    def execute(self, use_vpc=False, **kwargs):
+        self.deployment_client.stop(use_vpc=use_vpc, **kwargs)
+        self.logger.log("Deployment stopped")

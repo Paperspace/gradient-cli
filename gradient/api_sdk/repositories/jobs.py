@@ -1,6 +1,13 @@
-from gradient.api_sdk.clients import http_client
+from gradient import config
+from gradient.api_sdk import serializers
 from .common import ListResources, CreateResource, BaseRepository, GetResource
+from ..clients import http_client
 from ..serializers import JobSchema, LogRowSchema
+
+
+class GetBaseJobApiUrlMixin(object):
+    def _get_api_url(self, **_):
+        return config.config.CONFIG_HOST
 
 
 class ParseJobDictMixin(object):
@@ -17,7 +24,7 @@ class ParseJobDictMixin(object):
         return job
 
 
-class ListJobs(ParseJobDictMixin, ListResources):
+class ListJobs(GetBaseJobApiUrlMixin, ListResources):
 
     def get_request_url(self, **kwargs):
         return "/jobs/getJobs/"
@@ -30,6 +37,10 @@ class ListJobs(ParseJobDictMixin, ListResources):
             jobs.append(job)
 
         return jobs
+
+    def _parse_object(self, job_dict):
+        job = serializers.JobSchema().get_instance(job_dict)
+        return job
 
     def _get_request_json(self, kwargs):
         filters = dict()
@@ -47,6 +58,8 @@ class ListJobs(ParseJobDictMixin, ListResources):
 
 
 class ListJobLogs(ListResources):
+    def _get_api_url(self, **_):
+        return config.config.CONFIG_LOG_HOST
 
     def get_request_url(self, **kwargs):
         return "/jobs/logs"
@@ -81,17 +94,18 @@ class ListJobLogs(ListResources):
         return params
 
 
-class CreateJob(CreateResource):
+class CreateJob(GetBaseJobApiUrlMixin, CreateResource):
     SERIALIZER_CLS = JobSchema
     HANDLE_FIELD = "id"
 
-    def _get_create_url(self):
+    def get_request_url(self, **kwargs):
         return "/jobs/createJob/"
 
     def create_job(self, instance, data):
         instance_dict = self._get_instance_dict(instance)
-        url = self._get_create_url()
-        response = self.client.post(url, json=instance_dict, data=data)
+        url = self.get_request_url()
+        client = self._get_client()
+        response = client.post(url, json=instance_dict, data=data)
         gradient_response = http_client.GradientResponse.interpret_response(response)
         self._validate_response(gradient_response)
         handle = self._process_response(response)
@@ -102,7 +116,16 @@ class CreateJob(CreateResource):
         return handle
 
 
-class DeleteJob(BaseRepository):
+class RunJob(CreateJob):
+    def __init__(self, api_key, logger, client):
+        super(RunJob, self).__init__(api_key, logger)
+        self.http_client = client
+
+    def _get_client(self, use_vpc=False):
+        return self.http_client
+
+
+class DeleteJob(GetBaseJobApiUrlMixin, BaseRepository):
 
     def get_request_url(self, **kwargs):
         return "/job/{}/destroy/".format(kwargs.get("id_"))
@@ -113,7 +136,7 @@ class DeleteJob(BaseRepository):
         self._validate_response(response)
 
 
-class StopJob(BaseRepository):
+class StopJob(GetBaseJobApiUrlMixin, BaseRepository):
 
     def get_request_url(self, **kwargs):
         return "/job/{}/stop/".format(kwargs.get('id_'))
@@ -124,7 +147,7 @@ class StopJob(BaseRepository):
         self._validate_response(response)
 
 
-class ListJobArtifacts(ListResources):
+class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
     def _parse_objects(self, data, **kwargs):
         return data
 
@@ -148,7 +171,7 @@ class ListJobArtifacts(ListResources):
         return params
 
 
-class DeleteJobArtifacts(BaseRepository):
+class DeleteJobArtifacts(GetBaseJobApiUrlMixin, BaseRepository):
     VALIDATION_ERROR_MESSAGE = "Failed to delete resource"
 
     def get_request_url(self, **kwargs):
@@ -159,7 +182,8 @@ class DeleteJobArtifacts(BaseRepository):
 
         params = self._get_request_params(kwargs)
 
-        response = self.client.post(url, json=kwargs.get("json"), params=params)
+        client = self._get_client()
+        response = client.post(url, json=kwargs.get("json"), params=params)
         self._validate_response(response)
 
     def _get_request_params(self, kwargs):
@@ -171,7 +195,7 @@ class DeleteJobArtifacts(BaseRepository):
         return filters or None
 
 
-class GetJobArtifacts(GetResource):
+class GetJobArtifacts(GetBaseJobApiUrlMixin, GetResource):
     def _parse_object(self, data, **kwargs):
         return data
 

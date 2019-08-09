@@ -1,11 +1,8 @@
-from gradient.config import config
 from .base_client import BaseClient
 from .. import models, repositories
 
 
 class ProjectsClient(BaseClient):
-    HOST_URL = config.CONFIG_HOST
-
     def create(self, name, repository_name=None, repository_url=None):
         """Create new project
 
@@ -43,7 +40,7 @@ class ProjectsClient(BaseClient):
             repository_url=repository_url,
         )
 
-        handle = repositories.CreateProject(self.client).create(project)
+        handle = repositories.CreateProject(api_key=self.api_key, logger=self.logger).create(project)
         return handle
 
     def list(self):
@@ -80,5 +77,6 @@ class ProjectsClient(BaseClient):
         :returns: list of projects
         :rtype: list[models.Project]
         """
-        projects = repositories.ListProjects(self.client).list()
+
+        projects = repositories.ListProjects(api_key=self.api_key, logger=self.logger).list()
         return projects

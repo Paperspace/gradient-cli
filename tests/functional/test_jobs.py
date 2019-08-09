@@ -2,8 +2,8 @@ import mock
 import pytest
 from click.testing import CliRunner
 
-from gradient.cli import cli
 from gradient.api_sdk.clients.http_client import default_headers
+from gradient.cli import cli
 from tests import example_responses, MockResponse
 
 
@@ -78,11 +78,11 @@ class TestListJobs(TestJobs):
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=None,
                                        params=None)
-        assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.get")
@@ -271,13 +271,13 @@ class TestJobArtifactsCommands(TestJobs):
         result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--files", file_names, "--apiKey",
                                               "some_key"])
 
+        assert result.exit_code == 0, result.exc_info
         post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy/".format(self.URL, job_id),
                                         files=None,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params={"files": file_names},
                                         data=None)
-        assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_valid_post_request_when_destroying_artifacts_without_files_specified(self, post_patched):
@@ -416,6 +416,7 @@ class TestJobsCreate(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
 
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
         post_patched.assert_called_once_with(self.URL + '/jobs/createJob/',
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
@@ -423,5 +424,4 @@ class TestJobsCreate(object):
                                              files=None,
                                              data=None)
 
-        assert self.EXPECTED_STDOUT in result.output
         assert result.exit_code == 0

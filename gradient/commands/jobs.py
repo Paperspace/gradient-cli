@@ -6,10 +6,12 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import api_sdk, exceptions
+from gradient import api_sdk, exceptions, Job, config
+from gradient.api_sdk.clients import http_client
+from gradient.api_sdk.clients.base_client import BaseClient
+from gradient.api_sdk.repositories.jobs import RunJob
 from gradient.api_sdk.utils import print_dict_recursive
 from gradient.commands.common import BaseCommand
-from gradient.exceptions import BadResponseError
 from gradient.utils import get_terminal_lines
 from gradient.workspace import MultipartEncoder
 
@@ -211,6 +213,81 @@ class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
 
     def _create(self, json_, data):
         return self.client.create(data=data, **json_)
+
+
+class JobRunClient(BaseClient):
+    def __init__(self, http_client_, *args, **kwargs):
+        super(JobRunClient, self).__init__(*args, **kwargs)
+        self.client = http_client_
+
+    def create(
+            self,
+            machine_type,
+            container,
+            project_id,
+            data=None,
+            name=None,
+            command=None,
+            ports=None,
+            is_public=None,
+            workspace=None,
+            workspace_archive=None,
+            workspace_url=None,
+            working_directory=None,
+            ignore_files=None,
+            experiment_id=None,
+            job_env=None,
+            use_dockerfile=None,
+            is_preemptible=None,
+            project=None,
+            started_by_user_id=None,
+            rel_dockerfile_path=None,
+            registry_username=None,
+            registry_password=None,
+            cluster=None,
+            cluster_id=None,
+            node_attrs=None,
+            workspace_file_name=None,
+    ):
+        job = Job(
+            machine_type=machine_type,
+            container=container,
+            project_id=project_id,
+            name=name,
+            command=command,
+            ports=ports,
+            is_public=is_public,
+            workspace=workspace,
+            workspace_archive=workspace_archive,
+            workspace_url=workspace_url,
+            working_directory=working_directory,
+            ignore_files=ignore_files,
+            experiment_id=experiment_id,
+            job_env=job_env,
+            use_dockerfile=use_dockerfile,
+            is_preemptible=is_preemptible,
+            project=project,
+            started_by_user_id=started_by_user_id,
+            rel_dockerfile_path=rel_dockerfile_path,
+            registry_username=registry_username,
+            registry_password=registry_password,
+            cluster=cluster,
+            cluster_id=cluster_id,
+            target_node_attrs=node_attrs,
+            workspace_file_name=workspace_file_name,
+        )
+        handle = RunJob(self.api_key, self.logger, self.client).create_job(job, data)
+        return handle
+
+
+class RunJobCommand(CreateJobCommand):
+    def _get_client(self, api_key, logger_):
+        if hasattr(self, "client"):
+            return self.client
+
+        http_client_ = http_client.API(config.config.CONFIG_HOST, api_key=api_key, logger=logger_)
+        client = JobRunClient(http_client_, logger_, http_client_)
+        return client
 
 
 class ArtifactsDestroyCommand(BaseJobCommand):
