@@ -1,0 +1,738 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>gradient.api_sdk.repositories package &#8212; Gradient-CLI  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/gradient.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="gradient.api_sdk.serializers package" href="gradient.api_sdk.serializers.html" />
+    <link rel="prev" title="gradient.api_sdk.models package" href="gradient.api_sdk.models.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Gradient-CLI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="gradient.html">gradient package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="gradient.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.config">gradient.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.constants">gradient.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.exceptions">gradient.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.logger">gradient.logger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.login">gradient.login module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.main">gradient.main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.utils">gradient.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.version">gradient.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.version_checker">gradient.version_checker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.workspace">gradient.workspace module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">gradient</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="gradient.html">gradient package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="gradient.html">gradient package</a><ul>
+  <li><a href="gradient.api_sdk.html">gradient.api_sdk package</a><ul>
+      <li>Previous: <a href="gradient.api_sdk.models.html" title="previous chapter">gradient.api_sdk.models package</a></li>
+      <li>Next: <a href="gradient.api_sdk.serializers.html" title="next chapter">gradient.api_sdk.serializers package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="gradient-api-sdk-repositories-package">
+<h1>gradient.api_sdk.repositories package<a class="headerlink" href="#gradient-api-sdk-repositories-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gradient.api_sdk.repositories.common">
+<span id="gradient-api-sdk-repositories-common-module"></span><h2>gradient.api_sdk.repositories.common module<a class="headerlink" href="#module-gradient.api_sdk.repositories.common" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.common.BaseRepository">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.common.</code><code class="sig-name descname">BaseRepository</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.BaseRepository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.common.BaseRepository.VALIDATION_ERROR_MESSAGE">
+<code class="sig-name descname">VALIDATION_ERROR_MESSAGE</code><em class="property"> = 'Failed to fetch data'</em><a class="headerlink" href="#gradient.api_sdk.repositories.common.BaseRepository.VALIDATION_ERROR_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.common.BaseRepository.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.BaseRepository.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.common.BaseRepository.get_request_url">
+<em class="property">abstract </em><code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.BaseRepository.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.common.ListResources">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.common.</code><code class="sig-name descname">ListResources</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.ListResources" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.BaseRepository" title="gradient.api_sdk.repositories.common.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.BaseRepository</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.common.ListResources.list">
+<code class="sig-name descname">list</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.ListResources.list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.common.GetResource">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.common.</code><code class="sig-name descname">GetResource</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.GetResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.BaseRepository" title="gradient.api_sdk.repositories.common.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.BaseRepository</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.common.GetResource.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.GetResource.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.common.CreateResource">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.common.</code><code class="sig-name descname">CreateResource</code><span class="sig-paren">(</span><em class="sig-param">client</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.CreateResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.common.CreateResource.SERIALIZER_CLS">
+<code class="sig-name descname">SERIALIZER_CLS</code><em class="property"> = None</em><a class="headerlink" href="#gradient.api_sdk.repositories.common.CreateResource.SERIALIZER_CLS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.common.CreateResource.HANDLE_FIELD">
+<code class="sig-name descname">HANDLE_FIELD</code><em class="property"> = 'handle'</em><a class="headerlink" href="#gradient.api_sdk.repositories.common.CreateResource.HANDLE_FIELD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.common.CreateResource.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">client</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.CreateResource.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>client</strong> (<a class="reference internal" href="gradient.api_sdk.clients.html#gradient.api_sdk.clients.http_client.API" title="gradient.api_sdk.clients.http_client.API"><em>http_client.API</em></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.common.CreateResource.create">
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">instance</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.CreateResource.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.common.DeleteResource">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.common.</code><code class="sig-name descname">DeleteResource</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.DeleteResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.BaseRepository" title="gradient.api_sdk.repositories.common.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.BaseRepository</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.common.DeleteResource.VALIDATION_ERROR_MESSAGE">
+<code class="sig-name descname">VALIDATION_ERROR_MESSAGE</code><em class="property"> = 'Failed to delete resource'</em><a class="headerlink" href="#gradient.api_sdk.repositories.common.DeleteResource.VALIDATION_ERROR_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.common.DeleteResource.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">id_</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.DeleteResource.delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.common.StartResource">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.common.</code><code class="sig-name descname">StartResource</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.StartResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.BaseRepository" title="gradient.api_sdk.repositories.common.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.BaseRepository</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.common.StartResource.start">
+<code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">id_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.StartResource.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.common.StopResource">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.common.</code><code class="sig-name descname">StopResource</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.StopResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.BaseRepository" title="gradient.api_sdk.repositories.common.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.BaseRepository</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.common.StopResource.stop">
+<code class="sig-name descname">stop</code><span class="sig-paren">(</span><em class="sig-param">id_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.common.StopResource.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.repositories.deployments">
+<span id="gradient-api-sdk-repositories-deployments-module"></span><h2>gradient.api_sdk.repositories.deployments module<a class="headerlink" href="#module-gradient.api_sdk.repositories.deployments" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.deployments.ListDeployments">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.deployments.</code><code class="sig-name descname">ListDeployments</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.deployments.ListDeployments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.ListResources" title="gradient.api_sdk.repositories.common.ListResources"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.ListResources</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.deployments.ListDeployments.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.deployments.ListDeployments.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.deployments.CreateDeployment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.deployments.</code><code class="sig-name descname">CreateDeployment</code><span class="sig-paren">(</span><em class="sig-param">client</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.deployments.CreateDeployment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.CreateResource" title="gradient.api_sdk.repositories.common.CreateResource"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.CreateResource</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.deployments.CreateDeployment.SERIALIZER_CLS">
+<code class="sig-name descname">SERIALIZER_CLS</code><a class="headerlink" href="#gradient.api_sdk.repositories.deployments.CreateDeployment.SERIALIZER_CLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.serializers.html#gradient.api_sdk.serializers.deployment.DeploymentSchema" title="gradient.api_sdk.serializers.deployment.DeploymentSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.deployment.DeploymentSchema</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.repositories.experiments">
+<span id="gradient-api-sdk-repositories-experiments-module"></span><h2>gradient.api_sdk.repositories.experiments module<a class="headerlink" href="#module-gradient.api_sdk.repositories.experiments" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.experiments.</code><code class="sig-name descname">ParseExperimentDictMixin</code><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.experiments.ListExperiments">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.experiments.</code><code class="sig-name descname">ListExperiments</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.ListExperiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin" title="gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin</span></code></a>, <a class="reference internal" href="#gradient.api_sdk.repositories.common.ListResources" title="gradient.api_sdk.repositories.common.ListResources"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.ListResources</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.experiments.ListExperiments.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.ListExperiments.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.experiments.GetExperiment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.experiments.</code><code class="sig-name descname">GetExperiment</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.GetExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin" title="gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin</span></code></a>, <a class="reference internal" href="#gradient.api_sdk.repositories.common.GetResource" title="gradient.api_sdk.repositories.common.GetResource"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.GetResource</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.experiments.GetExperiment.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.GetExperiment.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.experiments.ListExperimentLogs">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.experiments.</code><code class="sig-name descname">ListExperimentLogs</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.ListExperimentLogs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.ListResources" title="gradient.api_sdk.repositories.common.ListResources"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.ListResources</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.experiments.ListExperimentLogs.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.ListExperimentLogs.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.experiments.ListExperimentLogs.list">
+<code class="sig-name descname">list</code><span class="sig-paren">(</span><em class="sig-param">experiment_id</em>, <em class="sig-param">line</em>, <em class="sig-param">limit</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.ListExperimentLogs.list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.experiments.ListExperimentLogs.yield_logs">
+<code class="sig-name descname">yield_logs</code><span class="sig-paren">(</span><em class="sig-param">experiment_id</em>, <em class="sig-param">line=0</em>, <em class="sig-param">limit=10000</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.ListExperimentLogs.yield_logs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.experiments.BaseCreateExperiment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.experiments.</code><code class="sig-name descname">BaseCreateExperiment</code><span class="sig-paren">(</span><em class="sig-param">client</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.BaseCreateExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.CreateResource" title="gradient.api_sdk.repositories.common.CreateResource"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.CreateResource</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.experiments.CreateSingleNodeExperiment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.experiments.</code><code class="sig-name descname">CreateSingleNodeExperiment</code><span class="sig-paren">(</span><em class="sig-param">client</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.CreateSingleNodeExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.experiments.BaseCreateExperiment" title="gradient.api_sdk.repositories.experiments.BaseCreateExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.experiments.BaseCreateExperiment</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.experiments.CreateSingleNodeExperiment.SERIALIZER_CLS">
+<code class="sig-name descname">SERIALIZER_CLS</code><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.CreateSingleNodeExperiment.SERIALIZER_CLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.serializers.html#gradient.api_sdk.serializers.experiment.SingleNodeExperimentSchema" title="gradient.api_sdk.serializers.experiment.SingleNodeExperimentSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.experiment.SingleNodeExperimentSchema</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.experiments.CreateMultiNodeExperiment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.experiments.</code><code class="sig-name descname">CreateMultiNodeExperiment</code><span class="sig-paren">(</span><em class="sig-param">client</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.CreateMultiNodeExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.experiments.BaseCreateExperiment" title="gradient.api_sdk.repositories.experiments.BaseCreateExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.experiments.BaseCreateExperiment</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.experiments.CreateMultiNodeExperiment.SERIALIZER_CLS">
+<code class="sig-name descname">SERIALIZER_CLS</code><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.CreateMultiNodeExperiment.SERIALIZER_CLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.serializers.html#gradient.api_sdk.serializers.experiment.MultiNodeExperimentSchema" title="gradient.api_sdk.serializers.experiment.MultiNodeExperimentSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.experiment.MultiNodeExperimentSchema</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.experiments.RunSingleNodeExperiment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.experiments.</code><code class="sig-name descname">RunSingleNodeExperiment</code><span class="sig-paren">(</span><em class="sig-param">client</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.RunSingleNodeExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.experiments.CreateSingleNodeExperiment" title="gradient.api_sdk.repositories.experiments.CreateSingleNodeExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.experiments.CreateSingleNodeExperiment</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.experiments.RunMultiNodeExperiment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.experiments.</code><code class="sig-name descname">RunMultiNodeExperiment</code><span class="sig-paren">(</span><em class="sig-param">client</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.RunMultiNodeExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.experiments.CreateMultiNodeExperiment" title="gradient.api_sdk.repositories.experiments.CreateMultiNodeExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.experiments.CreateMultiNodeExperiment</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.experiments.StartExperiment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.experiments.</code><code class="sig-name descname">StartExperiment</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.StartExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.StartResource" title="gradient.api_sdk.repositories.common.StartResource"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.StartResource</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.experiments.StartExperiment.VALIDATION_ERROR_MESSAGE">
+<code class="sig-name descname">VALIDATION_ERROR_MESSAGE</code><em class="property"> = 'Failed to start experiment'</em><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.StartExperiment.VALIDATION_ERROR_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.experiments.StartExperiment.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">id_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.StartExperiment.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.experiments.StopExperiment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.experiments.</code><code class="sig-name descname">StopExperiment</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.StopExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.StopResource" title="gradient.api_sdk.repositories.common.StopResource"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.StopResource</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.experiments.StopExperiment.VALIDATION_ERROR_MESSAGE">
+<code class="sig-name descname">VALIDATION_ERROR_MESSAGE</code><em class="property"> = 'Failed to stop experiment'</em><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.StopExperiment.VALIDATION_ERROR_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.experiments.StopExperiment.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">id_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.experiments.StopExperiment.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.repositories.hyperparameter">
+<span id="gradient-api-sdk-repositories-hyperparameter-module"></span><h2>gradient.api_sdk.repositories.hyperparameter module<a class="headerlink" href="#module-gradient.api_sdk.repositories.hyperparameter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.hyperparameter.CreateHyperparameterJob">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.hyperparameter.</code><code class="sig-name descname">CreateHyperparameterJob</code><span class="sig-paren">(</span><em class="sig-param">client</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.hyperparameter.CreateHyperparameterJob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.CreateResource" title="gradient.api_sdk.repositories.common.CreateResource"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.CreateResource</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.hyperparameter.CreateHyperparameterJob.SERIALIZER_CLS">
+<code class="sig-name descname">SERIALIZER_CLS</code><a class="headerlink" href="#gradient.api_sdk.repositories.hyperparameter.CreateHyperparameterJob.SERIALIZER_CLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.serializers.html#gradient.api_sdk.serializers.hyperparameter.HyperparameterSchema" title="gradient.api_sdk.serializers.hyperparameter.HyperparameterSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.hyperparameter.HyperparameterSchema</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.hyperparameter.CreateAndStartHyperparameterJob">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.hyperparameter.</code><code class="sig-name descname">CreateAndStartHyperparameterJob</code><span class="sig-paren">(</span><em class="sig-param">client</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.hyperparameter.CreateAndStartHyperparameterJob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.hyperparameter.CreateHyperparameterJob" title="gradient.api_sdk.repositories.hyperparameter.CreateHyperparameterJob"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.hyperparameter.CreateHyperparameterJob</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.hyperparameter.ListHyperparameterJobs">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.hyperparameter.</code><code class="sig-name descname">ListHyperparameterJobs</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.hyperparameter.ListHyperparameterJobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin" title="gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin</span></code></a>, <a class="reference internal" href="#gradient.api_sdk.repositories.common.ListResources" title="gradient.api_sdk.repositories.common.ListResources"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.ListResources</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.hyperparameter.ListHyperparameterJobs.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.hyperparameter.ListHyperparameterJobs.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.hyperparameter.GetHyperparameterTuningJob">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.hyperparameter.</code><code class="sig-name descname">GetHyperparameterTuningJob</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.hyperparameter.GetHyperparameterTuningJob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin" title="gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.experiments.ParseExperimentDictMixin</span></code></a>, <a class="reference internal" href="#gradient.api_sdk.repositories.common.GetResource" title="gradient.api_sdk.repositories.common.GetResource"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.GetResource</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.hyperparameter.GetHyperparameterTuningJob.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.hyperparameter.GetHyperparameterTuningJob.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.hyperparameter.StartHyperparameterTuningJob">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.hyperparameter.</code><code class="sig-name descname">StartHyperparameterTuningJob</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.hyperparameter.StartHyperparameterTuningJob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.StartResource" title="gradient.api_sdk.repositories.common.StartResource"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.StartResource</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.hyperparameter.StartHyperparameterTuningJob.VALIDATION_ERROR_MESSAGE">
+<code class="sig-name descname">VALIDATION_ERROR_MESSAGE</code><em class="property"> = 'Failed to start hyperparameter tuning job'</em><a class="headerlink" href="#gradient.api_sdk.repositories.hyperparameter.StartHyperparameterTuningJob.VALIDATION_ERROR_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.hyperparameter.StartHyperparameterTuningJob.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">id_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.hyperparameter.StartHyperparameterTuningJob.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.repositories.jobs">
+<span id="gradient-api-sdk-repositories-jobs-module"></span><h2>gradient.api_sdk.repositories.jobs module<a class="headerlink" href="#module-gradient.api_sdk.repositories.jobs" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.jobs.ParseJobDictMixin">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.jobs.</code><code class="sig-name descname">ParseJobDictMixin</code><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.ParseJobDictMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.jobs.ListJobs">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.jobs.</code><code class="sig-name descname">ListJobs</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.ListJobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.jobs.ParseJobDictMixin" title="gradient.api_sdk.repositories.jobs.ParseJobDictMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.jobs.ParseJobDictMixin</span></code></a>, <a class="reference internal" href="#gradient.api_sdk.repositories.common.ListResources" title="gradient.api_sdk.repositories.common.ListResources"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.ListResources</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.jobs.ListJobs.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.ListJobs.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.jobs.ListJobLogs">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.jobs.</code><code class="sig-name descname">ListJobLogs</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.ListJobLogs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.ListResources" title="gradient.api_sdk.repositories.common.ListResources"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.ListResources</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.jobs.ListJobLogs.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.ListJobLogs.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.jobs.ListJobLogs.yield_logs">
+<code class="sig-name descname">yield_logs</code><span class="sig-paren">(</span><em class="sig-param">job_id</em>, <em class="sig-param">line=0</em>, <em class="sig-param">limit=10000</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.ListJobLogs.yield_logs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.jobs.CreateJob">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.jobs.</code><code class="sig-name descname">CreateJob</code><span class="sig-paren">(</span><em class="sig-param">client</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.CreateJob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.CreateResource" title="gradient.api_sdk.repositories.common.CreateResource"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.CreateResource</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.jobs.CreateJob.SERIALIZER_CLS">
+<code class="sig-name descname">SERIALIZER_CLS</code><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.CreateJob.SERIALIZER_CLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.serializers.html#gradient.api_sdk.serializers.job.JobSchema" title="gradient.api_sdk.serializers.job.JobSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.job.JobSchema</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.jobs.CreateJob.HANDLE_FIELD">
+<code class="sig-name descname">HANDLE_FIELD</code><em class="property"> = 'id'</em><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.CreateJob.HANDLE_FIELD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.jobs.CreateJob.create_job">
+<code class="sig-name descname">create_job</code><span class="sig-paren">(</span><em class="sig-param">instance</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.CreateJob.create_job" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.jobs.DeleteJob">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.jobs.</code><code class="sig-name descname">DeleteJob</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.DeleteJob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.BaseRepository" title="gradient.api_sdk.repositories.common.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.BaseRepository</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.jobs.DeleteJob.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.DeleteJob.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.jobs.DeleteJob.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">id_</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.DeleteJob.delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.jobs.StopJob">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.jobs.</code><code class="sig-name descname">StopJob</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.StopJob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.BaseRepository" title="gradient.api_sdk.repositories.common.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.BaseRepository</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.jobs.StopJob.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.StopJob.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.jobs.StopJob.stop">
+<code class="sig-name descname">stop</code><span class="sig-paren">(</span><em class="sig-param">id_</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.StopJob.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.jobs.ListJobArtifacts">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.jobs.</code><code class="sig-name descname">ListJobArtifacts</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.ListJobArtifacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.ListResources" title="gradient.api_sdk.repositories.common.ListResources"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.ListResources</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.jobs.ListJobArtifacts.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.ListJobArtifacts.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.jobs.DeleteJobArtifacts">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.jobs.</code><code class="sig-name descname">DeleteJobArtifacts</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.DeleteJobArtifacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.BaseRepository" title="gradient.api_sdk.repositories.common.BaseRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.BaseRepository</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.jobs.DeleteJobArtifacts.VALIDATION_ERROR_MESSAGE">
+<code class="sig-name descname">VALIDATION_ERROR_MESSAGE</code><em class="property"> = 'Failed to delete resource'</em><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.DeleteJobArtifacts.VALIDATION_ERROR_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.jobs.DeleteJobArtifacts.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.DeleteJobArtifacts.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.jobs.DeleteJobArtifacts.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">id_</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.DeleteJobArtifacts.delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.jobs.GetJobArtifacts">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.jobs.</code><code class="sig-name descname">GetJobArtifacts</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.GetJobArtifacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.GetResource" title="gradient.api_sdk.repositories.common.GetResource"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.GetResource</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.jobs.GetJobArtifacts.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.jobs.GetJobArtifacts.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.repositories.models">
+<span id="gradient-api-sdk-repositories-models-module"></span><h2>gradient.api_sdk.repositories.models module<a class="headerlink" href="#module-gradient.api_sdk.repositories.models" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.models.ParseModelDictMixin">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.models.</code><code class="sig-name descname">ParseModelDictMixin</code><a class="headerlink" href="#gradient.api_sdk.repositories.models.ParseModelDictMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.models.ListModels">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.models.</code><code class="sig-name descname">ListModels</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.models.ListModels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.models.ParseModelDictMixin" title="gradient.api_sdk.repositories.models.ParseModelDictMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.models.ParseModelDictMixin</span></code></a>, <a class="reference internal" href="#gradient.api_sdk.repositories.common.ListResources" title="gradient.api_sdk.repositories.common.ListResources"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.ListResources</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.models.ListModels.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.models.ListModels.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.repositories.projects">
+<span id="gradient-api-sdk-repositories-projects-module"></span><h2>gradient.api_sdk.repositories.projects module<a class="headerlink" href="#module-gradient.api_sdk.repositories.projects" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.projects.CreateProject">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.projects.</code><code class="sig-name descname">CreateProject</code><span class="sig-paren">(</span><em class="sig-param">client</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.projects.CreateProject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.CreateResource" title="gradient.api_sdk.repositories.common.CreateResource"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.CreateResource</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.api_sdk.repositories.projects.CreateProject.SERIALIZER_CLS">
+<code class="sig-name descname">SERIALIZER_CLS</code><a class="headerlink" href="#gradient.api_sdk.repositories.projects.CreateProject.SERIALIZER_CLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.serializers.html#gradient.api_sdk.serializers.project.Project" title="gradient.api_sdk.serializers.project.Project"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.project.Project</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.repositories.projects.ListProjects">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.repositories.projects.</code><code class="sig-name descname">ListProjects</code><span class="sig-paren">(</span><em class="sig-param">client</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.projects.ListProjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.repositories.common.ListResources" title="gradient.api_sdk.repositories.common.ListResources"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.repositories.common.ListResources</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.repositories.projects.ListProjects.get_request_url">
+<code class="sig-name descname">get_request_url</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.repositories.projects.ListProjects.get_request_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.repositories">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gradient.api_sdk.repositories" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2019, Paperspace.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/gradient.api_sdk.repositories.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

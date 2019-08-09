@@ -110,6 +110,7 @@ class GetResource(BaseRepository):
 class CreateResource(BaseRepository):
     SERIALIZER_CLS = None
     VALIDATION_ERROR_MESSAGE = "Failed to create resource"
+    HANDLE_FIELD = "handle"
 
     def create(self, instance, use_vpc=False):
         instance_dict = self._get_instance_dict(instance)
@@ -146,7 +147,7 @@ class CreateResource(BaseRepository):
             raise ResourceCreatingError(e)
 
     def _get_id_from_response(self, response):
-        handle = response.data["handle"]
+        handle = response.data[self.HANDLE_FIELD]
         return handle
 
     def _process_instance_dict(self, instance_dict):
@@ -157,10 +158,10 @@ class CreateResource(BaseRepository):
 class DeleteResource(BaseRepository):
     VALIDATION_ERROR_MESSAGE = "Failed to delete resource"
 
-    def delete(self, id_, use_vpc=False):
+    def delete(self, id_, use_vpc=False, **kwargs):
         url = self.get_request_url(id_=id_, use_vpc=use_vpc)
 
-        response = self.api.delete(url)
+        response = self.client.delete(url, json=kwargs.get("json"), params=kwargs.get("params"))
         self._validate_response(response)
 
 

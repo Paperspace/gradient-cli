@@ -1,0 +1,523 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>gradient.api_sdk.models package &#8212; Gradient-CLI  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/gradient.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="gradient.api_sdk.repositories package" href="gradient.api_sdk.repositories.html" />
+    <link rel="prev" title="gradient.api_sdk.clients package" href="gradient.api_sdk.clients.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Gradient-CLI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="gradient.html">gradient package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="gradient.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.config">gradient.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.constants">gradient.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.exceptions">gradient.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.logger">gradient.logger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.login">gradient.login module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.main">gradient.main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.utils">gradient.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.version">gradient.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.version_checker">gradient.version_checker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.workspace">gradient.workspace module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">gradient</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="gradient.html">gradient package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="gradient.html">gradient package</a><ul>
+  <li><a href="gradient.api_sdk.html">gradient.api_sdk package</a><ul>
+      <li>Previous: <a href="gradient.api_sdk.clients.html" title="previous chapter">gradient.api_sdk.clients package</a></li>
+      <li>Next: <a href="gradient.api_sdk.repositories.html" title="next chapter">gradient.api_sdk.repositories package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="gradient-api-sdk-models-package">
+<h1>gradient.api_sdk.models package<a class="headerlink" href="#gradient-api-sdk-models-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gradient.api_sdk.models.deployment">
+<span id="gradient-api-sdk-models-deployment-module"></span><h2>gradient.api_sdk.models.deployment module<a class="headerlink" href="#module-gradient.api_sdk.models.deployment" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.models.deployment.Deployment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.models.deployment.</code><code class="sig-name descname">Deployment</code><span class="sig-paren">(</span><em class="sig-param">id_: str = None</em>, <em class="sig-param">name: str = None</em>, <em class="sig-param">endpoint: str = None</em>, <em class="sig-param">api_type: str = None</em>, <em class="sig-param">state: str = None</em>, <em class="sig-param">model_id: str = None</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">image_url: str = None</em>, <em class="sig-param">deployment_type: str = None</em>, <em class="sig-param">machine_type: str = None</em>, <em class="sig-param">instance_count: int = None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.models.deployment.Deployment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Deployment class</p>
+<p>Deploy any model as a high-performance, low-latency micro-service with a RESTful API. Easily monitor, scale, and
+version deployments. Deployments take a trained model and expose them as a persistent service at a known, secure
+URL endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – deployment id</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Human-friendly name for new model deployment</p></li>
+<li><p><strong>endpoint</strong> (<em>str</em>) – <p>url address to deployment, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>``https://services.paperspace.io/model-serving/&lt;your-model-id&gt;:predict``
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>api_type</strong> (<em>str</em>) – <p>api type of deployment
+Options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;GPRC&quot;</span>
+<span class="s2">&quot;REST&quot;</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>state</strong> (<em>str</em>) – <p>state of Deployment
+Options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;BUILDING&quot;</span>
+<span class="s2">&quot;PROVISIONING&quot;</span>
+<span class="s2">&quot;STARTING&quot;</span>
+<span class="s2">&quot;RUNNING&quot;</span>
+<span class="s2">&quot;STOPPING&quot;</span>
+<span class="s2">&quot;STOPPED&quot;</span>
+<span class="s2">&quot;ERROR&quot;</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>model_id</strong> (<em>str</em>) – model id</p></li>
+<li><p><strong>project_id</strong> (<em>str</em>) – project id</p></li>
+<li><p><strong>image_url</strong> (<em>str</em>) – Docker image for model deployment</p></li>
+<li><p><strong>deployment_type</strong> (<em>str</em>) – Model deployment type.</p></li>
+<li><p><strong>machine_type</strong> (<em>str</em>) – <p>Type of machine for new deployment
+Options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;G1&quot;</span>
+<span class="s2">&quot;G6&quot;</span>
+<span class="s2">&quot;G12&quot;</span>
+<span class="s2">&quot;K80&quot;</span>
+<span class="s2">&quot;P100&quot;</span>
+<span class="s2">&quot;GV100&quot;</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>instance_count</strong> (<em>int</em>) – Number of machine instances</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="gradient.api_sdk.models.deployment.Deployment.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">id_: str = None</em>, <em class="sig-param">name: str = None</em>, <em class="sig-param">endpoint: str = None</em>, <em class="sig-param">api_type: str = None</em>, <em class="sig-param">state: str = None</em>, <em class="sig-param">model_id: str = None</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">image_url: str = None</em>, <em class="sig-param">deployment_type: str = None</em>, <em class="sig-param">machine_type: str = None</em>, <em class="sig-param">instance_count: int = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#gradient.api_sdk.models.deployment.Deployment.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.models.experiment">
+<span id="gradient-api-sdk-models-experiment-module"></span><h2>gradient.api_sdk.models.experiment module<a class="headerlink" href="#module-gradient.api_sdk.models.experiment" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.models.experiment.BaseExperiment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.models.experiment.</code><code class="sig-name descname">BaseExperiment</code><span class="sig-paren">(</span><em class="sig-param">name: str = None</em>, <em class="sig-param">ports: str = None</em>, <em class="sig-param">workspace_url: str = None</em>, <em class="sig-param">working_directory: str = None</em>, <em class="sig-param">artifact_directory: str = None</em>, <em class="sig-param">cluster_id: int = None</em>, <em class="sig-param">experiment_env: dict = &lt;class 'dict'&gt;</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">model_type: str = None</em>, <em class="sig-param">model_path: str = None</em>, <em class="sig-param">id: str = None</em>, <em class="sig-param">state: int = None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.models.experiment.BaseExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base experiment class. Single node and multi node experiments classes inherit from it.</p>
+<p>Experiments are intended to be used for intensive computational tasks like neural network training. Gradient
+supports single-node experiments as well as distributed training through multinode experiments.</p>
+<p>Experiments can be run from the Experiment Builder web interface, the GradientCI bot, or the CLI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of new experiment</p></li>
+<li><p><strong>ports</strong> (<em>str</em>) – Port to use in new experiment</p></li>
+<li><p><strong>workspace_url</strong> (<em>str</em>) – Project git repository url</p></li>
+<li><p><strong>working_directory</strong> (<em>str</em>) – Working directory for the experiment</p></li>
+<li><p><strong>artifact_directory</strong> (<em>str</em>) – Artifacts directory</p></li>
+<li><p><strong>cluster_id</strong> (<em>int</em>) – Cluster ID</p></li>
+<li><p><strong>experiment_env</strong> (<em>dict</em>) – Environment variables in a JSON</p></li>
+<li><p><strong>project_id</strong> (<em>str</em>) – Project ID</p></li>
+<li><p><strong>model_type</strong> (<em>str</em>) – defines the type of model that is being generated by the experiment.</p></li>
+<li><p><strong>model_path</strong> (<em>str</em>) – Model path</p></li>
+<li><p><strong>id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>state</strong> (<em>int</em>) – <p>state of experiment can be one of:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;created&quot;</span>
+<span class="s2">&quot;provisioned&quot;</span>
+<span class="s2">&quot;network setup&quot;</span>
+<span class="s2">&quot;running&quot;</span>
+<span class="s2">&quot;stopped&quot;</span>
+<span class="s2">&quot;error&quot;</span>
+<span class="s2">&quot;failed&quot;</span>
+<span class="s2">&quot;canceled&quot;</span>
+<span class="s2">&quot;network teardown&quot;</span>
+<span class="s2">&quot;pending&quot;</span>
+<span class="s2">&quot;provisioning&quot;</span>
+<span class="s2">&quot;network setting up&quot;</span>
+<span class="s2">&quot;network tearing down&quot;</span>
+</pre></div>
+</div>
+</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="gradient.api_sdk.models.experiment.BaseExperiment.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">name: str = None</em>, <em class="sig-param">ports: str = None</em>, <em class="sig-param">workspace_url: str = None</em>, <em class="sig-param">working_directory: str = None</em>, <em class="sig-param">artifact_directory: str = None</em>, <em class="sig-param">cluster_id: int = None</em>, <em class="sig-param">experiment_env: dict = &lt;class 'dict'&gt;</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">model_type: str = None</em>, <em class="sig-param">model_path: str = None</em>, <em class="sig-param">id: str = None</em>, <em class="sig-param">state: int = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#gradient.api_sdk.models.experiment.BaseExperiment.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.models.experiment.SingleNodeExperiment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.models.experiment.</code><code class="sig-name descname">SingleNodeExperiment</code><span class="sig-paren">(</span><em class="sig-param">name: str = None</em>, <em class="sig-param">ports: str = None</em>, <em class="sig-param">workspace_url: str = None</em>, <em class="sig-param">working_directory: str = None</em>, <em class="sig-param">artifact_directory: str = None</em>, <em class="sig-param">cluster_id: int = None</em>, <em class="sig-param">experiment_env: dict = &lt;class 'dict'&gt;</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">model_type: str = None</em>, <em class="sig-param">model_path: str = None</em>, <em class="sig-param">id: str = None</em>, <em class="sig-param">state: int = None</em>, <em class="sig-param">container: str = None</em>, <em class="sig-param">machine_type: str = None</em>, <em class="sig-param">command: str = None</em>, <em class="sig-param">container_user: str = None</em>, <em class="sig-param">registry_username: str = None</em>, <em class="sig-param">registry_password: str = None</em>, <em class="sig-param">experiment_type_id: int = 1</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.models.experiment.SingleNodeExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.models.experiment.BaseExperiment" title="gradient.api_sdk.models.experiment.BaseExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.experiment.BaseExperiment</span></code></a></p>
+<p>Single node experiment class. Inherits from <code class="docutils literal notranslate"><span class="pre">BaseExperiment</span></code> class</p>
+<p>In your your CLI command or <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>, specify the experiment type as <code class="docutils literal notranslate"><span class="pre">singlenode</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>container</strong> (<em>str</em>) – Container (dockerfile)</p></li>
+<li><p><strong>machine_type</strong> (<em>str</em>) – <p>Machine type
+Options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;Air&quot;</span>
+<span class="s2">&quot;Standard&quot;</span>
+<span class="s2">&quot;Pro&quot;</span>
+<span class="s2">&quot;Advanced&quot;</span>
+<span class="s2">&quot;GPU+&quot;</span>
+<span class="s2">&quot;P4000&quot;</span>
+<span class="s2">&quot;P5000&quot;</span>
+<span class="s2">&quot;P6000&quot;</span>
+<span class="s2">&quot;V100&quot;</span>
+<span class="s2">&quot;C1&quot;</span>
+<span class="s2">&quot;C2&quot;</span>
+<span class="s2">&quot;C3&quot;</span>
+<span class="s2">&quot;C4&quot;</span>
+<span class="s2">&quot;C5&quot;</span>
+<span class="s2">&quot;C6&quot;</span>
+<span class="s2">&quot;C7&quot;</span>
+<span class="s2">&quot;C8&quot;</span>
+<span class="s2">&quot;C9&quot;</span>
+<span class="s2">&quot;C10&quot;</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>command</strong> (<em>str</em>) – Container entrypoint command</p></li>
+<li><p><strong>container_user</strong> (<em>str</em>) – Container user for running the specified command in the container. If no containerUser is specified, the user will default to ‘root’ in the container.</p></li>
+<li><p><strong>registry_username</strong> (<em>str</em>) – Registry username for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>registry_password</strong> (<em>str</em>) – Registry password for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>experiment_type_id</strong> (<em>int</em>) – <p>type of experiment
+Options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;single node&quot;</span>
+<span class="s2">&quot;GRPC multi node&quot;</span>
+<span class="s2">&quot;MPI multi node&quot;</span>
+<span class="s2">&quot;Hyperparameter tuning&quot;</span>
+</pre></div>
+</div>
+</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="gradient.api_sdk.models.experiment.SingleNodeExperiment.experiment_type_id_validator">
+<code class="sig-name descname">experiment_type_id_validator</code><span class="sig-paren">(</span><em class="sig-param">attribute</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.models.experiment.SingleNodeExperiment.experiment_type_id_validator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.models.experiment.SingleNodeExperiment.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">name: str = None</em>, <em class="sig-param">ports: str = None</em>, <em class="sig-param">workspace_url: str = None</em>, <em class="sig-param">working_directory: str = None</em>, <em class="sig-param">artifact_directory: str = None</em>, <em class="sig-param">cluster_id: int = None</em>, <em class="sig-param">experiment_env: dict = &lt;class 'dict'&gt;</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">model_type: str = None</em>, <em class="sig-param">model_path: str = None</em>, <em class="sig-param">id: str = None</em>, <em class="sig-param">state: int = None</em>, <em class="sig-param">container: str = None</em>, <em class="sig-param">machine_type: str = None</em>, <em class="sig-param">command: str = None</em>, <em class="sig-param">container_user: str = None</em>, <em class="sig-param">registry_username: str = None</em>, <em class="sig-param">registry_password: str = None</em>, <em class="sig-param">experiment_type_id: int = 1</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#gradient.api_sdk.models.experiment.SingleNodeExperiment.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.api_sdk.models.experiment.MultiNodeExperiment">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.models.experiment.</code><code class="sig-name descname">MultiNodeExperiment</code><span class="sig-paren">(</span><em class="sig-param">name: str = None</em>, <em class="sig-param">ports: str = None</em>, <em class="sig-param">workspace_url: str = None</em>, <em class="sig-param">working_directory: str = None</em>, <em class="sig-param">artifact_directory: str = None</em>, <em class="sig-param">cluster_id: int = None</em>, <em class="sig-param">experiment_env: dict = &lt;class 'dict'&gt;</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">model_type: str = None</em>, <em class="sig-param">model_path: str = None</em>, <em class="sig-param">id: str = None</em>, <em class="sig-param">state: int = None</em>, <em class="sig-param">experiment_type_id: int = None</em>, <em class="sig-param">worker_container: str = None</em>, <em class="sig-param">worker_machine_type: str = None</em>, <em class="sig-param">worker_command: str = None</em>, <em class="sig-param">worker_count: int = None</em>, <em class="sig-param">parameter_server_container: str = None</em>, <em class="sig-param">parameter_server_machine_type: str = None</em>, <em class="sig-param">parameter_server_command: str = None</em>, <em class="sig-param">parameter_server_count: int = None</em>, <em class="sig-param">worker_container_user: str = None</em>, <em class="sig-param">worker_registry_username: str = None</em>, <em class="sig-param">worker_registry_password: str = None</em>, <em class="sig-param">parameter_server_container_user: str = None</em>, <em class="sig-param">parameter_server_registry_container_user: str = None</em>, <em class="sig-param">parameter_server_registry_password: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.models.experiment.MultiNodeExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.models.experiment.BaseExperiment" title="gradient.api_sdk.models.experiment.BaseExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.experiment.BaseExperiment</span></code></a></p>
+<p>Multi node experiment class. Inherits from <code class="docutils literal notranslate"><span class="pre">BaseExperiment</span></code> class</p>
+<p>Gradient supports both gRPC and MPI protocols for distributed TensorFlow model training. In your CLI command or
+<code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>, specify the experiment type as either <code class="docutils literal notranslate"><span class="pre">multinode</span></code>.</p>
+<p>The two types are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">:</span> <span class="s2">&quot;multi-grpc&quot;</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">:</span> <span class="s2">&quot;multi-mpi&quot;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment_type_id</strong> (<em>int</em>) – <p>type of experiment
+Options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;single node&quot;</span>
+<span class="s2">&quot;GRPC multi node&quot;</span>
+<span class="s2">&quot;MPI multi node&quot;</span>
+<span class="s2">&quot;Hyperparameter tuning&quot;</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>worker_container</strong> (<em>str</em>) – Worker container (dockerfile)</p></li>
+<li><p><strong>worker_machine_type</strong> (<em>str</em>) – Worker machine type</p></li>
+<li><p><strong>worker_command</strong> (<em>str</em>) – Worker command</p></li>
+<li><p><strong>worker_count</strong> (<em>int</em>) – Worker count</p></li>
+<li><p><strong>parameter_server_container</strong> (<em>str</em>) – Parameter server container</p></li>
+<li><p><strong>parameter_server_command</strong> (<em>str</em>) – Parameter server command</p></li>
+<li><p><strong>parameter_server_count</strong> (<em>int</em>) – Parameter server count</p></li>
+<li><p><strong>worker_container_user</strong> (<em>str</em>) – Worker container user</p></li>
+<li><p><strong>worker_registry_username</strong> (<em>str</em>) – Registry username for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>worker_registry_password</strong> (<em>str</em>) – Registry password for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>parameter_server_container_user</strong> (<em>str</em>) – Parameter server container user</p></li>
+<li><p><strong>parameter_server_registry_container_user</strong> (<em>str</em>) – Registry username for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>parameter_server_registry_password</strong> (<em>str</em>) – Registry password for accessing private docker registry container if nessesary</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="gradient.api_sdk.models.experiment.MultiNodeExperiment.experiment_type_id_validator">
+<code class="sig-name descname">experiment_type_id_validator</code><span class="sig-paren">(</span><em class="sig-param">attribute</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.models.experiment.MultiNodeExperiment.experiment_type_id_validator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.models.experiment.MultiNodeExperiment.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">name: str = None</em>, <em class="sig-param">ports: str = None</em>, <em class="sig-param">workspace_url: str = None</em>, <em class="sig-param">working_directory: str = None</em>, <em class="sig-param">artifact_directory: str = None</em>, <em class="sig-param">cluster_id: int = None</em>, <em class="sig-param">experiment_env: dict = &lt;class 'dict'&gt;</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">model_type: str = None</em>, <em class="sig-param">model_path: str = None</em>, <em class="sig-param">id: str = None</em>, <em class="sig-param">state: int = None</em>, <em class="sig-param">experiment_type_id: int = None</em>, <em class="sig-param">worker_container: str = None</em>, <em class="sig-param">worker_machine_type: str = None</em>, <em class="sig-param">worker_command: str = None</em>, <em class="sig-param">worker_count: int = None</em>, <em class="sig-param">parameter_server_container: str = None</em>, <em class="sig-param">parameter_server_machine_type: str = None</em>, <em class="sig-param">parameter_server_command: str = None</em>, <em class="sig-param">parameter_server_count: int = None</em>, <em class="sig-param">worker_container_user: str = None</em>, <em class="sig-param">worker_registry_username: str = None</em>, <em class="sig-param">worker_registry_password: str = None</em>, <em class="sig-param">parameter_server_container_user: str = None</em>, <em class="sig-param">parameter_server_registry_container_user: str = None</em>, <em class="sig-param">parameter_server_registry_password: str = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#gradient.api_sdk.models.experiment.MultiNodeExperiment.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.models.hyperparameter">
+<span id="gradient-api-sdk-models-hyperparameter-module"></span><h2>gradient.api_sdk.models.hyperparameter module<a class="headerlink" href="#module-gradient.api_sdk.models.hyperparameter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.models.hyperparameter.Hyperparameter">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.models.hyperparameter.</code><code class="sig-name descname">Hyperparameter</code><span class="sig-paren">(</span><em class="sig-param">name: str = None</em>, <em class="sig-param">ports: str = None</em>, <em class="sig-param">workspace_url: str = None</em>, <em class="sig-param">working_directory: str = None</em>, <em class="sig-param">artifact_directory: str = None</em>, <em class="sig-param">cluster_id: int = None</em>, <em class="sig-param">experiment_env: dict = &lt;class 'dict'&gt;</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">model_type: str = None</em>, <em class="sig-param">model_path: str = None</em>, <em class="sig-param">id: str = None</em>, <em class="sig-param">state: int = None</em>, <em class="sig-param">experiment_type_id: int = 4</em>, <em class="sig-param">tuning_command: str = None</em>, <em class="sig-param">worker_container: str = None</em>, <em class="sig-param">worker_machine_type: str = None</em>, <em class="sig-param">worker_command: str = None</em>, <em class="sig-param">worker_count: int = None</em>, <em class="sig-param">worker_use_dockerfile: bool = None</em>, <em class="sig-param">worker_dockerfile_path: str = None</em>, <em class="sig-param">hyperparameter_server_registry_username: str = None</em>, <em class="sig-param">hyperparameter_server_registry_password: str = None</em>, <em class="sig-param">hyperparameter_server_container_user: str = None</em>, <em class="sig-param">is_preemptible: bool = None</em>, <em class="sig-param">trigger_event_id: str = None</em>, <em class="sig-param">dockerfile_path: str = None</em>, <em class="sig-param">registry_username: str = None</em>, <em class="sig-param">registry_password: str = None</em>, <em class="sig-param">container_user: str = None</em>, <em class="sig-param">use_dockerfile: bool = None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.models.hyperparameter.Hyperparameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.models.experiment.BaseExperiment" title="gradient.api_sdk.models.experiment.BaseExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.experiment.BaseExperiment</span></code></a></p>
+<p>Hyperparameter job class. Inherits from <code class="docutils literal notranslate"><span class="pre">BaseExperiment</span></code> class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment_type_id</strong> (<em>int</em>) – experiment type, for hyperparameter experiment set to 4</p></li>
+<li><p><strong>tuning_command</strong> (<em>str</em>) – Tuning command</p></li>
+<li><p><strong>worker_container</strong> (<em>str</em>) – Worker container</p></li>
+<li><p><strong>worker_machine_type</strong> (<em>str</em>) – Worker machine type</p></li>
+<li><p><strong>worker_command</strong> (<em>str</em>) – Worker command</p></li>
+<li><p><strong>worker_count</strong> (<em>int</em>) – Worker count</p></li>
+<li><p><strong>worker_use_dockerfile</strong> (<em>bool</em>) – Flag: use dockerfile</p></li>
+<li><p><strong>worker_dockerfile_path</strong> (<em>str</em>) – path to dockerfile, if not set default is project root directory</p></li>
+<li><p><strong>hyperparameter_server_registry_username</strong> (<em>str</em>) – Hyperparameter server registry username</p></li>
+<li><p><strong>hyperparameter_server_registry_password</strong> (<em>str</em>) – Hyperparameter server registry password</p></li>
+<li><p><strong>hyperparameter_server_container_user</strong> (<em>str</em>) – Hyperparameter server container user</p></li>
+<li><p><strong>is_preemptible</strong> (<em>bool</em>) – Flag: is preemptible</p></li>
+<li><p><strong>trigger_event_id</strong> (<em>str</em>) – GradientCI trigger event id</p></li>
+<li><p><strong>dockerfile_path</strong> (<em>str</em>) – Path to dockerfile</p></li>
+<li><p><strong>registry_username</strong> (<em>str</em>) – container registry username</p></li>
+<li><p><strong>registry_password</strong> (<em>str</em>) – container registry password</p></li>
+<li><p><strong>container_user</strong> (<em>str</em>) – container user</p></li>
+<li><p><strong>use_dockerfile</strong> (<em>bool</em>) – Flag: use dockerfile</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="gradient.api_sdk.models.hyperparameter.Hyperparameter.experiment_type_id_validator">
+<code class="sig-name descname">experiment_type_id_validator</code><span class="sig-paren">(</span><em class="sig-param">attribute</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.models.hyperparameter.Hyperparameter.experiment_type_id_validator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.models.hyperparameter.Hyperparameter.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">name: str = None</em>, <em class="sig-param">ports: str = None</em>, <em class="sig-param">workspace_url: str = None</em>, <em class="sig-param">working_directory: str = None</em>, <em class="sig-param">artifact_directory: str = None</em>, <em class="sig-param">cluster_id: int = None</em>, <em class="sig-param">experiment_env: dict = &lt;class 'dict'&gt;</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">model_type: str = None</em>, <em class="sig-param">model_path: str = None</em>, <em class="sig-param">id: str = None</em>, <em class="sig-param">state: int = None</em>, <em class="sig-param">experiment_type_id: int = 4</em>, <em class="sig-param">tuning_command: str = None</em>, <em class="sig-param">worker_container: str = None</em>, <em class="sig-param">worker_machine_type: str = None</em>, <em class="sig-param">worker_command: str = None</em>, <em class="sig-param">worker_count: int = None</em>, <em class="sig-param">worker_use_dockerfile: bool = None</em>, <em class="sig-param">worker_dockerfile_path: str = None</em>, <em class="sig-param">hyperparameter_server_registry_username: str = None</em>, <em class="sig-param">hyperparameter_server_registry_password: str = None</em>, <em class="sig-param">hyperparameter_server_container_user: str = None</em>, <em class="sig-param">is_preemptible: bool = None</em>, <em class="sig-param">trigger_event_id: str = None</em>, <em class="sig-param">dockerfile_path: str = None</em>, <em class="sig-param">registry_username: str = None</em>, <em class="sig-param">registry_password: str = None</em>, <em class="sig-param">container_user: str = None</em>, <em class="sig-param">use_dockerfile: bool = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#gradient.api_sdk.models.hyperparameter.Hyperparameter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.models.job">
+<span id="gradient-api-sdk-models-job-module"></span><h2>gradient.api_sdk.models.job module<a class="headerlink" href="#module-gradient.api_sdk.models.job" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.models.job.Job">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.models.job.</code><code class="sig-name descname">Job</code><span class="sig-paren">(</span><em class="sig-param">id_: str = None</em>, <em class="sig-param">name: str = None</em>, <em class="sig-param">state: str = None</em>, <em class="sig-param">workspace_url: str = None</em>, <em class="sig-param">working_directory: str = None</em>, <em class="sig-param">artifacts_directory: str = None</em>, <em class="sig-param">entrypoint: str = None</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">project: str = None</em>, <em class="sig-param">container: str = None</em>, <em class="sig-param">container_url: str = None</em>, <em class="sig-param">base_container: str = None</em>, <em class="sig-param">base_container_url: str = None</em>, <em class="sig-param">machine_type: str = None</em>, <em class="sig-param">cluster: str = None</em>, <em class="sig-param">cluster_id: str = None</em>, <em class="sig-param">usage_rate: str = None</em>, <em class="sig-param">started_by_user_id: str = None</em>, <em class="sig-param">parent_job_id: str = None</em>, <em class="sig-param">job_error: str = None</em>, <em class="sig-param">dt_created: str = None</em>, <em class="sig-param">dt_modified: str = None</em>, <em class="sig-param">dt_provisioning_started: str = None</em>, <em class="sig-param">dt_provisioning_finished: str = None</em>, <em class="sig-param">dt_started: str = None</em>, <em class="sig-param">dt_finished: str = None</em>, <em class="sig-param">dt_teardown_started: str = None</em>, <em class="sig-param">dt_teardown_finished: str = None</em>, <em class="sig-param">dt_deleted: str = None</em>, <em class="sig-param">exit_code: str = None</em>, <em class="sig-param">queue_position: str = None</em>, <em class="sig-param">seq_num: int = None</em>, <em class="sig-param">storage_region: str = None</em>, <em class="sig-param">cluster_machine: str = None</em>, <em class="sig-param">fqdn: str = None</em>, <em class="sig-param">ports: str = None</em>, <em class="sig-param">is_public: bool = None</em>, <em class="sig-param">container_user: str = None</em>, <em class="sig-param">has_code: bool = None</em>, <em class="sig-param">code_uploaded: bool = None</em>, <em class="sig-param">code_commit: str = None</em>, <em class="sig-param">run_till_cancelled: bool = None</em>, <em class="sig-param">push_on_completion: bool = None</em>, <em class="sig-param">new_image_name: str = None</em>, <em class="sig-param">cpu_hostname: str = None</em>, <em class="sig-param">cpu_count: int = None</em>, <em class="sig-param">cpu_model: str = None</em>, <em class="sig-param">cpu_flags: str = None</em>, <em class="sig-param">cpu_mem: str = None</em>, <em class="sig-param">gpu_name: str = None</em>, <em class="sig-param">gpu_serial: str = None</em>, <em class="sig-param">gpu_device: str = None</em>, <em class="sig-param">gpu_driver: str = None</em>, <em class="sig-param">gpu_count: int = None</em>, <em class="sig-param">gpu_mem: str = None</em>, <em class="sig-param">tpu_type: str = None</em>, <em class="sig-param">tpu_name: str = None</em>, <em class="sig-param">tpu_grpc_url: str = None</em>, <em class="sig-param">tpu_tf_version: str = None</em>, <em class="sig-param">tpu_dataset_dir: str = None</em>, <em class="sig-param">tpu_model_dir: str = None</em>, <em class="sig-param">target_node_attrs: dict = None</em>, <em class="sig-param">job_env: dict = None</em>, <em class="sig-param">shared_mem_mbytes: int = None</em>, <em class="sig-param">shutdown_timeout: int = None</em>, <em class="sig-param">is_preemptible: bool = None</em>, <em class="sig-param">metrics_url: str = None</em>, <em class="sig-param">custom_metrics: str = None</em>, <em class="sig-param">experiment_id: str = None</em>, <em class="sig-param">command: str = None</em>, <em class="sig-param">workspace: str = None</em>, <em class="sig-param">workspace_archive: str = None</em>, <em class="sig-param">workspace_file_name: str = None</em>, <em class="sig-param">ignore_files: str = None</em>, <em class="sig-param">use_dockerfile: str = None</em>, <em class="sig-param">rel_dockerfile_path: str = None</em>, <em class="sig-param">registry_username: str = None</em>, <em class="sig-param">registry_password: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.models.job.Job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="gradient.api_sdk.models.job.Job.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">id_: str = None</em>, <em class="sig-param">name: str = None</em>, <em class="sig-param">state: str = None</em>, <em class="sig-param">workspace_url: str = None</em>, <em class="sig-param">working_directory: str = None</em>, <em class="sig-param">artifacts_directory: str = None</em>, <em class="sig-param">entrypoint: str = None</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">project: str = None</em>, <em class="sig-param">container: str = None</em>, <em class="sig-param">container_url: str = None</em>, <em class="sig-param">base_container: str = None</em>, <em class="sig-param">base_container_url: str = None</em>, <em class="sig-param">machine_type: str = None</em>, <em class="sig-param">cluster: str = None</em>, <em class="sig-param">cluster_id: str = None</em>, <em class="sig-param">usage_rate: str = None</em>, <em class="sig-param">started_by_user_id: str = None</em>, <em class="sig-param">parent_job_id: str = None</em>, <em class="sig-param">job_error: str = None</em>, <em class="sig-param">dt_created: str = None</em>, <em class="sig-param">dt_modified: str = None</em>, <em class="sig-param">dt_provisioning_started: str = None</em>, <em class="sig-param">dt_provisioning_finished: str = None</em>, <em class="sig-param">dt_started: str = None</em>, <em class="sig-param">dt_finished: str = None</em>, <em class="sig-param">dt_teardown_started: str = None</em>, <em class="sig-param">dt_teardown_finished: str = None</em>, <em class="sig-param">dt_deleted: str = None</em>, <em class="sig-param">exit_code: str = None</em>, <em class="sig-param">queue_position: str = None</em>, <em class="sig-param">seq_num: int = None</em>, <em class="sig-param">storage_region: str = None</em>, <em class="sig-param">cluster_machine: str = None</em>, <em class="sig-param">fqdn: str = None</em>, <em class="sig-param">ports: str = None</em>, <em class="sig-param">is_public: bool = None</em>, <em class="sig-param">container_user: str = None</em>, <em class="sig-param">has_code: bool = None</em>, <em class="sig-param">code_uploaded: bool = None</em>, <em class="sig-param">code_commit: str = None</em>, <em class="sig-param">run_till_cancelled: bool = None</em>, <em class="sig-param">push_on_completion: bool = None</em>, <em class="sig-param">new_image_name: str = None</em>, <em class="sig-param">cpu_hostname: str = None</em>, <em class="sig-param">cpu_count: int = None</em>, <em class="sig-param">cpu_model: str = None</em>, <em class="sig-param">cpu_flags: str = None</em>, <em class="sig-param">cpu_mem: str = None</em>, <em class="sig-param">gpu_name: str = None</em>, <em class="sig-param">gpu_serial: str = None</em>, <em class="sig-param">gpu_device: str = None</em>, <em class="sig-param">gpu_driver: str = None</em>, <em class="sig-param">gpu_count: int = None</em>, <em class="sig-param">gpu_mem: str = None</em>, <em class="sig-param">tpu_type: str = None</em>, <em class="sig-param">tpu_name: str = None</em>, <em class="sig-param">tpu_grpc_url: str = None</em>, <em class="sig-param">tpu_tf_version: str = None</em>, <em class="sig-param">tpu_dataset_dir: str = None</em>, <em class="sig-param">tpu_model_dir: str = None</em>, <em class="sig-param">target_node_attrs: dict = None</em>, <em class="sig-param">job_env: dict = None</em>, <em class="sig-param">shared_mem_mbytes: int = None</em>, <em class="sig-param">shutdown_timeout: int = None</em>, <em class="sig-param">is_preemptible: bool = None</em>, <em class="sig-param">metrics_url: str = None</em>, <em class="sig-param">custom_metrics: str = None</em>, <em class="sig-param">experiment_id: str = None</em>, <em class="sig-param">command: str = None</em>, <em class="sig-param">workspace: str = None</em>, <em class="sig-param">workspace_archive: str = None</em>, <em class="sig-param">workspace_file_name: str = None</em>, <em class="sig-param">ignore_files: str = None</em>, <em class="sig-param">use_dockerfile: str = None</em>, <em class="sig-param">rel_dockerfile_path: str = None</em>, <em class="sig-param">registry_username: str = None</em>, <em class="sig-param">registry_password: str = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#gradient.api_sdk.models.job.Job.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.models.log">
+<span id="gradient-api-sdk-models-log-module"></span><h2>gradient.api_sdk.models.log module<a class="headerlink" href="#module-gradient.api_sdk.models.log" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.models.log.LogRow">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.models.log.</code><code class="sig-name descname">LogRow</code><span class="sig-paren">(</span><em class="sig-param">line</em>, <em class="sig-param">message</em>, <em class="sig-param">timestamp</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.models.log.LogRow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="method">
+<dt id="gradient.api_sdk.models.log.LogRow.line">
+<em class="property">property </em><code class="sig-name descname">line</code><a class="headerlink" href="#gradient.api_sdk.models.log.LogRow.line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.models.log.LogRow.message">
+<em class="property">property </em><code class="sig-name descname">message</code><a class="headerlink" href="#gradient.api_sdk.models.log.LogRow.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.models.log.LogRow.timestamp">
+<em class="property">property </em><code class="sig-name descname">timestamp</code><a class="headerlink" href="#gradient.api_sdk.models.log.LogRow.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.models.model">
+<span id="gradient-api-sdk-models-model-module"></span><h2>gradient.api_sdk.models.model module<a class="headerlink" href="#module-gradient.api_sdk.models.model" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.models.model.Model">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.models.model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param">id: str = None</em>, <em class="sig-param">name: str = None</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">experiment_id: str = None</em>, <em class="sig-param">tags: list = None</em>, <em class="sig-param">model_type: str = None</em>, <em class="sig-param">url: str = None</em>, <em class="sig-param">model_path: str = None</em>, <em class="sig-param">deployment_state: str = None</em>, <em class="sig-param">summary: dict = None</em>, <em class="sig-param">detail: dict = None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.models.model.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Model class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>project_id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>experiment_id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>tags</strong> (<em>list</em>) – </p></li>
+<li><p><strong>model_type</strong> (<em>str</em>) – </p></li>
+<li><p><strong>url</strong> (<em>str</em>) – </p></li>
+<li><p><strong>model_path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>deployment_state</strong> (<em>str</em>) – </p></li>
+<li><p><strong>summary</strong> (<em>str</em>) – </p></li>
+<li><p><strong>detail</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="gradient.api_sdk.models.model.Model.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">id: str = None</em>, <em class="sig-param">name: str = None</em>, <em class="sig-param">project_id: str = None</em>, <em class="sig-param">experiment_id: str = None</em>, <em class="sig-param">tags: list = None</em>, <em class="sig-param">model_type: str = None</em>, <em class="sig-param">url: str = None</em>, <em class="sig-param">model_path: str = None</em>, <em class="sig-param">deployment_state: str = None</em>, <em class="sig-param">summary: dict = None</em>, <em class="sig-param">detail: dict = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#gradient.api_sdk.models.model.Model.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.models.project">
+<span id="gradient-api-sdk-models-project-module"></span><h2>gradient.api_sdk.models.project module<a class="headerlink" href="#module-gradient.api_sdk.models.project" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.models.project.Project">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.models.project.</code><code class="sig-name descname">Project</code><span class="sig-paren">(</span><em class="sig-param">id: str = None</em>, <em class="sig-param">name: str = None</em>, <em class="sig-param">repository_name: str = None</em>, <em class="sig-param">repository_url: str = None</em>, <em class="sig-param">created: datetime.datetime = None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.models.project.Project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Project class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>repository_name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>repository_url</strong> (<em>str</em>) – </p></li>
+<li><p><strong>created</strong> (<em>datetime</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="gradient.api_sdk.models.project.Project.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">id: str = None</em>, <em class="sig-param">name: str = None</em>, <em class="sig-param">repository_name: str = None</em>, <em class="sig-param">repository_url: str = None</em>, <em class="sig-param">created: datetime.datetime = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#gradient.api_sdk.models.project.Project.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.models">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gradient.api_sdk.models" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2019, Paperspace.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/gradient.api_sdk.models.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

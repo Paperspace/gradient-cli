@@ -18,6 +18,10 @@ pip-install-dev: pip-update
 build:
 	python setup.py sdist bdist_wheel
 
+gh-pages:
+	@make html
+	@cp -a build/html/. docs
+
 
 # Minimal makefile for Sphinx documentation
 #

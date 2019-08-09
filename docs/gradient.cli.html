@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>gradient.cli package &#8212; Gradient-CLI  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/gradient.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="gradient.commands package" href="gradient.commands.html" />
+    <link rel="prev" title="gradient.api_sdk.serializers package" href="gradient.api_sdk.serializers.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Gradient-CLI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="gradient.html">gradient package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="gradient.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.config">gradient.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.constants">gradient.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.exceptions">gradient.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.logger">gradient.logger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.login">gradient.login module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.main">gradient.main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.utils">gradient.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.version">gradient.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.version_checker">gradient.version_checker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.workspace">gradient.workspace module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">gradient</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="gradient.html">gradient package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="gradient.html">gradient package</a><ul>
+      <li>Previous: <a href="gradient.api_sdk.serializers.html" title="previous chapter">gradient.api_sdk.serializers package</a></li>
+      <li>Next: <a href="gradient.commands.html" title="next chapter">gradient.commands package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="gradient-cli-package">
+<h1>gradient.cli package<a class="headerlink" href="#gradient-cli-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gradient.cli.auth">
+<span id="gradient-cli-auth-module"></span><h2>gradient.cli.auth module<a class="headerlink" href="#module-gradient.cli.auth" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gradient.cli.cli">
+<span id="gradient-cli-cli-module"></span><h2>gradient.cli.cli module<a class="headerlink" href="#module-gradient.cli.cli" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.cli.cli.GradientGroup">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.cli.cli.</code><code class="sig-name descname">GradientGroup</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.cli.GradientGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.cli.common.ClickGroup" title="gradient.cli.common.ClickGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.cli.common.ClickGroup</span></code></a></p>
+<dl class="method">
+<dt id="gradient.cli.cli.GradientGroup.main">
+<code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.cli.GradientGroup.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the way to invoke a script with all the bells and
+whistles as a command line application.  This will always terminate
+the application after a call.  If this is not wanted, <code class="docutils literal notranslate"><span class="pre">SystemExit</span></code>
+needs to be caught.</p>
+<p>This method is also available by directly calling the instance of
+a <code class="xref py py-class docutils literal notranslate"><span class="pre">Command</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 3.0: </span>Added the <cite>standalone_mode</cite> flag to control the standalone mode.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – the arguments that should be used for parsing.  If not
+provided, <code class="docutils literal notranslate"><span class="pre">sys.argv[1:]</span></code> is used.</p></li>
+<li><p><strong>prog_name</strong> – the program name that should be used.  By default
+the program name is constructed by taking the file
+name from <code class="docutils literal notranslate"><span class="pre">sys.argv[0]</span></code>.</p></li>
+<li><p><strong>complete_var</strong> – the environment variable that controls the
+bash completion support.  The default is
+<code class="docutils literal notranslate"><span class="pre">&quot;_&lt;prog_name&gt;_COMPLETE&quot;</span></code> with prog_name in
+uppercase.</p></li>
+<li><p><strong>standalone_mode</strong> – the default behavior is to invoke the script
+in standalone mode.  Click will then
+handle exceptions and convert them into
+error messages and the function will never
+return but shut down the interpreter.  If
+this is set to <cite>False</cite> they will be
+propagated to the caller and the return
+value of this function is the return value
+of <code class="xref py py-meth docutils literal notranslate"><span class="pre">invoke()</span></code>.</p></li>
+<li><p><strong>extra</strong> – extra keyword arguments are forwarded to the context
+constructor.  See <code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code> for more information.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.cli.cli_types">
+<span id="gradient-cli-cli-types-module"></span><h2>gradient.cli.cli_types module<a class="headerlink" href="#module-gradient.cli.cli_types" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.cli.cli_types.ChoiceType">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.cli.cli_types.</code><code class="sig-name descname">ChoiceType</code><span class="sig-paren">(</span><em class="sig-param">type_map</em>, <em class="sig-param">case_sensitive=True</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.cli_types.ChoiceType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">click.types.Choice</span></code></p>
+<p>Takes a string-keyed map and converts cli-provided parameter to corresponding value</p>
+<dl class="method">
+<dt id="gradient.cli.cli_types.ChoiceType.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">type_map</em>, <em class="sig-param">case_sensitive=True</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.cli_types.ChoiceType.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.cli.cli_types.ChoiceType.convert">
+<code class="sig-name descname">convert</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">param</em>, <em class="sig-param">ctx</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.cli_types.ChoiceType.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the value.  This is not invoked for values that are
+<cite>None</cite> (the missing value).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="gradient.cli.cli_types.json_string">
+<code class="sig-prename descclassname">gradient.cli.cli_types.</code><code class="sig-name descname">json_string</code><span class="sig-paren">(</span><em class="sig-param">val</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.cli_types.json_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps json.loads so the cli help shows proper option’s type name instead of ‘LOADS’</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.cli.common">
+<span id="gradient-cli-common-module"></span><h2>gradient.cli.common module<a class="headerlink" href="#module-gradient.cli.common" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gradient.cli.common.del_if_value_is_none">
+<code class="sig-prename descclassname">gradient.cli.common.</code><code class="sig-name descname">del_if_value_is_none</code><span class="sig-paren">(</span><em class="sig-param">dict_</em>, <em class="sig-param">del_all_falsy=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.common.del_if_value_is_none" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all elements with value == None</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gradient.cli.common.jsonify_dicts">
+<code class="sig-prename descclassname">gradient.cli.common.</code><code class="sig-name descname">jsonify_dicts</code><span class="sig-paren">(</span><em class="sig-param">dict_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.common.jsonify_dicts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="gradient.cli.common.ClickGroup">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.cli.common.</code><code class="sig-name descname">ClickGroup</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.common.ClickGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">click_didyoumean.DYMMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">click_help_colors.HelpColorsGroup</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gradient.cli.common.deprecated">
+<code class="sig-prename descclassname">gradient.cli.common.</code><code class="sig-name descname">deprecated</code><span class="sig-paren">(</span><em class="sig-param">msg</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.common.deprecated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-gradient.cli.deployments">
+<span id="gradient-cli-deployments-module"></span><h2>gradient.cli.deployments module<a class="headerlink" href="#module-gradient.cli.deployments" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gradient.cli.deployments.get_deployment_client">
+<code class="sig-prename descclassname">gradient.cli.deployments.</code><code class="sig-name descname">get_deployment_client</code><span class="sig-paren">(</span><em class="sig-param">api_key</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.deployments.get_deployment_client" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-gradient.cli.experiments">
+<span id="gradient-cli-experiments-module"></span><h2>gradient.cli.experiments module<a class="headerlink" href="#module-gradient.cli.experiments" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gradient.cli.experiments.get_workspace_handler">
+<code class="sig-prename descclassname">gradient.cli.experiments.</code><code class="sig-name descname">get_workspace_handler</code><span class="sig-paren">(</span><em class="sig-param">api_key</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.experiments.get_workspace_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="gradient.cli.experiments.common_experiments_create_options">
+<code class="sig-prename descclassname">gradient.cli.experiments.</code><code class="sig-name descname">common_experiments_create_options</code><span class="sig-paren">(</span><em class="sig-param">f</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.experiments.common_experiments_create_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="gradient.cli.experiments.common_experiment_create_multi_node_options">
+<code class="sig-prename descclassname">gradient.cli.experiments.</code><code class="sig-name descname">common_experiment_create_multi_node_options</code><span class="sig-paren">(</span><em class="sig-param">f</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.experiments.common_experiment_create_multi_node_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="gradient.cli.experiments.common_experiments_create_single_node_options">
+<code class="sig-prename descclassname">gradient.cli.experiments.</code><code class="sig-name descname">common_experiments_create_single_node_options</code><span class="sig-paren">(</span><em class="sig-param">f</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.experiments.common_experiments_create_single_node_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-gradient.cli.hyperparameters">
+<span id="gradient-cli-hyperparameters-module"></span><h2>gradient.cli.hyperparameters module<a class="headerlink" href="#module-gradient.cli.hyperparameters" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gradient.cli.hyperparameters.add_use_docker_file_flag_if_used">
+<code class="sig-prename descclassname">gradient.cli.hyperparameters.</code><code class="sig-name descname">add_use_docker_file_flag_if_used</code><span class="sig-paren">(</span><em class="sig-param">ctx</em>, <em class="sig-param">param</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.hyperparameters.add_use_docker_file_flag_if_used" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="gradient.cli.hyperparameters.common_hyperparameter_create_options">
+<code class="sig-prename descclassname">gradient.cli.hyperparameters.</code><code class="sig-name descname">common_hyperparameter_create_options</code><span class="sig-paren">(</span><em class="sig-param">f</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.hyperparameters.common_hyperparameter_create_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-gradient.cli.jobs">
+<span id="gradient-cli-jobs-module"></span><h2>gradient.cli.jobs module<a class="headerlink" href="#module-gradient.cli.jobs" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gradient.cli.jobs.get_workspace_handler">
+<code class="sig-prename descclassname">gradient.cli.jobs.</code><code class="sig-name descname">get_workspace_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.jobs.get_workspace_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="gradient.cli.jobs.common_jobs_create_options">
+<code class="sig-prename descclassname">gradient.cli.jobs.</code><code class="sig-name descname">common_jobs_create_options</code><span class="sig-paren">(</span><em class="sig-param">f</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.jobs.common_jobs_create_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-gradient.cli.machines">
+<span id="gradient-cli-machines-module"></span><h2>gradient.cli.machines module<a class="headerlink" href="#module-gradient.cli.machines" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gradient.cli.models">
+<span id="gradient-cli-models-module"></span><h2>gradient.cli.models module<a class="headerlink" href="#module-gradient.cli.models" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gradient.cli.projects">
+<span id="gradient-cli-projects-module"></span><h2>gradient.cli.projects module<a class="headerlink" href="#module-gradient.cli.projects" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gradient.cli.run">
+<span id="gradient-cli-run-module"></span><h2>gradient.cli.run module<a class="headerlink" href="#module-gradient.cli.run" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gradient.cli.validators">
+<span id="gradient-cli-validators-module"></span><h2>gradient.cli.validators module<a class="headerlink" href="#module-gradient.cli.validators" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gradient.cli.validators.validate_mutually_exclusive">
+<code class="sig-prename descclassname">gradient.cli.validators.</code><code class="sig-name descname">validate_mutually_exclusive</code><span class="sig-paren">(</span><em class="sig-param">options_1</em>, <em class="sig-param">options_2</em>, <em class="sig-param">error_message</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.validators.validate_mutually_exclusive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="gradient.cli.validators.validate_email">
+<code class="sig-prename descclassname">gradient.cli.validators.</code><code class="sig-name descname">validate_email</code><span class="sig-paren">(</span><em class="sig-param">ctx</em>, <em class="sig-param">param</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.validators.validate_email" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-gradient.cli">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gradient.cli" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gradient.cli.show">
+<code class="sig-prename descclassname">gradient.cli.</code><code class="sig-name descname">show</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">file=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.show" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2019, Paperspace.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/gradient.cli.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

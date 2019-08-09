@@ -1,8 +1,31 @@
+"""
+Deployment related client handler logic.
+
+Remember that in code snippets all highlighted lines are required other lines are optional.
+"""
+from gradient import config
 from .base_client import BaseClient
 from .. import models, repositories
 
 
 class DeploymentsClient(BaseClient):
+    """
+    Client to handle deployment related actions.
+
+    How to create instance of deployment client:
+
+    .. code-block:: python
+        :linenos:
+        :emphasize-lines: 4
+
+        from gradient import DeploymentsClient
+
+        deployment_client = DeploymentsClient(
+            api_key='your_api_key_here'
+        )
+    """
+    HOST_URL = config.config.CONFIG_HOST
+
     def create(self, deployment_type, model_id, name, machine_type, image_url, instance_count, use_vpc=False):
         """
         Method to create a Deployment instance.
@@ -11,15 +34,15 @@ class DeploymentsClient(BaseClient):
         and specify all of the following parameters: deployment type, base image, name, machine type, and container
         image for serving, as well as the instance count:
 
-        *EXAMPLE*::
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 4
 
-            gradient deployments create
-            --deploymentType TFServing
-            --modelId <your-model-id>
-            --name "Sample Model"
-            --machineType K80
-            --imageUrl tensorflow/serving:latest-gpu
-            --instanceCount 2
+            from gradient import DeploymentsClient
+
+            deployment_client = DeploymentsClient(
+                api_key='your_api_key_here'
+            )
 
 
         To obtain your Model ID, you can run ``command gradient models list`` and copy the target Model ID from
@@ -33,7 +56,8 @@ class DeploymentsClient(BaseClient):
         :param instance_count: Number of machine instances  [required]
         :param bool use_vpc:
 
-        :return: Created deployment id
+        :returns: Created deployment id
+        :rtype: str
         """
         deployment = models.Deployment(
             deployment_type=deployment_type,

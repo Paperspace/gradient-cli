@@ -1,11 +1,27 @@
 from gradient import config
-from .common import ListResources
-from .. import serializers
+from gradient.api_sdk import serializers
+from .common import ListResources, CreateResource, BaseRepository, GetResource
+from ..clients import http_client
+from ..serializers import JobSchema, LogRowSchema
 
 
 class GetBaseJobApiUrlMixin(object):
     def _get_api_url(self, **_):
         return config.config.CONFIG_HOST
+
+
+class ParseJobDictMixin(object):
+    @staticmethod
+    def _parse_object(job_dict, **kwargs):
+        """
+
+        :param job_dict:
+        :param kwargs:
+        :return:
+        :rtype: Job
+        """
+        job = JobSchema().get_instance(job_dict)
+        return job
 
 
 class ListJobs(GetBaseJobApiUrlMixin, ListResources):
@@ -17,13 +33,26 @@ class ListJobs(GetBaseJobApiUrlMixin, ListResources):
         jobs = []
 
         for job_dict in data:
-            job = serializers.JobSchema().get_instance(job_dict)
+            job = self._parse_object(job_dict)
             jobs.append(job)
 
         return jobs
 
+    def _parse_object(self, job_dict):
+        job = serializers.JobSchema().get_instance(job_dict)
+        return job
+
     def _get_request_json(self, kwargs):
-        filters = kwargs.get("filters")
+        filters = dict()
+        if kwargs.get("project_id"):
+            filters["projectId"] = kwargs.get("project_id")
+
+        if kwargs.get("project"):
+            filters["project"] = kwargs.get("project")
+
+        if kwargs.get("experiment_id"):
+            filters["experimentId"] = kwargs.get("experiment_id")
+
         json_ = filters or None
         return json_
 
@@ -52,17 +81,70 @@ class ListJobLogs(ListResources):
                 yield log
 
     def _parse_objects(self, log_rows, **kwargs):
-        serializer = serializers.LogRowSchema()
+        serializer = LogRowSchema()
         log_rows = (serializer.get_instance(row) for row in log_rows)
         return log_rows
 
     def _get_request_params(self, kwargs):
         params = {
-            'jobId': kwargs['job_id'],
-            'line': kwargs['line'],
-            'limit': kwargs['limit']
+            "jobId": kwargs["job_id"],
+            "line": kwargs["line"],
+            "limit": kwargs["limit"]
         }
         return params
+
+
+class CreateJob(GetBaseJobApiUrlMixin, CreateResource):
+    SERIALIZER_CLS = JobSchema
+    HANDLE_FIELD = "id"
+
+    def get_request_url(self, **kwargs):
+        return "/jobs/createJob/"
+
+    def create_job(self, instance, data):
+        instance_dict = self._get_instance_dict(instance)
+        url = self.get_request_url()
+        client = self._get_client()
+        response = client.post(url, json=instance_dict, data=data)
+        gradient_response = http_client.GradientResponse.interpret_response(response)
+        self._validate_response(gradient_response)
+        handle = self._process_response(response)
+        return handle
+
+    def _get_id_from_response(self, response):
+        handle = response.json()[self.HANDLE_FIELD]
+        return handle
+
+
+class RunJob(CreateJob):
+    def __init__(self, api_key, logger, client):
+        super(RunJob, self).__init__(api_key, logger)
+        self.http_client = client
+
+    def _get_client(self, use_vpc=False):
+        return self.http_client
+
+
+class DeleteJob(GetBaseJobApiUrlMixin, BaseRepository):
+
+    def get_request_url(self, **kwargs):
+        return "/job/{}/destroy/".format(kwargs.get("id_"))
+
+    def delete(self, id_, **kwargs):
+        url = self.get_request_url(id_=id_)
+        response = self.client.post(url)
+        self._validate_response(response)
+
+
+class StopJob(GetBaseJobApiUrlMixin, BaseRepository):
+
+    def get_request_url(self, **kwargs):
+        return "/job/{}/stop/".format(kwargs.get('id_'))
+
+    def stop(self, id_, **kwargs):
+        url = self.get_request_url(id_=id_)
+        response = self.client.post(url)
+        self._validate_response(response)
 
 
 class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
@@ -70,7 +152,57 @@ class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
         return data
 
     def get_request_url(self, **kwargs):
-        return '/jobs/artifactsList'
+        return "/jobs/artifactsList"
 
     def _get_request_params(self, kwargs):
-        return kwargs.get('filters')
+        params = {
+            "jobId": kwargs.get("jobId"),
+        }
+
+        if kwargs.get("files"):
+            params["files"] = kwargs.get("files")
+
+        if kwargs.get("size"):
+            params["size"] = kwargs.get("size")
+
+        if kwargs.get("links"):
+            params["links"] = kwargs.get("links")
+
+        return params
+
+
+class DeleteJobArtifacts(GetBaseJobApiUrlMixin, BaseRepository):
+    VALIDATION_ERROR_MESSAGE = "Failed to delete resource"
+
+    def get_request_url(self, **kwargs):
+        return "/jobs/{}/artifactsDestroy/".format(kwargs.get("id_"))
+
+    def delete(self, id_, **kwargs):
+        url = self.get_request_url(id_=id_)
+
+        params = self._get_request_params(kwargs)
+
+        client = self._get_client()
+        response = client.post(url, json=kwargs.get("json"), params=params)
+        self._validate_response(response)
+
+    def _get_request_params(self, kwargs):
+        filters = dict()
+
+        if kwargs.get("files"):
+            filters["files"] = kwargs.get("files")
+
+        return filters or None
+
+
+class GetJobArtifacts(GetBaseJobApiUrlMixin, GetResource):
+    def _parse_object(self, data, **kwargs):
+        return data
+
+    def _get_request_params(self, kwargs):
+        return {
+            "jobId": kwargs.get("jobId")
+        }
+
+    def get_request_url(self, **kwargs):
+        return "/jobs/artifactsGet"
