@@ -4,10 +4,8 @@ Deployment related client handler logic.
 Remember that in code snippets all highlighted lines are required other lines are optional.
 """
 from gradient import config
-from gradient.api_sdk.utils import MessageExtractor
 from .base_client import BaseClient
 from .. import models, repositories
-from ..exceptions import GradientSdkError
 
 
 class DeploymentsClient(BaseClient):
@@ -38,24 +36,43 @@ class DeploymentsClient(BaseClient):
 
         .. code-block:: python
             :linenos:
-            :emphasize-lines: 4
+            :emphasize-lines: 4,5,6,,7,8,9
 
             from gradient import DeploymentsClient
 
-            deployment_client = DeploymentsClient(
-                api_key='your_api_key_here'
+            deployment_handle = deployment_client.create(
+                deployment_type='TFServing',
+                model_id='your_model_id_here,
+                name='Some model name here',
+                machine_type='K80',
+                image_url='tensorflow/serving:latest-gpu',
+                instance_count=2
             )
-
 
         To obtain your Model ID, you can run ``command gradient models list`` and copy the target Model ID from
         your available Models.
 
-        :param deployment_type: Model deployment type. Only TensorFlow Model deployment type is currently supported  [required]
-        :param modelId: ID of a trained model [required]
-        :param name: Human-friendly name for new model deployment [required]
-        :param machine_type: [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]
-        :param image_url: Docker image for model deployment  [required]
-        :param instance_count: Number of machine instances  [required]
+        :param str deployment_type: Model deployment type. Only TensorFlow Model deployment type is currently supported  [required]
+        :param str model_id: ID of a trained model [required]
+        :param str name: Human-friendly name for new model deployment [required]
+        :param str machine_type: Type of machine for new deployment [required]
+
+            We recommend to choose one of this:
+
+            .. code-block::
+
+                K80
+                P100
+                TPU
+                GV100
+                GV100x8
+                G1
+                G6
+                G12
+
+        :param str image_url: Docker image for model deployment  [required]
+        :param int instance_count: Number of machine instances  [required]
+
         :returns: Created deployment id
         :rtype: str
         """
@@ -73,83 +90,75 @@ class DeploymentsClient(BaseClient):
 
     def start(self, deployment_id):
         """
-        Start deployment
+        Method to start deployment.
 
-        *EXAMPLE*::
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 4
 
-            gradient deployments start --id <your-deployment-id>
+            from gradient import DeploymentsClient
+
+            deployment_handle = deployment_client.start(
+                deployment_id='deployment_id_here',
+            )
 
         :param str deployment_id: Deployment ID
+        :raises: exceptions.GradientSdkError
         """
-        return self._get_post_response(deployment_id)
+        repositories.StartStopDeployment(self.client).start(deployment_id)
 
     def stop(self, deployment_id):
         """
-        Stop deployment
+        Method to stop deployment
 
-        *EXAMPLE*::
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 4
 
-            gradient deployments stop --id <your-deployment-id>
+            from gradient import DeploymentsClient
+
+            deployment_handle = deployment_client.stop(
+                deployment_id='deployment_id_here',
+            )
 
         :param deployment_id: Deployment ID
+        :raises: exceptions.GradientSdkError
         """
-        return self._get_post_response(deployment_id, is_running=False)
+        repositories.StartStopDeployment(self.client).start(deployment_id, is_running=False)
 
-    def list(self, filters):
+    def list(self, state=None, project_id=None, model_id=None):
         """
         List deployments with optional filtering
 
         To view all running deployments in your team, run::
 
-            gradient deployments list --state RUNNING
+        .. code-block:: python
+            :linenos:
 
-        Options::
+            from gradient import DeploymentsClient
 
-          --state [BUILDING|PROVISIONING|STARTING|RUNNING|STOPPING|STOPPED|ERROR] Filter by deployment state
-          --projectId TEXT Use to filter by project ID
-          --modelId TEXT Use to filter by model ID
+            deployment_handle = deployment_client.list(
+                state='RUNNING',
+            )
 
-        :param state|projectId|modelId filters:
+        :param None|str state: to limit results by state of deployment
+
+            Available states:
+
+            .. code-block::
+
+                    BUILDING
+                    PROVISIONING
+                    STARTING
+                    RUNNING
+                    STOPPING
+                    STOPPED
+                    ERROR
+
+        :param None|str project_id: Use to filter by project ID
+        :param None|str model_id: Use to filter by model ID
+
+        :returns: List of deployments
+        :rtype: list
         """
-        return repositories.ListDeployments(self.client).list(filters=filters)
-
-    @staticmethod
-    def _get_deployment_dict(deployment, schema_cls):
-        deployment_schema = schema_cls()
-        deployment_dict = deployment_schema.dump(deployment).data
-
-        return deployment_dict
-
-    @staticmethod
-    def _get_error_message(response):
-        try:
-            response_data = response.json()
-        except ValueError:
-            return "Unknown error"
-
-        msg = MessageExtractor().get_message_from_response_data(response_data)
-        return msg
-
-    def _get_create_response(self, deployment_dict):
-        return self.client.post("/deployments/createDeployment/", json=deployment_dict)
-
-    def _process_response(self, response):
-        if response.ok:
-            return response.json()["deployment"]["id"]
-
-        msg = self._get_error_message(response)
-        # TODO prepare more detailed error type message
-        raise GradientSdkError(msg)
-
-    def _create(self, deployment, schema_cls):
-        deployment_dict = self._get_deployment_dict(deployment, schema_cls)
-        response = self._get_create_response(deployment_dict)
-        handle = self._process_response(response)
-        return handle
-
-    def _get_post_response(self, deployment_id, is_running=True):
-        data = {
-            "id": deployment_id,
-            "isRunning": is_running
-        }
-        return self.client.post("/deployments/updateDeployment/", json=data)
+        return repositories.ListDeployments(self.client).list(state=state, project_id=project_id, model_id=model_id)

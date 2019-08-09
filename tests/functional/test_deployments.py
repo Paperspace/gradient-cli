@@ -123,7 +123,7 @@ class TestDeploymentsList(object):
 +-----------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+
 """
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -136,7 +136,7 @@ class TestDeploymentsList(object):
                                             params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_with_custom_api_key_when_api_key_parameter_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -150,7 +150,7 @@ class TestDeploymentsList(object):
         assert result.output == self.DETAILS_STDOUT
 
     @mock.patch("gradient.cli.deployments.deployments_commands.pydoc")
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
                                                                                                      pydoc_patched):
         list_json = {"deploymentList": self.LIST_JSON["deploymentList"] * 40}
@@ -166,7 +166,7 @@ class TestDeploymentsList(object):
         pydoc_patched.pager.assert_called_once()
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments_filtered_by_state(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -179,7 +179,7 @@ class TestDeploymentsList(object):
                                        params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments_filtered_with_state_but_none_found(
             self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND, 200,
@@ -194,7 +194,7 @@ class TestDeploymentsList(object):
                                             params=None)
         assert result.output == "No data found\n"
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"},
                                                 400)

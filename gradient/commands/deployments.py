@@ -64,27 +64,12 @@ class ListDeploymentsCommand(_DeploymentCommand):
 
     def execute(self, **kwargs):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            instances = self._get_instances(**kwargs)
+            try:
+                instances = self.deployment_client.list(**kwargs)
+            except api_sdk.GradientSdkError as e:
+                raise exceptions.ReceivingDataFailedError(e)
 
         self._log_objects_list(instances)
-
-    def _get_instances(self, **kwargs):
-        filters = self._get_request_json(kwargs)
-        try:
-            instances = self.deployment_client.list(filters)
-        except api_sdk.GradientSdkError as e:
-            raise exceptions.ReceivingDataFailedError(e)
-
-        return instances
-
-    @staticmethod
-    def _get_request_json(kwargs):
-        filters = kwargs.get("filters")
-        if not filters:
-            return None
-
-        json_ = {"filter": {"where": {"and": [filters]}}}
-        return json_
 
     @staticmethod
     def _get_table_data(deployments):
@@ -119,12 +104,20 @@ class ListDeploymentsCommand(_DeploymentCommand):
 
 
 class StartDeploymentCommand(_DeploymentCommand):
-    def execute(self, **kwargs):
-        response = self.deployment_client.start(**kwargs)
-        self.logger.log_response(response, "Deployment started", "Unknown error while starting the deployment")
+    def execute(self, deployment_id):
+        try:
+            self.deployment_client.start(deployment_id)
+        except api_sdk.GradientSdkError:
+            self.logger.error("Unknown error while starting the deployment")
+        else:
+            self.logger.log("Deployment started")
 
 
 class StopDeploymentCommand(_DeploymentCommand):
-    def execute(self, **kwargs):
-        response = self.deployment_client.stop(**kwargs)
-        self.logger.log_response(response, "Deployment stopped", "Unknown error while stopping the deployment")
+    def execute(self, deployment_id):
+        try:
+            self.deployment_client.stop(deployment_id)
+        except api_sdk.GradientSdkError as e:
+            self.logger.error(e)
+        else:
+            self.logger.log("Deployment stopped")

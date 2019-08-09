@@ -1,4 +1,4 @@
-from .deployments import ListDeployments, CreateDeployment
+from .deployments import ListDeployments, CreateDeployment, StartStopDeployment
 from .experiments import ListExperiments, GetExperiment, ListExperimentLogs, StartExperiment, StopExperiment, \
     CreateSingleNodeExperiment, CreateMultiNodeExperiment, RunSingleNodeExperiment, RunMultiNodeExperiment
 from .hyperparameter import CreateHyperparameterJob, CreateAndStartHyperparameterJob, ListHyperparameterJobs, \

@@ -176,28 +176,29 @@ it in the CLI using the command:</p>
 <p>To create a new Deployment, you must first create a Model. With a Model available, use the <code class="docutils literal notranslate"><span class="pre">create</span></code> subcommand
 and specify all of the following parameters: deployment type, base image, name, machine type, and container
 image for serving, as well as the instance count:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gradient</span> <span class="kn">import</span> <span class="n">DeploymentsClient</span>
-
-<span class="n">deployment_client</span> <span class="o">=</span> <span class="n">DeploymentsClient</span><span class="p">(</span>
-<span class="hll">    <span class="n">api_key</span><span class="o">=</span><span class="s1">&#39;your_api_key_here&#39;</span>
-</span><span class="p">)</span>
-</pre></div>
-</td></tr></table></div>
 <p>To obtain your Model ID, you can run <code class="docutils literal notranslate"><span class="pre">command</span> <span class="pre">gradient</span> <span class="pre">models</span> <span class="pre">list</span></code> and copy the target Model ID from
 your available Models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>deployment_type</strong> – Model deployment type. Only TensorFlow Model deployment type is currently supported  [required]</p></li>
-<li><p><strong>modelId</strong> – ID of a trained model [required]</p></li>
-<li><p><strong>name</strong> – Human-friendly name for new model deployment [required]</p></li>
-<li><p><strong>machine_type</strong> – [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]</p></li>
-<li><p><strong>image_url</strong> – Docker image for model deployment  [required]</p></li>
-<li><p><strong>instance_count</strong> – Number of machine instances  [required]</p></li>
+<li><p><strong>deployment_type</strong> (<em>str</em>) – Model deployment type. Only TensorFlow Model deployment type is currently supported  [required]</p></li>
+<li><p><strong>model_id</strong> (<em>str</em>) – ID of a trained model [required]</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Human-friendly name for new model deployment [required]</p></li>
+<li><p><strong>machine_type</strong> (<em>str</em>) – <p>Type of machine for new deployment [required]</p>
+<p>We recommend to choose one of this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">K80</span>
+<span class="n">P100</span>
+<span class="n">TPU</span>
+<span class="n">GV100</span>
+<span class="n">GV100x8</span>
+<span class="n">G1</span>
+<span class="n">G6</span>
+<span class="n">G12</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>image_url</strong> (<em>str</em>) – Docker image for model deployment  [required]</p></li>
+<li><p><strong>instance_count</strong> (<em>int</em>) – Number of machine instances  [required]</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -212,14 +213,24 @@ your available Models.</p>
 <dl class="method">
 <dt id="gradient.api_sdk.clients.deployment_client.DeploymentsClient.start">
 <code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">deployment_id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Start deployment</p>
-<p><em>EXAMPLE</em>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">deployments</span> <span class="n">start</span> <span class="o">--</span><span class="nb">id</span> <span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">deployment</span><span class="o">-</span><span class="nb">id</span><span class="o">&gt;</span>
+<dd><p>Method to start deployment.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gradient</span> <span class="kn">import</span> <span class="n">DeploymentsClient</span>
+
+<span class="n">deployment_handle</span> <span class="o">=</span> <span class="n">deployment_client</span><span class="o">.</span><span class="n">start</span><span class="p">(</span>
+<span class="hll">    <span class="n">deployment_id</span><span class="o">=</span><span class="s1">&#39;deployment_id_here&#39;</span><span class="p">,</span>
+</span><span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>deployment_id</strong> (<em>str</em>) – Deployment ID</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>exceptions.GradientSdkError</p>
 </dd>
 </dl>
 </dd></dl>
@@ -227,35 +238,72 @@ your available Models.</p>
 <dl class="method">
 <dt id="gradient.api_sdk.clients.deployment_client.DeploymentsClient.stop">
 <code class="sig-name descname">stop</code><span class="sig-paren">(</span><em class="sig-param">deployment_id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.stop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stop deployment</p>
-<p><em>EXAMPLE</em>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">deployments</span> <span class="n">stop</span> <span class="o">--</span><span class="nb">id</span> <span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">deployment</span><span class="o">-</span><span class="nb">id</span><span class="o">&gt;</span>
+<dd><p>Method to stop deployment</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gradient</span> <span class="kn">import</span> <span class="n">DeploymentsClient</span>
+
+<span class="n">deployment_handle</span> <span class="o">=</span> <span class="n">deployment_client</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span>
+<span class="hll">    <span class="n">deployment_id</span><span class="o">=</span><span class="s1">&#39;deployment_id_here&#39;</span><span class="p">,</span>
+</span><span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>deployment_id</strong> – Deployment ID</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>exceptions.GradientSdkError</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.deployment_client.DeploymentsClient.list">
-<code class="sig-name descname">list</code><span class="sig-paren">(</span><em class="sig-param">filters</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.list" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">list</code><span class="sig-paren">(</span><em class="sig-param">state=None</em>, <em class="sig-param">project_id=None</em>, <em class="sig-param">model_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.list" title="Permalink to this definition">¶</a></dt>
 <dd><p>List deployments with optional filtering</p>
 <p>To view all running deployments in your team, run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">deployments</span> <span class="nb">list</span> <span class="o">--</span><span class="n">state</span> <span class="n">RUNNING</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">code</span><span class="o">-</span><span class="n">block</span><span class="p">::</span> <span class="n">python</span>
 </pre></div>
 </div>
-<p>Options:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">state</span> <span class="p">[</span><span class="n">BUILDING</span><span class="o">|</span><span class="n">PROVISIONING</span><span class="o">|</span><span class="n">STARTING</span><span class="o">|</span><span class="n">RUNNING</span><span class="o">|</span><span class="n">STOPPING</span><span class="o">|</span><span class="n">STOPPED</span><span class="o">|</span><span class="n">ERROR</span><span class="p">]</span> <span class="n">Filter</span> <span class="n">by</span> <span class="n">deployment</span> <span class="n">state</span>
-<span class="o">--</span><span class="n">projectId</span> <span class="n">TEXT</span> <span class="n">Use</span> <span class="n">to</span> <span class="nb">filter</span> <span class="n">by</span> <span class="n">project</span> <span class="n">ID</span>
-<span class="o">--</span><span class="n">modelId</span> <span class="n">TEXT</span> <span class="n">Use</span> <span class="n">to</span> <span class="nb">filter</span> <span class="n">by</span> <span class="n">model</span> <span class="n">ID</span>
-</pre></div>
-</div>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">linenos</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<p>from gradient import DeploymentsClient</p>
+<dl class="simple">
+<dt>deployment_handle = deployment_client.list(</dt><dd><p>state=’RUNNING’,</p>
+</dd>
+</dl>
+<p>)</p>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filters</strong> (<em>state|projectId|modelId</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<em>None|str</em>) – <p>to limit results by state of deployment</p>
+<p>Available states:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">BUILDING</span>
+<span class="n">PROVISIONING</span>
+<span class="n">STARTING</span>
+<span class="n">RUNNING</span>
+<span class="n">STOPPING</span>
+<span class="n">STOPPED</span>
+<span class="n">ERROR</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>project_id</strong> (<em>None|str</em>) – Use to filter by project ID</p></li>
+<li><p><strong>model_id</strong> (<em>None|str</em>) – Use to filter by model ID</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of deployments</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>

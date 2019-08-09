@@ -115,7 +115,7 @@ def get_deployments_list(api_key=None, **filters):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.ListDeploymentsCommand(deployment_client=deployment_client)
     try:
-        command.execute(filters=filters)
+        command.execute(**filters)
     except exceptions.ApplicationError as e:
         logger.Logger().error(e)
 
