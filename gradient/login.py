@@ -44,7 +44,8 @@ def login(email=None, password=None, apiToken=None):
         os.makedirs(paperspace_dir)
     config_data = {}
     if os.path.exists(config_path):
-        config_data = json.load(open(config_path))
+        with open(config_path) as config_file:
+            config_data = json.load (config_file)
 
     if not email:
         email = input('Email: ')
