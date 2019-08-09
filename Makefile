@@ -20,7 +20,7 @@ build:
 
 gh-pages:
 	@make html
-	@cp -a build/html docs
+	@cp -a build/html/. docs
 
 
 # Minimal makefile for Sphinx documentation

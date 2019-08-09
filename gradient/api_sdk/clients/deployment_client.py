@@ -36,16 +36,6 @@ class DeploymentsClient(BaseClient):
         and specify all of the following parameters: deployment type, base image, name, machine type, and container
         image for serving, as well as the instance count:
 
-        *EXAMPLE*::
-
-            gradient deployments create
-            --deploymentType TFServing
-            --modelId <your-model-id>
-            --name "Sample Model"
-            --machineType K80
-            --imageUrl tensorflow/serving:latest-gpu
-            --instanceCount 2
-
         .. code-block:: python
             :linenos:
             :emphasize-lines: 4
