@@ -130,7 +130,7 @@ class CreateResource(BaseRepository):
         return instance_dict
 
     def _get_serializer(self):
-        serializer = self.SERIALIZER_CLS()
+        serializer = self.SERIALIZER_CLS
         return serializer
 
     def _send_create_request(self, instance_dict, use_vpc):
