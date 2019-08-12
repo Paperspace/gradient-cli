@@ -8,7 +8,7 @@ from gradient.api_sdk.clients import http_client
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
-from gradient.cli.common import api_key_option, ClickGroup, deprecated
+from gradient.cli.common import api_key_option, ClickGroup
 from gradient.commands import experiments as experiments_commands
 from gradient.config import config
 
@@ -279,12 +279,25 @@ def common_experiments_create_single_node_options(f):
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
 
-@deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
-            "options will not be included in version 0.6.0")
+def show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs):
+    if kwargs["workspace_archive"] or kwargs["workspace_url"]:
+        msg = """DeprecatedWarning:
+WARNING: --workspaceUrl and --workspaceArchive options will not be included in version 0.6.0
+
+For more information, please see:
+https://docs.paperspace.com
+If you depend on functionality not listed there, please file an issue."""
+
+        # click.echo(click.style(msg, fg='red'), err=True)
+        logger.Logger().error(msg)
+
+
 @create_experiment.command(name="multinode", help="Create multi node experiment")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
 def create_multi_node(api_key, use_vpc, **kwargs):
+    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
@@ -295,12 +308,12 @@ def create_multi_node(api_key, use_vpc, **kwargs):
     command.execute(kwargs, use_vpc=use_vpc)
 
 
-@deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
-            "options will not be included in version 0.6.0")
 @create_experiment.command(name="singlenode", help="Create single node experiment")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
 def create_single_node(api_key, use_vpc, **kwargs):
+    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
@@ -311,8 +324,6 @@ def create_single_node(api_key, use_vpc, **kwargs):
     command.execute(kwargs, use_vpc=use_vpc)
 
 
-@deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
-            "options will not be included in version 0.6.0")
 @create_and_start_experiment.command(name="multinode", help="Create and start new multi node experiment")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
@@ -326,6 +337,8 @@ def create_single_node(api_key, use_vpc, **kwargs):
 )
 @click.pass_context
 def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, **kwargs):
+    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
@@ -338,8 +351,6 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, **kwargs):
         ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
 
 
-@deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
-            "options will not be included in version 0.6.0")
 @create_and_start_experiment.command(name="singlenode", help="Create and start new single node experiment")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
@@ -353,6 +364,8 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, **kwargs):
 )
 @click.pass_context
 def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, **kwargs):
+    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
