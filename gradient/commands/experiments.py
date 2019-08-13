@@ -44,6 +44,7 @@ class BaseCreateExperimentCommandMixin(object):
 
     def _handle_workspace(self, instance_dict):
         handler = self.workspace_handler.handle(instance_dict)
+        instance_dict.pop("ignore_files", None)
         instance_dict.pop("workspace", None)
         instance_dict.pop("workspace_archive", None)
         instance_dict.pop("workspace_url", None)

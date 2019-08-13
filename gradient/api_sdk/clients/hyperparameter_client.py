@@ -15,7 +15,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
             worker_container_user=None,
             worker_registry_username=None,
             worker_registry_password=None,
-            is_preemptible=True,
+            is_preemptible=False,
             ports=None,
             workspace_url=None,
             artifact_directory=None,
@@ -66,6 +66,9 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :rtype: str
         """
 
+        if not is_preemptible:
+            is_preemptible = None
+
         hyperparameter = models.Hyperparameter(
             name=name,
             project_id=project_id,
@@ -112,7 +115,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
             worker_registry_username=None,
             worker_registry_password=None,
             worker_container_user=None,
-            is_preemptible=True,
+            is_preemptible=False,
             ports=None,
             workspace_url=None,
             artifact_directory=None,
@@ -175,6 +178,9 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :returns: ID of a new job
         :rtype: str
         """
+
+        if not is_preemptible:
+            is_preemptible = None
 
         hyperparameter = models.Hyperparameter(
             name=name,

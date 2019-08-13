@@ -49,7 +49,10 @@ class TestCreateHyperparameters(object):
         "--hyperparameterServerContainerUser", "someHyperparameterServerContainerUser",
         "--hyperparameterServerMachineType", "someHyperparameterServerMachineType",
         "--workspace", "none",
-
+        "--modelPath", "some-model-path",
+        "--modelType", "some-model-type",
+        "--ignoreFiles", "file1,file2",
+        "--isPreemptible",
     ]
     EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED = {
         "workerContainer": "some_container",
@@ -68,6 +71,9 @@ class TestCreateHyperparameters(object):
         "hyperparameterServerContainerUser": "someHyperparameterServerContainerUser",
         "hyperparameterServerMachineType": "someHyperparameterServerMachineType",
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
+        "modelPath": "some-model-path",
+        "modelType": "some-model-type",
+        "isPreemptible": True,
     }
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
@@ -256,6 +262,10 @@ class TestCreateAndStartHyperparameters(object):
         "--hyperparameterServerContainerUser", "someHyperparameterServerContainerUser",
         "--hyperparameterServerMachineType", "someHyperparameterServerMachineType",
         "--workspace", "none",
+        "--modelPath", "some-model-path",
+        "--modelType", "some-model-type",
+        "--ignoreFiles", "file1,file2",
+        "--isPreemptible",
     ]
     EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED = {
         "workerContainer": "some_container",
@@ -274,6 +284,9 @@ class TestCreateAndStartHyperparameters(object):
         "hyperparameterServerContainerUser": "someHyperparameterServerContainerUser",
         "hyperparameterServerMachineType": "someHyperparameterServerMachineType",
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
+        "modelPath": "some-model-path",
+        "modelType": "some-model-type",
+        "isPreemptible": True,
     }
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()

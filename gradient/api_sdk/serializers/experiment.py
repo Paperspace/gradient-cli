@@ -16,6 +16,7 @@ class BaseExperimentSchema(BaseSchema):
     project_id = marshmallow.fields.Str(required=True, dump_to="projectHandle", load_from="project_handle")
     model_type = marshmallow.fields.Str(dump_to="modelType", load_from="modelType")
     model_path = marshmallow.fields.Str(dump_to="modelPath", load_from="modelPath")
+    is_preemptible = marshmallow.fields.Bool(dump_to="isPreemptible", load_from="isPreemptible")
     id = marshmallow.fields.Str(load_from="handle")
     state = marshmallow.fields.Int()
 
