@@ -1,0 +1,34 @@
+apiKey: some_key
+artifactDirectory: /artdir
+clusterId: 2a
+experimentEnv:
+  key: val
+experimentType: MPI
+ignoreFiles: file1,file2
+isPreemptible: true
+modelPath: some-model-path
+modelType: some-model-type
+name: multinode_mpi
+parameterServerCommand: ls
+parameterServerContainer: pscon
+parameterServerContainerUser: pscuser
+parameterServerCount: 2
+parameterServerMachineType: psmtype
+parameterServerRegistryPassword: psrpass
+parameterServerRegistryUrl: psrurl
+parameterServerRegistryUsername: psrcus
+ports: '3456'
+projectId: prq70zy79
+vpc: false
+workerCommand: wcom
+workerContainer: wcon
+workerContainerUser: usr
+workerCount: 2
+workerMachineType: mty
+workerRegistryPassword: rpass
+workerRegistryUrl: rurl
+workerRegistryUsername: rusr
+workingDirectory: /dir
+workspace: null
+workspaceArchive: null
+workspaceUrl: wurl

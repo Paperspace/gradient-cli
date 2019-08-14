@@ -48,67 +48,80 @@ def common_experiments_create_options(f):
             "--name",
             required=True,
             help="Name of new experiment",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--ports",
             help="Port to use in new experiment",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--workspace",
             "workspace",
             help="Path to workspace directory, archive, S3 or git repository",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--workspaceArchive",
             "workspace_archive",
             help="Path to workspace .zip archive",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--workspaceUrl",
             "workspace_url",
             help="Project git repository url",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--ignoreFiles",
             "ignore_files",
-            help="Ignore certain files from uploading"
+            help="Ignore certain files from uploading",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--workingDirectory",
             "working_directory",
             help="Working directory for the experiment",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--artifactDirectory",
             "artifact_directory",
             help="Artifacts directory",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--clusterId",
             "cluster_id",
             help="Cluster ID",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--experimentEnv",
             "experiment_env",
             type=json_string,
             help="Environment variables in a JSON",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--projectId",
             "project_id",
             required=True,
             help="Project ID",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--modelType",
             "model_type",
             help="Model type",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--modelPath",
             "model_path",
             help="Model path",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--isPreemptible",
@@ -116,6 +129,7 @@ def common_experiments_create_options(f):
             type=bool,
             is_flag=True,
             help="Flag: is preemptible",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         api_key_option
     ]
@@ -130,24 +144,28 @@ def common_experiment_create_multi_node_options(f):
             type=ChoiceType(MULTI_NODE_EXPERIMENT_TYPES_MAP, case_sensitive=False),
             required=True,
             help="Experiment Type",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--workerContainer",
             "worker_container",
             required=True,
             help="Worker container",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--workerMachineType",
             "worker_machine_type",
             required=True,
             help="Worker machine type",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--workerCommand",
             "worker_command",
             required=True,
             help="Worker command",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--workerCount",
@@ -155,24 +173,28 @@ def common_experiment_create_multi_node_options(f):
             type=int,
             required=True,
             help="Worker count",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--parameterServerContainer",
             "parameter_server_container",
             required=True,
             help="Parameter server container",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--parameterServerMachineType",
             "parameter_server_machine_type",
             required=True,
             help="Parameter server machine type",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--parameterServerCommand",
             "parameter_server_command",
             required=True,
             help="Parameter server command",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--parameterServerCount",
@@ -180,52 +202,62 @@ def common_experiment_create_multi_node_options(f):
             type=int,
             required=True,
             help="Parameter server count",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--workerContainerUser",
             "worker_container_user",
             help="Worker container user",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--workerRegistryUsername",
             "worker_registry_username",
             help="Worker container registry username",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--workerRegistryPassword",
             "worker_registry_password",
             help="Worker registry password",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--workerRegistryUrl",
             "worker_registry_url",
             help="Worker registry URL",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--parameterServerContainerUser",
             "parameter_server_container_user",
             help="Parameter server container user",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--parameterServerRegistryUsername",
             "parameter_server_registry_username",
             help="Parameter server registry username",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--parameterServerRegistryPassword",
             "parameter_server_registry_password",
             help="Parameter server registry password",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--parameterServerRegistryUrl",
             "parameter_server_registry_url",
             help="Parameter server registry URL",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--vpc",
             "use_vpc",
             type=bool,
             is_flag=True,
+            cls=common.OptionReadValueFromConfigFile,
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
@@ -237,43 +269,51 @@ def common_experiments_create_single_node_options(f):
             "--container",
             required=True,
             help="Container",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--machineType",
             "machine_type",
             required=True,
             help="Machine type",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--command",
             required=True,
             help="Container entrypoint command",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--containerUser",
             "container_user",
             help="Container user",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--registryUsername",
             "registry_username",
             help="Registry username",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--registryPassword",
             "registry_password",
             help="Registry password",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--registryUrl",
             "registry_url",
             help="Registry URL",
+            cls=common.OptionReadValueFromConfigFile,
         ),
         click.option(
             "--vpc",
             "use_vpc",
             type=bool,
             is_flag=True,
+            cls=common.OptionReadValueFromConfigFile,
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
@@ -288,14 +328,14 @@ For more information, please see:
 https://docs.paperspace.com
 If you depend on functionality not listed there, please file an issue."""
 
-        # click.echo(click.style(msg, fg='red'), err=True)
         logger.Logger().error(msg)
 
 
 @create_experiment.command(name="multinode", help="Create multi node experiment")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
-def create_multi_node(api_key, use_vpc, **kwargs):
+@common.options_file
+def create_multi_node(api_key, use_vpc, options_file, **kwargs):
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
 
     utils.validate_workspace_input(kwargs)
@@ -311,7 +351,8 @@ def create_multi_node(api_key, use_vpc, **kwargs):
 @create_experiment.command(name="singlenode", help="Create single node experiment")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
-def create_single_node(api_key, use_vpc, **kwargs):
+@common.options_file
+def create_single_node(api_key, use_vpc, options_file, **kwargs):
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
 
     utils.validate_workspace_input(kwargs)
@@ -335,8 +376,9 @@ def create_single_node(api_key, use_vpc, **kwargs):
     default=True,
     help="Don't show logs. Only create, start and exit",
 )
+@common.options_file
 @click.pass_context
-def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, **kwargs):
+def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, options_file, **kwargs):
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
 
     utils.validate_workspace_input(kwargs)
@@ -362,8 +404,9 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, **kwargs):
     default=True,
     help="Don't show logs. Only create, start and exit",
 )
+@common.options_file
 @click.pass_context
-def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, **kwargs):
+def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, options_file, **kwargs):
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
 
     utils.validate_workspace_input(kwargs)
@@ -379,27 +422,30 @@ def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, **kwargs):
 
 
 @experiments.command("start", help="Start experiment")
-@click.argument("experiment-id")
-@api_key_option
+@click.argument("id", cls=common.ArgumentReadValueFromConfigFile)
 @click.option(
     "--logs",
     "show_logs",
     is_flag=True,
     help="Show logs",
 )
+@common.options_file
 @click.option(
     "--vpc",
     "use_vpc",
     type=bool,
     is_flag=True,
+    cls=common.OptionReadValueFromConfigFile
 )
+@api_key_option
+@common.options_file
 @click.pass_context
-def start_experiment(ctx, experiment_id, show_logs, api_key, use_vpc):
+def start_experiment(ctx, id, show_logs, api_key, options_file, use_vpc):
     command = experiments_commands.StartExperimentCommand(api_key=api_key)
-    command.execute(experiment_id, use_vpc=use_vpc)
+    command.execute(id, use_vpc=use_vpc)
 
     if show_logs:
-        ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
+        ctx.invoke(list_logs, experiment_id=id, line=0, limit=100, follow=True, api_key=api_key)
 
 
 @experiments.command("stop", help="Stop experiment")
@@ -411,7 +457,8 @@ def start_experiment(ctx, experiment_id, show_logs, api_key, use_vpc):
     type=bool,
     is_flag=True,
 )
-def stop_experiment(experiment_id, api_key, use_vpc):
+@common.options_file
+def stop_experiment(experiment_id, api_key, options_file, use_vpc):
     command = experiments_commands.StopExperimentCommand(api_key=api_key)
     command.execute(experiment_id, use_vpc=use_vpc)
 
@@ -419,7 +466,8 @@ def stop_experiment(experiment_id, api_key, use_vpc):
 @experiments.command("list", help="List experiments")
 @click.option("--projectId", "-p", "project_ids", multiple=True)
 @api_key_option
-def list_experiments(project_ids, api_key):
+@common.options_file
+def list_experiments(project_ids, api_key, options_file):
     command = experiments_commands.ListExperimentsCommand(api_key=api_key)
     command.execute(project_id=project_ids)
 
@@ -427,7 +475,8 @@ def list_experiments(project_ids, api_key):
 @experiments.command("details", help="Show detail of an experiment")
 @click.argument("experiment-id")
 @api_key_option
-def get_experiment_details(experiment_id, api_key):
+@common.options_file
+def get_experiment_details(experiment_id, options_file, api_key):
     command = experiments_commands.GetExperimentCommand(api_key=api_key)
     command.execute(experiment_id)
 
@@ -457,6 +506,7 @@ def get_experiment_details(experiment_id, api_key):
     default=False
 )
 @api_key_option
-def list_logs(experiment_id, line, limit, follow, api_key=None):
+@common.options_file
+def list_logs(experiment_id, line, limit, follow, options_file, api_key=None):
     command = experiments_commands.ExperimentLogsCommand(api_key=api_key)
     command.execute(experiment_id, line, limit, follow)

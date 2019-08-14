@@ -1,0 +1,24 @@
+apiKey: some_key
+artifactDirectory: /artifact/dir/
+clusterId: 42c
+command: testCommand
+container: testContainer
+containerUser: conUser
+experimentEnv:
+  key: val
+ignoreFiles: file1,file2
+isPreemptible: true
+machineType: testType
+modelPath: some-model-path
+modelType: some-model-type
+name: exp1
+ports: '4567'
+projectId: testHandle
+registryPassword: passwd
+registryUrl: registryUrl
+registryUsername: userName
+vpc: true
+workingDirectory: /work/dir/
+workspace: null
+workspaceArchive: null
+workspaceUrl: wsp.url

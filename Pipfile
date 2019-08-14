@@ -18,6 +18,7 @@ click-help-colors = "*"
 colorama = "*"
 click-completion = "*"
 halo = "*"
+pyyaml = "*"
 
 [dev-packages]
 twine = "*"

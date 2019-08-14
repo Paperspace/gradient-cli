@@ -45,6 +45,10 @@ class TestExperimentsCreateSingleNode(object):
         "--ignoreFiles", "file1,file2",
         "--isPreemptible",
     ]
+    FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE = [
+        "experiments", "create", "singlenode",
+        "--optionsFile",  # path added in test,
+    ]
     BASIC_OPTIONS_REQUEST = {
         "name": u"exp1",
         "projectHandle": u"testHandle",
@@ -112,6 +116,24 @@ class TestExperimentsCreateSingleNode(object):
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_options_from_config_file(
+            self, post_patched, create_single_node_experiment_config_path):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        command = self.FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE[:] + [create_single_node_experiment_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_data_to_v2_url_when_vpc_switch_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
 
@@ -136,6 +158,7 @@ class TestExperimentsCreateSingleNode(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.FULL_OPTIONS_COMMAND)
 
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
         assert self.EXPECTED_STDOUT in result.output
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -218,6 +241,10 @@ class TestExperimentsCreateMultiNode(object):
         "--modelType", "some-model-type",
         "--ignoreFiles", "file1,file2",
         "--isPreemptible",
+    ]
+    FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE = [
+        "experiments", "create", "multinode",
+        "--optionsFile",  # path added in test,
     ]
     BASIC_OPTIONS_REQUEST = {
         u"name": u"multinode_mpi",
@@ -304,6 +331,24 @@ class TestExperimentsCreateMultiNode(object):
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_options_from_config_file(
+            self, post_patched, create_multi_node_experiment_config_path):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        command = self.FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE[:] + [create_multi_node_experiment_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(self,
                                                                                                         post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
@@ -376,6 +421,10 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--ignoreFiles", "file1,file2",
         "--isPreemptible",
     ]
+    FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE = [
+        "experiments", "run", "singlenode",
+        "--optionsFile",  # path added in test,
+    ]
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "run", "singlenode",
         "--name", "exp1",
@@ -443,6 +492,10 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--modelType", "some-model-type",
         "--ignoreFiles", "file1,file2",
         "--isPreemptible",
+    ]
+    FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE = [
+        "experiments", "run", "multinode",
+        "--optionsFile",  # path added in test,
     ]
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "run", "multinode",
