@@ -40,6 +40,10 @@ class TestExperimentsCreateSingleNode(object):
         "--registryPassword", "passwd",
         "--registryUrl", "registryUrl",
         "--apiKey", "some_key",
+        "--modelPath", "some-model-path",
+        "--modelType", "some-model-type",
+        "--ignoreFiles", "file1,file2",
+        "--isPreemptible",
     ]
     BASIC_OPTIONS_REQUEST = {
         "name": u"exp1",
@@ -67,6 +71,9 @@ class TestExperimentsCreateSingleNode(object):
         "registryPassword": u"passwd",
         "registryUrl": u"registryUrl",
         "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
+        "modelPath": "some-model-path",
+        "modelType": "some-model-type",
+        "isPreemptible": True,
     }
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "create", "singlenode",
@@ -129,13 +136,13 @@ class TestExperimentsCreateSingleNode(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.FULL_OPTIONS_COMMAND)
 
+        assert self.EXPECTED_STDOUT in result.output
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
-        assert self.EXPECTED_STDOUT in result.output
         assert result.exit_code == 0
         assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
 
@@ -207,6 +214,10 @@ class TestExperimentsCreateMultiNode(object):
         "--parameterServerRegistryPassword", "psrpass",
         "--parameterServerRegistryUrl", "psrurl",
         "--apiKey", "some_key",
+        "--modelPath", "some-model-path",
+        "--modelType", "some-model-type",
+        "--ignoreFiles", "file1,file2",
+        "--isPreemptible",
     ]
     BASIC_OPTIONS_REQUEST = {
         u"name": u"multinode_mpi",
@@ -249,6 +260,9 @@ class TestExperimentsCreateMultiNode(object):
         "parameterServerRegistryUsername": u"psrcus",
         "parameterServerRegistryPassword": u"psrpass",
         "parameterServerRegistryUrl": u"psrurl",
+        "isPreemptible": True,
+        "modelPath": "some-model-path",
+        "modelType": "some-model-type",
     }
     RESPONSE_JSON_200 = {"handle": "sadkfhlskdjh", "message": "success"}
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
@@ -357,6 +371,10 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--registryUrl", "registryUrl",
         "--apiKey", "some_key",
         "--no-logs",
+        "--modelPath", "some-model-path",
+        "--modelType", "some-model-type",
+        "--ignoreFiles", "file1,file2",
+        "--isPreemptible",
     ]
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "run", "singlenode",
@@ -421,6 +439,10 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--parameterServerRegistryUrl", "psrurl",
         "--apiKey", "some_key",
         "--no-logs",
+        "--modelPath", "some-model-path",
+        "--modelType", "some-model-type",
+        "--ignoreFiles", "file1,file2",
+        "--isPreemptible",
     ]
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "run", "multinode",
