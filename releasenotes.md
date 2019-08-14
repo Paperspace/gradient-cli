@@ -2,6 +2,13 @@
 
 # Release Notes for 0.3.0a1
 ### New features
+* Added --optionFile to read options from YAML file
+* Added --optionFileTemplate to create YAML template
+###Fixes
+* Added support for missing isPreemptible option to the SDK
+
+# Release Notes for 0.3.0a0
+### New features
 * Introduced Python SDK package
 * Added `ClusterID` function to support new VPCs
 * Hyperparameter private registry and custom container functions added \
