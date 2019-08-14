@@ -75,6 +75,7 @@ setup(
         'prompt_toolkit<3.0',
         'marshmallow<3.0',
         'attrs<=19',
+        'PyYAML',
     ],
     entry_points={'console_scripts': [
         'gradient = gradient:main.main',
@@ -86,6 +87,7 @@ setup(
             'mock',
             'twine',
             'sphinx',
+            'pathlib2;python_version<"3.4"',
         ],
     },
     cmdclass={
