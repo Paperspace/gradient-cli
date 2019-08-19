@@ -165,7 +165,7 @@ class JobsClient(BaseClient):
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
         )
-        handle = CreateJob(self.api_key, self.logger).create(job)
+        handle = CreateJob(self.api_key, self.logger).create(job, data=data)
         return handle
 
     def delete(self, job_id):

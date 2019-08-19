@@ -40,9 +40,14 @@ class API(object):
 
     def post(self, url, json=None, params=None, files=None, data=None):
         path = self.get_path(url)
+        import copy
+        headers = copy.deepcopy(self.headers)
+        if data:
+            headers["Content-Type"] = data.content_type
+
         self.logger.debug("POST request sent to: {} \n\theaders: {}\n\tjson: {}\n\tparams: {}\n\tfiles: {}\n\tdata: {}"
-                          .format(path, self.headers, json, params, files, data))
-        response = requests.post(path, json=json, params=params, headers=self.headers, files=files, data=data)
+                          .format(path, headers, json, params, files, data))
+        response = requests.post(path, json=json, params=params, headers=headers, files=files, data=data)
         self.logger.debug("Response status code: {}".format(response.status_code))
         self.logger.debug("Response content: {}".format(response.content))
         return response

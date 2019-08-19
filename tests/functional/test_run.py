@@ -35,7 +35,8 @@ class TestRunCommand(object):
         get_moniror_patched.return_value = mock_monitor
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, [self.command_name] + self.common_commands + ["/myscript.py", "a", "b"])
+        command = [self.command_name] + self.common_commands + ["/myscript.py", "a", "b"]
+        result = runner.invoke(cli.cli, command)
 
         expected_headers = self.headers.copy()
         expected_headers.update({

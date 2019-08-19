@@ -83,8 +83,7 @@ class BaseCreateJobCommandMixin(object):
         json_["workspace_file_name"] = archive_basename
         job_data = self._get_files_dict(archive_basename)
         monitor = MultipartEncoder(job_data).get_monitor()
-        data = monitor
-        return data
+        return monitor
 
     def _get_files_dict(self, archive_basename):
         job_data = {'file': (archive_basename, open(self.workspace_handler.archive_path, 'rb'), 'text/plain')}
@@ -275,7 +274,7 @@ class JobRunClient(BaseClient):
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
         )
-        handle = RunJob(self.api_key, self.logger, self.client).create(job, data)
+        handle = RunJob(self.api_key, self.logger, self.client).create(job, data=data)
         return handle
 
 
