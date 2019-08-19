@@ -43,11 +43,11 @@ class TestRunCommand(object):
         })
         assert result.exit_code == 0, result.exc_info
         post_patched.assert_called_with(self.url,
-                                        params=None,
+                                        json=None,
                                         data=mock.ANY,
                                         files=None,
                                         headers=expected_headers,
-                                        json={
+                                        params={
                                             'name': u'test',
                                             'projectId': u'projectId',
                                             'workspaceFileName': 'bar',
@@ -66,11 +66,11 @@ class TestRunCommand(object):
 
         expected_headers = self.headers.copy()
         post_patched.assert_called_with(self.url,
-                                        params=None,
+                                        json=None,
                                         data=None,
                                         files=None,
                                         headers=expected_headers,
-                                        json={
+                                        params={
                                             'name': u'test',
                                             'projectId': u'projectId',
                                             'workspaceFileName': 'none',
@@ -93,11 +93,11 @@ class TestRunCommand(object):
 
         expected_headers = self.headers.copy()
         post_patched.assert_called_with(self.url,
-                                        params=None,
+                                        json=None,
                                         data=None,
                                         files=None,
                                         headers=expected_headers,
-                                        json={
+                                        params={
                                             'name': u'test',
                                             'projectId': u'projectId',
                                             'workspaceFileName': 's3://bucket/object',

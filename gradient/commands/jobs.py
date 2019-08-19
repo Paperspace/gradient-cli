@@ -58,7 +58,7 @@ class BaseCreateJobCommandMixin(object):
                 self.logger.error(e)
                 return
 
-            self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(job_id))
+        self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(job_id))
 
     def _handle_workspace(self, instance_dict):
         """
@@ -83,7 +83,6 @@ class BaseCreateJobCommandMixin(object):
         json_["workspace_file_name"] = archive_basename
         job_data = self._get_files_dict(archive_basename)
         monitor = MultipartEncoder(job_data).get_monitor()
-        self.client.client.headers["Content-Type"] = monitor.content_type
         data = monitor
         return data
 
@@ -276,7 +275,7 @@ class JobRunClient(BaseClient):
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
         )
-        handle = RunJob(self.api_key, self.logger, self.client).create_job(job, data)
+        handle = RunJob(self.api_key, self.logger, self.client).create(job, data)
         return handle
 
 
