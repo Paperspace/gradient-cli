@@ -27,11 +27,20 @@ class ListDeployments(GetBaseDeploymentApiUrlMixin, ListResources):
         return data["deploymentList"]
 
     def _get_request_json(self, kwargs):
-        filters = kwargs.get("filters")
+        filters = {}
+        if kwargs["model_id"]:
+            filters["modelId"] = kwargs["model_id"]
+
+        if kwargs["state"]:
+            filters["state"] = kwargs["state"]
+
+        if kwargs["project_id"]:
+            filters["projectId"] = kwargs["project_id"]
+
         if not filters:
             return None
 
-        json_ = filters
+        json_ = {"filter": {"where": {"and": [filters]}}}
         return json_
 
 
