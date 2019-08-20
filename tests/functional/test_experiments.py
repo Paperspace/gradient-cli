@@ -126,7 +126,7 @@ class TestExperimentsCreateSingleNode(object):
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
         post_patched.assert_called_once_with(self.URL_V2,
-                                             headers=self.EXPECTED_HEADERS,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
@@ -341,7 +341,7 @@ class TestExperimentsCreateMultiNode(object):
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
@@ -495,7 +495,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
     ]
     FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE = [
         "experiments", "run", "multinode",
-        "--optionsFile",  # path added in test,
+        "--optionsFile",  # path added in test
     ]
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "run", "multinode",
@@ -525,129 +525,8 @@ class TestExperimentDetail(object):
 
     COMMAND = ["experiments", "details", "experiment-id"]
     COMMAND_WITH_API_KEY = ["experiments", "details", "experiment-id", "--apiKey", "some_key"]
-    MULTI_NODE_DETAILS_JSON = {
-        "data": {
-            "dtCreated": "2019-03-20T19:56:50.154853+00:00",
-            "dtDeleted": None,
-            "dtFinished": None,
-            "dtModified": "2019-03-20T19:56:50.154853+00:00",
-            "dtProvisioningFinished": None,
-            "dtProvisioningStarted": None,
-            "dtStarted": None,
-            "dtTeardownFinished": None,
-            "dtTeardownStarted": None,
-            "experimentError": None,
-            "experimentTemplateHistoryId": 6297,
-            "experimentTemplateId": 60,
-            "experimentTypeId": 3,
-            "handle": "ew69ls0vy3eto",
-            "id": 6286,
-            "projectHandle": "prq70zy79",
-            "projectId": 612,
-            "started_by_user_id": 1,
-            "state": 1,
-            "templateHistory": {
-                "dtCreated": "2019-03-20T19:56:49.427354+00:00",
-                "dtDeleted": None,
-                "experimentTemplateId": 60,
-                "id": 6297,
-                "params": {
-                    "artifactDirectory": "/artdir",
-                    "clusterId": '2a',
-                    "experimentEnv": {
-                        "key": "val"
-                    },
-                    "experimentTypeId": 3,
-                    "name": "multinode_mpi",
-                    "parameter_server_command": "ls",
-                    "parameter_server_container": "pscon",
-                    "parameter_server_container_user": "pscuser",
-                    "parameter_server_count": 2,
-                    "parameter_server_machine_type": "psmtype",
-                    "parameter_server_registry_password": "psrpass",
-                    "parameter_server_registry_username": "psrcus",
-                    "parameter_server_registry_url": "psrurl",
-                    "ports": 3456,
-                    "project_handle": "prq70zy79",
-                    "project_id": 34,
-                    "trigger_event_id": 12,
-                    "worker_command": "wcom",
-                    "worker_container": "wcon",
-                    "worker_container_user": "usr",
-                    "worker_count": 2,
-                    "worker_machine_type": "mty",
-                    "worker_registry_password": "rpass",
-                    "worker_registry_username": "rusr",
-                    "worker_registry_url": "rurl",
-                    "workingDirectory": "/dir",
-                    "workspaceUrl": "wurl"
-                },
-                "triggerEvent": {
-                    "dtCreated": "2019-03-11T14:47:57+00:00",
-                    "eventData": {
-                        "author": {
-                            "email": "bluckey@paperspace.com",
-                            "login": "ultrabluewolf",
-                            "name": "Britney Luckey"
-                        },
-                        "branch": "feature/test-1",
-                        "message": "Update readme #2",
-                        "repo_node_id": "MDEwOlJlcG9zaXRvcnkxNzQ3MjI3NDc=",
-                        "sender": {
-                            "id": 4633049,
-                            "login": "ultrabluewolf"
-                        },
-                        "sha": "daa117a00cd1e0e9b1b55695031e698a560cca29",
-                        "timestamp": "2019-03-11T10:47:57-04:00"
-                    },
-                    "id": 12,
-                    "type": "github"
-                },
-            }
-        },
-        "message": "success"
-    }
-    SINGLE_NODE_RESPONSE_JSON = {
-        "data": {
-            "dtCreated": "2019-03-22T13:22:27.200591+00:00",
-            "dtDeleted": None,
-            "dtFinished": None,
-            "dtModified": "2019-03-22T13:22:27.200591+00:00",
-            "dtProvisioningFinished": None,
-            "dtProvisioningStarted": None,
-            "dtStarted": None,
-            "dtTeardownFinished": None,
-            "dtTeardownStarted": None,
-            "experimentError": None,
-            "experimentTemplateHistoryId": 21814,
-            "experimentTemplateId": 60,
-            "experimentTypeId": 1,
-            "handle": "esro6mbmiulvbl",
-            "id": 21784,
-            "projectHandle": "prq70zy79",
-            "projectId": 612,
-            "started_by_user_id": 1655,
-            "state": 1,
-            "templateHistory": {
-                "dtCreated": "2019-03-22T13:22:26.375543+00:00",
-                "dtDeleted": None,
-                "experimentTemplateId": 60,
-                "id": 21814,
-                "params": {
-                    "experimentTypeId": 1,
-                    "name": "dsfads",
-                    "ports": 5000,
-                    "project_handle": "prq70zy79",
-                    "worker_command": "sadas",
-                    "worker_container": "asd",
-                    "worker_machine_type": "C2"
-                },
-                "triggerEvent": None,
-                "triggerEventId": None
-            }
-        },
-        "message": "success"
-    }
+    COMMAND_WITH_OPTIONS_FILE = ["experiments", "details", "--optionsFile", ]  # path added in test
+
     MULTI_NODE_DETAILS_STDOUT = """+-------------------------------+----------------+
 | Name                          | multinode_mpi  |
 +-------------------------------+----------------+
@@ -692,7 +571,8 @@ class TestExperimentDetail(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_single_node_experiment_details_in_a_table(self, get_patched):
-        get_patched.return_value = MockResponse(self.SINGLE_NODE_RESPONSE_JSON, 200, "fake content")
+        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON,
+                                                200, "fake content")
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -707,8 +587,48 @@ class TestExperimentDetail(object):
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_get_request_with_api_key_passed_in_terminal(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON,
+                                                200, "fake content")
+        expected_headers = self.EXPECTED_HEADERS.copy()
+        expected_headers["X-API-Key"] = "some_key"
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
+
+        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT, result.exc_info[1]
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=expected_headers,
+                                            json=None,
+                                            params=None)
+
+        assert result.exit_code == 0
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_read_options_from_config_file(self, get_patched, experiment_details_config_path):
+        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON,
+                                                200, "fake content")
+        expected_headers = self.EXPECTED_HEADERS.copy()
+        expected_headers["X-API-Key"] = "some_key"
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [experiment_details_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT, result.exc_info[1]
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=expected_headers,
+                                            json=None,
+                                            params=None)
+
+        assert result.exit_code == 0
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_multi_node_experiment_details_in_a_table(self, get_patched):
-        get_patched.return_value = MockResponse(self.MULTI_NODE_DETAILS_JSON, 200, "fake content")
+        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_MULTI_NODE_EXPERIMENT_RESPONSE_JSON,
+                                                200, "fake content")
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -741,6 +661,7 @@ class TestExperimentDetail(object):
 class TestExperimentList(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/"
     COMMAND = ["experiments", "list"]
+    COMMAND_WITH_CONFIG_FILE = ["experiments", "list", "--optionsFile", ]  # path added in test
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -840,11 +761,31 @@ class TestExperimentList(object):
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_options_defined_in_a_config_file(self, get_patched, experiments_list_config_path):
+        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WHEN_WRONG_API_KEY_WAS_USED,
+                                                status_code=403)
+        command = self.COMMAND_WITH_CONFIG_FILE[:] + [experiments_list_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=None,
+                                            params={"limit": -1,
+                                                    "projectHandle[0]": "some_id",
+                                                    "projectHandle[1]": "some_id_2"})
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
 
 class TestStartExperiment(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/some-id/start/"
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/some-id/start/"
     COMMAND = ["experiments", "start", "some-id"]
+    COMMAND_WITH_CONFIG_FILE = ["experiments", "start", "--optionsFile", ]  # path added in test
     COMMAND_WITH_VPC_FLAG = ["experiments", "start", "some-id", "--vpc"]
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
@@ -896,12 +837,27 @@ class TestStartExperiment(object):
                                             json=None,
                                             params=None)
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    def test_should_read_options_from_config_file(self, put_patched, experiments_start_config_path):
+        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
+        command = self.COMMAND_WITH_CONFIG_FILE[:] + [experiments_start_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.START_STDOUT
+        put_patched.assert_called_once_with(self.URL_V2,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=None,
+                                            params=None)
+
 
 class TestStopExperiment(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/some-id/stop/"
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/some-id/stop/"
     COMMAND = ["experiments", "stop", "some-id"]
     COMMAND_WITH_VPC_FLAG = ["experiments", "stop", "some-id", "--vpc"]
+    COMMAND_WITH_CONFIG_FILE = ["experiments", "stop", "--optionsFile", ]  # path added in test
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -952,16 +908,30 @@ class TestStopExperiment(object):
                                             json=None,
                                             params=None)
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    def test_should_read_options_from_config_file(self, put_patched, experiments_stop_config_path):
+        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
+        command = self.COMMAND_WITH_CONFIG_FILE[:] + [experiments_stop_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT
+        put_patched.assert_called_once_with(self.URL_V2,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=None,
+                                            params=None)
+
 
 class TestExperimentLogs(object):
-    URL = "https://logs.paperspace.io/jobs/logs"
+    URL = "https://services.paperspace.io/experiments/v1/jobs/logs"
     COMMAND = ["experiments", "logs", "--experimentId", "some_id"]
     COMMAND_WITH_FOLLOW = ["experiments", "logs", "--experimentId", "some_id", "--follow", "True"]
+    COMMAND_WITH_CONFIG_FILE = ["experiments", "logs", "--optionsFile", ]  # path added in test
+
     EXPECTED_HEADERS = http_client.default_headers.copy()
-
-
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some-key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_all_received_logs_when_logs_command_was_used(self, get_patched):
@@ -971,6 +941,21 @@ class TestExperimentLogs(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
+        assert "Downloading https://storage.googleapis.com/cvdf-datasets/mnist/t10k-labels" \
+               "-idx1-ubyte.gz to /tmp/tmpbrss4txl.gz" in result.output
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_should_read_options_from_config_file(self, get_patched, experiments_logs_config_path):
+        get_patched.return_value = MockResponse(json_data=example_responses.LIST_OF_LOGS_FOR_EXPERIMENT)
+        command = self.COMMAND_WITH_CONFIG_FILE[:] + [experiments_logs_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params={"line": 20, "limit": 30, "experimentId": "some-id"})
         assert "Downloading https://storage.googleapis.com/cvdf-datasets/mnist/t10k-labels" \
                "-idx1-ubyte.gz to /tmp/tmpbrss4txl.gz" in result.output
 
