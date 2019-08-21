@@ -1,3 +1,5 @@
+import copy
+
 import requests
 
 from gradient import version
@@ -40,7 +42,6 @@ class API(object):
 
     def post(self, url, json=None, params=None, files=None, data=None):
         path = self.get_path(url)
-        import copy
         headers = copy.deepcopy(self.headers)
         if data:
             headers["Content-Type"] = data.content_type
