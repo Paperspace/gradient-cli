@@ -69,6 +69,9 @@ class HyperparameterJobsClient(base_client.BaseClient):
         if not is_preemptible:
             is_preemptible = None
 
+        if use_dockerfile is False:
+            use_dockerfile = None
+
         hyperparameter = models.Hyperparameter(
             name=name,
             project_id=project_id,
@@ -181,6 +184,9 @@ class HyperparameterJobsClient(base_client.BaseClient):
 
         if not is_preemptible:
             is_preemptible = None
+
+        if use_dockerfile is False:
+            use_dockerfile = None
 
         hyperparameter = models.Hyperparameter(
             name=name,

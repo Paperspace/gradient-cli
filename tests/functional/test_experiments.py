@@ -45,7 +45,7 @@ class TestExperimentsCreateSingleNode(object):
         "--ignoreFiles", "file1,file2",
         "--isPreemptible",
     ]
-    FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE = [
+    FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
         "experiments", "create", "singlenode",
         "--optionsFile",  # path added in test,
     ]
@@ -119,7 +119,7 @@ class TestExperimentsCreateSingleNode(object):
     def test_should_read_options_from_config_file(
             self, post_patched, create_single_node_experiment_config_path):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
-        command = self.FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE[:] + [create_single_node_experiment_config_path]
+        command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [create_single_node_experiment_config_path]
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
@@ -242,7 +242,7 @@ class TestExperimentsCreateMultiNode(object):
         "--ignoreFiles", "file1,file2",
         "--isPreemptible",
     ]
-    FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE = [
+    FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
         "experiments", "create", "multinode",
         "--optionsFile",  # path added in test,
     ]
@@ -334,7 +334,7 @@ class TestExperimentsCreateMultiNode(object):
     def test_should_read_options_from_config_file(
             self, post_patched, create_multi_node_experiment_config_path):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
-        command = self.FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE[:] + [create_multi_node_experiment_config_path]
+        command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [create_multi_node_experiment_config_path]
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
@@ -421,7 +421,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--ignoreFiles", "file1,file2",
         "--isPreemptible",
     ]
-    FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE = [
+    FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
         "experiments", "run", "singlenode",
         "--optionsFile",  # path added in test,
     ]
@@ -493,7 +493,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--ignoreFiles", "file1,file2",
         "--isPreemptible",
     ]
-    FULL_OPTIONS_COMMAND_WITH_CONFIG_FILE = [
+    FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
         "experiments", "run", "multinode",
         "--optionsFile",  # path added in test
     ]
@@ -661,7 +661,7 @@ class TestExperimentDetail(object):
 class TestExperimentList(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/"
     COMMAND = ["experiments", "list"]
-    COMMAND_WITH_CONFIG_FILE = ["experiments", "list", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["experiments", "list", "--optionsFile", ]  # path added in test
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -765,7 +765,7 @@ class TestExperimentList(object):
     def test_should_read_options_defined_in_a_config_file(self, get_patched, experiments_list_config_path):
         get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WHEN_WRONG_API_KEY_WAS_USED,
                                                 status_code=403)
-        command = self.COMMAND_WITH_CONFIG_FILE[:] + [experiments_list_config_path]
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [experiments_list_config_path]
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
@@ -785,7 +785,7 @@ class TestStartExperiment(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/some-id/start/"
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/some-id/start/"
     COMMAND = ["experiments", "start", "some-id"]
-    COMMAND_WITH_CONFIG_FILE = ["experiments", "start", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["experiments", "start", "--optionsFile", ]  # path added in test
     COMMAND_WITH_VPC_FLAG = ["experiments", "start", "some-id", "--vpc"]
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
@@ -840,7 +840,7 @@ class TestStartExperiment(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_read_options_from_config_file(self, put_patched, experiments_start_config_path):
         put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
-        command = self.COMMAND_WITH_CONFIG_FILE[:] + [experiments_start_config_path]
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [experiments_start_config_path]
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
@@ -857,7 +857,7 @@ class TestStopExperiment(object):
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/some-id/stop/"
     COMMAND = ["experiments", "stop", "some-id"]
     COMMAND_WITH_VPC_FLAG = ["experiments", "stop", "some-id", "--vpc"]
-    COMMAND_WITH_CONFIG_FILE = ["experiments", "stop", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["experiments", "stop", "--optionsFile", ]  # path added in test
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -911,7 +911,7 @@ class TestStopExperiment(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_read_options_from_config_file(self, put_patched, experiments_stop_config_path):
         put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
-        command = self.COMMAND_WITH_CONFIG_FILE[:] + [experiments_stop_config_path]
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [experiments_stop_config_path]
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
@@ -927,7 +927,7 @@ class TestExperimentLogs(object):
     URL = "https://services.paperspace.io/experiments/v1/jobs/logs"
     COMMAND = ["experiments", "logs", "--experimentId", "some_id"]
     COMMAND_WITH_FOLLOW = ["experiments", "logs", "--experimentId", "some_id", "--follow", "True"]
-    COMMAND_WITH_CONFIG_FILE = ["experiments", "logs", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["experiments", "logs", "--optionsFile", ]  # path added in test
 
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
@@ -947,7 +947,7 @@ class TestExperimentLogs(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_should_read_options_from_config_file(self, get_patched, experiments_logs_config_path):
         get_patched.return_value = MockResponse(json_data=example_responses.LIST_OF_LOGS_FOR_EXPERIMENT)
-        command = self.COMMAND_WITH_CONFIG_FILE[:] + [experiments_logs_config_path]
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [experiments_logs_config_path]
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)

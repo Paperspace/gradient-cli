@@ -1,0 +1,31 @@
+apiKey: some_key
+artifactDirectory: some_artifact_directory
+clusterId: some_cluster_id
+experimentEnv:
+  key: val
+hyperparameterServerContainer: some_hyperparameter_container
+hyperparameterServerContainerUser: some_hyperparameter_container_user
+hyperparameterServerMachineType: some_hyperparameter_server_machine
+hyperparameterServerRegistryPassword: some_hyperparameter_registry_password
+hyperparameterServerRegistryUsername: some_hyperparameter_registry_username
+ignoreFiles: file2
+isPreemptible: true
+modelPath: some_model_path
+modelType: some_model_type
+name: some_name
+ports: 8080,9000:9999
+projectId: some_project_id
+tuningCommand: some command
+workerCommand: some worker command
+workerContainer: some_worker_container
+workerContainerUser: some_worker_container_user
+workerCount: 666
+workerDockerfilePath: some_docker_path
+workerMachineType: k80
+workerRegistryPassword: some_registry_password
+workerRegistryUsername: some_registry_username
+workerUseDockerfile: true
+workingDirectory: some_working_directory
+workspace: null
+workspaceArchive: null
+workspaceUrl: s3://some.path

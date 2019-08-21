@@ -35,46 +35,64 @@ class TestCreateHyperparameters(object):
         "hyperparameters", "create",
         "--name", "some_name",
         "--tuningCommand", "some command",
-        "--workerContainer", "some_container",
+        "--workerContainer", "some_worker_container",
         "--workerMachineType", "k80",
         "--workerCommand", "some worker command",
-        "--workerCount", "1",
-        "--projectId", "pr4yxj956",
-        "--workerRegistryUsername", "workerUsername",
-        "--workerRegistryPassword", "workerPassword",
-        "--workerContainerUser", "workerContainerUser",
-        "--hyperparameterServerRegistryUsername", "someHyperparameterServerRegistryUsername",
-        "--hyperparameterServerRegistryPassword", "someHyperparameterServerRegistryPassword",
-        "--hyperparameterServerContainer", "someHyperparameterServerContainer",
-        "--hyperparameterServerContainerUser", "someHyperparameterServerContainerUser",
-        "--hyperparameterServerMachineType", "someHyperparameterServerMachineType",
-        "--workspace", "none",
-        "--modelPath", "some-model-path",
-        "--modelType", "some-model-type",
+        "--workerCount", "666",
+        "--projectId", "some_project_id",
+        "--workerRegistryUsername", "some_registry_username",
+        "--workerRegistryPassword", "some_registry_password",
+        "--workerContainerUser", "some_worker_container_user",
+        "--hyperparameterServerRegistryUsername", "some_hyperparameter_registry_username",
+        "--hyperparameterServerRegistryPassword", "some_hyperparameter_registry_password",
+        "--hyperparameterServerContainer", "some_hyperparameter_container",
+        "--hyperparameterServerContainerUser", "some_hyperparameter_container_user",
+        "--hyperparameterServerMachineType", "some_hyperparameter_server_machine",
+        "--modelPath", "some_model_path",
+        "--modelType", "some_model_type",
         "--ignoreFiles", "file1,file2",
         "--isPreemptible",
+        "--artifactDirectory", "some_artifact_directory",
+        "--clusterId", "some_cluster_id",
+        "--experimentEnv", "{\"key\":\"val\"}",
+        "--ignoreFiles", "file2",
+        "--ports", "8080,9000:9999",
+        "--workerDockerfilePath", "some_docker_path",
+        "--workerUseDockerfile",
+        "--workingDirectory", "some_working_directory",
+        "--workspaceUrl", "s3://some.path",
     ]
     EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED = {
-        "workerContainer": "some_container",
+        "workerContainer": "some_worker_container",
         "workerMachineType": "k80",
         "name": "some_name",
         "tuningCommand": "some command",
-        "workerCount": 1,
+        "workerCount": 666,
         "workerCommand": "some worker command",
-        "workerRegistryUsername": "workerUsername",
-        "workerRegistryPassword": "workerPassword",
-        "workerContainerUser": "workerContainerUser",
-        "projectHandle": "pr4yxj956",
-        "hyperparameterServerRegistryUsername": "someHyperparameterServerRegistryUsername",
-        "hyperparameterServerRegistryPassword": "someHyperparameterServerRegistryPassword",
-        "hyperparameterServerContainer": "someHyperparameterServerContainer",
-        "hyperparameterServerContainerUser": "someHyperparameterServerContainerUser",
-        "hyperparameterServerMachineType": "someHyperparameterServerMachineType",
+        "workerRegistryUsername": "some_registry_username",
+        "workerRegistryPassword": "some_registry_password",
+        "workerContainerUser": "some_worker_container_user",
+        "projectHandle": "some_project_id",
+        "hyperparameterServerRegistryUsername": "some_hyperparameter_registry_username",
+        "hyperparameterServerRegistryPassword": "some_hyperparameter_registry_password",
+        "hyperparameterServerContainer": "some_hyperparameter_container",
+        "hyperparameterServerContainerUser": "some_hyperparameter_container_user",
+        "hyperparameterServerMachineType": "some_hyperparameter_server_machine",
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
-        "modelPath": "some-model-path",
-        "modelType": "some-model-type",
+        "modelPath": "some_model_path",
+        "modelType": "some_model_type",
         "isPreemptible": True,
+        "dockerfilePath": "some_docker_path",
+        "artifactDirectory": "some_artifact_directory",
+        "clusterId": "some_cluster_id",
+        "experimentEnv": {"key": "val"},
+        "ports": "8080,9000:9999",
+        "useDockerfile": True,
+        "workingDirectory": "some_working_directory",
+        "workspaceUrl": "s3://some.path",
     }
+    COMMAND_WITH_OPTIONS_FILE = ["hyperparameters", "create", "--optionsFile", ]  # path added in test
+
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -202,6 +220,24 @@ class TestCreateHyperparameters(object):
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_options_from_yaml_file(self, post_patched, hyperparameters_create_config_path):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [hyperparameters_create_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+
+        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_request_and_print_proper_message_when_error_code_returned_without_json_data(self,
                                                                                                      post_patched):
         post_patched.return_value = MockResponse(status_code=500)
@@ -248,46 +284,64 @@ class TestCreateAndStartHyperparameters(object):
         "hyperparameters", "run",
         "--name", "some_name",
         "--tuningCommand", "some command",
-        "--workerContainer", "some_container",
+        "--workerContainer", "some_worker_container",
         "--workerMachineType", "k80",
         "--workerCommand", "some worker command",
-        "--workerCount", "1",
-        "--projectId", "pr4yxj956",
-        "--workerRegistryUsername", "workerUsername",
-        "--workerRegistryPassword", "workerPassword",
-        "--workerContainerUser", "workerContainerUser",
-        "--hyperparameterServerRegistryUsername", "someHyperparameterServerRegistryUsername",
-        "--hyperparameterServerRegistryPassword", "someHyperparameterServerRegistryPassword",
-        "--hyperparameterServerContainer", "someHyperparameterServerContainer",
-        "--hyperparameterServerContainerUser", "someHyperparameterServerContainerUser",
-        "--hyperparameterServerMachineType", "someHyperparameterServerMachineType",
-        "--workspace", "none",
-        "--modelPath", "some-model-path",
-        "--modelType", "some-model-type",
+        "--workerCount", "666",
+        "--projectId", "some_project_id",
+        "--workerRegistryUsername", "some_registry_username",
+        "--workerRegistryPassword", "some_registry_password",
+        "--workerContainerUser", "some_worker_container_user",
+        "--hyperparameterServerRegistryUsername", "some_hyperparameter_registry_username",
+        "--hyperparameterServerRegistryPassword", "some_hyperparameter_registry_password",
+        "--hyperparameterServerContainer", "some_hyperparameter_container",
+        "--hyperparameterServerContainerUser", "some_hyperparameter_container_user",
+        "--hyperparameterServerMachineType", "some_hyperparameter_server_machine",
+        "--modelPath", "some_model_path",
+        "--modelType", "some_model_type",
         "--ignoreFiles", "file1,file2",
         "--isPreemptible",
+        "--artifactDirectory", "some_artifact_directory",
+        "--clusterId", "some_cluster_id",
+        "--experimentEnv", "{\"key\":\"val\"}",
+        "--ignoreFiles", "file2",
+        "--ports", "8080,9000:9999",
+        "--workerDockerfilePath", "some_docker_path",
+        "--workerUseDockerfile",
+        "--workingDirectory", "some_working_directory",
+        "--workspaceUrl", "s3://some.path",
     ]
     EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED = {
-        "workerContainer": "some_container",
+        "workerContainer": "some_worker_container",
         "workerMachineType": "k80",
         "name": "some_name",
         "tuningCommand": "some command",
-        "workerCount": 1,
+        "workerCount": 666,
         "workerCommand": "some worker command",
-        "projectHandle": "pr4yxj956",
-        "workerRegistryUsername": "workerUsername",
-        "workerRegistryPassword": "workerPassword",
-        "workerContainerUser": "workerContainerUser",
-        "hyperparameterServerRegistryUsername": "someHyperparameterServerRegistryUsername",
-        "hyperparameterServerRegistryPassword": "someHyperparameterServerRegistryPassword",
-        "hyperparameterServerContainer": "someHyperparameterServerContainer",
-        "hyperparameterServerContainerUser": "someHyperparameterServerContainerUser",
-        "hyperparameterServerMachineType": "someHyperparameterServerMachineType",
+        "workerRegistryUsername": "some_registry_username",
+        "workerRegistryPassword": "some_registry_password",
+        "workerContainerUser": "some_worker_container_user",
+        "projectHandle": "some_project_id",
+        "hyperparameterServerRegistryUsername": "some_hyperparameter_registry_username",
+        "hyperparameterServerRegistryPassword": "some_hyperparameter_registry_password",
+        "hyperparameterServerContainer": "some_hyperparameter_container",
+        "hyperparameterServerContainerUser": "some_hyperparameter_container_user",
+        "hyperparameterServerMachineType": "some_hyperparameter_server_machine",
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
-        "modelPath": "some-model-path",
-        "modelType": "some-model-type",
+        "modelPath": "some_model_path",
+        "modelType": "some_model_type",
         "isPreemptible": True,
+        "dockerfilePath": "some_docker_path",
+        "artifactDirectory": "some_artifact_directory",
+        "clusterId": "some_cluster_id",
+        "experimentEnv": {"key": "val"},
+        "ports": "8080,9000:9999",
+        "useDockerfile": True,
+        "workingDirectory": "some_working_directory",
+        "workspaceUrl": "s3://some.path",
     }
+    COMMAND_WITH_OPTIONS_FILE = ["hyperparameters", "run", "--optionsFile", ]  # path added in test
+
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -432,13 +486,32 @@ class TestCreateAndStartHyperparameters(object):
         assert result.output == "Failed to create resource\n"
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_options_from_yaml_file(self, post_patched, hyperparameters_create_config_path):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [hyperparameters_create_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
 
 class TestStartHyperparameters(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/e0ucpl6adyfgg/start/"
+    URL = "https://services.paperspace.io/experiments/v1/hyperopt/some_id/start/"
     COMMAND = [
         "hyperparameters", "start",
-        "--id", "e0ucpl6adyfgg",
+        "--id", "some_id",
     ]
+
+    COMMAND_WITH_OPTIONS_FILE = ["hyperparameters", "start", "--optionsFile", ]  # path added in test
 
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
@@ -451,7 +524,7 @@ class TestStartHyperparameters(object):
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
         "hyperparameters", "start",
-        "--id", "e0ucpl6adyfgg",
+        "--id", "some_id",
         "--apiKey", "some_key",
     ]
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
@@ -464,12 +537,11 @@ class TestStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS,
                                              json=None,
                                              params=None)
-
-        assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
@@ -485,6 +557,22 @@ class TestStartHyperparameters(object):
                                              params=None)
 
         assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    def test_should_read_options_from_yaml_file(self, post_patched, hyperparameters_start_config_path):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE, 201)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [hyperparameters_start_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=None,
+                                             params=None)
+
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
@@ -535,6 +623,7 @@ class TestStartHyperparameters(object):
 class TestHyperparametersList(object):
     URL = "https://services.paperspace.io/experiments/v1/hyperopt/"
     COMMAND = ["hyperparameters", "list"]
+    COMMAND_WITH_OPTIONS_FILE = ["hyperparameters", "list", "--optionsFile", ]  # path added in test
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -572,12 +661,11 @@ class TestHyperparametersList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=self.EXPECTED_REQUEST_PARAMS)
-
-        assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -586,6 +674,22 @@ class TestHyperparametersList(object):
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=None,
+                                            params=self.EXPECTED_REQUEST_PARAMS)
+
+        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_options_from_yaml(self, get_patched, hyperparameters_list_config_path):
+        get_patched.return_value = MockResponse(example_responses.LIST_HYPERPARAMETERS_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [hyperparameters_list_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -632,6 +736,7 @@ class TestHyperparametersDetails(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
+    COMMAND_WITH_OPTIONS_FILE = ["hyperparameters", "details", "--optionsFile", ]  # path added in test
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
         "hyperparameters", "details",
         "--id", "esv762x5i4zmcl",
@@ -686,6 +791,22 @@ class TestHyperparametersDetails(object):
                                             params=None)
 
         assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(
+            self, get_patched, hyperparameters_details_config_path):
+        get_patched.return_value = MockResponse(example_responses.HYPERPARAMETERS_DETAILS_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [hyperparameters_details_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=None,
+                                            params=None)
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")

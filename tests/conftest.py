@@ -81,3 +81,31 @@ def deployments_stop_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "deployments_stop.yaml"
     return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def hyperparameters_create_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "hyperparameters_create.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def hyperparameters_start_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "hyperparameters_start.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def hyperparameters_list_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "hyperparameters_list.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def hyperparameters_details_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "hyperparameters_details.yaml"
+    return str(fixture_dir.resolve())
