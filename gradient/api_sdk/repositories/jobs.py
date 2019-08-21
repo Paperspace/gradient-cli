@@ -1,7 +1,6 @@
 from gradient import config
 from gradient.api_sdk import serializers
 from .common import ListResources, CreateResource, BaseRepository, GetResource
-from ..clients import http_client
 from ..serializers import JobSchema, LogRowSchema
 
 
@@ -101,19 +100,15 @@ class CreateJob(GetBaseJobApiUrlMixin, CreateResource):
     def get_request_url(self, **kwargs):
         return "/jobs/createJob/"
 
-    def create_job(self, instance, data):
-        instance_dict = self._get_instance_dict(instance)
-        url = self.get_request_url()
-        client = self._get_client()
-        response = client.post(url, json=instance_dict, data=data)
-        gradient_response = http_client.GradientResponse.interpret_response(response)
-        self._validate_response(gradient_response)
-        handle = self._process_response(response)
+    def _get_id_from_response(self, response):
+        handle = response.data[self.HANDLE_FIELD]
         return handle
 
-    def _get_id_from_response(self, response):
-        handle = response.json()[self.HANDLE_FIELD]
-        return handle
+    def _get_request_json(self, instance_dict):
+        return
+
+    def _get_request_params(self, instance_dict):
+        return instance_dict
 
 
 class RunJob(CreateJob):

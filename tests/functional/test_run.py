@@ -35,7 +35,8 @@ class TestRunCommand(object):
         get_moniror_patched.return_value = mock_monitor
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, [self.command_name] + self.common_commands + ["/myscript.py", "a", "b"])
+        command = [self.command_name] + self.common_commands + ["/myscript.py", "a", "b"]
+        result = runner.invoke(cli.cli, command)
 
         expected_headers = self.headers.copy()
         expected_headers.update({
@@ -43,11 +44,11 @@ class TestRunCommand(object):
         })
         assert result.exit_code == 0, result.exc_info
         post_patched.assert_called_with(self.url,
-                                        params=None,
+                                        json=None,
                                         data=mock.ANY,
                                         files=None,
                                         headers=expected_headers,
-                                        json={
+                                        params={
                                             'name': u'test',
                                             'projectId': u'projectId',
                                             'workspaceFileName': 'bar',
@@ -66,11 +67,11 @@ class TestRunCommand(object):
 
         expected_headers = self.headers.copy()
         post_patched.assert_called_with(self.url,
-                                        params=None,
+                                        json=None,
                                         data=None,
                                         files=None,
                                         headers=expected_headers,
-                                        json={
+                                        params={
                                             'name': u'test',
                                             'projectId': u'projectId',
                                             'workspaceFileName': 'none',
@@ -93,11 +94,11 @@ class TestRunCommand(object):
 
         expected_headers = self.headers.copy()
         post_patched.assert_called_with(self.url,
-                                        params=None,
+                                        json=None,
                                         data=None,
                                         files=None,
                                         headers=expected_headers,
-                                        json={
+                                        params={
                                             'name': u'test',
                                             'projectId': u'projectId',
                                             'workspaceFileName': 's3://bucket/object',

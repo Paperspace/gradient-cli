@@ -3,9 +3,7 @@ Jobs related client handler logic.
 
 Remember that in code snippets all highlighted lines are required other lines are optional.
 """
-from gradient.config import config
 from .base_client import BaseClient
-from ..clients import http_client
 from ..models import Job
 from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts, CreateJob, DeleteJob, StopJob, \
     DeleteJobArtifacts, GetJobArtifacts
@@ -28,10 +26,6 @@ class JobsClient(BaseClient):
         )
 
     """
-
-    def __init__(self, *args, **kwargs):
-        super(JobsClient, self).__init__(*args, **kwargs)
-        self.client = http_client.API(config.CONFIG_HOST, api_key=self.api_key, logger=self.logger)
 
     def create(
             self,
@@ -171,7 +165,7 @@ class JobsClient(BaseClient):
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
         )
-        handle = CreateJob(self.api_key, self.logger).create_job(job, data)
+        handle = CreateJob(self.api_key, self.logger).create(job, data=data)
         return handle
 
     def delete(self, job_id):
