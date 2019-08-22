@@ -112,9 +112,9 @@ class CreateResource(BaseRepository):
     VALIDATION_ERROR_MESSAGE = "Failed to create resource"
     HANDLE_FIELD = "handle"
 
-    def create(self, instance, use_vpc=False):
+    def create(self, instance, use_vpc=False, data=None):
         instance_dict = self._get_instance_dict(instance)
-        response = self._send_create_request(instance_dict, use_vpc)
+        response = self._send_create_request(instance_dict, use_vpc=use_vpc, data=data)
         self._validate_response(response)
         handle = self._process_response(response)
         return handle
@@ -133,10 +133,12 @@ class CreateResource(BaseRepository):
         serializer = self.SERIALIZER_CLS()
         return serializer
 
-    def _send_create_request(self, instance_dict, use_vpc):
+    def _send_create_request(self, instance_dict, use_vpc, data=None):
         url = self.get_request_url(use_vpc=use_vpc)
         client = self._get_client(use_vpc=use_vpc)
-        response = client.post(url, json=instance_dict)
+        json_ = self._get_request_json(instance_dict)
+        params = self._get_request_params(instance_dict)
+        response = client.post(url, params=params, json=json_, data=data)
         gradient_response = http_client.GradientResponse.interpret_response(response)
         return gradient_response
 
@@ -151,6 +153,9 @@ class CreateResource(BaseRepository):
         return handle
 
     def _process_instance_dict(self, instance_dict):
+        return instance_dict
+
+    def _get_request_json(self, instance_dict):
         return instance_dict
 
 
