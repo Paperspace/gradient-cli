@@ -19,6 +19,8 @@ class TestJobs(object):
 class TestListJobs(TestJobs):
     URL = "https://api.paperspace.io/jobs/getJobs/"
     BASIC_COMMAND = ["jobs", "list"]
+    COMMAND_WITH_OPTIONS_FILE = ["jobs", "list", "--optionsFile", ]  # path added in test
+
     EXPECTED_RESPONSE_JSON = example_responses.LIST_JOBS_RESPONSE_JSON
     EXPECTED_STDOUT = """+----------------+---------------------------+-------------------+----------------+--------------+--------------------------+
 | ID             | Name                      | Project           | Cluster        | Machine Type | Created                  |
@@ -44,11 +46,11 @@ class TestListJobs(TestJobs):
 
     BASIC_COMMAND_WITH_FILTERING = [
         "jobs", "list",
-        "--project", "some_project_name",
+        "--projectId", "some_project_id",
         "--experimentId", "some_experiment_id",
     ]
     EXPECTED_REQUEST_JSON_WITH_FILTERING = {
-        "project": "some_project_name",
+        "projectId": "some_project_id",
         "experimentId": "some_experiment_id",
     }
 
@@ -73,7 +75,7 @@ class TestListJobs(TestJobs):
 
     @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_jobs_list_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -87,7 +89,7 @@ class TestListJobs(TestJobs):
 
     @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.get")
     def test_should_send_valid_post_request_when_jobs_list_was_used_with_api_key_option(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -95,6 +97,21 @@ class TestListJobs(TestJobs):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
+                                       params=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, jobs_list_config_path):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [jobs_list_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=self.EXPECTED_REQUEST_JSON_WITH_FILTERING,
                                        params=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
@@ -115,8 +132,7 @@ class TestListJobs(TestJobs):
 
     @mock.patch("gradient.api_sdk.clients.job_client.http_client.requests.get")
     def test_should_print_error_message_when_no_job_was_not_found(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WHEN_NO_JOBS_WERE_FOUND,
-                                                status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WHEN_NO_JOBS_WERE_FOUND)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -177,9 +193,18 @@ class TestJobLogs(TestJobs):
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_RESPONSE_JSON = example_responses.LIST_OF_LOGS_FOR_JOB
-    BASIC_COMMAND_WITHOUT_PARAMETERS = ["jobs", "logs"]
-    BASIC_COMMAND = ["jobs", "logs", "--jobId", "some_job_id", "--apiKey", "some_key"]
-    BASIC_COMMAND_PARAMS = {"jobId": "some_job_id", "line": 0, "limit": 10000}
+    COMMAND_WITHOUT_REQUIRED_PARAMETERS = ["jobs", "logs"]
+    COMMAND_WITH_ALL_OPTIONS = [
+        "jobs", "logs",
+        "--jobId", "some_id",
+        "--apiKey", "some_key",
+        "--line", "50",
+        "--limit", "200",
+        # "--follow", "True",
+    ]
+
+    COMMAND_WITH_OPTIONS_FILE = ["jobs", "logs", "--optionsFile", ]  # path added in test
+    REQUEST_WITH_OPTIONS_FILE = {"jobId": "some_id", "line": 50, "limit": 200}
 
     EXPECTED_STDOUT_WITHOUT_PARAMETERS = """Usage: cli jobs logs [OPTIONS]
 Try "cli jobs logs --help" for help.
@@ -187,7 +212,7 @@ Try "cli jobs logs --help" for help.
 Error: Missing option "--jobId".
 """
 
-    EXPECTED_STDOUT = """+Job some_job_id logs--------------------------------------------------------------------+
+    EXPECTED_STDOUT = """+Job some_id logs------------------------------------------------------------------------+
 | LINE | MESSAGE                                                                         |
 +------+---------------------------------------------------------------------------------+
 | 1    | Traceback (most recent call last):                                              |
@@ -199,7 +224,7 @@ Error: Missing option "--jobId".
 | 7    |     from . import tfutil                                                        |
 | 8    |   File "/paperspace/dnnlib/tflib/tfutil.py", line 34, in <module>               |
 | 9    |     def shape_to_list(shape: Iterable[tf.Dimension]) -> List[Union[int, None]]: |
-| 10   | AttributeError: module 'tensorflow' has no attribute 'Dimension'                |
+| 10   | AttributeError: module \'tensorflow\' has no attribute 'Dimension'                |
 | 11   | PSEOF                                                                           |
 +------+---------------------------------------------------------------------------------+
 """
@@ -209,7 +234,7 @@ Error: Missing option "--jobId".
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_command_should_not_send_request_without_required_parameters(self, get_patched):
         cli_runner = CliRunner()
-        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITHOUT_PARAMETERS)
+        result = cli_runner.invoke(cli.cli, self.COMMAND_WITHOUT_REQUIRED_PARAMETERS)
 
         get_patched.assert_not_called()
         assert result.exit_code == 2
@@ -217,31 +242,45 @@ Error: Missing option "--jobId".
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_get_request_and_print_available_logs(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
 
         cli_runner = CliRunner()
-        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
+        result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_ALL_OPTIONS)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=self.BASIC_COMMAND_PARAMS)
-
-        assert result.output == self.EXPECTED_STDOUT
+                                       params=self.REQUEST_WITH_OPTIONS_FILE)
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_get_request_when_log_list_was_used_with_wrong_api_key(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
 
         cli_runner = CliRunner()
-        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
+        result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_ALL_OPTIONS)
 
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=self.BASIC_COMMAND_PARAMS)
-        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
+                                       params=self.REQUEST_WITH_OPTIONS_FILE)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, jobs_logs_config_path):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [jobs_logs_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params=self.REQUEST_WITH_OPTIONS_FILE)
+        assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -249,17 +288,17 @@ Error: Missing option "--jobId".
         get_patched.return_value = MockResponse(status_code=400)
 
         cli_runner = CliRunner()
-        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
+        result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_ALL_OPTIONS)
 
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=self.BASIC_COMMAND_PARAMS)
+                                       params=self.REQUEST_WITH_OPTIONS_FILE)
         assert result.output == "Failed to fetch data\n"
         assert result.exit_code == 0
 
 
-class TestJobArtifactsCommands(TestJobs):
+class TestDestroyJobArtifactsCommands(TestJobs):
     runner = CliRunner()
     URL = "https://api.paperspace.io"
 
@@ -293,9 +332,29 @@ class TestJobArtifactsCommands(TestJobs):
                                         data=None)
         assert result.exit_code == 0
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_options_from_yaml_file(self, post_patched, jobs_artifacts_destroy_config_path):
+        post_patched.return_value = MockResponse()
+        command = ["jobs", "artifacts", "destroy", "--optionsFile", jobs_artifacts_destroy_config_path]
+
+        result = self.runner.invoke(cli.cli, command)
+
+        assert result.exit_code == 0, result.exc_info
+        post_patched.assert_called_with("{}/jobs/some_id/artifactsDestroy/".format(self.URL),
+                                        files=None,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=None,
+                                        params={"files": "file1,file2"},
+                                        data=None)
+
+
+class TestGetJobArtifacts(TestJobs):
+    runner = CliRunner()
+    URL = "https://api.paperspace.io"
+
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_send_valid_get_request_and_receive_json_response(self, get_patched):
-        get_patched.return_value = MockResponse(status_code=200)
+        get_patched.return_value = MockResponse()
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "get", job_id, "--apiKey", "some_key"])
 
@@ -306,8 +365,26 @@ class TestJobArtifactsCommands(TestJobs):
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, jobs_artifacts_get_config_path):
+        get_patched.return_value = MockResponse()
+        command = ["jobs", "artifacts", "get", "--optionsFile", jobs_artifacts_get_config_path]
+
+        result = self.runner.invoke(cli.cli, command)
+
+        get_patched.assert_called_with("{}/jobs/artifactsGet".format(self.URL),
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params={"jobId": "some_id"})
+        assert result.exit_code == 0
+
+
+class TestListJobArtifacts(TestJobs):
+    runner = CliRunner()
+    URL = "https://api.paperspace.io"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_get_request_with_all_parameters_for_a_list_of_artifacts(self, get_patched):
-        get_patched.return_value = MockResponse(status_code=200)
+        get_patched.return_value = MockResponse()
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli,
                                     ["jobs", "artifacts", "list", job_id, "--apiKey", "some_key", "--size", "--links",
@@ -320,6 +397,21 @@ class TestJobArtifactsCommands(TestJobs):
                                                "size": True,
                                                "links": True,
                                                "files": "foo"})
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, jobs_artifacts_list_config_path):
+        get_patched.return_value = MockResponse()
+        command = ["jobs", "artifacts", "list", "--optionsFile", jobs_artifacts_list_config_path]
+        result = self.runner.invoke(cli.cli, command)
+
+        get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params={"files": "keton*.py",
+                                               "size": True,
+                                               "links": True,
+                                               "jobId": "some_id"})
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -360,21 +452,30 @@ class TestJobsCreate(object):
     ]
     FULL_OPTIONS_COMMAND = [
         "jobs", "create",
-        "--name", "exp1",
-        "--ports", 4567,
-        "--workspaceUrl", "wsp.url",
-        "--workingDirectory", "/work/dir/",
-        "--artifactDirectory", "/artifact/dir/",
-        "--clusterId", 42,
-        "--experimentEnv", '{"key":"val"}',
-        "--projectId", "testHandle",
-        "--container", "testContainer",
-        "--machineType", "testType",
-        "--command", "testCommand",
-        "--containerUser", "conUser",
-        "--registryUsername", "userName",
-        "--registryPassword", "passwd",
         "--apiKey", "some_key",
+        "--cluster", "some_cluster_name",
+        "--clusterId", "some_cluster_id",
+        "--command", "some command",
+        "--container", "some_container",
+        "--experimentId", "some_experiment_id",
+        "--ignoreFiles", "file1,file2",
+        "--isPreemptible", "True",
+        "--projectId", "some_project_id",
+        "--isPublic", "True",
+        "--workspaceUrl", "s3://some.workspace.url",
+        "--jobEnv", '{"key":"val"}',
+        "--machineType", "K80",
+        "--name", "some_name",
+        "--nodeAttrs", '{"key":"val"}',
+        "--ports", "8080,9000:9900",
+        "--projectId", "some_project_id",
+        "--registryPassword", "some_registry_password",
+        "--registryUsername", "some_registry_username",
+        "--relDockerfilePath", "some dockerfile path",
+        "--startedByUserId", "some_user_id",
+        "--useDockerfile", "True",
+        "--workingDirectory", "/some/path",
+        "--workspaceUrl", "s3://some.workspace.url",
     ]
     BASIC_OPTIONS_REQUEST = {
         "name": u"exp1",
@@ -386,20 +487,28 @@ class TestJobsCreate(object):
         "workspaceFileName": u"https://github.com/Paperspace/gradient-cli.git",
     }
     FULL_OPTIONS_REQUEST = {
-        "name": u"exp1",
-        "ports": 4567,
-        "workspaceUrl": u"wsp.url",
-        "workingDirectory": u"/work/dir/",
-        "artifactDirectory": u"/artifact/dir/",
-        "clusterId": 42,
-        "experimentEnv": {u"key": u"val"},
-        "projectHandle": u"testHandle",
-        "container": u"testContainer",
-        "machineType": u"testType",
-        "command": u"testCommand",
-        "containerUser": u"conUser",
-        "registryUsername": u"userName",
-        "registryPassword": u"passwd",
+        "clusterId": "some_cluster_id",
+        "experimentId": "some_experiment_id",
+        "cluster": "some_cluster_name",
+        "startedByUserId": "some_user_id",
+        "isPreemptible": True,
+        "ignoreFiles": "file1,file2",
+        "container": "some_container",
+        "workingDirectory": "/some/path",
+        "projectId": "some_project_id",
+        "registryUsername": "some_registry_username",
+        "workspaceUrl": "s3://some.workspace.url",
+        "machineType": "K80",
+        "registryPassword": "some_registry_password",
+        "isPublic": True,
+        "workspaceFileName": "s3://some.workspace.url",
+        "jobEnv": {"key": "val"},
+        "useDockerfile": True,
+        "name": "some_name",
+        "relDockerfilePath": "some dockerfile path",
+        "targetNodeAttrs": {"key": "val"},
+        "command": "some command",
+        "ports": "8080,9000:9900",
     }
     RESPONSE_JSON_200 = {"id": "sadkfhlskdjh", "message": "success"}
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
@@ -423,5 +532,37 @@ class TestJobsCreate(object):
                                              params=None,
                                              files=None,
                                              data=None)
+        assert result.exit_code == 0
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_create_job_was_run_with_all_options(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.FULL_OPTIONS_COMMAND)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL + '/jobs/createJob/',
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_options_from_yaml_file(self, post_patched, jobs_create_config_path):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        command = ["jobs", "create", "--optionsFile", jobs_create_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL + '/jobs/createJob/',
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
         assert result.exit_code == 0

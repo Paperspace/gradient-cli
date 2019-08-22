@@ -730,8 +730,8 @@ class TestHyperparametersList(object):
 
 
 class TestHyperparametersDetails(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/esv762x5i4zmcl/"
-    COMMAND = ["hyperparameters", "details", "--id", "esv762x5i4zmcl"]
+    URL = "https://services.paperspace.io/experiments/v1/hyperopt/some_id/"
+    COMMAND = ["hyperparameters", "details", "--id", "some_id"]
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -739,7 +739,7 @@ class TestHyperparametersDetails(object):
     COMMAND_WITH_OPTIONS_FILE = ["hyperparameters", "details", "--optionsFile", ]  # path added in test
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
         "hyperparameters", "details",
-        "--id", "esv762x5i4zmcl",
+        "--id", "some_id",
         "--apiKey", "some_key",
     ]
 

@@ -83,7 +83,10 @@ class GetExperiment(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, GetR
         return url
 
 
-class ListExperimentLogs(GetBaseExperimentApiUrlMixin, ListResources):
+class ListExperimentLogs(ListResources):
+    def _get_api_url(self, use_vpc=False):
+        return config.config.CONFIG_LOG_HOST
+
     def get_request_url(self, **kwargs):
         return "/jobs/logs"
 

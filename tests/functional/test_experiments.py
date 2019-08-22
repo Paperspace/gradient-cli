@@ -924,7 +924,7 @@ class TestStopExperiment(object):
 
 
 class TestExperimentLogs(object):
-    URL = "https://services.paperspace.io/experiments/v1/jobs/logs"
+    URL = "https://logs.paperspace.io/jobs/logs"
     COMMAND = ["experiments", "logs", "--experimentId", "some_id"]
     COMMAND_WITH_FOLLOW = ["experiments", "logs", "--experimentId", "some_id", "--follow", "True"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "logs", "--optionsFile", ]  # path added in test

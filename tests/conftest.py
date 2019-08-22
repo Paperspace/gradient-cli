@@ -109,3 +109,45 @@ def hyperparameters_details_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "hyperparameters_details.yaml"
     return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def jobs_list_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "jobs_list.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def jobs_logs_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "jobs_logs.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def jobs_artifacts_destroy_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "jobs_artifacts_destroy.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def jobs_artifacts_get_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "jobs_artifacts_get.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def jobs_artifacts_list_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "jobs_artifacts_list.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def jobs_create_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "jobs_create.yaml"
+    return str(fixture_dir.resolve())

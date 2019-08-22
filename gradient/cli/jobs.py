@@ -1,6 +1,7 @@
 from functools import reduce
 
 import click
+from gradient.cli import common
 
 from gradient import utils, logger
 from gradient.workspace import WorkspaceHandler
@@ -52,19 +53,23 @@ def stop_job(job_id, api_key=None):
     "--project",
     "project",
     help="Use to filter jobs by project name",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--projectId",
     "project_id",
     help="Use to filter jobs by project ID",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--experimentId",
     "experiment_id",
     help="Use to filter jobs by experiment ID",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @api_key_option
-def list_jobs(api_key, **filters):
+@common.options_file
+def list_jobs(api_key, options_file, **filters):
     del_if_value_is_none(filters)
 
     command = jobs_commands.ListJobsCommand(api_key=api_key)
@@ -73,32 +78,158 @@ def list_jobs(api_key, **filters):
 
 def common_jobs_create_options(f):
     options = [
-        click.option("--name", "name", help="Job name"),
-        click.option("--machineType", "machine_type", help="Virtual machine type",
-                     required=True),
-        click.option("--container", "container", default="paperspace/tensorflow-python", help="Docker container",
-                     required=True),
-        click.option("--command", "command", help="Job command/entrypoint"),
-        click.option("--ports", "ports", help="Mapped ports"),
-        click.option("--isPublic", "is_public", help="Flag: is job public"),
-        click.option("--workspace", "workspace", help="Path to workspace directory"),
-        click.option("--workspaceArchive", "workspace_archive", help="Path to workspace archive"),
-        click.option("--workspaceUrl", "workspace_url", help="Project git repository url"),
-        click.option("--workingDirectory", "working_directory", help="Working directory for the experiment",),
-        click.option("--ignoreFiles", "ignore_files", help="Ignore certain files from uploading"),
-        click.option("--experimentId", "experiment_id", help="Experiment Id"),
-        click.option("--jobEnv", "job_env", type=json_string, help="Environmental variables "),
-        click.option("--useDockerfile", "use_dockerfile", help="Flag: using Dockerfile"),
-        click.option("--isPreemptible", "is_preemptible", help="Flag: isPreemptible"),
-        click.option("--project", "project", help="Project name"),
-        click.option("--projectId", "project_id", help="Project ID", required=True),
-        click.option("--startedByUserId", "started_by_user_id", help="User ID"),
-        click.option("--relDockerfilePath", "rel_dockerfile_path", help="Relative path to Dockerfile"),
-        click.option("--registryUsername", "registry_username", help="Docker registry username"),
-        click.option("--registryPassword", "registry_password", help="Docker registry password"),
-        click.option("--cluster", "cluster", help="Cluster name"),
-        click.option("--clusterId", "cluster_id", help="Cluster id"),
-        click.option("--nodeAttrs", "node_attrs", type=json_string, help="Cluster node details"),
+        click.option(
+            "--name",
+            "name",
+            help="Job name",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--machineType",
+            "machine_type",
+            help="Virtual machine type",
+            required=True,
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--container",
+            "container",
+            default="paperspace/tensorflow-python",
+            help="Docker container",
+            required=True,
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--command",
+            "command",
+            help="Job command/entrypoint",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--ports",
+            "ports",
+            help="Mapped ports",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        # TODO: make it a flag
+        click.option(
+            "--isPublic",
+            "is_public",
+            help="Flag: is job public",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--workspace",
+            "workspace",
+            help="Path to workspace directory",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--workspaceArchive",
+            "workspace_archive",
+            help="Path to workspace archive",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--workspaceUrl",
+            "workspace_url",
+            help="Project git repository url",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--workingDirectory",
+            "working_directory",
+            help="Working directory for the experiment",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--ignoreFiles",
+            "ignore_files",
+            help="Ignore certain files from uploading",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--experimentId",
+            "experiment_id",
+            help="Experiment Id",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--jobEnv",
+            "job_env",
+            type=json_string,
+            help="Environmental variables ",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--useDockerfile",
+            "use_dockerfile",
+            help="Flag: using Dockerfile",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        # TODO: make it a flag
+        click.option(
+            "--isPreemptible",
+            "is_preemptible",
+            help="Flag: isPreemptible",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--project",
+            "project",
+            help="Project name",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--projectId",
+            "project_id",
+            help="Project ID",
+            required=True,
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--startedByUserId",
+            "started_by_user_id",
+            help="User ID",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--relDockerfilePath",
+            "rel_dockerfile_path",
+            help="Relative path to Dockerfile",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--registryUsername",
+            "registry_username",
+            help="Docker registry username",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--registryPassword",
+            "registry_password",
+            help="Docker registry password",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--cluster",
+            "cluster",
+            help="Cluster name",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--clusterId",
+            "cluster_id",
+            help="Cluster id",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
+        click.option(
+            "--nodeAttrs",
+            "node_attrs",
+            type=json_string,
+            help="Cluster node details",
+            cls=common.OptionReadValueFromConfigFile,
+        ),
     ]
     return reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -108,8 +239,9 @@ def common_jobs_create_options(f):
 @jobs_group.command("create", help="Create job")
 @common_jobs_create_options
 @api_key_option
+@common.options_file
 @click.pass_context
-def create_job(ctx, api_key, **kwargs):
+def create_job(ctx, api_key, options_file, **kwargs):
     utils.validate_workspace_input(kwargs)
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
@@ -124,28 +256,33 @@ def create_job(ctx, api_key, **kwargs):
 @click.option(
     "--jobId",
     "job_id",
-    required=True
+    required=True,
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--line",
     "line",
     required=False,
-    default=0
+    default=0,
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--limit",
     "limit",
     required=False,
-    default=10000
+    default=10000,
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--follow",
     "follow",
     required=False,
-    default=False
+    default=False,
+    cls=common.OptionReadValueFromConfigFile,
 )
 @api_key_option
-def list_logs(job_id, line, limit, follow, api_key=None):
+@common.options_file
+def list_logs(job_id, line, limit, follow, options_file, api_key=None):
     command = jobs_commands.JobLogsCommand(api_key=api_key)
     command.execute(job_id, line, limit, follow)
 
@@ -156,28 +293,55 @@ def artifacts():
 
 
 @artifacts.command("destroy", help="Destroy job's artifacts")
-@click.argument("job_id")
-@click.option("--files", "files")
+@click.argument("job_id", cls=common.ArgumentReadValueFromConfigFile)
+@click.option(
+    "--files",
+    "files",
+    cls=common.OptionReadValueFromConfigFile,
+)
 @api_key_option
-def destroy_artifacts(job_id, api_key=None, files=None):
+@common.options_file
+def destroy_artifacts(job_id, options_file, api_key=None, files=None):
     command = jobs_commands.ArtifactsDestroyCommand(api_key=api_key)
     command.execute(job_id, files=files)
 
 
 @artifacts.command("get", help="Get job's artifacts")
-@click.argument("job_id")
+@click.argument("job_id", cls=common.ArgumentReadValueFromConfigFile)
 @api_key_option
-def get_artifacts(job_id, api_key=None):
+@common.options_file
+def get_artifacts(job_id, options_file, api_key=None):
     command = jobs_commands.ArtifactsGetCommand(api_key=api_key)
     command.execute(job_id)
 
 
 @artifacts.command("list", help="List job's artifacts")
-@click.argument("job_id")
-@click.option("--size", "-s", "size", help="Show file size", is_flag=True)
-@click.option("--links", "-l", "links", help="Show file URL", is_flag=True, default=False)
-@click.option("--files", "files", help="Get only given file (use at the end * as a wildcard)")
+@click.argument("job_id", cls=common.ArgumentReadValueFromConfigFile)
+@click.option(
+    "--size",
+    "-s",
+    "size",
+    help="Show file size",
+    is_flag=True,
+    cls=common.OptionReadValueFromConfigFile,
+)
+@click.option(
+    "--links",
+    "-l",
+    "links",
+    help="Show file URL",
+    is_flag=True,
+    default=False,
+    cls=common.OptionReadValueFromConfigFile,
+)
+@click.option(
+    "--files",
+    "files",
+    help="Get only given file (use at the end * as a wildcard)",
+    cls=common.OptionReadValueFromConfigFile,
+)
 @api_key_option
-def list_artifacts(job_id, size, links, files, api_key=None):
+@common.options_file
+def list_artifacts(job_id, size, links, files, options_file, api_key=None):
     command = jobs_commands.ArtifactsListCommand(api_key=api_key)
     command.execute(job_id=job_id, size=size, links=links, files=files)

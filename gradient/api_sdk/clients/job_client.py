@@ -246,7 +246,7 @@ class JobsClient(BaseClient):
             :linenos:
             :emphasize-lines: 2
 
-            job = job_client.logs(
+            job_logs = job_client.logs(
                 job_id='Your_job_id_here',
                 line=100,
                 limit=100
@@ -260,6 +260,31 @@ class JobsClient(BaseClient):
         :rtype: list
         """
         logs = ListJobLogs(self.api_key, self.logger).list(job_id=job_id, line=line, limit=limit)
+        return logs
+
+    def yield_logs(self, job_id, line=0, limit=10000):
+        """Get log generator. Polls the API for new logs
+
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 2
+
+            job_logs_generator = job_client.yield_logs(
+                job_id='Your_job_id_here',
+                line=100,
+                limit=100
+            )
+
+        :param str job_id:
+        :param int line: line number at which logs starts to display on screen
+        :param int limit: maximum lines displayed on screen, default set to 10 000
+
+        :returns: generator yielding LogRow instances
+        :rtype: Iterator[models.LogRow]
+        """
+
+        repository = ListJobLogs(self.api_key, self.logger)
+        logs = repository.yield_logs(job_id=job_id, line=line, limit=limit)
         return logs
 
     def artifacts_delete(self, job_id, files=None):
