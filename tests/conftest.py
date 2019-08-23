@@ -151,3 +151,87 @@ def jobs_create_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "jobs_create.yaml"
     return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def machines_availability_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "machines_availability.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def machines_create_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "machines_create.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def machines_destroy_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "machines_destroy.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def machines_list_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "machines_list.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def machines_restart_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "machines_restart.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def machines_show_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "machines_show.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def machines_start_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "machines_start.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def machines_stop_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "machines_stop.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def machines_update_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "machines_update.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def machines_utilization_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "machines_utilization.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def machines_waitfor_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "machines_waitfor.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def models_list_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "models_list.yaml"
+    return str(fixture_dir.resolve())
