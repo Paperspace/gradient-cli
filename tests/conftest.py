@@ -235,3 +235,24 @@ def models_list_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "models_list.yaml"
     return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def projects_list_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "projects_list.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def projects_create_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "projects_create.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def run_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "run.yaml"
+    return str(fixture_dir.resolve())

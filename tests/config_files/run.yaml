@@ -1,0 +1,33 @@
+apiKey: some_key
+cluster: null
+clusterId: some_cluster_id
+command: some command
+container: some_container
+experimentId: some_experiment_id
+ignoreFiles: file1,file2
+isPreemptible: 'true'
+isPublic: 'true'
+jobEnv:
+  key: val
+machineType: some_machine_type
+module: 3
+name: some_name
+nodeAttrs:
+  key: val2
+ports: 8080,9000:9900
+project: null
+projectId: some_project_id
+python-command: 3
+registryPassword: some_registry_password
+registryUsername: some_registry_username
+relDockerfilePath: /some/dockerfile/path
+script:
+  - some_script.py
+  - some_other_script.py
+shell: 3
+startedByUserId: some_user_id
+useDockerfile: 'true'
+workingDirectory: /some/directory
+workspace: null
+workspaceArchive: null
+workspaceUrl: some.url

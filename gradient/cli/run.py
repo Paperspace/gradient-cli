@@ -12,14 +12,36 @@ from gradient.constants import RunMode
 @deprecated("DeprecatedWarning: \nWARNING: This command will not be included in version 0.6.0\n"
             "DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
             "options will not be included in version 0.6.0")
-@cli.command("run", help="Run script or command on remote cluster")
-@click.option("-c", "--python-command", "mode", flag_value=RunMode.RUN_MODE_PYTHON_COMMAND)
-@click.option("-m", "--module", "mode", flag_value=RunMode.RUN_MODE_PYTHON_MODULE)
-@click.option("-s", "--shell", "mode", flag_value=RunMode.RUN_MODE_SHELL_COMMAND)
+@cli.command(
+    "run",
+    help="Run script or command on remote cluster",
+)
+@click.option(
+    "-c",
+    "--python-command",
+    "mode",
+    flag_value=RunMode.RUN_MODE_PYTHON_COMMAND,
+    cls=common.OptionReadValueFromConfigFile,
+)
+@click.option(
+    "-m",
+    "--module",
+    "mode",
+    flag_value=RunMode.RUN_MODE_PYTHON_MODULE,
+    cls=common.OptionReadValueFromConfigFile,
+)
+@click.option(
+    "-s",
+    "--shell",
+    "mode",
+    flag_value=RunMode.RUN_MODE_SHELL_COMMAND,
+    cls=common.OptionReadValueFromConfigFile,
+)
 @common_jobs_create_options
-@click.argument("script", nargs=-1, required=True)
+@click.argument("script", nargs=-1, required=True, cls=common.ArgumentReadValueFromConfigFile)
 @common.api_key_option
-def run(api_key, **kwargs):
+@common.options_file
+def run(api_key, options_file, **kwargs):
     utils.validate_workspace_input(kwargs)
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
