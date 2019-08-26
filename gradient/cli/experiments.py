@@ -131,7 +131,6 @@ def common_experiments_create_options(f):
             help="Flag: is preemptible",
             cls=common.OptionReadValueFromConfigFile,
         ),
-        api_key_option
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -334,6 +333,7 @@ If you depend on functionality not listed there, please file an issue."""
 @create_experiment.command(name="multinode", help="Create multi node experiment")
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
+@api_key_option
 @common.options_file
 def create_multi_node(api_key, use_vpc, options_file, **kwargs):
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
@@ -351,6 +351,7 @@ def create_multi_node(api_key, use_vpc, options_file, **kwargs):
 @create_experiment.command(name="singlenode", help="Create single node experiment")
 @common_experiments_create_options
 @common_experiments_create_single_node_options
+@api_key_option
 @common.options_file
 def create_single_node(api_key, use_vpc, options_file, **kwargs):
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
@@ -376,6 +377,7 @@ def create_single_node(api_key, use_vpc, options_file, **kwargs):
     default=True,
     help="Don't show logs. Only create, start and exit",
 )
+@api_key_option
 @common.options_file
 @click.pass_context
 def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, options_file, **kwargs):
@@ -404,6 +406,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, options_file, 
     default=True,
     help="Don't show logs. Only create, start and exit",
 )
+@api_key_option
 @common.options_file
 @click.pass_context
 def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, options_file, **kwargs):
@@ -429,13 +432,12 @@ def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, options_file,
     is_flag=True,
     help="Show logs",
 )
-@common.options_file
 @click.option(
     "--vpc",
     "use_vpc",
     type=bool,
     is_flag=True,
-    cls=common.OptionReadValueFromConfigFile
+    cls=common.OptionReadValueFromConfigFile,
 )
 @api_key_option
 @common.options_file
@@ -449,22 +451,23 @@ def start_experiment(ctx, id, show_logs, api_key, options_file, use_vpc):
 
 
 @experiments.command("stop", help="Stop experiment")
-@click.argument("experiment-id")
+@click.argument("id", cls=common.ArgumentReadValueFromConfigFile)
 @api_key_option
 @click.option(
     "--vpc",
     "use_vpc",
     type=bool,
     is_flag=True,
+    cls=common.OptionReadValueFromConfigFile,
 )
 @common.options_file
-def stop_experiment(experiment_id, api_key, options_file, use_vpc):
+def stop_experiment(id, api_key, options_file, use_vpc):
     command = experiments_commands.StopExperimentCommand(api_key=api_key)
-    command.execute(experiment_id, use_vpc=use_vpc)
+    command.execute(id, use_vpc=use_vpc)
 
 
 @experiments.command("list", help="List experiments")
-@click.option("--projectId", "-p", "project_ids", multiple=True)
+@click.option("--projectId", "-p", "project_ids", multiple=True, cls=common.OptionReadValueFromConfigFile)
 @api_key_option
 @common.options_file
 def list_experiments(project_ids, api_key, options_file):
@@ -473,37 +476,41 @@ def list_experiments(project_ids, api_key, options_file):
 
 
 @experiments.command("details", help="Show detail of an experiment")
-@click.argument("experiment-id")
+@click.argument("id", cls=common.ArgumentReadValueFromConfigFile)
 @api_key_option
 @common.options_file
-def get_experiment_details(experiment_id, options_file, api_key):
+def get_experiment_details(id, options_file, api_key):
     command = experiments_commands.GetExperimentCommand(api_key=api_key)
-    command.execute(experiment_id)
+    command.execute(id)
 
 
 @experiments.command("logs", help="List experiment logs")
 @click.option(
     "--experimentId",
     "experiment_id",
-    required=True
+    required=True,
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--line",
     "line",
     required=False,
-    default=0
+    default=0,
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--limit",
     "limit",
     required=False,
-    default=10000
+    default=10000,
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--follow",
     "follow",
     required=False,
-    default=False
+    default=False,
+    cls=common.OptionReadValueFromConfigFile,
 )
 @api_key_option
 @common.options_file

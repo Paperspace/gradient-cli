@@ -6,16 +6,12 @@ import yaml
 from click.exceptions import Exit
 from click_didyoumean import DYMMixin
 from click_help_colors import HelpColorsGroup
+
 from gradient.cli import cli_types
 
+OPTIONS_FILE_OPTION_NAME = "optionsFile"
 OPTIONS_FILE_PARAMETER_NAME = "options_file"
-
-
-api_key_option = click.option(
-    "--apiKey",
-    "api_key",
-    help="API key to use this time only",
-)
+OPTIONS_DUMP_FILE_OPTION_NAME = "optionsFileTemplate"
 
 
 def del_if_value_is_none(dict_, del_all_falsy=False):
@@ -90,6 +86,14 @@ class OptionReadValueFromConfigFile(ReadValueFromConfigFile, click.Option):
     pass
 
 
+api_key_option = click.option(
+    "--apiKey",
+    "api_key",
+    help="API key to use this time only",
+    cls=OptionReadValueFromConfigFile,
+)
+
+
 def generate_options_template(ctx, param, value):
     if not value:
         return value
@@ -97,6 +101,9 @@ def generate_options_template(ctx, param, value):
     params = {}
     for param in ctx.command.params:
         option_name = get_option_name(param.opts)
+        if option_name in (OPTIONS_FILE_OPTION_NAME, OPTIONS_DUMP_FILE_OPTION_NAME):
+            continue
+
         option_value = ctx.params.get(param.name) or param.default
 
         if isinstance(param.type, cli_types.ChoiceType):
@@ -115,12 +122,12 @@ def generate_options_template(ctx, param, value):
 def options_file(f):
     options = [
         click.option(
-            "--optionsFile",
+            "--" + OPTIONS_FILE_OPTION_NAME,
             OPTIONS_FILE_PARAMETER_NAME,
             help="Path to YAML file with predefined options",
         ),
         click.option(
-            "--optionsFileTemplate",
+            "--" + OPTIONS_DUMP_FILE_OPTION_NAME,
             callback=generate_options_template,
             expose_value=False,
             help="Generate template options file"

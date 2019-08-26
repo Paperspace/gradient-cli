@@ -102,24 +102,16 @@ class DeploymentsClient(BaseClient):
         repository = repositories.StopDeployment(api_key=self.api_key, logger=self.logger)
         repository.stop(deployment_id, use_vpc=use_vpc)
 
-    def list(self, filters, use_vpc=False):
+    def list(self, state=None, project_id=None, model_id=None, use_vpc=False):
         """
         List deployments with optional filtering
 
-        To view all running deployments in your team, run::
-
-            gradient deployments list --state RUNNING
-
-        Options::
-
-          --state [BUILDING|PROVISIONING|STARTING|RUNNING|STOPPING|STOPPED|ERROR] Filter by deployment state
-          --projectId TEXT Use to filter by project ID
-          --modelId TEXT Use to filter by model ID
-
-        :param state|projectId|modelId filters:
+        :param str state:
+        :param str project_id:
+        :param str model_id:
         :param bool use_vpc:
         """
 
         repository = repositories.ListDeployments(api_key=self.api_key, logger=self.logger)
-        deployments = repository.list(filters=filters, use_vpc=use_vpc)
+        deployments = repository.list(state=state, project_id=project_id, model_id=model_id, use_vpc=use_vpc)
         return deployments

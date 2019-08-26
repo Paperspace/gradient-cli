@@ -16,10 +16,13 @@ class TestModelsList(object):
     COMMAND_WITH_FILTERING_BY_EXPERIMENT_ID = [
         "models", "list",
         "--experimentId", "some_experiment_id",
+        "--projectId", "some_project_id",
     ]
-    EXPECTED_REQUEST_JSON_WITH_FILTERING = {"filter": {"where": {"and": [{"experimentId": "some_experiment_id"}]}}}
+    EXPECTED_REQUEST_JSON_WITH_FILTERING = {"filter": {"where": {"and": [{"projectId": "some_project_id",
+                                                                          "experimentId": "some_experiment_id"}]}}}
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = ["models", "list", "--apiKey", "some_key"]
+    COMMAND_WITH_OPTIONS_FILE = ["models", "list", "--optionsFile", ]  # path added in test
 
     EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND = {"modelList": [], "total": 1, "displayTotal": 0}
 
@@ -57,6 +60,22 @@ class TestModelsList(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
+                                            params={"limit": -1})
+
+        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, models_list_config_path):
+        get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [models_list_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=self.EXPECTED_REQUEST_JSON_WITH_FILTERING,
                                             params={"limit": -1})
 
         assert result.output == self.EXPECTED_STDOUT

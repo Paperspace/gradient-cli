@@ -13,7 +13,8 @@ def projects_group():
 
 @projects_group.command("list", help="List projects")
 @common.api_key_option
-def list_projects(api_key):
+@common.options_file
+def list_projects(api_key, options_file):
     command = projects_commands.ListProjectsCommand(api_key=api_key)
     command.execute()
 
@@ -24,19 +25,23 @@ def list_projects(api_key):
     "name",
     required=True,
     help="Name of new project",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--repositoryName",
     "repository_name",
     help="Name of the repository",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--repositoryUrl",
     "repository_url",
     help="URL to the repository",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @common.api_key_option
-def create_project(api_key, **project):
+@common.options_file
+def create_project(api_key, options_file, **project):
     command = projects_commands.CreateProjectCommand(api_key)
     command.execute(project)
 

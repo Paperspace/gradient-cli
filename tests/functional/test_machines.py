@@ -23,6 +23,8 @@ class TestMachineAvailability(object):
         "--machineType", "P4000",
         "--apiKey", "some_key",
     ]
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "availability", "--optionsFile", ]  # path added in test
+
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_STDOUT = "Machine available: True\n"
@@ -50,6 +52,21 @@ class TestMachineAvailability(object):
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params=self.PARAMS)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.machines.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, machines_availability_config_path):
+        get_patched.return_value = MockResponse(self.RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_availability_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -125,34 +142,39 @@ class TestCreateMachine(object):
 
     ALL_COMMANDS = [
         "machines", "create",
-        "--region", "CA1",
-        "--machineType", "P5000",
-        "--size", 2,
+        "--apiKey", "some_key",
+        "--assignPublicIp",
         "--billingType", "hourly",
+        "--email", "some@ema.il",
+        "--firstName", "some_f_name",
+        "--lastName", "some_l_name",
         "--machineName", "some_name",
-        "--templateId", "some_template_ip",
-        "--dynamicPublicIp",
-        "--email", "some@email.com",
+        "--machineType", "P5000",
+        "--networkId", "some_network_id",
+        "--notificationEmail", "some@em.a.il",
         "--password", "some_password",
-        "--firstName", "first_name",
-        "--lastName", "last_name",
-        "--notificationEmail", "other@email.com",
-        "--scriptId", "some_script_id"
+        "--region", "CA1",
+        "--scriptId", "some_script_id",
+        "--size", "2",
+        "--teamId", "some_team_id",
+        "--templateId", "some_template",
     ]
-    ALL_COMMANDS_REQUEST_JSON = {
-        "region": "West Coast (CA1)",
-        "machineType": "P5000",
-        "size": 2,
+    ALL_OPTIONS_REQUEST_JSON = {
+        "assignPublicIp": True,
         "billingType": "hourly",
+        "email": "some@ema.il",
+        "firstName": "some_f_name",
+        "lastName": "some_l_name",
         "machineName": "some_name",
-        "templateId": "some_template_ip",
-        "dynamicPublicIp": True,
-        "email": "some@email.com",
+        "machineType": "P5000",
+        "networkId": "some_network_id",
+        "notificationEmail": "some@em.a.il",
         "password": "some_password",
-        "firstName": "first_name",
-        "lastName": "last_name",
-        "notificationEmail": "other@email.com",
+        "region": "West Coast (CA1)",
         "scriptId": "some_script_id",
+        "size": 2,
+        "teamId": "some_team_id",
+        "templateId": "some_template",
     }
 
     BASIC_COMMAND_WITH_API_KEY = [
@@ -165,6 +187,9 @@ class TestCreateMachine(object):
         "--templateId", "some_template",
         "--apiKey", "some_key",
     ]
+
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "create", "--optionsFile", ]  # path added in test
+
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_STDOUT = "New machine created with id: psclbvqpc\n"
@@ -188,7 +213,7 @@ class TestCreateMachine(object):
         "--billingType", "hourly",
         "--machineName", "some_name",
         "--templateId", "some_template",
-        "--teamId", "some_user_id",
+        "--userId", "some_user_id",
         "--email", "some@email.com",
     ]
 
@@ -215,13 +240,13 @@ class TestCreateMachine(object):
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.ALL_COMMANDS)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
-                                        json=self.ALL_COMMANDS_REQUEST_JSON,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=self.ALL_OPTIONS_REQUEST_JSON,
                                         params=None,
                                         files=None,
                                         data=None)
-        assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.machines.http_client.requests.post")
@@ -234,6 +259,23 @@ class TestCreateMachine(object):
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=self.REQUEST_JSON,
+                                        params=None,
+                                        files=None,
+                                        data=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.machines.http_client.requests.post")
+    def test_should_read_options_from_yaml_file(self, post_patched, machines_create_config_path):
+        post_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_create_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
+
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=self.ALL_OPTIONS_REQUEST_JSON,
                                         params=None,
                                         files=None,
                                         data=None)
@@ -300,25 +342,28 @@ class TestCreateMachine(object):
 
 
 class TestDestroyMachine(object):
-    URL = "https://api.paperspace.io/machines/some_machine_id/destroyMachine/"
+    URL = "https://api.paperspace.io/machines/some_id/destroyMachine/"
     BASIC_COMMAND = [
         "machines", "destroy",
-        "--machineId", "some_machine_id",
+        "--machineId", "some_id",
     ]
     EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
 
     ALL_COMMANDS = [
         "machines", "destroy",
-        "--machineId", "some_machine_id",
+        "--machineId", "some_id",
         "--releasePublicIp",
     ]
     ALL_COMMANDS_REQUEST_JSON = {"releasePublicIp": True}
 
     BASIC_COMMAND_WITH_API_KEY = [
         "machines", "destroy",
-        "--machineId", "some_machine_id",
+        "--machineId", "some_id",
         "--apiKey", "some_key",
     ]
+
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "destroy", "--optionsFile", ]  # path added in test
+
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_STDOUT = "Machine successfully destroyed\n"
@@ -365,6 +410,23 @@ class TestDestroyMachine(object):
                                         files=None,
                                         data=None)
         assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.machines.http_client.requests.post")
+    def test_should_read_options_from_yaml_file(self, post_patched, machines_destroy_config_path):
+        post_patched.return_value = MockResponse()
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_destroy_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=self.ALL_COMMANDS_REQUEST_JSON,
+                                        params=None,
+                                        files=None,
+                                        data=None)
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.machines.http_client.requests.post")
@@ -449,57 +511,58 @@ class TestListMachines(object):
 
     ALL_COMMANDS = [
         "machines", "list",
-        "--machineId", "some_machine_id",
-        "--name", "some_name",
-        "--os", "some_os",
-        "--ram", 123456789,
-        "--cpus", 2,
-        "--gpu", "GeForce2MX",
-        "--storageTotal", "321432543",
-        "--storageUsed", "234345456",
-        "--usageRate", "C1 Hourly",
-        "--shutdownTimeoutInHours", 2,
-        "--performAutoSnapshot", "true",
+        "--agentType", "some_agent_type",
+        "--apiKey", "some_key",
         "--autoSnapshotFrequency", "hour",
-        "--autoSnapshotSaveCount", 5,
-        "--agentType", "LinuxHeadless",
-        "--dtCreated", "2017-09-17T05:55:29.665Z",
-        "--state", "ready",
-        "--updatesPending", "False",
-        "--networkId", "asdf",
-        "--privateIpAddress", "192.168.0.1",
-        "--publicIpAddress", "104.25.94.37",
+        "--autoSnapshotSaveCount", "2",
+        "--cpus", "8",
+        "--dtCreated", "some_timestamp",
+        "--dtLastRun", "some_other_timestamp",
+        "--gpu", "some_gpu",
+        "--machineId", "some_id",
+        "--name", "some_name",
+        "--networkId", "some_network_id",
+        "--os", "some_os",
+        "--performAutoSnapshot", "true",
+        "--privateIpAddress", "1.2.3.4",
+        "--publicIpAddress", "4.3.2.1",
+        "--ram", "123",
         "--region", "CA1",
-        "--userId", "alskdjf",
-        "--teamId", "qpwoeirut",
-        "--dtLastRun", "2019-04-11T18:10:29.665Z"
+        "--shutdownTimeoutInHours", "3",
+        "--state", "some_state",
+        "--storageTotal", "123TB",
+        "--storageUsed", "123GB",
+        "--teamId", "some_team_id",
+        "--updatesPending", "asdf",
+        "--usageRate", "some_usage_rate",
+        "--userId", "some_user_id",
     ]
-    ALL_COMMANDS_REQUEST_JSON = {
+    ALL_OPTIONS_REQUEST_JSON = {
         "params": {
-            "ram": 123456789,
-            "userId": "alskdjf",
-            "cpus": 2,
-            "teamId": "qpwoeirut",
-            "updatesPending": "False",
-            "networkId": "asdf",
-            "storageTotal": "321432543",
-            "shutdownTimeoutInHours": 2,
-            "state": "ready",
-            "usageRate": "C1 Hourly",
-            "publicIpAddress": "104.25.94.37",
-            "gpu": "GeForce2MX",
-            "privateIpAddress": "192.168.0.1",
-            "dtCreated": "2017-09-17T05:55:29.665Z",
-            "dtLastRun": "2019-04-11T18:10:29.665Z",
-            "storageUsed": "234345456",
-            "autoSnapshotSaveCount": 5,
-            "name": "some_name",
-            "machineId": "some_machine_id",
-            "region": "West Coast (CA1)",
-            "performAutoSnapshot": True,
+            "agentType": "some_agent_type",
             "autoSnapshotFrequency": "hour",
+            "autoSnapshotSaveCount": 2,
+            "cpus": 8,
+            "dtCreated": "some_timestamp",
+            "dtLastRun": "some_other_timestamp",
+            "gpu": "some_gpu",
+            "machineId": "some_id",
+            "name": "some_name",
+            "networkId": "some_network_id",
             "os": "some_os",
-            "agentType": "LinuxHeadless"
+            "performAutoSnapshot": True,
+            "privateIpAddress": "1.2.3.4",
+            "publicIpAddress": "4.3.2.1",
+            "ram": 123,
+            "region": "West Coast (CA1)",
+            "shutdownTimeoutInHours": 3,
+            "state": "some_state",
+            "storageTotal": "123TB",
+            "storageUsed": "123GB",
+            "teamId": "some_team_id",
+            "updatesPending": "asdf",
+            "usageRate": "some_usage_rate",
+            "userId": "some_user_id",
         }
     }
 
@@ -511,6 +574,8 @@ class TestListMachines(object):
             "gpu": "ATIRage128",
         },
     }
+
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "list", "--optionsFile", ]  # path added in test
 
     BASIC_COMMAND_WITH_API_KEY = ["machines", "list", "--apiKey", "some_key"]
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
@@ -543,16 +608,30 @@ class TestListMachines(object):
 
     @mock.patch("gradient.cli.machines.http_client.requests.get")
     def test_should_send_valid_post_request_when_all_options_were_used(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.ALL_COMMANDS)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
-                                       json=self.ALL_COMMANDS_REQUEST_JSON,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=self.ALL_OPTIONS_REQUEST_JSON,
                                        params=None)
-        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.machines.http_client.requests.get")
+    def test_should_send_valid_post_request_when_all_options_were_used(self, get_patched):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.ALL_COMMANDS)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=self.ALL_OPTIONS_REQUEST_JSON,
+                                       params=None)
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.machines.http_client.requests.get")
@@ -579,6 +658,21 @@ class TestListMachines(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
+                                       params=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.machines.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, machines_list_config_path):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_list_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=self.ALL_OPTIONS_REQUEST_JSON,
                                        params=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
@@ -649,6 +743,9 @@ class TestRestartMachine(object):
         "--machineId", "some_id",
         "--apiKey", "some_key",
     ]
+
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "restart", "--optionsFile", ]  # path added in test
+
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
@@ -694,6 +791,23 @@ class TestRestartMachine(object):
                                         files=None,
                                         data=None)
         assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.machines.http_client.requests.post")
+    def test_should_read_options_from_config_file(self, post_patched, machines_restart_config_path):
+        post_patched.return_value = MockResponse()
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_restart_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=None,
+                                        params=None,
+                                        files=None,
+                                        data=None)
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.machines.http_client.requests.post")
@@ -749,11 +863,11 @@ class TestRestartMachine(object):
 class TestShowMachine(object):
     URL = "https://api.paperspace.io/machines/getMachinePublic/"
     EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
-    BASIC_COMMAND = ["machines", "show", "--machineId", "psbtuwfvt"]
-    REQUEST_PARAMS = {"machineId": "psbtuwfvt"}
+    BASIC_COMMAND = ["machines", "show", "--machineId", "some_id"]
+    REQUEST_PARAMS = {"machineId": "some_id"}
     EXPECTED_RESPONSE_JSON = example_responses.SHOW_MACHINE_RESPONSE
     EXPECTED_STDOUT = """+---------------------------+------------------------------------------------------------------------------------+
-| ID                        | psbtuwfvt                                                                          |
+| ID                        | some_id                                                                            |
 +---------------------------+------------------------------------------------------------------------------------+
 | Name                      | New Machine 1                                                                      |
 | OS                        | Ubuntu 18.04.1 LTS; uname: 4.15.0-38-generic; distro: ubuntu; major: 18; minor: 04 |
@@ -787,9 +901,11 @@ class TestShowMachine(object):
 
     BASIC_COMMAND_WITH_API_KEY = [
         "machines", "show",
-        "--machineId", "psbtuwfvt",
+        "--machineId", "some_id",
         "--apiKey", "some_key",
     ]
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "show", "--optionsFile", ]  # path added in test
+
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
@@ -831,6 +947,21 @@ class TestShowMachine(object):
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.machines.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, machines_show_config_path):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_show_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT,result.exc_info
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params=self.REQUEST_PARAMS)
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.machines.http_client.requests.get")
@@ -886,6 +1017,8 @@ class TestStartMachine(object):
     EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_STDOUT = "Machine started\n"
 
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "start", "--optionsFile", ]  # path added in test
+
     COMMAND_WITH_API_KEY = [
         "machines", "start",
         "--machineId", "some_id",
@@ -936,6 +1069,23 @@ class TestStartMachine(object):
                                         files=None,
                                         data=None)
         assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.machines.http_client.requests.post")
+    def test_should_read_options_from_yaml_file(self, post_patched, machines_start_config_path):
+        post_patched.return_value = MockResponse()
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_start_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=None,
+                                        params=None,
+                                        files=None,
+                                        data=None)
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.machines.http_client.requests.post")
@@ -997,6 +1147,8 @@ class TestStopMachine(object):
     EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_STDOUT = "Machine stopped\n"
 
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "stop", "--optionsFile", ]  # path added in test
+
     COMMAND_WITH_API_KEY = [
         "machines", "stop",
         "--machineId", "some_id",
@@ -1039,6 +1191,23 @@ class TestStopMachine(object):
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
+
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=None,
+                                        params=None,
+                                        files=None,
+                                        data=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.machines.http_client.requests.post")
+    def test_should_read_options_from_yaml_file(self, post_patched, machines_stop_config_path):
+        post_patched.return_value = MockResponse()
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_stop_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
 
         post_patched.assert_called_with(self.URL,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -1113,22 +1282,23 @@ class TestUpdateMachine(object):
         "machines", "update",
         "--machineId", "some_id",
         "--machineName", "some_name",
-        "--shutdownTimeoutInHours", 2,
+        "--shutdownTimeoutInHours", "2",
         "--shutdownTimeoutForces", "true",
-        "--performAutoSnapshot", "0",
+        "--performAutoSnapshot", "true",
         "--autoSnapshotFrequency", "hour",
-        "--autoSnapshotSaveCount", 1,
-        "--dynamicPublicIp", "f"
+        "--autoSnapshotSaveCount", "1",
+        "--dynamicPublicIp", "true",
     ]
     ALL_COMMANDS_REQUEST_JSON = {
         "machineName": "some_name",
         "shutdownTimeoutInHours": 2,
         "shutdownTimeoutForces": True,
-        "performAutoSnapshot": False,
+        "performAutoSnapshot": True,
         "autoSnapshotFrequency": "hour",
         "autoSnapshotSaveCount": 1,
-        "dynamicPublicIp": False,
+        "dynamicPublicIp": True,
     }
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "update", "--optionsFile", ]  # path added in test
 
     BASIC_COMMAND_WITH_API_KEY = [
         "machines", "update",
@@ -1194,6 +1364,23 @@ class TestUpdateMachine(object):
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.machines.http_client.requests.post")
+    def test_should_read_options_from_yaml_file(self, get_patched, machines_update_config_path):
+        get_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_update_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=self.ALL_COMMANDS_REQUEST_JSON,
+                                       params=None,
+                                       files=None,
+                                       data=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.machines.http_client.requests.post")
     def test_should_print_error_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
 
@@ -1247,13 +1434,13 @@ class TestShowMachineUtilization(object):
     EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     BASIC_COMMAND = [
         "machines", "utilization",
-        "--machineId", "psbtuwfvt",
-        "--billingMonth", "2019-04",
+        "--machineId", "some_id",
+        "--billingMonth", "2017-09",
     ]
-    REQUEST_PARAMS = {"machineId": "psbtuwfvt", "billingMonth": "2019-04"}
+    REQUEST_PARAMS = {"machineId": "some_id", "billingMonth": "2017-09"}
     EXPECTED_RESPONSE_JSON = example_responses.SHOW_MACHINE_UTILIZATION_RESPONSE
     EXPECTED_STDOUT = """+----------------------+---------------+
-| ID                   | psbtuwfvt     |
+| ID                   | some_key      |
 +----------------------+---------------+
 | Machine Seconds used | 0             |
 | Machine Hourly rate  | 0             |
@@ -1264,12 +1451,14 @@ class TestShowMachineUtilization(object):
 
     BASIC_COMMAND_WITH_API_KEY = [
         "machines", "utilization",
-        "--machineId", "psbtuwfvt",
-        "--billingMonth", "2019-04",
+        "--machineId", "some_id",
+        "--billingMonth", "2017-09",
         "--apiKey", "some_key",
     ]
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "utilization", "--optionsFile", ]  # path added in test
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
@@ -1303,6 +1492,21 @@ class TestShowMachineUtilization(object):
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params=self.REQUEST_PARAMS)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.machines.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, machines_utilization_config_path):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_utilization_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -1360,21 +1564,23 @@ class TestWaitForMachine(object):
     EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     BASIC_COMMAND = [
         "machines", "waitfor",
-        "--machineId", "psbtuwfvt",
+        "--machineId", "some_id",
         "--state", "off",
     ]
-    REQUEST_PARAMS = {"machineId": "psbtuwfvt"}
+    REQUEST_PARAMS = {"machineId": "some_id"}
     EXPECTED_RESPONSE_JSON = example_responses.SHOW_MACHINE_RESPONSE
     EXPECTED_STDOUT = "Machine state: off\n"
 
     BASIC_COMMAND_WITH_API_KEY = [
         "machines", "waitfor",
-        "--machineId", "psbtuwfvt",
+        "--machineId", "some_id",
         "--state", "off",
         "--apiKey", "some_key",
     ]
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "waitfor", "--optionsFile", ]  # path added in test
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\nError while reading machine state\n"
@@ -1422,6 +1628,21 @@ class TestWaitForMachine(object):
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params=self.REQUEST_PARAMS)
+        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.machines.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, machines_waitfor_config_path):
+        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_waitfor_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,

@@ -13,8 +13,8 @@ class HyperparameterSchema(BaseExperimentSchema):
     worker_machine_type = marshmallow.fields.Str(dump_to="workerMachineType", load_from="workerMachineType")
     worker_command = marshmallow.fields.Str(dump_to="workerCommand", load_from="workerCommand")
     worker_count = marshmallow.fields.Int(dump_to="workerCount", load_from="workerCount")
-    worker_use_dockerfile = marshmallow.fields.Bool(dump_to="useDockerfile", load_from="useDockerfile")
-    worker_dockerfile_path = marshmallow.fields.Str(dump_to="dockerfilePath", load_from="dockerfilePath")
+    use_dockerfile = marshmallow.fields.Bool(dump_to="useDockerfile", load_from="useDockerfile")
+    dockerfile_path = marshmallow.fields.Str(dump_to="dockerfilePath", load_from="dockerfilePath")
     worker_registry_username = marshmallow.fields.Str(dump_to="workerRegistryUsername")
     worker_registry_password = marshmallow.fields.Str(dump_to="workerRegistryPassword")
 

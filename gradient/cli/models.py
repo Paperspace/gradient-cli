@@ -15,13 +15,16 @@ def models_group():
     "--experimentId",
     "experiment_id",
     help="Use to filter by experiment ID",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--projectId",
     "project_id",
     help="Use to filter by project ID",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @common.api_key_option
-def list_models(api_key, experiment_id, project_id):
+@common.options_file
+def list_models(api_key, experiment_id, project_id, options_file):
     command = models_commands.ListModelsCommand(api_key=api_key)
     command.execute(experiment_id=experiment_id, project_id=project_id)

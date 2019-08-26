@@ -1,0 +1,8 @@
+apiKey: some_key
+deploymentType: TFSERVING
+imageUrl: https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation
+instanceCount: 666
+machineType: G1
+modelId: some_model_id
+name: some_name
+vpc: true

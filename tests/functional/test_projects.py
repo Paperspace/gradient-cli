@@ -23,6 +23,8 @@ class TestListProjects(object):
 """
 
     BASIC_COMMAND_WITH_API_KEY = ["projects", "list", "--apiKey", "some_key"]
+    COMMAND_WITH_OPTIONS_FILE = ["projects", "list", "--optionsFile", ]  # path added in test
+
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
@@ -58,6 +60,21 @@ class TestListProjects(object):
                                        json=None,
                                        params=None)
         assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, projects_list_config_path):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [projects_list_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params=None)
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -125,13 +142,15 @@ class TestCreateProject(object):
     COMMAND_WHEN_ALL_PARAMETERS_WERE_USED = [
         "projects", "create",
         "--name", "some_name",
-        "--repositoryName", "mnist-sample",
-        "--repositoryUrl", "https://github.com/Paperspace/mnist-sample",
+        "--repositoryName", "some_repository_name",
+        "--repositoryUrl", "some_repository_url",
     ]
+    COMMAND_WITH_OPTIONS_FILE = ["projects", "create", "--optionsFile", ]  # path added in test
+
     EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED = {
-        "repoUrl": "https://github.com/Paperspace/mnist-sample",
+        "repoUrl": "some_repository_url",
         "name": "some_name",
-        "repoName": "mnist-sample",
+        "repoName": "some_repository_name",
     }
     EXPECTED_RESPONSE_JSON_WHEN_ALL_PARAMETERS_WERE_USED = {
         "name": "mnist",
@@ -225,6 +244,22 @@ class TestCreateProject(object):
 
         assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_options_from_yaml_file(self, post_patched, projects_create_config_path):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON, 201)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [projects_create_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
+                                             params=None,
+                                             files=None,
+                                             data=None)
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_proper_message_when_error_message_received(self, post_patched):

@@ -64,7 +64,7 @@ class ListJobLogs(ListResources):
         return "/jobs/logs"
 
     def yield_logs(self, job_id, line=0, limit=10000):
-        pass
+        return self._get_logs_generator(job_id, line, limit)
 
     def _get_logs_generator(self, job_id, line, limit):
         last_line_number = line

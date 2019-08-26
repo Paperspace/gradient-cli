@@ -68,22 +68,12 @@ class ListDeploymentsCommand(_DeploymentCommand):
         self._log_objects_list(instances)
 
     def _get_instances(self, use_vpc=False, **kwargs):
-        filters = self._get_request_json(kwargs)
         try:
-            instances = self.deployment_client.list(filters=filters, use_vpc=use_vpc)
+            instances = self.deployment_client.list(use_vpc=use_vpc, **kwargs)
         except api_sdk.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
         return instances
-
-    @staticmethod
-    def _get_request_json(kwargs):
-        filters = kwargs.get("filters")
-        if not filters:
-            return None
-
-        json_ = {"filter": {"where": {"and": [filters]}}}
-        return json_
 
     @staticmethod
     def _get_table_data(deployments):

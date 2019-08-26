@@ -1,6 +1,7 @@
 import collections
 
 import click
+from gradient.cli import common
 
 from gradient import exceptions, logger
 from gradient.api_sdk import DeploymentsClient
@@ -38,18 +39,21 @@ def get_deployment_client(api_key):
     type=ChoiceType(DEPLOYMENT_TYPES_MAP, case_sensitive=False),
     required=True,
     help="Model deployment type. Only TensorFlow models can currently be deployed",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--modelId",
     "model_id",
     required=True,
     help="ID of a trained model",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--name",
     "name",
     required=True,
     help="Human-friendly name for new model deployment",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--machineType",
@@ -57,12 +61,14 @@ def get_deployment_client(api_key):
     type=click.Choice(DEPLOYMENT_MACHINE_TYPES),
     required=True,
     help="Type of machine for new deployment",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--imageUrl",
     "image_url",
     required=True,
     help="Docker image for model serving",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--instanceCount",
@@ -70,15 +76,18 @@ def get_deployment_client(api_key):
     type=int,
     required=True,
     help="Number of machine instances",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--vpc",
     "use_vpc",
     type=bool,
     is_flag=True,
+    cls=common.OptionReadValueFromConfigFile,
 )
 @api_key_option
-def create_deployment(api_key, use_vpc, **kwargs):
+@common.options_file
+def create_deployment(api_key, use_vpc, options_file, **kwargs):
     del_if_value_is_none(kwargs)
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.CreateDeploymentCommand(deployment_client=deployment_client)
@@ -104,24 +113,28 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
     "state",
     type=ChoiceType(DEPLOYMENT_STATES_MAP, case_sensitive=False),
     help="Filter by deployment state",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--projectId",
     "project_id",
     help="Use to filter by project ID",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--modelId",
     "model_id",
     help="Use to filter by model ID",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @api_key_option
-def get_deployments_list(api_key, **filters):
+@common.options_file
+def get_deployments_list(api_key, options_file, **filters):
     del_if_value_is_none(filters)
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.ListDeploymentsCommand(deployment_client=deployment_client)
     try:
-        command.execute(filters=filters)
+        command.execute(**filters)
     except exceptions.ApplicationError as e:
         logger.Logger().error(e)
 
@@ -132,15 +145,18 @@ def get_deployments_list(api_key, **filters):
     "id_",
     required=True,
     help="Deployment ID",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--vpc",
     "use_vpc",
     type=bool,
     is_flag=True,
+    cls=common.OptionReadValueFromConfigFile,
 )
 @api_key_option
-def start_deployment(id_, use_vpc, api_key=None):
+@common.options_file
+def start_deployment(id_, use_vpc, options_file, api_key=None):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.StartDeploymentCommand(deployment_client=deployment_client)
     command.execute(deployment_id=id_, use_vpc=use_vpc)
@@ -152,15 +168,18 @@ def start_deployment(id_, use_vpc, api_key=None):
     "id_",
     required=True,
     help="Deployment ID",
+    cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--vpc",
     "use_vpc",
     type=bool,
     is_flag=True,
+    cls=common.OptionReadValueFromConfigFile,
 )
 @api_key_option
-def stop_deployment(id_, use_vpc, api_key=None):
+@common.options_file
+def stop_deployment(id_, use_vpc, options_file, api_key=None):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.StopDeploymentCommand(deployment_client=deployment_client)
     command.execute(deployment_id=id_, use_vpc=use_vpc)

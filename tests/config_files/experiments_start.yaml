@@ -1,0 +1,4 @@
+apiKey: some_key
+id: some-id
+logs: true
+vpc: true
