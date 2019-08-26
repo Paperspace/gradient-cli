@@ -11,7 +11,7 @@ from gradient.cli import cli_types
 
 OPTIONS_FILE_OPTION_NAME = "optionsFile"
 OPTIONS_FILE_PARAMETER_NAME = "options_file"
-OPTIONS_DUMP_FILE_OPTION_NAME = "optionsFileTemplate"
+OPTIONS_DUMP_FILE_OPTION_NAME = "createOptionsFile"
 
 
 def del_if_value_is_none(dict_, del_all_falsy=False):
@@ -125,12 +125,14 @@ def options_file(f):
             "--" + OPTIONS_FILE_OPTION_NAME,
             OPTIONS_FILE_PARAMETER_NAME,
             help="Path to YAML file with predefined options",
+            type=click.Path(exists=True, resolve_path=True)
         ),
         click.option(
             "--" + OPTIONS_DUMP_FILE_OPTION_NAME,
             callback=generate_options_template,
             expose_value=False,
-            help="Generate template options file"
+            help="Generate template options file",
+            type=click.Path(writable=True, resolve_path=True)
         )
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
