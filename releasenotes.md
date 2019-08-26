@@ -1,5 +1,12 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.3.0a2
+## New features
+* Added support for reading options from file to all commands
+* Renamed `--optionsFileTemplate` to `--createOptionsFile`
+### Fixes
+* Fixed URL to logs of jobs
+
 # Release Notes for 0.3.0a1
 ### New features
 * Added --optionFile to read options from YAML file
