@@ -2,7 +2,8 @@ import time
 
 import terminaltables
 
-from gradient.commands import common
+from gradient import api_sdk
+from gradient.commands import common, BaseCommand
 from gradient.exceptions import BadResponseError
 
 
@@ -24,22 +25,22 @@ class _MachinesCommandBase(common.CommandBase):
                 self.logger.error(error_msg)
 
 
-class CheckAvailabilityCommand(_MachinesCommandBase):
-    def execute(self, region, machine_type):
-        params = {"region": region,
-                  "machineType": machine_type}
-        response = self.api.get("machines/getAvailability/", params=params)
-        self._log_message(response,
-                          "Machine available: {available}",
-                          "Unknown error while checking machine availability")
+class GetMachinesClientMixin(object):
+    def _get_client(self, api_key, logger):
+        client = api_sdk.MachinesClient(api_key=api_key, logger=logger)
+        return client
 
 
-class CreateMachineCommand(_MachinesCommandBase):
+class CheckAvailabilityCommand(GetMachinesClientMixin, BaseCommand):
+    def execute(self, machine_type, region):
+        is_available = self.client.is_available(machine_type, region)
+        self.logger.log("Machine available: {}".format(is_available))
+
+
+class CreateMachineCommand(GetMachinesClientMixin, BaseCommand):
     def execute(self, kwargs):
-        response = self.api.post("/machines/createSingleMachinePublic/", json=kwargs)
-        self._log_message(response,
-                          "New machine created with id: {id}",
-                          "Unknown error while creating machine")
+        handle = self.client.create(**kwargs)
+        self.logger.log("New machine created with id: {}".format(handle))
 
 
 class UpdateMachineCommand(_MachinesCommandBase):

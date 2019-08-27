@@ -3,7 +3,7 @@ import collections
 import click
 from gradient.cli import common
 
-from gradient import constants
+from gradient import constants, logger
 from gradient.api_sdk.clients import http_client
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
@@ -51,9 +51,8 @@ check_machine_availability_help = "Get machine availability for the given region
 @api_key_option
 @common.options_file
 def check_machine_availability(region, machine_type, api_key, options_file):
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.CheckAvailabilityCommand(api=machines_api)
-    command.execute(region, machine_type)
+    command = machines_commands.CheckAvailabilityCommand(api_key=api_key)
+    command.execute(machine_type, region)
 
 
 create_machine_help = "Create a new Paperspace virtual machine. If you are using an individual account, you will " \
@@ -74,7 +73,7 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 )
 @click.option(
     "--machineType",
-    "machineType",
+    "machine_type",
     type=click.Choice(constants.MACHINE_TYPES),
     required=True,
     help="Machine type",
@@ -90,7 +89,7 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 )
 @click.option(
     "--billingType",
-    "billingType",
+    "billing_type",
     type=click.Choice(constants.BILLING_TYPES),
     required=True,
     help="Either 'monthly' or 'hourly' billing",
@@ -98,21 +97,21 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 )
 @click.option(
     "--machineName",
-    "machineName",
+    "machine_name",
     required=True,
     help="A memorable name for this machine",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--templateId",
-    "templateId",
+    "template_id",
     required=True,
     help="Template id of the template to use for creating this machine",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--assignPublicIp",
-    "assignPublicIp",
+    "assign_public_ip",
     is_flag=True,
     default=None,  # None is used so it can be filtered with `del_if_value_is_none` when flag was not set
     help="Assign a new public ip address on machine creation. Cannot be used with dynamicPublicIp",
@@ -120,7 +119,7 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 )
 @click.option(
     "--dynamicPublicIp",
-    "dynamicPublicIp",
+    "dynamic_public_ip",
     is_flag=True,
     default=None,  # None is used so it can be filtered with `del_if_value_is_none` when flag was not set
     help="Assigns a new public ip address on machine start and releases it from the account on machine stop. "
@@ -129,19 +128,19 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 )
 @click.option(
     "--networkId",
-    "networkId",
+    "network_id",
     help="If creating on a specific network, specify its id",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--teamId",
-    "teamId",
+    "team_id",
     help="If creating the machine for a team, specify the team id",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--userId",
-    "userId",
+    "user_id",
     help="If assigning to an existing user other than yourself, specify the user id (mutually exclusive with email, "
          "password, firstName, lastName)",
     cls=common.OptionReadValueFromConfigFile,
@@ -161,26 +160,26 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 )
 @click.option(
     "--firstName",
-    "firstName",
+    "first_name",
     help="If creating a new user, specify their first name (mutually exclusive with userId)",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--lastName",
-    "lastName",
+    "last_name",
     help="If creating a new user, specify their last name (mutually exclusive with userId)",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--notificationEmail",
-    "notificationEmail",
+    "notification_email",
     help="Send a notification to this email address when complete",
     callback=validate_email,
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--scriptId",
-    "scriptId",
+    "script_id",
     help="The script id of a script to be run on startup. See the Script Guide for more info on using scripts",
     cls=common.OptionReadValueFromConfigFile,
 )
@@ -189,21 +188,20 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 def create_machine(api_key, options_file, **kwargs):
     del_if_value_is_none(kwargs)
 
-    assign_public_ip = kwargs.get("assignPublicIp")
-    dynamic_public_ip = kwargs.get("dynamicPublicIp")
+    assign_public_ip = kwargs.get("assign_public_ip")
+    dynamic_public_ip = kwargs.get("dynamic_public_ip")
     validate_mutually_exclusive([assign_public_ip], [dynamic_public_ip],
                                 "--assignPublicIp cannot be used with --dynamicPublicIp")
 
-    user_id = kwargs.get("userId")
+    user_id = kwargs.get("user_id")
     email = kwargs.get("email")
     password = kwargs.get("password")
-    first_name = kwargs.get("firstName")
-    last_name = kwargs.get("lastName")
+    first_name = kwargs.get("first_name")
+    last_name = kwargs.get("last_name")
     validate_mutually_exclusive([user_id], [email, password, first_name, last_name],
                                 "--userId is mutually exclusive with --email, --password, --firstName and --lastName")
 
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.CreateMachineCommand(api=machines_api)
+    command = machines_commands.CreateMachineCommand(api_key=api_key, logger=logger.Logger())
     command.execute(kwargs)
 
 

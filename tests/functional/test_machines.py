@@ -30,7 +30,7 @@ class TestMachineAvailability(object):
     EXPECTED_STDOUT = "Machine available: True\n"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
-    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
 
     @mock.patch("gradient.cli.machines.http_client.requests.get")
     def test_should_send_get_request_and_print_valid_message_when_availability_command_was_used(self, get_patched):
@@ -115,7 +115,7 @@ class TestMachineAvailability(object):
                                        headers=self.EXPECTED_HEADERS,
                                        json=None,
                                        params=self.PARAMS)
-        assert result.output == "Unknown error while checking machine availability\n"
+        assert result.output == "Failed to fetch data\n"
         assert result.exit_code == 0
 
 
@@ -195,7 +195,7 @@ class TestCreateMachine(object):
     EXPECTED_STDOUT = "New machine created with id: psclbvqpc\n"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
-    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Invalid API token\n"
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to create resource: Invalid API token\n"
 
     RESPONSE_JSON_WITH_WRONG_TEMPLATE_ID = {
         "error": {
@@ -224,13 +224,13 @@ class TestCreateMachine(object):
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
                                        params=None,
                                        files=None,
                                        data=None)
-        assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.machines.http_client.requests.post")
@@ -311,7 +311,7 @@ class TestCreateMachine(object):
                                         params=None,
                                         files=None,
                                         data=None)
-        assert result.output == "templateId not found\n"
+        assert result.output == "Failed to create resource: templateId not found\n"
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.machines.http_client.requests.post")
@@ -327,7 +327,7 @@ class TestCreateMachine(object):
                                         params=None,
                                         files=None,
                                         data=None)
-        assert result.output == "Unknown error while creating machine\n"
+        assert result.output == "Failed to create resource\n"
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.machines.http_client.requests.post")

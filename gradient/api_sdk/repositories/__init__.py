@@ -4,5 +4,6 @@ from .experiments import ListExperiments, GetExperiment, ListExperimentLogs, Sta
 from .hyperparameter import CreateHyperparameterJob, CreateAndStartHyperparameterJob, ListHyperparameterJobs, \
     GetHyperparameterTuningJob, StartHyperparameterTuningJob
 from .jobs import ListJobs, ListResources, ListJobArtifacts, ListJobLogs
+from .machines import CheckMachineAvailability, CreateMachine
 from .models import ListModels
 from .projects import CreateProject, ListProjects
