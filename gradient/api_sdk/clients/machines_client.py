@@ -76,6 +76,13 @@ class MachinesClient(BaseClient):
         return handle
 
     def get(self, id):
+        """Get machine instance
+
+        :param str id: ID of a machine [required]
+
+        :return: Machine instance
+        :rtype: models.Machine
+        """
         repository = repositories.GetMachine(api_key=self.api_key, logger=self.logger)
         instance = repository.get(id=id)
         return instance
@@ -95,14 +102,29 @@ class MachinesClient(BaseClient):
         return handle
 
     def restart(self, id):
+        """Restart machine
+
+        :param str id: ID of a machine [required]
+        """
+
         repository = repositories.RestartMachine(api_key=self.api_key, logger=self.logger)
         repository.restart(id)
 
     def start(self, id):
+        """Start machine
+
+        :param str id: ID of a machine [required]
+        """
+
         repository = repositories.StartMachine(api_key=self.api_key, logger=self.logger)
         repository.start(id)
 
     def stop(self, id):
+        """Stop machine
+
+        :param str id: ID of a machine [required]
+        """
+
         repository = repositories.StopMachine(api_key=self.api_key, logger=self.logger)
         repository.stop(id)
 
@@ -117,6 +139,20 @@ class MachinesClient(BaseClient):
             auto_snapshot_save_count=None,
             dynamic_public_ip=None,
     ):
+        """Update machine instance
+
+        :param str id: Id of the machine to update  [required]
+        :param str name: New name for the machine
+        :param int shutdown_timeout_in_hours: Number of hours before machine is shutdown if no one is logged in
+                                              via the Paperspace client
+        :param bool shutdown_timeout_forces: Force shutdown at shutdown timeout, even if there is
+                                             a Paperspace client connection
+        :param bool perform_auto_snapshot: Perform auto snapshots
+        :param str auto_snapshot_frequency: One of 'hour', 'day', 'week', or None
+        :param int auto_snapshot_save_count: Number of snapshots to save
+        :param str dynamic_public_ip: If true, assigns a new public ip address on machine start and releases it
+                                      from the account on machine stop
+        """
         instance = models.Machine(
             name=name,
             dynamic_public_ip=dynamic_public_ip,
@@ -133,10 +169,10 @@ class MachinesClient(BaseClient):
     def get_utilization(self, id, billing_month):
         """
 
-        :param id:
-        :param billing_month:
+        :param id: ID of the machine
+        :param billing_month: Billing month in "YYYY-MM" format
 
-        :return:
+        :return: Machine utilization info
         :rtype: models.MachineUtilization
         """
         repository = repositories.GetMachineUtilization(api_key=self.api_key, logger=self.logger)
@@ -154,6 +190,13 @@ class MachinesClient(BaseClient):
         repository.delete(machine_id, release_public_ip=release_public_ip)
 
     def wait_for_state(self, machine_id, state, interval=5):
+        """Wait for defined machine state
+
+        :param str machine_id: ID of the machine
+        :param str state: State of machine to wait for
+        :param int interval: interval between polls
+        """
+
         repository = WaitForState(api_key=self.api_key, logger=self.logger)
         repository.wait_for_state(machine_id, state, interval)
 
@@ -186,30 +229,30 @@ class MachinesClient(BaseClient):
     ):
         """
 
-        :param str id:
-        :param str name:
-        :param str os:
-        :param int ram:
-        :param int cpus:
-        :param str gpu:
-        :param str storage_total:
-        :param str storage_used:
-        :param str usage_rate:
-        :param int shutdown_timeout_in_hours:
-        :param bool perform_auto_snapshot:
-        :param str auto_snapshot_frequency:
-        :param int auto_snapshot_save_count:
-        :param str agent_type:
-        :param datetime created_timestamp:
-        :param str state:
-        :param str updates_pending:
-        :param str network_id:
-        :param str private_ip_address:
-        :param str public_ip_address:
-        :param str region:
-        :param str user_id:
-        :param str team_id:
-        :param datetime last_run_timestamp:
+        :param str id: Optional machine id to match on
+        :param str name: Filter by machine name
+        :param str os: Filter by os used
+        :param int ram: Filter by machine RAM (in bytes)
+        :param int cpus: Filter by CPU count
+        :param str gpu: Filter by GPU type
+        :param str storage_total: Filter by total storage
+        :param str storage_used: Filter by storage used
+        :param str usage_rate: Filter by usage rate
+        :param int shutdown_timeout_in_hours: Filter by shutdown timeout
+        :param bool perform_auto_snapshot: Filter by performAutoSnapshot flag
+        :param str auto_snapshot_frequency: Filter by autoSnapshotFrequency flag
+        :param int auto_snapshot_save_count: Filter by auto shapshots count
+        :param str agent_type: Filter by agent type
+        :param datetime created_timestamp: Filter by date created
+        :param str state: Filter by state
+        :param str updates_pending: Filter by updates pending
+        :param str network_id: Filter by network ID
+        :param str private_ip_address: Filter by private IP address
+        :param str public_ip_address: Filter by public IP address
+        :param str region: Filter by region. One of {CA, NY2, AMS1}
+        :param str user_id: Filter by user ID
+        :param str team_id: Filter by team ID
+        :param str last_run_timestamp: Filter by last run date
 
         :return: List of machines
         :rtype: list[models.Machine]
