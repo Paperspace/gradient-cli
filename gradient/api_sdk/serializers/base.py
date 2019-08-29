@@ -11,10 +11,16 @@ class BaseSchema(marshmallow.Schema):
             if value is not None
         }
 
-    def get_instance(self, obj_dict):
+    def get_instance(self, obj_dict, many=False):
         if not self.MODEL:
             raise NotImplementedError
+        if not many:
+            return self._get_instance(obj_dict)
 
+        instances = [self._get_instance(obj_d) for obj_d in obj_dict]
+        return instances
+
+    def _get_instance(self, obj_dict):
         obj = self.load(obj_dict)
         instance = self.MODEL(**obj.data)
         return instance

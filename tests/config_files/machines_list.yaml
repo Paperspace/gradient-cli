@@ -3,8 +3,8 @@ apiKey: some_key
 autoSnapshotFrequency: hour
 autoSnapshotSaveCount: 2
 cpus: 8
-dtCreated: some_timestamp
-dtLastRun: some_other_timestamp
+dtCreated: "2017-09-23T05:55:00.000Z"
+dtLastRun: "2017-09-23T05:55:00.000Z"
 gpu: some_gpu
 machineId: some_id
 name: some_name

@@ -4,6 +4,6 @@ from .experiment import BaseExperimentSchema, MultiNodeExperimentSchema, SingleN
 from .hyperparameter import HyperparameterSchema
 from .job import JobSchema
 from .log import LogRowSchema
-from .machine import MachineSchema
+from .machine import MachineSchema, MachineSchemaForListing, MachineEventSchema
 from .model import Model
 from .project import Project

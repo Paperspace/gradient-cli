@@ -3,6 +3,6 @@ from .experiment import BaseExperiment, MultiNodeExperiment, SingleNodeExperimen
 from .hyperparameter import Hyperparameter
 from .job import Job
 from .log import LogRow
-from .machine import Machine
+from .machine import Machine, MachineEvent, MachineUtilization
 from .model import Model
 from .project import Project

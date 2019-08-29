@@ -160,31 +160,43 @@ class CreateResource(BaseRepository):
 
 
 @six.add_metaclass(abc.ABCMeta)
-class DeleteResource(BaseRepository):
-    VALIDATION_ERROR_MESSAGE = "Failed to delete resource"
-
-    def delete(self, id_, use_vpc=False, **kwargs):
-        url = self.get_request_url(id_=id_, use_vpc=use_vpc)
-
-        response = self.client.delete(url, json=kwargs.get("json"), params=kwargs.get("params"))
+class AlterResource(BaseRepository):
+    def _run(self, use_vpc=False, **kwargs):
+        url = self.get_request_url(use_vpc=use_vpc, **kwargs)
+        response = self._send(url, use_vpc=use_vpc, **kwargs)
         self._validate_response(response)
+        return response
 
-
-@six.add_metaclass(abc.ABCMeta)
-class StartResource(BaseRepository):
-    VALIDATION_ERROR_MESSAGE = "Unable to start instance"
-
-    def start(self, id_, use_vpc=False):
-        url = self.get_request_url(id_=id_, use_vpc=use_vpc)
-        response = self._send_start_request(url, id_, use_vpc=use_vpc)
-        self._validate_response(response)
-
-    def _send_start_request(self, url, id_, use_vpc=False):
+    def _send(self, url, use_vpc=False, **kwargs):
         client = self._get_client(use_vpc=use_vpc)
-        json_data = self._get_request_json({"id": id_})
+        json_data = self._get_request_json(kwargs)
         response = self._send_request(client, url, json_data=json_data)
         gradient_response = http_client.GradientResponse.interpret_response(response)
         return gradient_response
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response
+
+
+@six.add_metaclass(abc.ABCMeta)
+class DeleteResource(AlterResource):
+    VALIDATION_ERROR_MESSAGE = "Failed to delete resource"
+
+    def delete(self, id_, use_vpc=False, **kwargs):
+        self._run(id=id_, use_vpc=use_vpc, **kwargs)
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.delete(url, json=json_data)
+        return response
+
+
+@six.add_metaclass(abc.ABCMeta)
+class StartResource(AlterResource):
+    VALIDATION_ERROR_MESSAGE = "Unable to start instance"
+
+    def start(self, id_, use_vpc=False):
+        self._run(id=id_, use_vpc=use_vpc)
 
     def _send_request(self, client, url, json_data=None):
         response = client.put(url, json=json_data)
@@ -192,20 +204,11 @@ class StartResource(BaseRepository):
 
 
 @six.add_metaclass(abc.ABCMeta)
-class StopResource(BaseRepository):
+class StopResource(AlterResource):
     VALIDATION_ERROR_MESSAGE = "Unable to stop instance"
 
     def stop(self, id_, use_vpc=False):
-        url = self.get_request_url(id_=id_, use_vpc=use_vpc)
-        response = self._send_stop_request(url, id_, use_vpc=use_vpc)
-        self._validate_response(response)
-
-    def _send_stop_request(self, url, id_, use_vpc=False):
-        client = self._get_client(use_vpc=use_vpc)
-        json_data = self._get_request_json({"id": id_})
-        response = self._send_request(client, url, json_data=json_data)
-        gradient_response = http_client.GradientResponse.interpret_response(response)
-        return gradient_response
+        self._run(id=id_, use_vpc=use_vpc)
 
     def _send_request(self, client, url, json_data=None):
         response = client.put(url, json=json_data)

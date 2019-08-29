@@ -1,12 +1,12 @@
 from gradient.api_sdk import repositories, models
-from gradient.api_sdk.repositories.machines import CheckMachineAvailability
+from gradient.api_sdk.repositories.machines import CheckMachineAvailability, DeleteMachine, ListMachines, WaitForState
 from .base_client import BaseClient
 
 
 class MachinesClient(BaseClient):
     def create(
             self,
-            machine_name,
+            name,
             machine_type,
             region,
             size,
@@ -26,7 +26,7 @@ class MachinesClient(BaseClient):
     ):
         """Create new machine
 
-        :param str machine_name: A memorable name for this machine [required]
+        :param str name: A memorable name for this machine [required]
         :param str machine_type: Machine type  [required]
         :param str region: Name of the region  [required]
         :param str size: Storage size for the machine in GB [required]
@@ -52,7 +52,7 @@ class MachinesClient(BaseClient):
         """
 
         instance = models.Machine(
-            machine_name=machine_name,
+            name=name,
             machine_type=machine_type,
             region=region,
             size=size,
@@ -75,6 +75,11 @@ class MachinesClient(BaseClient):
         handle = repository.create(instance)
         return handle
 
+    def get(self, id):
+        repository = repositories.GetMachine(api_key=self.api_key, logger=self.logger)
+        instance = repository.get(id=id)
+        return instance
+
     def is_available(self, machine_type, region):
         """Check if specified machine is available in certain region
 
@@ -85,6 +90,156 @@ class MachinesClient(BaseClient):
         :rtype: bool
         s"""
 
-        repository = CheckMachineAvailability(self.api_key, self.logger)
+        repository = CheckMachineAvailability(api_key=self.api_key, logger=self.logger)
         handle = repository.get(machine_type=machine_type, region=region)
         return handle
+
+    def restart(self, id):
+        repository = repositories.RestartMachine(api_key=self.api_key, logger=self.logger)
+        repository.restart(id)
+
+    def start(self, id):
+        repository = repositories.StartMachine(api_key=self.api_key, logger=self.logger)
+        repository.start(id)
+
+    def stop(self, id):
+        repository = repositories.StopMachine(api_key=self.api_key, logger=self.logger)
+        repository.stop(id)
+
+    def update(
+            self,
+            id,
+            name=None,
+            shutdown_timeout_in_hours=None,
+            shutdown_timeout_forces=None,
+            perform_auto_snapshot=None,
+            auto_snapshot_frequency=None,
+            auto_snapshot_save_count=None,
+            dynamic_public_ip=None,
+    ):
+        instance = models.Machine(
+            name=name,
+            dynamic_public_ip=dynamic_public_ip,
+            shutdown_timeout_in_hours=shutdown_timeout_in_hours,
+            shutdown_timeout_forces=shutdown_timeout_forces,
+            perform_auto_snapshot=perform_auto_snapshot,
+            auto_snapshot_frequency=auto_snapshot_frequency,
+            auto_snapshot_save_count=auto_snapshot_save_count,
+        )
+
+        repository = repositories.UpdateMachine(api_key=self.api_key, logger=self.logger)
+        repository.update(id, instance)
+
+    def get_utilization(self, id, billing_month):
+        """
+
+        :param id:
+        :param billing_month:
+
+        :return:
+        :rtype: models.MachineUtilization
+        """
+        repository = repositories.GetMachineUtilization(api_key=self.api_key, logger=self.logger)
+        usage = repository.get(id=id, billing_month=billing_month)
+        return usage
+
+    def delete(self, machine_id, release_public_ip=False):
+        """Destroy machine with given ID
+
+        :param str machine_id: ID of the machine
+        :param bool release_public_ip: If the assigned public IP should be released
+        """
+
+        repository = DeleteMachine(api_key=self.api_key, logger=self.logger)
+        repository.delete(machine_id, release_public_ip=release_public_ip)
+
+    def wait_for_state(self, machine_id, state, interval=5):
+        repository = WaitForState(api_key=self.api_key, logger=self.logger)
+        repository.wait_for_state(machine_id, state, interval)
+
+    def list(
+            self,
+            id=None,
+            name=None,
+            os=None,
+            ram=None,
+            cpus=None,
+            gpu=None,
+            storage_total=None,
+            storage_used=None,
+            usage_rate=None,
+            shutdown_timeout_in_hours=None,
+            perform_auto_snapshot=None,
+            auto_snapshot_frequency=None,
+            auto_snapshot_save_count=None,
+            agent_type=None,
+            created_timestamp=None,
+            state=None,
+            updates_pending=None,
+            network_id=None,
+            private_ip_address=None,
+            public_ip_address=None,
+            region=None,
+            user_id=None,
+            team_id=None,
+            last_run_timestamp=None,
+    ):
+        """
+
+        :param str id:
+        :param str name:
+        :param str os:
+        :param int ram:
+        :param int cpus:
+        :param str gpu:
+        :param str storage_total:
+        :param str storage_used:
+        :param str usage_rate:
+        :param int shutdown_timeout_in_hours:
+        :param bool perform_auto_snapshot:
+        :param str auto_snapshot_frequency:
+        :param int auto_snapshot_save_count:
+        :param str agent_type:
+        :param datetime created_timestamp:
+        :param str state:
+        :param str updates_pending:
+        :param str network_id:
+        :param str private_ip_address:
+        :param str public_ip_address:
+        :param str region:
+        :param str user_id:
+        :param str team_id:
+        :param datetime last_run_timestamp:
+
+        :return: List of machines
+        :rtype: list[models.Machine]
+        """
+
+        repository = ListMachines(api_key=self.api_key, logger=self.logger)
+        machines = repository.list(
+            id=id,
+            name=name,
+            os=os,
+            ram=ram,
+            cpus=cpus,
+            gpu=gpu,
+            storage_total=storage_total,
+            storage_used=storage_used,
+            usage_rate=usage_rate,
+            shutdown_timeout_in_hours=shutdown_timeout_in_hours,
+            perform_auto_snapshot=perform_auto_snapshot,
+            auto_snapshot_frequency=auto_snapshot_frequency,
+            auto_snapshot_save_count=auto_snapshot_save_count,
+            agent_type=agent_type,
+            created_timestamp=created_timestamp,
+            state=state,
+            updates_pending=updates_pending,
+            network_id=network_id,
+            private_ip_address=private_ip_address,
+            public_ip_address=public_ip_address,
+            region=region,
+            user_id=user_id,
+            team_id=team_id,
+            last_run_timestamp=last_run_timestamp,
+        )
+        return machines
