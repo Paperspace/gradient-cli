@@ -156,7 +156,8 @@ class RunMultiNodeExperiment(CreateMultiNodeExperiment):
 class StartExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, StartResource):
     VALIDATION_ERROR_MESSAGE = "Failed to start experiment"
 
-    def get_request_url(self, id_, **_):
+    def get_request_url(self, **kwargs):
+        id_ = kwargs["id"]
         url = "/experiments/{}/start/".format(id_)
         return url
 
@@ -164,6 +165,7 @@ class StartExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, StartResour
 class StopExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, StopResource):
     VALIDATION_ERROR_MESSAGE = "Failed to stop experiment"
 
-    def get_request_url(self, id_, **_):
+    def get_request_url(self, **kwargs):
+        id_ = kwargs["id"]
         url = "/experiments/{}/stop/".format(id_)
         return url

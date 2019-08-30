@@ -1,233 +1,181 @@
-import time
+import pydoc
 
+import halo
 import terminaltables
 
-from gradient.commands import common
-from gradient.exceptions import BadResponseError
+from gradient import api_sdk
+from gradient.commands import common, BaseCommand
+from gradient.utils import get_terminal_lines
 
 
-class _MachinesCommandBase(common.CommandBase):
-    def _log_message(self, response, success_msg_template, error_msg):
-        if response.ok:
-            try:
-                handle = response.json()
-            except (ValueError, KeyError):
-                self.logger.log(success_msg_template)
-            else:
-                msg = success_msg_template.format(**handle)
-                self.logger.log(msg)
-        else:
-            try:
-                data = response.json()
-                self.logger.log_error_response(data)
-            except ValueError:
-                self.logger.error(error_msg)
+class GetMachinesClientMixin(object):
+    def _get_client(self, api_key, logger):
+        client = api_sdk.MachinesClient(api_key=api_key, logger=logger)
+        return client
 
 
-class CheckAvailabilityCommand(_MachinesCommandBase):
-    def execute(self, region, machine_type):
-        params = {"region": region,
-                  "machineType": machine_type}
-        response = self.api.get("machines/getAvailability/", params=params)
-        self._log_message(response,
-                          "Machine available: {available}",
-                          "Unknown error while checking machine availability")
+class CheckAvailabilityCommand(GetMachinesClientMixin, BaseCommand):
+    def execute(self, machine_type, region):
+        is_available = self.client.is_available(machine_type, region)
+        self.logger.log("Machine available: {}".format(is_available))
 
 
-class CreateMachineCommand(_MachinesCommandBase):
+class CreateMachineCommand(GetMachinesClientMixin, BaseCommand):
     def execute(self, kwargs):
-        response = self.api.post("/machines/createSingleMachinePublic/", json=kwargs)
-        self._log_message(response,
-                          "New machine created with id: {id}",
-                          "Unknown error while creating machine")
+        handle = self.client.create(**kwargs)
+        self.logger.log("New machine created with id: {}".format(handle))
 
 
-class UpdateMachineCommand(_MachinesCommandBase):
+class UpdateMachineCommand(GetMachinesClientMixin, BaseCommand):
     def execute(self, machine_id, kwargs):
-        url = "/machines/{}/updateMachinePublic/".format(machine_id)
-        response = self.api.post(url, json=kwargs)
-        self._log_message(response,
-                          "Machine updated",
-                          "Unknown error while updating machine")
+        self.client.update(machine_id, **kwargs)
+        self.logger.log("Machine updated")
 
 
-class StartMachineCommand(_MachinesCommandBase):
-    def execute(self, machine_id):
-        url = "/machines/{}/start/".format(machine_id)
-        response = self.api.post(url)
-        self._log_message(response,
-                          "Machine started",
-                          "Unknown error while starting the machine")
+class StartMachineCommand(GetMachinesClientMixin, BaseCommand):
+    def execute(self, id):
+        self.client.start(id)
+        self.logger.log("Machine started")
 
 
-class StopMachineCommand(_MachinesCommandBase):
-    def execute(self, machine_id):
-        url = "/machines/{}/stop/".format(machine_id)
-        response = self.api.post(url)
-        self._log_message(response,
-                          "Machine stopped",
-                          "Unknown error while stopping the machine")
+class StopMachineCommand(GetMachinesClientMixin, BaseCommand):
+    def execute(self, id):
+        self.client.stop(id)
+        self.logger.log("Machine stopped")
 
 
-class RestartMachineCommand(_MachinesCommandBase):
-    def execute(self, machine_id):
-        url = "/machines/{}/restart/".format(machine_id)
-        response = self.api.post(url)
-        self._log_message(response,
-                          "Machine restarted",
-                          "Unknown error while restarting the machine")
+class RestartMachineCommand(GetMachinesClientMixin, BaseCommand):
+    def execute(self, id):
+        self.client.restart(id)
+        self.logger.log("Machine restarted")
 
 
-class ShowMachineCommand(_MachinesCommandBase):
-    def execute(self, machine_id):
-        params = {"machineId": machine_id}
-        response = self.api.get("/machines/getMachinePublic/", params=params)
+class ShowMachineCommand(GetMachinesClientMixin, common.BaseCommand):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
-        try:
-            data = response.json()
-            if not response.ok:
-                self.logger.log_error_response(data)
-                return
-        except (ValueError, KeyError) as e:
-            self.logger.error("Error while parsing response data: {}".format(e))
-        else:
-            table = self.make_details_table(data)
-            self.logger.log(table)
+    def execute(self, id_):
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            instance = self._get_instance(id_)
+
+        table_str = self._make_table(instance)
+        self.logger.log(table_str)
+
+    def _get_instance(self, id_):
+        """
+        :rtype: api_sdk.Machine
+        """
+        instance = self.client.get(id_)
+        return instance
+
+    def _make_table(self, machine):
+        """
+        :param api_sdk.Machine machine:
+        """
+        data = self._get_machine_table_data(machine)
+        ascii_table = terminaltables.AsciiTable(data)
+        table_string = ascii_table.table
+        return table_string
 
     @staticmethod
-    def make_details_table(machine):
+    def _get_machine_table_data(machine):
+        """
+        :param api_sdk.Machine machine:
+        """
         try:
-            last_event = machine["events"][-1]
+            last_event = machine.events[-1]
             last_event_string = "name:     {}\nstate:    {}\ncreated:  {}" \
-                .format(last_event.get("name"), last_event.get("state"), last_event.get("created"))
+                .format(last_event.name, last_event.state, last_event.created)
         except (KeyError, IndexError):
             last_event_string = None
 
         data = (
-            ("ID", machine.get("id")),
-            ("Name", machine.get("name")),
-            ("OS", machine.get("os")),
-            ("RAM", machine.get("ram")),
-            ("CPU", machine.get("cpus")),
-            ("GPU", machine.get("gpu")),
-            ("Storage Total", machine.get("storageTotal")),
-            ("Storage Used", machine.get("storageUsed")),
-            ("Usage Rate", machine.get("usageRate")),
-            ("Shutdown Timeout In Hours", machine.get("shutdownTimeoutInHours")),
-            ("Shutdown Timeout Forces", machine.get("shutdownTimeoutForces")),
-            ("Perform Auto Snapshot", machine.get("performAutoSnapshot")),
-            ("Auto snapshot frequency", machine.get("autoSnapshotFrequency")),
-            ("Auto Snapshot Save Count", machine.get("autoSnapshotSaveCount")),
-            ("Agent Type", machine.get("agentType")),
-            ("Created", machine.get("dtCreated")),
-            ("State", machine.get("state")),
-            ("Updates Pending", machine.get("updatesPending")),
-            ("Network ID", machine.get("networkId")),
-            ("Private IP Address", machine.get("privateIpAddress")),
-            ("Public IP Address", machine.get("publicIpAddress")),
-            ("Region", machine.get("region")),
-            ("Script ID", machine.get("scriptId")),
-            ("Last Run", machine.get("dtLastRun")),
-            ("Dynamic Public IP", machine.get("dynamicPublicIp")),
+            ("ID", machine.id),
+            ("Name", machine.name),
+            ("OS", machine.os),
+            ("RAM", machine.ram),
+            ("CPU", machine.cpus),
+            ("GPU", machine.gpu),
+            ("Storage Total", machine.storage_total),
+            ("Storage Used", machine.storage_used),
+            ("Usage Rate", machine.usage_rate),
+            ("Shutdown Timeout In Hours", machine.shutdown_timeout_in_hours),
+            ("Shutdown Timeout Forces", machine.shutdown_timeout_forces),
+            ("Perform Auto Snapshot", machine.perform_auto_snapshot),
+            ("Auto snapshot frequency", machine.auto_snapshot_frequency),
+            ("Auto Snapshot Save Count", machine.auto_snapshot_save_count),
+            ("Agent Type", machine.agent_type),
+            ("Created", machine.created_timestamp),
+            ("State", machine.state),
+            ("Updates Pending", machine.updates_pending),
+            ("Network ID", machine.network_id),
+            ("Private IP Address", machine.private_ip_address),
+            ("Public IP Address", machine.public_ip_address),
+            ("Region", machine.region),
+            ("Script ID", machine.script_id),
+            ("Last Run", machine.last_run_timestamp),
+            ("Dynamic Public IP", machine.dynamic_public_ip),
             ("Last event", last_event_string),
         )
-        ascii_table = terminaltables.AsciiTable(data)
-        table_string = ascii_table.table
-        return table_string
+        return data
 
 
-class ListMachinesCommand(common.ListCommand):
-    @property
-    def request_url(self):
-        return "/machines/getMachines/"
-
-    def _get_request_json(self, kwargs):
-        filters = kwargs.get("filters")
-        json_ = {"params": filters} if filters else None
-        return json_
+class ListMachinesCommand(GetMachinesClientMixin, common.ListCommandMixin, BaseCommand):
+    def _get_instances(self, kwargs):
+        instances = self.client.list(**kwargs)
+        return instances
 
     def _get_table_data(self, machines):
+        """
+        :param list[api_sdk.Machine] machines:
+        :return:
+        """
         data = [("ID", "Name", "OS", "CPU", "GPU", "RAM", "State", "Region")]
         for machine in machines:
-            id_ = machine.get("id")
-            name = machine.get("name")
-            os_ = machine.get("os")
-            cpus = machine.get("cpus")
-            gpu = machine.get("gpu")
-            ram = machine.get("ram")
-            state = machine.get("state")
-            region = machine.get("region")
+            id_ = machine.id
+            name = machine.name
+            os_ = machine.os
+            cpus = machine.cpus
+            gpu = machine.gpu
+            ram = machine.ram
+            state = machine.state
+            region = machine.region
+
             data.append((id_, name, os_, cpus, gpu, ram, state, region))
 
         return data
 
-
-class DestroyMachineCommand(_MachinesCommandBase):
-    def execute(self, machine_id, release_public_ip):
-        json_ = {"releasePublicIp": release_public_ip} if release_public_ip else None
-        url = "/machines/{}/destroyMachine/".format(machine_id)
-        response = self.api.post(url, json=json_)
-        self._log_message(response,
-                          "Machine successfully destroyed",
-                          "Unknown error while destroying the machine")
+    def _get_request_json(self, kwargs):
+        json_ = {"params": kwargs} if kwargs else None
+        return json_
 
 
-class ShowMachineUtilisationCommand(_MachinesCommandBase):
+class DestroyMachineCommand(GetMachinesClientMixin, BaseCommand):
+    def execute(self, machine_type, region):
+        self.client.delete(machine_type, region)
+        self.logger.log("Machine successfully destroyed")
+
+
+class ShowMachineUtilizationCommand(GetMachinesClientMixin, BaseCommand):
     def execute(self, machine_id, billing_month):
-        params = {"machineId": machine_id,
-                  "billingMonth": billing_month}
-        response = self.api.get("machines/getUtilization/", params=params)
-
-        try:
-            data = response.json()
-            if not response.ok:
-                self.logger.log_error_response(data)
-                return
-        except (ValueError, KeyError) as e:
-            self.logger.error("Error while parsing response data: {}".format(e))
-        else:
-            table = self.make_details_table(data)
-            self.logger.log(table)
+        usage = self.client.get_utilization(machine_id, billing_month)
+        table = self.make_details_table(usage)
+        self.logger.log(table)
 
     @staticmethod
-    def make_details_table(machine):
+    def make_details_table(usage):
         data = (
-            ("ID", machine.get("machineId")),
-            ("Machine Seconds used", machine["utilization"].get("secondsUsed")),
-            ("Machine Hourly rate", machine["utilization"].get("hourlyRate")),
-            ("Storage Seconds Used", machine["storageUtilization"].get("secondsUsed")),
-            ("Storage Monthly Rate", machine["storageUtilization"].get("monthlyRate")),
+            ("ID", usage.machine_id),
+            ("Machine Seconds used", usage.machine_seconds_used),
+            ("Machine Hourly rate", usage.machine_hourly_rate),
+            ("Storage Seconds Used", usage.storage_seconds_used),
+            ("Storage Monthly Rate", usage.storage_monthly_rate),
         )
         ascii_table = terminaltables.AsciiTable(data)
         table_string = ascii_table.table
         return table_string
 
 
-class WaitForMachineStateCommand(_MachinesCommandBase):
+class WaitForMachineStateCommand(GetMachinesClientMixin, BaseCommand):
     def execute(self, machine_id, state, interval=5):
-        while True:
-            try:
-                current_state = self._get_machine_state(machine_id)
-            except BadResponseError as e:
-                self.logger.error(e)
-                return
-            else:
-                if current_state == state:
-                    break
-
-            time.sleep(interval)
-
-        self.logger.log("Machine state: {}".format(current_state))
-
-    def _get_machine_state(self, machine_id):
-        params = {"machineId": machine_id}
-        response = self.api.get("/machines/getMachinePublic/", params=params)
-        try:
-            json_ = response.json()
-            if not response.ok:
-                self.logger.log_error_response(json_)
-                raise BadResponseError("Error while reading machine state")
-            state = json_.get("state")
-        except (ValueError, AttributeError):
-            raise BadResponseError("Unknown error while reading machine state")
-        return state
+        self.client.wait_for_state(machine_id, state, interval)
+        self.logger.log("Machine state: {}".format(state))

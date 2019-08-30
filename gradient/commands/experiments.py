@@ -180,9 +180,6 @@ class GetExperimentCommand(BaseExperimentCommand):
                                              constants.ExperimentType.MPI_MULTI_NODE):
             return self._get_multi_node_data(experiment)
 
-        if experiment.experiment_type_id == constants.ExperimentType.HYPERPARAMETER_TUNING:
-            return self._get_hyperparameter_data(experiment)
-
         raise ValueError("Wrong experiment type: {}".format(experiment.experiment_type_id))
 
     @staticmethod
@@ -235,12 +232,6 @@ class GetExperimentCommand(BaseExperimentCommand):
             ("Workspace URL", experiment.workspace_url),
         )
         return data
-
-    @staticmethod
-    def _get_hyperparameter_data(experiment):
-        """
-        :param api_sdk.Hyperparameter experiment:
-        """
 
 
 class ExperimentLogsCommand(BaseExperimentCommand):

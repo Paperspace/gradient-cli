@@ -1,16 +1,14 @@
 import collections
 
 import click
-from gradient.cli import common
 
-from gradient import constants
-from gradient.api_sdk.clients import http_client
+from gradient import constants, logger
+from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
 from gradient.cli.validators import validate_email, validate_mutually_exclusive
 from gradient.commands import machines as machines_commands
-from gradient.config import config
 
 REGIONS_MAP = collections.OrderedDict(
     (
@@ -51,9 +49,8 @@ check_machine_availability_help = "Get machine availability for the given region
 @api_key_option
 @common.options_file
 def check_machine_availability(region, machine_type, api_key, options_file):
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.CheckAvailabilityCommand(api=machines_api)
-    command.execute(region, machine_type)
+    command = machines_commands.CheckAvailabilityCommand(api_key=api_key)
+    command.execute(machine_type, region)
 
 
 create_machine_help = "Create a new Paperspace virtual machine. If you are using an individual account, you will " \
@@ -74,7 +71,7 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 )
 @click.option(
     "--machineType",
-    "machineType",
+    "machine_type",
     type=click.Choice(constants.MACHINE_TYPES),
     required=True,
     help="Machine type",
@@ -90,7 +87,7 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 )
 @click.option(
     "--billingType",
-    "billingType",
+    "billing_type",
     type=click.Choice(constants.BILLING_TYPES),
     required=True,
     help="Either 'monthly' or 'hourly' billing",
@@ -98,21 +95,21 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 )
 @click.option(
     "--machineName",
-    "machineName",
+    "name",
     required=True,
     help="A memorable name for this machine",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--templateId",
-    "templateId",
+    "template_id",
     required=True,
     help="Template id of the template to use for creating this machine",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--assignPublicIp",
-    "assignPublicIp",
+    "assign_public_ip",
     is_flag=True,
     default=None,  # None is used so it can be filtered with `del_if_value_is_none` when flag was not set
     help="Assign a new public ip address on machine creation. Cannot be used with dynamicPublicIp",
@@ -120,7 +117,7 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 )
 @click.option(
     "--dynamicPublicIp",
-    "dynamicPublicIp",
+    "dynamic_public_ip",
     is_flag=True,
     default=None,  # None is used so it can be filtered with `del_if_value_is_none` when flag was not set
     help="Assigns a new public ip address on machine start and releases it from the account on machine stop. "
@@ -129,19 +126,19 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 )
 @click.option(
     "--networkId",
-    "networkId",
+    "network_id",
     help="If creating on a specific network, specify its id",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--teamId",
-    "teamId",
+    "team_id",
     help="If creating the machine for a team, specify the team id",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--userId",
-    "userId",
+    "user_id",
     help="If assigning to an existing user other than yourself, specify the user id (mutually exclusive with email, "
          "password, firstName, lastName)",
     cls=common.OptionReadValueFromConfigFile,
@@ -161,26 +158,26 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 )
 @click.option(
     "--firstName",
-    "firstName",
+    "first_name",
     help="If creating a new user, specify their first name (mutually exclusive with userId)",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--lastName",
-    "lastName",
+    "last_name",
     help="If creating a new user, specify their last name (mutually exclusive with userId)",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--notificationEmail",
-    "notificationEmail",
+    "notification_email",
     help="Send a notification to this email address when complete",
     callback=validate_email,
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--scriptId",
-    "scriptId",
+    "script_id",
     help="The script id of a script to be run on startup. See the Script Guide for more info on using scripts",
     cls=common.OptionReadValueFromConfigFile,
 )
@@ -189,21 +186,20 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 def create_machine(api_key, options_file, **kwargs):
     del_if_value_is_none(kwargs)
 
-    assign_public_ip = kwargs.get("assignPublicIp")
-    dynamic_public_ip = kwargs.get("dynamicPublicIp")
+    assign_public_ip = kwargs.get("assign_public_ip")
+    dynamic_public_ip = kwargs.get("dynamic_public_ip")
     validate_mutually_exclusive([assign_public_ip], [dynamic_public_ip],
                                 "--assignPublicIp cannot be used with --dynamicPublicIp")
 
-    user_id = kwargs.get("userId")
+    user_id = kwargs.get("user_id")
     email = kwargs.get("email")
     password = kwargs.get("password")
-    first_name = kwargs.get("firstName")
-    last_name = kwargs.get("lastName")
+    first_name = kwargs.get("first_name")
+    last_name = kwargs.get("last_name")
     validate_mutually_exclusive([user_id], [email, password, first_name, last_name],
                                 "--userId is mutually exclusive with --email, --password, --firstName and --lastName")
 
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.CreateMachineCommand(api=machines_api)
+    command = machines_commands.CreateMachineCommand(api_key=api_key, logger=logger.Logger())
     command.execute(kwargs)
 
 
@@ -233,8 +229,7 @@ destroy_machine_help = "Destroy the machine with the given id. When this action 
 @api_key_option
 @common.options_file
 def destroy_machine(machine_id, release_public_ip, api_key, options_file):
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.DestroyMachineCommand(api=machines_api)
+    command = machines_commands.DestroyMachineCommand(api_key=api_key, logger=logger.Logger())
     command.execute(machine_id, release_public_ip)
 
 
@@ -253,7 +248,7 @@ list_machines_help = "List information about all machines available to either th
 )
 @click.option(
     "--machineId",
-    "machineId",
+    "id",
     help="Optional machine id to match on",
     cls=common.OptionReadValueFromConfigFile,
 )
@@ -291,59 +286,59 @@ list_machines_help = "List information about all machines available to either th
 )
 @click.option(
     "--storageTotal",
-    "storageTotal",
+    "storage_total",
     help="Filter by total storage",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--storageUsed",
-    "storageUsed",
+    "storage_used",
     help="Filter by storage used",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--usageRate",
-    "usageRate",
+    "usage_rate",
     help="Filter by usage rate",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--shutdownTimeoutInHours",
-    "shutdownTimeoutInHours",
+    "shutdown_timeout_in_hours",
     type=int,
     help="Filter by shutdown timeout",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--performAutoSnapshot",
-    "performAutoSnapshot",
+    "perform_auto_snapshot",
     type=bool,
     help="Filter by performAutoSnapshot flag",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--autoSnapshotFrequency",
-    "autoSnapshotFrequency",
+    "auto_snapshot_frequency",
     type=click.Choice(["hour", "day", "week"], case_sensitive=False),
     help="Filter by autoSnapshotFrequency flag",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--autoSnapshotSaveCount",
-    "autoSnapshotSaveCount",
+    "auto_snapshot_save_count",
     type=int,
     help="Filter by auto shapshots count",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--agentType",
-    "agentType",
+    "agent_type",
     help="Filter by agent type",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--dtCreated",
-    "dtCreated",
+    "created_timestamp",
     help="Filter by date created",
     cls=common.OptionReadValueFromConfigFile,
 )
@@ -355,25 +350,25 @@ list_machines_help = "List information about all machines available to either th
 )
 @click.option(
     "--updatesPending",
-    "updatesPending",
+    "updates_pending",
     help="Filter by updatesPending",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--networkId",
-    "networkId",
+    "network_id",
     help="Filter by network ID",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--privateIpAddress",
-    "privateIpAddress",
+    "private_ip_address",
     help="Filter by private IP address",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--publicIpAddress",
-    "publicIpAddress",
+    "public_ip_address",
     help="Filter by public IP address",
     cls=common.OptionReadValueFromConfigFile,
 )
@@ -386,19 +381,19 @@ list_machines_help = "List information about all machines available to either th
 )
 @click.option(
     "--userId",
-    "userId",
+    "user_id",
     help="Filter by user ID",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--teamId",
-    "teamId",
+    "team_id",
     help="Filter by team ID",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--dtLastRun",
-    "dtLastRun",
+    "last_run_timestamp",
     help="Filter by last run date",
     cls=common.OptionReadValueFromConfigFile,
 )
@@ -411,10 +406,9 @@ def list_machines(api_key, params, options_file, **kwargs):
     validate_mutually_exclusive(params.values(), kwargs.values(),
                                 "You can use either --params dictionary or single filter arguments")
 
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.ListMachinesCommand(api=machines_api)
+    command = machines_commands.ListMachinesCommand(api_key=api_key, logger=logger.Logger())
     filters = params or kwargs
-    command.execute(filters=filters)
+    command.execute(**filters)
 
 
 restart_machine_help = "Restart an individual machine. If the machine is already restarting, this action will " \
@@ -433,8 +427,7 @@ restart_machine_help = "Restart an individual machine. If the machine is already
 @api_key_option
 @common.options_file
 def restart_machine(machine_id, api_key, options_file):
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.RestartMachineCommand(api=machines_api)
+    command = machines_commands.RestartMachineCommand(api_key=api_key, logger=logger.Logger())
     command.execute(machine_id)
 
 
@@ -452,8 +445,7 @@ show_machine_details_help = "Show machine information for the machine with the g
 @api_key_option
 @common.options_file
 def show_machine_details(machine_id, api_key, options_file):
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.ShowMachineCommand(api=machines_api)
+    command = machines_commands.ShowMachineCommand(api_key=api_key)
     command.execute(machine_id)
 
 
@@ -470,48 +462,48 @@ update_machine_help = "Update attributes of a machine"
 )
 @click.option(
     "--machineName",
-    "machineName",
+    "name",
     help="New name for the machine",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--shutdownTimeoutInHours",
-    "shutdownTimeoutInHours",
+    "shutdown_timeout_in_hours",
     help="Number of hours before machine is shutdown if no one is logged in via the Paperspace client",
     type=int,
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--shutdownTimeoutForces",
-    "shutdownTimeoutForces",
+    "shutdown_timeout_forces",
     help="Force shutdown at shutdown timeout, even if there is a Paperspace client connection",
     type=bool,
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--performAutoSnapshot",
-    "performAutoSnapshot",
+    "perform_auto_snapshot",
     help="Perform auto snapshots",
     type=bool,
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--autoSnapshotFrequency",
-    "autoSnapshotFrequency",
+    "auto_snapshot_frequency",
     help="One of 'hour', 'day', 'week', or null",
     type=click.Choice(["hour", "day", "week"], case_sensitive=False),
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--autoSnapshotSaveCount",
-    "autoSnapshotSaveCount",
+    "auto_snapshot_save_count",
     help="Number of snapshots to save",
     type=int,
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
     "--dynamicPublicIp",
-    "dynamicPublicIp",
+    "dynamic_public_ip",
     help="If true, assigns a new public ip address on machine start and releases it from the account on machine stop",
     type=bool,
     cls=common.OptionReadValueFromConfigFile,
@@ -520,8 +512,7 @@ update_machine_help = "Update attributes of a machine"
 @common.options_file
 def update_machine(machine_id, api_key, options_file, **kwargs):
     del_if_value_is_none(kwargs)
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.UpdateMachineCommand(api=machines_api)
+    command = machines_commands.UpdateMachineCommand(api_key=api_key)
     command.execute(machine_id, kwargs)
 
 
@@ -541,8 +532,7 @@ start_machine_help = "Start up an individual machine. If the machine is already 
 @api_key_option
 @common.options_file
 def start_machine(machine_id, api_key, options_file):
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.StartMachineCommand(api=machines_api)
+    command = machines_commands.StartMachineCommand(api_key=api_key)
     command.execute(machine_id)
 
 
@@ -562,8 +552,7 @@ stop_machine_help = "Stop an individual machine. If the machine is already stopp
 @api_key_option
 @common.options_file
 def stop_machine(machine_id, api_key, options_file):
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.StopMachineCommand(api=machines_api)
+    command = machines_commands.StopMachineCommand(api_key=api_key)
     command.execute(machine_id)
 
 
@@ -589,8 +578,7 @@ show_machine_utilization_help = "Get machine utilization data for the machine wi
 @api_key_option
 @common.options_file
 def show_machine_utilization(machine_id, billing_month, api_key, options_file):
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.ShowMachineUtilisationCommand(api=machines_api)
+    command = machines_commands.ShowMachineUtilizationCommand(api_key=api_key)
     command.execute(machine_id, billing_month)
 
 
@@ -618,6 +606,5 @@ wait_for_machine_state_help = "Wait for the machine with the given id to enter a
 @api_key_option
 @common.options_file
 def wait_for_machine_state(machine_id, state, api_key, options_file):
-    machines_api = http_client.API(config.CONFIG_HOST, api_key=api_key)
-    command = machines_commands.WaitForMachineStateCommand(api=machines_api)
+    command = machines_commands.WaitForMachineStateCommand(api_key=api_key)
     command.execute(machine_id, state)

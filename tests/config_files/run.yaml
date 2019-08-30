@@ -1,5 +1,5 @@
 apiKey: some_key
-cluster: null
+#cluster: null  # commented to check if missing key does not break the app
 clusterId: some_cluster_id
 command: some command
 container: some_container

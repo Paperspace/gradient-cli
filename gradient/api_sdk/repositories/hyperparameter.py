@@ -48,6 +48,7 @@ class GetHyperparameterTuningJob(GetBaseExperimentApiUrlMixin, ParseExperimentDi
 class StartHyperparameterTuningJob(GetBaseExperimentApiUrlMixin, StartResource):
     VALIDATION_ERROR_MESSAGE = "Failed to start hyperparameter tuning job"
 
-    def get_request_url(self, id_, **_):
+    def get_request_url(self, **kwargs):
+        id_ = kwargs["id"]
         url = "/hyperopt/{}/start/".format(id_)
         return url

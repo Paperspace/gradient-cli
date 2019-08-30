@@ -222,28 +222,28 @@ class HyperparameterJobsClient(base_client.BaseClient):
         handle = repository.create(hyperparameter)
         return handle
 
-    def get(self, id_):
+    def get(self, id):
         """Get Hyperparameter tuning job's instance
 
-        :param str id_: Hyperparameter job id
+        :param str id: Hyperparameter job id
 
         :returns: instance of Hyperparameter
         :rtype: models.Hyperparameter
         """
 
         repository = repositories.GetHyperparameterTuningJob(api_key=self.api_key, logger=self.logger)
-        job = repository.get(id=id_)
+        job = repository.get(id=id)
         return job
 
-    def start(self, id_):
+    def start(self, id):
         """Start existing hyperparameter tuning job
 
-        :param str id_: Hyperparameter job id
+        :param str id: Hyperparameter job id
         :raises: exceptions.GradientSdkError
         """
 
         repository = repositories.StartHyperparameterTuningJob(api_key=self.api_key, logger=self.logger)
-        repository.start(id_=id_)
+        repository.start(id_=id)
 
     def list(self):
         """Get a list of hyperparameter tuning jobs
