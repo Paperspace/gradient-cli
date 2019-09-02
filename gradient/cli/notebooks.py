@@ -86,3 +86,17 @@ def notebooks_group():
 def create(api_key, options_file, **notebook):
     command = notebooks.CreateNotebookCommand(api_key=api_key)
     command.execute(**notebook)
+
+
+@notebooks_group.command("delete", help="Delete existing notebook")
+@click.option(
+    "--id",
+    "id_",
+    help="Notebook ID",
+    cls=common.OptionReadValueFromConfigFile,
+)
+@common.api_key_option
+@common.options_file
+def delete(id_, api_key, options_file):
+    command = notebooks.DeleteNotebookCommand(api_key=api_key)
+    command.execute(id_=id_)

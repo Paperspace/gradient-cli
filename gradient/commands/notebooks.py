@@ -22,3 +22,13 @@ class CreateNotebookCommand(BaseNotebookCommand):
             notebook_id = self.client.create(**kwargs)
 
         self.logger.log("Created new notebook with id: {}".format(notebook_id))
+
+
+class DeleteNotebookCommand(BaseNotebookCommand):
+    SPINNER_MESSAGE = "Deleting notebook"
+
+    def execute(self, id_):
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
+            self.client.delete(id_)
+
+        self.logger.log("Notebook deleted")

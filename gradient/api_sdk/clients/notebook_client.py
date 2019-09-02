@@ -52,3 +52,11 @@ class NotebooksClient(BaseClient):
         repository = repositories.CreateNotebook(api_key=self.api_key, logger=self.logger)
         handle = repository.create(notebook)
         return handle
+
+    def delete(self, id):
+        """Delete existing notebook
+
+        :param str id: Notebook ID
+        """
+        resource = repositories.DeleteNotebook(api_key=self.api_key, logger=self.logger)
+        resource.delete(id)
