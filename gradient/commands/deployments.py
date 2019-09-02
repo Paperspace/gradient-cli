@@ -7,7 +7,6 @@ from halo import halo
 
 from gradient import version, logger as gradient_logger, api_sdk, exceptions
 from gradient.api_sdk.clients import http_client
-from gradient.commands import common
 from gradient.config import config
 from gradient.utils import get_terminal_lines
 
@@ -15,25 +14,6 @@ default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
                    "ps_client_name": "gradient-cli",
                    "ps_client_version": version.version}
 deployments_api = http_client.API(config.CONFIG_HOST, headers=default_headers)
-
-
-class _DeploymentCommandBase(common.CommandBase):
-    def _log_message(self, response, success_msg_template, error_msg):
-        if response.ok:
-            try:
-                j = response.json()
-                handle = j["deployment"]
-            except (ValueError, KeyError):
-                self.logger.error(success_msg_template)
-            else:
-                msg = success_msg_template.format(**handle)
-                self.logger.log(msg)
-        else:
-            try:
-                data = response.json()
-                self.logger.log_error_response(data)
-            except ValueError:
-                self.logger.error(error_msg)
 
 
 @six.add_metaclass(abc.ABCMeta)

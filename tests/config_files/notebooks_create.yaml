@@ -1,0 +1,12 @@
+apiKey: some_key
+clusterId: '3'
+containerId: null
+containerName: some_name
+containerUser: some_container_user
+defaultEntrypoint: some_entrypoint
+isPreemptible: true
+name: some_notebook_name
+registryPassword: some_password
+registryUsername: some_username
+shutdownTimeout: 8.0
+vmTypeId: '25'

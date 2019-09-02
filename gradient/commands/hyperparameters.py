@@ -6,28 +6,9 @@ import six
 import terminaltables
 
 from gradient import api_sdk, exceptions
-from gradient.commands import common
 from gradient.commands.common import BaseCommand, ListCommandMixin
 from gradient.commands.experiments import BaseCreateExperimentCommandMixin
 from gradient.utils import get_terminal_lines
-
-
-class HyperparametersCommandBase(common.CommandBase):
-    def _log_message(self, response, success_msg_template, error_msg):
-        if response.ok:
-            try:
-                json_ = response.json()
-            except (ValueError, KeyError):
-                self.logger.log(success_msg_template)
-            else:
-                msg = success_msg_template.format(**json_)
-                self.logger.log(msg)
-        else:
-            try:
-                data = response.json()
-                self.logger.log_error_response(data)
-            except ValueError:
-                self.logger.error(error_msg)
 
 
 @six.add_metaclass(abc.ABCMeta)

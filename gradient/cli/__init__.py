@@ -9,6 +9,7 @@ import gradient.cli.hyperparameters
 import gradient.cli.jobs
 import gradient.cli.machines
 import gradient.cli.models
+import gradient.cli.notebooks
 import gradient.cli.projects
 import gradient.cli.run
 

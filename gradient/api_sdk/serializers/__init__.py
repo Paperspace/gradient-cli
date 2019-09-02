@@ -6,4 +6,5 @@ from .job import JobSchema
 from .log import LogRowSchema
 from .machine import MachineSchema, MachineSchemaForListing, MachineEventSchema
 from .model import Model
+from .notebook import NotebookSchema
 from .project import Project
