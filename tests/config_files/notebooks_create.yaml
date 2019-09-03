@@ -1,7 +1,7 @@
 apiKey: some_key
-clusterId: '3'
-containerId: null
-containerName: some_name
+clusterId: some_cluster_id
+containerId: 123
+containerName: null
 containerUser: some_container_user
 defaultEntrypoint: some_entrypoint
 isPreemptible: true

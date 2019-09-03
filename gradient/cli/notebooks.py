@@ -10,10 +10,10 @@ def notebooks_group():
     pass
 
 
-@notebooks_group.command("create", help="Create new notebook")
+@notebooks_group.command("create", help="Create new notebook", hidden=True)
 @click.option(
     "--vmTypeId",
-    "vp_type_id",
+    "vm_type_id",
     required=True,
     help="Type of Virtual Machine",
     cls=common.OptionReadValueFromConfigFile,
@@ -21,8 +21,22 @@ def notebooks_group():
 @click.option(
     "--containerId",
     "container_id",
-    # required=True,
+    type=int,
+    required=True,
     help="Container ID",
+    cls=common.OptionReadValueFromConfigFile,
+)
+@click.option(
+    "--clusterId",
+    "cluster_id",
+    required=True,
+    help="Cluster ID",
+    cls=common.OptionReadValueFromConfigFile,
+)
+@click.option(
+    "--containerName",
+    "container_name",
+    help="Container name",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
@@ -35,12 +49,6 @@ def notebooks_group():
     "--name",
     "name",
     help="Notebook name",
-    cls=common.OptionReadValueFromConfigFile,
-)
-@click.option(
-    "--clusterId",
-    "cluster_id",
-    help="Cluster ID",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
@@ -83,7 +91,7 @@ def notebooks_group():
 )
 @common.api_key_option
 @common.options_file
-def create(api_key, options_file, **notebook):
+def create_notebook(api_key, options_file, **notebook):
     command = notebooks.CreateNotebookCommand(api_key=api_key)
     command.execute(**notebook)
 
@@ -97,6 +105,28 @@ def create(api_key, options_file, **notebook):
 )
 @common.api_key_option
 @common.options_file
-def delete(id_, api_key, options_file):
+def delete_notebook(id_, api_key, options_file):
     command = notebooks.DeleteNotebookCommand(api_key=api_key)
     command.execute(id_=id_)
+
+
+@notebooks_group.command("list", help="List notebooks", hidden=True)
+@common.api_key_option
+@common.options_file
+def list_notebooks(api_key, options_file):
+    command = notebooks.ListNotebooksCommand(api_key=api_key)
+    command.execute()
+
+
+@notebooks_group.command("show", help="Show notebook details")
+@click.option(
+    "--id",
+    "id",
+    help="Notebook ID",
+    cls=common.OptionReadValueFromConfigFile,
+)
+@common.api_key_option
+@common.options_file
+def show_notebook(id, api_key, options_file):
+    command = notebooks.ShowNotebookDetailsCommand(api_key=api_key)
+    command.execute(id)

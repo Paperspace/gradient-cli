@@ -39,7 +39,7 @@ class ListCommandMixin(object):
         pass
 
     @abc.abstractmethod
-    def _get_table_data(self, experiments):
+    def _get_table_data(self, objects):
         pass
 
     def _log_objects_list(self, objects):

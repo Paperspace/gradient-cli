@@ -7,20 +7,22 @@ from tests import MockResponse
 
 
 class TestNotebooksCreate(object):
-    URL = "https://api.paperspace.io/notebooks/createNotebook"
+    URL = "https://api.paperspace.io/notebooks/v2/createNotebook"
     COMMAND = [
         "notebooks",
         "create",
         "--vmTypeId", "25",
-        "--containerName", "some_name",
+        "--containerId", "123",
+        "--clusterId", "some_cluster_id"
     ]
-    EXPECTED_REQUEST_JSON = {"vmTypeId": "25", "containerName": "some_name", "containerId": None}
+    EXPECTED_REQUEST_JSON = {"vmTypeId": "25", "containerId": 123, "clusterId": "some_cluster_id"}
     EXPECTED_RESPONSE_JSON = {
         "handle": "some_id",
         "notebookToken": None,
         "jobId": 20163,
         "isPublic": False,
         "id": 1811,
+        "containerId": 123,
     }
     EXPECTED_STDOUT = """Created new notebook with id: some_id\n"""
 
@@ -28,7 +30,8 @@ class TestNotebooksCreate(object):
         "notebooks",
         "create",
         "--vmTypeId", "25",
-        "--containerName", "some_name",
+        "--containerId", "123",
+        "--clusterId", "some_cluster_id",
         "--apiKey", "some_key",
     ]
 
@@ -36,9 +39,9 @@ class TestNotebooksCreate(object):
         "notebooks",
         "create",
         "--vmTypeId", "25",
-        "--containerName", "some_name",
+        "--containerId", "123",
+        "--clusterId", "some_cluster_id",
         "--name", "some_notebook_name",
-        "--clusterId", "3",
         "--registryUsername", "some_username",
         "--registryPassword", "some_password",
         "--defaultEntrypoint", "some_entrypoint",
@@ -51,13 +54,12 @@ class TestNotebooksCreate(object):
         "containerUser": "some_container_user",
         "isPreemptible": True,
         "name": "some_notebook_name",
-        "containerName": "some_name",
         "vmTypeId": "25",
         "registryPassword": "some_password",
-        "clusterId": "3",
+        "clusterId": "some_cluster_id",
         "defaultEntrypoint": "some_entrypoint",
         "registryUsername": "some_username",
-        "containerId": None,
+        "containerId": 123,
     }
     COMMAND_WITH_OPTIONS_FILE_USED = ["notebooks", "create", "--optionsFile", ]  # path added in test
 
@@ -176,7 +178,7 @@ class TestNotebooksDelete(object):
         "--id", "some_id",
     ]
     EXPECTED_REQUEST_JSON = {"notebookId": "some_id"}
-    EXPECTED_STDOUT = """Notebook deleted\n"""
+    EXPECTED_STDOUT = "Notebook deleted\n"
 
     COMMAND_WITH_API_KEY_USED = [
         "notebooks",

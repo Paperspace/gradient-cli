@@ -5,11 +5,11 @@ from .. import repositories, models
 class NotebooksClient(BaseClient):
     def create(
             self,
-            vp_type_id,
+            vm_type_id,
             container_id,
+            cluster_id,
             container_name=None,
             name=None,
-            cluster_id=None,
             registry_username=None,
             registry_password=None,
             default_entrypoint=None,
@@ -19,11 +19,11 @@ class NotebooksClient(BaseClient):
     ):
         """Create new notebook
 
-        :param str vp_type_id:
-        :param str container_id:
+        :param str vm_type_id:
+        :param int container_id:
+        :param str cluster_id:
         :param str container_name:
         :param str name:
-        :param str cluster_id:
         :param str registry_username:
         :param str registry_password:
         :param str default_entrypoint:
@@ -36,11 +36,11 @@ class NotebooksClient(BaseClient):
         """
 
         notebook = models.Notebook(
-            vp_type_id=vp_type_id,
+            vm_type_id=vm_type_id,
             container_id=container_id,
+            cluster_id=cluster_id,
             container_name=container_name,
             name=name,
-            cluster_id=cluster_id,
             registry_username=registry_username,
             registry_password=registry_password,
             default_entrypoint=default_entrypoint,
@@ -53,10 +53,20 @@ class NotebooksClient(BaseClient):
         handle = repository.create(notebook)
         return handle
 
+    def get(self, id):
+        repository = repositories.GetNotebook(api_key=self.api_key, logger=self.logger)
+        notebook = repository.get(id=id)
+        return notebook
+
     def delete(self, id):
         """Delete existing notebook
 
         :param str id: Notebook ID
         """
-        resource = repositories.DeleteNotebook(api_key=self.api_key, logger=self.logger)
-        resource.delete(id)
+        repository = repositories.DeleteNotebook(api_key=self.api_key, logger=self.logger)
+        repository.delete(id)
+
+    def list(self):
+        repository = repositories.ListNotebooks(api_key=self.api_key, logger=self.logger)
+        notebooks = repository.list()
+        return notebooks
