@@ -63,7 +63,6 @@ def get_deployment_client(api_key):
 @click.option(
     "--machineType",
     "machine_type",
-    type=click.Choice(DEPLOYMENT_MACHINE_TYPES),
     required=True,
     help="Type of machine for new deployment",
     cls=common.OptionReadValueFromConfigFile,
