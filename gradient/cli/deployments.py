@@ -1,10 +1,10 @@
 import collections
 
 import click
-from gradient.cli import common
 
 from gradient import exceptions, logger
 from gradient.api_sdk import DeploymentsClient
+from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
@@ -23,8 +23,13 @@ DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
     )
 )
 
-DEPLOYMENT_MACHINE_TYPES = ("G1", "G6", "G12",
-                            "K80", "P100", "GV100")
+DEPLOYMENT_MACHINE_TYPES = (
+    "G1", "G6", "G12",
+    "K80", "P100", "GV100",
+    # VPC machine types
+    "c5.xlarge", "c5.4xlarge", "c5.12xlarge",
+    "p2.xlarge", "p3.2xlarge", "p3.16xlarge",
+)
 
 
 def get_deployment_client(api_key):

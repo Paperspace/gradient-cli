@@ -60,9 +60,6 @@ MACHINE_TYPES = (
     "Air", "Standard", "Pro", "Advanced", "GPU+",
     "P4000", "P5000", "P6000", "V100",
     "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10",
-    # VPC machine types
-    "c5.large", "c5.xlarge", "c5.2xlarge", "c5.4xlarge", "c5.12xlarge",
-    "p2.xlarge", "p3.2xlarge", "p3.16xlarge",
 )
 
 BILLING_TYPES = ["hourly", "monthly"]
