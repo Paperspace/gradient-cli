@@ -41,7 +41,6 @@ check_machine_availability_help = "Get machine availability for the given region
 @click.option(
     "--machineType",
     "machine_type",
-    type=click.Choice(constants.MACHINE_TYPES),
     required=True,
     help="Machine type",
     cls=common.OptionReadValueFromConfigFile,
@@ -72,7 +71,6 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
 @click.option(
     "--machineType",
     "machine_type",
-    type=click.Choice(constants.MACHINE_TYPES),
     required=True,
     help="Machine type",
     cls=common.OptionReadValueFromConfigFile,
