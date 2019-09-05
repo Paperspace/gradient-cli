@@ -22,22 +22,6 @@ class BaseJobCommand(BaseCommand):
         client = api_sdk.clients.JobsClient(api_key=api_key, logger=logger_)
         return client
 
-    def _log_message(self, response_data, is_response_ok, success_msg_template, error_msg):
-        if is_response_ok:
-            try:
-                handle = response_data
-            except (ValueError, KeyError):
-                self.logger.log(success_msg_template)
-            else:
-                msg = success_msg_template.format(**handle)
-                self.logger.log(msg)
-        else:
-            try:
-                data = response_data
-                self.logger.log_error_response(data)
-            except ValueError:
-                self.logger.error(error_msg)
-
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseCreateJobCommandMixin(object):

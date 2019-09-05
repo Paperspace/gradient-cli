@@ -9,20 +9,6 @@ class GetBaseJobApiUrlMixin(object):
         return config.config.CONFIG_HOST
 
 
-class ParseJobDictMixin(object):
-    @staticmethod
-    def _parse_object(job_dict, **kwargs):
-        """
-
-        :param job_dict:
-        :param kwargs:
-        :return:
-        :rtype: Job
-        """
-        job = JobSchema().get_instance(job_dict)
-        return job
-
-
 class ListJobs(GetBaseJobApiUrlMixin, ListResources):
 
     def get_request_url(self, **kwargs):

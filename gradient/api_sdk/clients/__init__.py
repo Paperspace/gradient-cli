@@ -4,5 +4,6 @@ from .hyperparameter_client import HyperparameterJobsClient
 from .job_client import JobsClient
 from .machines_client import MachinesClient
 from .model_client import ModelsClient
+from .notebook_client import NotebooksClient
 from .project_client import ProjectsClient
 from .sdk_client import SdkClient

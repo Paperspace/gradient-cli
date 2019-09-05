@@ -256,3 +256,31 @@ def run_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "run.yaml"
     return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def notebooks_create_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "notebooks_create.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def notebooks_delete_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "notebooks_delete.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def notebooks_show_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "notebooks_show.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def notebooks_list_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "notebooks_list.yaml"
+    return str(fixture_dir.resolve())

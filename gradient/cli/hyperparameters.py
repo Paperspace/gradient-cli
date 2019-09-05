@@ -10,13 +10,6 @@ from gradient.cli.experiments import common_experiments_create_options, get_work
 from gradient.commands import hyperparameters as hyperparameters_commands
 
 
-def add_use_docker_file_flag_if_used(ctx, param, value):
-    if value:
-        ctx.params["useDockerFile"] = True
-
-    return value
-
-
 @cli.group("hyperparameters", help="Manage hyperparameters", cls=ClickGroup)
 def hyperparameters_group():
     pass

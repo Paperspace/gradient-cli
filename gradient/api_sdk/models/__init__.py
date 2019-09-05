@@ -5,4 +5,5 @@ from .job import Job
 from .log import LogRow
 from .machine import Machine, MachineEvent, MachineUtilization
 from .model import Model
+from .notebook import Notebook
 from .project import Project
