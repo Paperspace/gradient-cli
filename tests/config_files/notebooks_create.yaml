@@ -1,5 +1,5 @@
 apiKey: some_key
-clusterId: some_cluster_id
+clusterId: 321
 containerId: 123
 containerName: null
 containerUser: some_container_user
@@ -9,4 +9,4 @@ name: some_notebook_name
 registryPassword: some_password
 registryUsername: some_username
 shutdownTimeout: 8.0
-vmTypeId: '25'
+vmTypeId: 25

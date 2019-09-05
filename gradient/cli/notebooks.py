@@ -10,10 +10,11 @@ def notebooks_group():
     pass
 
 
-@notebooks_group.command("create", help="Create new notebook", hidden=True)
+@notebooks_group.command("create", help="Create new notebook")
 @click.option(
     "--vmTypeId",
     "vm_type_id",
+    type=int,
     required=True,
     help="Type of Virtual Machine",
     cls=common.OptionReadValueFromConfigFile,
@@ -29,14 +30,9 @@ def notebooks_group():
 @click.option(
     "--clusterId",
     "cluster_id",
+    type=int,
     required=True,
     help="Cluster ID",
-    cls=common.OptionReadValueFromConfigFile,
-)
-@click.option(
-    "--containerName",
-    "container_name",
-    help="Container name",
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
@@ -86,6 +82,7 @@ def notebooks_group():
     "--isPreemptible",
     "is_preemptible",
     help="Is preemptible",
+    is_flag=True,
     type=bool,
     cls=common.OptionReadValueFromConfigFile,
 )
@@ -110,7 +107,7 @@ def delete_notebook(id_, api_key, options_file):
     command.execute(id_=id_)
 
 
-@notebooks_group.command("list", help="List notebooks", hidden=True)
+@notebooks_group.command("list", help="List notebooks")
 @common.api_key_option
 @common.options_file
 def list_notebooks(api_key, options_file):
@@ -118,7 +115,7 @@ def list_notebooks(api_key, options_file):
     command.execute()
 
 
-@notebooks_group.command("show", help="Show notebook details")
+@notebooks_group.command("show", help="Show notebook details", hidden=True)
 @click.option(
     "--id",
     "id",

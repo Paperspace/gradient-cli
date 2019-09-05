@@ -19,9 +19,9 @@ class NotebooksClient(BaseClient):
     ):
         """Create new notebook
 
-        :param str vm_type_id:
+        :param int vm_type_id:
         :param int container_id:
-        :param str cluster_id:
+        :param int cluster_id:
         :param str container_name:
         :param str name:
         :param str registry_username:
@@ -54,6 +54,11 @@ class NotebooksClient(BaseClient):
         return handle
 
     def get(self, id):
+        """Get Notebook
+
+        :param str id: Notebook ID
+        :rtype: models.Notebook
+        """
         repository = repositories.GetNotebook(api_key=self.api_key, logger=self.logger)
         notebook = repository.get(id=id)
         return notebook
@@ -67,6 +72,10 @@ class NotebooksClient(BaseClient):
         repository.delete(id)
 
     def list(self):
+        """Get list of Notebooks
+
+        :rtype: list[models.Notebook]
+        """
         repository = repositories.ListNotebooks(api_key=self.api_key, logger=self.logger)
         notebooks = repository.list()
         return notebooks
