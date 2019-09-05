@@ -56,9 +56,11 @@ class Region(object):
     AMS1 = "Europe (AMS1)"
 
 
-MACHINE_TYPES = ("Air", "Standard", "Pro", "Advanced", "GPU+",
-                 "P4000", "P5000", "P6000", "V100",
-                 "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10")
+MACHINE_TYPES = (
+    "Air", "Standard", "Pro", "Advanced", "GPU+",
+    "P4000", "P5000", "P6000", "V100",
+    "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10",
+)
 
 BILLING_TYPES = ["hourly", "monthly"]
 
