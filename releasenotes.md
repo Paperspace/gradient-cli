@@ -1,7 +1,14 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.3.0a3
+### New features
+* Added `machines` support to the SDK
+* Added `notebooks` command group with `create`, `delete` and `list` commands
+### Fixes
+* Removed hardcoded choices for `--machineType` option
+
 # Release Notes for 0.3.0a2
-## New features
+### New features
 * Added support for reading options from file to all commands
 * Renamed `--optionsFileTemplate` to `--createOptionsFile`
 ### Fixes
