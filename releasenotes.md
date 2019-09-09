@@ -1,5 +1,11 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.3.0a4
+### New features
+* Added `--clusterId` option `deployments create`
+### Fixes
+* Fixed message shown while creating deployment
+
 # Release Notes for 0.3.0a3
 ### New features
 * Added `machines` support to the SDK
