@@ -1,4 +1,5 @@
 apiKey: some_key
+clusterId: some_cluster_id
 deploymentType: TFSERVING
 imageUrl: https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation
 instanceCount: 666

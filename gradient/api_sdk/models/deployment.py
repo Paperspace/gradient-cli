@@ -60,3 +60,4 @@ class Deployment(object):
     deployment_type = attr.ib(type=str, default=None)
     machine_type = attr.ib(type=str, default=None)
     instance_count = attr.ib(type=int, default=None)
+    cluster_id = attr.ib(type=int, default=None)

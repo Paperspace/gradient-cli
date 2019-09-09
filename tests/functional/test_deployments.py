@@ -43,7 +43,20 @@ class TestDeploymentsCreate(object):
         "--instanceCount", "666",
         "--apiKey", "some_key",
     ]
+    COMMAND_WITH_ALL_OPTIONS = [
+        "deployments", "create",
+        "--deploymentType", "tfserving",
+        "--modelId", "some_model_id",
+        "--name", "some_name",
+        "--machineType", "G1",
+        "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--instanceCount", "666",
+        "--clusterId", "some_cluster_id",
+        "--apiKey", "some_key",
+        "--vpc",
+    ]
     COMMAND_WITH_OPTIONS_FILE = ["deployments", "create", "--optionsFile", ]  # path added in test
+
     BASIC_OPTIONS_REQUEST = {
         "machineType": u"G1",
         "name": u"some_name",
@@ -51,6 +64,15 @@ class TestDeploymentsCreate(object):
         "deploymentType": "Tensorflow Serving on K8s",
         "instanceCount": 666,
         "modelId": u"some_model_id",
+    }
+    ALL_OPTIONS_REQUEST = {
+        "machineType": u"G1",
+        "name": u"some_name",
+        "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "deploymentType": "Tensorflow Serving on K8s",
+        "instanceCount": 666,
+        "modelId": u"some_model_id",
+        "cluster": "some_cluster_id",
     }
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
     EXPECTED_STDOUT = "New deployment created with id: sadkfhlskdjh\n"
@@ -94,6 +116,22 @@ class TestDeploymentsCreate(object):
         assert result.exit_code == 0
 
     @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_create_deployment_with_all_options(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_ALL_OPTIONS)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.ALL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
     def test_should_send_different_api_key_when_api_key_parameter_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
 
@@ -120,7 +158,7 @@ class TestDeploymentsCreate(object):
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
-                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             json=self.ALL_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)

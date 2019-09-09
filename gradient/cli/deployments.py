@@ -83,6 +83,12 @@ def get_deployment_client(api_key):
     cls=common.OptionReadValueFromConfigFile,
 )
 @click.option(
+    "--clusterId",
+    "cluster_id",
+    help="Cluster ID",
+    cls=common.OptionReadValueFromConfigFile,
+)
+@click.option(
     "--vpc",
     "use_vpc",
     type=bool,

@@ -21,3 +21,4 @@ class DeploymentSchema(BaseSchema):
     deployment_type = marshmallow.fields.Str(required=True, dump_to="deploymentType", load_from="deploymentType")
     machine_type = marshmallow.fields.Str(required=True, dump_to="machineType", load_from="machineType")
     instance_count = marshmallow.fields.Int(required=True, dump_to="instanceCount", load_from="instanceCount")
+    cluster_id = marshmallow.fields.Str(dump_to="cluster", load_from="cluster")
