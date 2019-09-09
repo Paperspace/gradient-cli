@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.3.0a5
+### Fixes
+* Fixed exception when listing job artifacts
+
 # Release Notes for 0.3.0a4
 ### New features
 * Added `--clusterId` option `deployments create`
