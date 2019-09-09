@@ -301,13 +301,13 @@ class ArtifactsListCommand(BaseJobCommand):
             except api_sdk.GradientSdkError as e:
                 raise exceptions.ReceivingDataFailedError(e)
 
-        self._log_objects_list(instances)
+        self._log_objects_list(instances, kwargs)
 
-    def _get_table_data(self, artifacts):
+    def _get_table_data(self, artifacts, kwargs):
         columns = ['Files']
-        if self.kwargs.get('size'):
+        if kwargs.get('size'):
             columns.append('Size (in bytes)')
-        if self.kwargs.get('links'):
+        if kwargs.get('links'):
             columns.append('URL')
 
         data = [tuple(columns)]
@@ -320,12 +320,12 @@ class ArtifactsListCommand(BaseJobCommand):
             data.append(tuple(row))
         return data
 
-    def _log_objects_list(self, objects):
+    def _log_objects_list(self, objects, kwargs):
         if not objects:
             self.logger.warning("No data found")
             return
 
-        table_data = self._get_table_data(objects)
+        table_data = self._get_table_data(objects, kwargs)
         table_str = self._make_table(table_data)
         if len(table_str.splitlines()) > get_terminal_lines():
             pydoc.pager(table_str)
