@@ -29,7 +29,7 @@ class _DeploymentCommand(object):
 
 class CreateDeploymentCommand(_DeploymentCommand):
     def execute(self, use_vpc=False, **kwargs):
-        with halo.Halo(text="Creating new experiment", spinner="dots"):
+        with halo.Halo(text="Creating new deployment", spinner="dots"):
             try:
                 deployment_id = self.deployment_client.create(use_vpc=use_vpc, **kwargs)
             except api_sdk.GradientSdkError as e:
