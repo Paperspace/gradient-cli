@@ -1,5 +1,31 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.3.0
+##### Note: this list includes all changes made in alpha releases since 0.2.3
+### New features
+* Introduced Python SDK package
+* Added `ClusterID` function to support new VPCs
+* Hyperparameter private registry and custom container functions added \
+`--hyperparameterServerContainer` \
+`--hyperparameterServerRegistryPassword` \
+`--hyperparameterServerRegistryUsername`
+* Automated documentation generation based on sphinx
+* Updated documentation and docstrings for SDK based functions
+* Improved `--help` functions
+* Added support for reading options from file to all commands
+* Renamed `--optionsFileTemplate` to `--createOptionsFile`
+* Added `machines` support to the SDK
+* Added `notebooks` command group with `create`, `delete` and `list` commands
+* Added `--clusterId` option `deployments create`
+* Added coloured options tags ([required], etc.)
+* Showing deployment state in deployments list
+### Fixes
+* Added support for missing isPreemptible option to the SDK
+* Fixed URL to logs of jobs
+* Removed hardcoded choices for `--machineType` option
+* Fixed message shown while creating deployment
+* Fixed exception when listing job artifacts
+
 # Release Notes for 0.3.0a5
 ### Fixes
 * Fixed exception when listing job artifacts
