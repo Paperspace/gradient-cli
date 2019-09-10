@@ -36,14 +36,14 @@ check_machine_availability_help = "Get machine availability for the given region
     type=ChoiceType(REGIONS_MAP, case_sensitive=False),
     required=True,
     help="Name of the region",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--machineType",
     "machine_type",
     required=True,
     help="Machine type",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -66,14 +66,14 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
     type=ChoiceType(REGIONS_MAP, case_sensitive=False),
     required=True,
     help="Name of the region",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--machineType",
     "machine_type",
     required=True,
     help="Machine type",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--size",
@@ -81,7 +81,7 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
     type=int,
     required=True,
     help="Storage size for the machine in GB",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--billingType",
@@ -89,21 +89,21 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
     type=click.Choice(constants.BILLING_TYPES),
     required=True,
     help="Either 'monthly' or 'hourly' billing",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--machineName",
     "name",
     required=True,
     help="A memorable name for this machine",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--templateId",
     "template_id",
     required=True,
     help="Template id of the template to use for creating this machine",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--assignPublicIp",
@@ -111,7 +111,7 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
     is_flag=True,
     default=None,  # None is used so it can be filtered with `del_if_value_is_none` when flag was not set
     help="Assign a new public ip address on machine creation. Cannot be used with dynamicPublicIp",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--dynamicPublicIp",
@@ -120,64 +120,64 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
     default=None,  # None is used so it can be filtered with `del_if_value_is_none` when flag was not set
     help="Assigns a new public ip address on machine start and releases it from the account on machine stop. "
          "Cannot be used with assignPublicIp",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--networkId",
     "network_id",
     help="If creating on a specific network, specify its id",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--teamId",
     "team_id",
     help="If creating the machine for a team, specify the team id",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--userId",
     "user_id",
     help="If assigning to an existing user other than yourself, specify the user id (mutually exclusive with email, "
          "password, firstName, lastName)",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--email",
     "email",
     help="If creating a new user for this machine, specify their email address (mutually exclusive with userId)",
     callback=validate_email,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--password",
     "password",
     help="If creating a new user, specify their password (mutually exclusive with userId)",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--firstName",
     "first_name",
     help="If creating a new user, specify their first name (mutually exclusive with userId)",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--lastName",
     "last_name",
     help="If creating a new user, specify their last name (mutually exclusive with userId)",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--notificationEmail",
     "notification_email",
     help="Send a notification to this email address when complete",
     callback=validate_email,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--scriptId",
     "script_id",
     help="The script id of a script to be run on startup. See the Script Guide for more info on using scripts",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -215,14 +215,14 @@ destroy_machine_help = "Destroy the machine with the given id. When this action 
     "machine_id",
     required=True,
     help="The id of the machine to destroy",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--releasePublicIp",
     "release_public_ip",
     is_flag=True,
     help="releases any assigned public ip address for the machine; defaults to false",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -242,158 +242,158 @@ list_machines_help = "List information about all machines available to either th
     "params",
     type=json_string,
     help="JSON used to filter machines. Use either this or a combination of following options",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--machineId",
     "id",
     help="Optional machine id to match on",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--name",
     "name",
     help="Filter by machine name",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--os",
     "os",
     help="Filter by os used",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--ram",
     "ram",
     type=int,
     help="Filter by machine RAM (in bytes)",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--cpus",
     "cpus",
     type=int,
     help="Filter by CPU count",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--gpu",
     "gpu",
     help="Filter by GPU type",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--storageTotal",
     "storage_total",
     help="Filter by total storage",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--storageUsed",
     "storage_used",
     help="Filter by storage used",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--usageRate",
     "usage_rate",
     help="Filter by usage rate",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--shutdownTimeoutInHours",
     "shutdown_timeout_in_hours",
     type=int,
     help="Filter by shutdown timeout",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--performAutoSnapshot",
     "perform_auto_snapshot",
     type=bool,
     help="Filter by performAutoSnapshot flag",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--autoSnapshotFrequency",
     "auto_snapshot_frequency",
     type=click.Choice(["hour", "day", "week"], case_sensitive=False),
     help="Filter by autoSnapshotFrequency flag",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--autoSnapshotSaveCount",
     "auto_snapshot_save_count",
     type=int,
     help="Filter by auto shapshots count",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--agentType",
     "agent_type",
     help="Filter by agent type",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--dtCreated",
     "created_timestamp",
     help="Filter by date created",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--state",
     "state",
     help="Filter by state",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--updatesPending",
     "updates_pending",
     help="Filter by updatesPending",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--networkId",
     "network_id",
     help="Filter by network ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--privateIpAddress",
     "private_ip_address",
     help="Filter by private IP address",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--publicIpAddress",
     "public_ip_address",
     help="Filter by public IP address",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--region",
     "region",
     type=ChoiceType(REGIONS_MAP, case_sensitive=False),
     help="Filter by region",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--userId",
     "user_id",
     help="Filter by user ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--teamId",
     "team_id",
     help="Filter by team ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--dtLastRun",
     "last_run_timestamp",
     help="Filter by last run date",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -420,7 +420,7 @@ restart_machine_help = "Restart an individual machine. If the machine is already
     "machine_id",
     help="Id of the machine to restart",
     required=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -438,7 +438,7 @@ show_machine_details_help = "Show machine information for the machine with the g
     "machine_id",
     help="Id of the machine to show",
     required=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -456,55 +456,55 @@ update_machine_help = "Update attributes of a machine"
     "machine_id",
     help="Id of the machine to update",
     required=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--machineName",
     "name",
     help="New name for the machine",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--shutdownTimeoutInHours",
     "shutdown_timeout_in_hours",
     help="Number of hours before machine is shutdown if no one is logged in via the Paperspace client",
     type=int,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--shutdownTimeoutForces",
     "shutdown_timeout_forces",
     help="Force shutdown at shutdown timeout, even if there is a Paperspace client connection",
     type=bool,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--performAutoSnapshot",
     "perform_auto_snapshot",
     help="Perform auto snapshots",
     type=bool,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--autoSnapshotFrequency",
     "auto_snapshot_frequency",
     help="One of 'hour', 'day', 'week', or null",
     type=click.Choice(["hour", "day", "week"], case_sensitive=False),
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--autoSnapshotSaveCount",
     "auto_snapshot_save_count",
     help="Number of snapshots to save",
     type=int,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--dynamicPublicIp",
     "dynamic_public_ip",
     help="If true, assigns a new public ip address on machine start and releases it from the account on machine stop",
     type=bool,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -525,7 +525,7 @@ start_machine_help = "Start up an individual machine. If the machine is already 
     "machine_id",
     help="Id of the machine to start",
     required=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -545,7 +545,7 @@ stop_machine_help = "Stop an individual machine. If the machine is already stopp
     "machine_id",
     help="Id of the machine to start",
     required=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -564,14 +564,14 @@ show_machine_utilization_help = "Get machine utilization data for the machine wi
     "machine_id",
     help="Id of the machine to start",
     required=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--billingMonth",
     "billing_month",
     required=True,
     help="Month in YYYY-MM format",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -591,7 +591,7 @@ wait_for_machine_state_help = "Wait for the machine with the given id to enter a
     "machine_id",
     help="Id of the machine to start",
     required=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--state",
@@ -599,7 +599,7 @@ wait_for_machine_state_help = "Wait for the machine with the given id to enter a
     help="Name of the state to wait for",
     type=click.Choice(["off", "serviceready", "ready"], case_sensitive=False),
     required=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file

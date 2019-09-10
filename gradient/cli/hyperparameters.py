@@ -22,42 +22,42 @@ def common_hyperparameter_create_options(f):
             "tuning_command",
             required=True,
             help="Tuning command",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--workerContainer",
             "worker_container",
             required=True,
             help="Worker container",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--workerContainerUser",
             "worker_container_user",
             required=False,
             help="Worker container user",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--workerMachineType",
             "worker_machine_type",
             required=True,
             help="Worker machine type",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--hyperparameterServerMachineType",
             "hyperparameter_server_machine_type",
             required=False,
             help="Hyperparameter Server machine type",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--workerCommand",
             "worker_command",
             required=True,
             help="Worker command",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--workerCount",
@@ -65,7 +65,7 @@ def common_hyperparameter_create_options(f):
             required=True,
             type=int,
             help="Worker count",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--workerUseDockerfile",
@@ -74,49 +74,49 @@ def common_hyperparameter_create_options(f):
             is_flag=True,
             default=False,
             help="Flag: use dockerfile",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--workerDockerfilePath",
             "dockerfile_path",
             help="Path to ",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--workerRegistryUsername",
             "worker_registry_username",
             help="Worker registry username",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--workerRegistryPassword",
             "worker_registry_password",
             help="Worker registry password",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--hyperparameterServerRegistryUsername",
             "hyperparameter_server_registry_username",
             help="Hyperparameter server registry username",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--hyperparameterServerRegistryPassword",
             "hyperparameter_server_registry_password",
             help="Hyperparameter server registry password",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--hyperparameterServerContainer",
             "hyperparameter_server_container",
             help="Hyperparameter server container",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
         click.option(
             "--hyperparameterServerContainerUser",
             "hyperparameter_server_container_user",
             help="Hyperparameter server container user",
-            cls=common.OptionReadValueFromConfigFile,
+            cls=common.GradientOption,
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
@@ -167,7 +167,7 @@ def list_hyperparameters(api_key, options_file):
     "--id",
     "id_",
     required=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @common.api_key_option
 @common.options_file
@@ -181,7 +181,7 @@ def get_hyperparameter_details(api_key, id_, options_file):
     "--id",
     "id_",
     required=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @common.api_key_option
 @common.options_file

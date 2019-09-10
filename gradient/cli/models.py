@@ -15,13 +15,13 @@ def models_group():
     "--experimentId",
     "experiment_id",
     help="Use to filter by experiment ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--projectId",
     "project_id",
     help="Use to filter by project ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @common.api_key_option
 @common.options_file

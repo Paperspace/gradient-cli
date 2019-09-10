@@ -21,24 +21,24 @@ from gradient.constants import RunMode
     "--python-command",
     "mode",
     flag_value=RunMode.RUN_MODE_PYTHON_COMMAND,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "-m",
     "--module",
     "mode",
     flag_value=RunMode.RUN_MODE_PYTHON_MODULE,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "-s",
     "--shell",
     "mode",
     flag_value=RunMode.RUN_MODE_SHELL_COMMAND,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @common_jobs_create_options
-@click.argument("script", nargs=-1, required=True, cls=common.ArgumentReadValueFromConfigFile)
+@click.argument("script", nargs=-1, required=True, cls=common.GradientArgument)
 @common.api_key_option
 @common.options_file
 def run(api_key, options_file, **kwargs):

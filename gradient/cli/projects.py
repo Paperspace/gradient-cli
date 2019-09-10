@@ -25,19 +25,19 @@ def list_projects(api_key, options_file):
     "name",
     required=True,
     help="Name of new project",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--repositoryName",
     "repository_name",
     help="Name of the repository",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--repositoryUrl",
     "repository_url",
     help="URL to the repository",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @common.api_key_option
 @common.options_file
