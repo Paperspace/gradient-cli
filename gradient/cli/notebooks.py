@@ -17,7 +17,7 @@ def notebooks_group():
     type=int,
     required=True,
     help="Type of Virtual Machine",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--containerId",
@@ -25,7 +25,7 @@ def notebooks_group():
     type=int,
     required=True,
     help="Container ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--clusterId",
@@ -33,50 +33,50 @@ def notebooks_group():
     type=int,
     required=True,
     help="Cluster ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--containerName",
     "container_name",
     help="Container name",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--name",
     "name",
     help="Notebook name",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--registryUsername",
     "registry_username",
     help="Registry username",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--registryPassword",
     "registry_password",
     help="Registry password",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--defaultEntrypoint",
     "default_entrypoint",
     help="Default entrypoint",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--containerUser",
     "container_user",
     help="Container user",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--shutdownTimeout",
     "shutdown_timeout",
     help="Shutdown timeout in hours",
     type=float,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--isPreemptible",
@@ -84,7 +84,7 @@ def notebooks_group():
     help="Is preemptible",
     is_flag=True,
     type=bool,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @common.api_key_option
 @common.options_file
@@ -98,7 +98,7 @@ def create_notebook(api_key, options_file, **notebook):
     "--id",
     "id_",
     help="Notebook ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @common.api_key_option
 @common.options_file
@@ -120,7 +120,7 @@ def list_notebooks(api_key, options_file):
     "--id",
     "id",
     help="Notebook ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @common.api_key_option
 @common.options_file

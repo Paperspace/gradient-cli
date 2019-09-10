@@ -1,13 +1,17 @@
 import functools
 import json
+import re
 
 import click
+import colorama
+import termcolor
 import yaml
 from click.exceptions import Exit
 from click_didyoumean import DYMMixin
 from click_help_colors import HelpColorsGroup
 
 from gradient.cli import cli_types
+from gradient.config import config
 
 OPTIONS_FILE_OPTION_NAME = "optionsFile"
 OPTIONS_FILE_PARAMETER_NAME = "options_file"
@@ -78,11 +82,38 @@ class ReadValueFromConfigFile(click.Parameter):
             ctx, opts, args)
 
 
-class ArgumentReadValueFromConfigFile(ReadValueFromConfigFile, click.Argument):
+class ColorExtrasInCommandHelpMixin(object):
+    def get_help_record(self, *args, **kwargs):
+        rv = super(ColorExtrasInCommandHelpMixin, self).get_help_record(*args, **kwargs)
+        if not config.USE_CONSOLE_COLORS:
+            return rv
+
+        help_str = rv[1]
+        if help_str:
+            help_str = self._color_extras(help_str)
+            rv = rv[0], help_str
+        return rv
+
+    def _color_extras(self, s):
+        pattern = re.compile(r"^.*(\[.*\])$")
+        found = re.findall(pattern, s)
+        if found:
+            extras_str = found[-1]
+            coloured_extras_str = self._color_str(extras_str)
+            s = s.replace(extras_str, coloured_extras_str)
+
+        return s
+
+    def _color_str(self, s):
+        s = termcolor.colored(s, config.HELP_HEADERS_COLOR)
+        return s
+
+
+class GradientArgument(ColorExtrasInCommandHelpMixin, ReadValueFromConfigFile, click.Argument):
     pass
 
 
-class OptionReadValueFromConfigFile(ReadValueFromConfigFile, click.Option):
+class GradientOption(ColorExtrasInCommandHelpMixin, ReadValueFromConfigFile, click.Option):
     pass
 
 
@@ -90,7 +121,7 @@ api_key_option = click.option(
     "--apiKey",
     "api_key",
     help="API key to use this time only",
-    cls=OptionReadValueFromConfigFile,
+    cls=GradientOption,
 )
 
 

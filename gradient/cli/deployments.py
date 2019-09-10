@@ -44,35 +44,35 @@ def get_deployment_client(api_key):
     type=ChoiceType(DEPLOYMENT_TYPES_MAP, case_sensitive=False),
     required=True,
     help="Model deployment type. Only TensorFlow models can currently be deployed",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--modelId",
     "model_id",
     required=True,
     help="ID of a trained model",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--name",
     "name",
     required=True,
     help="Human-friendly name for new model deployment",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--machineType",
     "machine_type",
     required=True,
     help="Type of machine for new deployment",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--imageUrl",
     "image_url",
     required=True,
     help="Docker image for model serving",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--instanceCount",
@@ -80,20 +80,20 @@ def get_deployment_client(api_key):
     type=int,
     required=True,
     help="Number of machine instances",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--clusterId",
     "cluster_id",
     help="Cluster ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--vpc",
     "use_vpc",
     type=bool,
     is_flag=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -123,19 +123,19 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
     "state",
     type=ChoiceType(DEPLOYMENT_STATES_MAP, case_sensitive=False),
     help="Filter by deployment state",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--projectId",
     "project_id",
     help="Use to filter by project ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--modelId",
     "model_id",
     help="Use to filter by model ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -155,14 +155,14 @@ def get_deployments_list(api_key, options_file, **filters):
     "id_",
     required=True,
     help="Deployment ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--vpc",
     "use_vpc",
     type=bool,
     is_flag=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
@@ -178,14 +178,14 @@ def start_deployment(id_, use_vpc, options_file, api_key=None):
     "id_",
     required=True,
     help="Deployment ID",
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @click.option(
     "--vpc",
     "use_vpc",
     type=bool,
     is_flag=True,
-    cls=common.OptionReadValueFromConfigFile,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
