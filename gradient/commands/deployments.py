@@ -57,14 +57,15 @@ class ListDeploymentsCommand(_DeploymentCommand):
 
     @staticmethod
     def _get_table_data(deployments):
-        data = [("Name", "ID", "Endpoint", "Api Type", "Deployment Type")]
+        data = [("Name", "ID", "Endpoint", "Api Type", "Deployment Type", "Deployment State")]
         for deployment in deployments:
             name = deployment.name
             id_ = deployment.id_
             endpoint = deployment.endpoint
             api_type = deployment.api_type
             deployment_type = deployment.deployment_type
-            data.append((name, id_, endpoint, api_type, deployment_type))
+            deployment_state = deployment.state
+            data.append((name, id_, endpoint, api_type, deployment_type, deployment_state))
 
         return data
 
