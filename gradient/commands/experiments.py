@@ -41,6 +41,7 @@ class BaseCreateExperimentCommandMixin(object):
                 return
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(experiment_id))
+        return experiment_id
 
     def _handle_workspace(self, instance_dict):
         handler = self.workspace_handler.handle(instance_dict)
