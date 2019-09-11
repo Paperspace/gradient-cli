@@ -390,9 +390,9 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, options_file, 
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    experiment = command.execute(kwargs, use_vpc=use_vpc)
-    if experiment and show_logs:
-        ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
+    experiment_id = command.execute(kwargs, use_vpc=use_vpc)
+    if experiment_id and show_logs:
+        ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
 
 @create_and_start_experiment.command(name="singlenode", help="Create and start new single node experiment")
@@ -419,9 +419,9 @@ def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, options_file,
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    experiment = command.execute(kwargs, use_vpc=use_vpc)
-    if experiment and show_logs:
-        ctx.invoke(list_logs, experiment_id=experiment["handle"], line=0, limit=100, follow=True, api_key=api_key)
+    experiment_id = command.execute(kwargs, use_vpc=use_vpc)
+    if experiment_id and show_logs:
+        ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
 
 @experiments.command("start", help="Start experiment")
