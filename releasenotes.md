@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.3.1
+### Fixes
+* Fixed bug preventing showing logs when 'experiments run' was executed
+
 # Release Notes for 0.3.0
 ##### Note: this list includes all changes made in alpha releases since 0.2.3
 ### New features
