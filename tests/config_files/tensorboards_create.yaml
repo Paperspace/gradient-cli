@@ -1,0 +1,10 @@
+apiKey: some_key
+experiment:
+  - some_experiment_id
+  - some_other_experiment_id
+image: some_image
+instanceSize: some_instance_size
+instanceType: some_instance_type
+instancesCount: 2
+password: some_password
+username: some_username

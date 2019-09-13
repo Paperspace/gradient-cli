@@ -12,6 +12,7 @@ import gradient.cli.models
 import gradient.cli.notebooks
 import gradient.cli.projects
 import gradient.cli.run
+import gradient.cli.tensorboards
 
 
 def show(self, file=None):

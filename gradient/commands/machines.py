@@ -1,11 +1,8 @@
-import pydoc
-
 import halo
 import terminaltables
 
 from gradient import api_sdk
 from gradient.commands import common, BaseCommand
-from gradient.utils import get_terminal_lines
 
 
 class GetMachinesClientMixin(object):

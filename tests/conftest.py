@@ -284,3 +284,17 @@ def notebooks_list_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "notebooks_list.yaml"
     return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def tensorboards_create_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "tensorboards_create.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def tensorboards_details_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "tensorboards_details.yaml"
+    return str(fixture_dir.resolve())
