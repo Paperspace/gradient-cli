@@ -22,3 +22,5 @@ workingDirectory: /work/dir/
 workspace: null
 workspaceArchive: null
 workspaceUrl: wsp.url
+workspaceUsername: username
+workspacePassword: password
