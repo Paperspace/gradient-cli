@@ -25,6 +25,24 @@ class InstanceSchema(BaseSchema):
     count = marshmallow.fields.Int()
 
 
+class TBExperimentSchema(BaseSchema):
+    id = marshmallow.fields.String()
+    project_id = marshmallow.fields.String()
+
+
+class TensorboardDetailSchema(BaseSchema):
+    MODEL = models.Tensorboard
+
+    id = marshmallow.fields.Str()
+    image = marshmallow.fields.Str()
+    username = marshmallow.fields.Str()
+    password = marshmallow.fields.Str()
+    instance = marshmallow.fields.Nested(InstanceSchema, required=False, default=None)
+    experiments = marshmallow.fields.List(marshmallow.fields.Nested(TBExperimentSchema))
+    url = marshmallow.fields.Str()
+    state = marshmallow.fields.Int()
+
+
 class TensorboardSchema(BaseSchema):
     MODEL = models.Tensorboard
 

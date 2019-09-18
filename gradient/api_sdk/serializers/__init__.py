@@ -8,4 +8,4 @@ from .machine import MachineSchema, MachineSchemaForListing, MachineEventSchema
 from .model import Model
 from .notebook import NotebookSchema
 from .project import Project
-from .tensorboard import InstanceSchema, TensorboardSchema
+from .tensorboard import InstanceSchema, TensorboardSchema, TensorboardDetailSchema

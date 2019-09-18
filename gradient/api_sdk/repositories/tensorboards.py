@@ -33,7 +33,7 @@ class CreateTensorboard(GetTensorboardApiUrlMixin, common.CreateResource):
 
 
 class GetTensorboard(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common.GetResource):
-    SERIALIZER_CLS = serializers.TensorboardSchema
+    SERIALIZER_CLS = serializers.TensorboardDetailSchema
 
     def get_request_url(self, **kwargs):
         id_ = kwargs["id"]
@@ -46,7 +46,7 @@ class GetTensorboard(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common.Ge
 
 
 class ListTensorboards(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common.ListResources):
-    SERIALIZER_CLS = serializers.TensorboardSchema
+    SERIALIZER_CLS = serializers.TensorboardDetailSchema
 
     def _get_instance_dicts(self, data, **kwargs):
         instance_dicts = data["data"]
@@ -63,7 +63,7 @@ class UpdateTensorboard(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common
     def get_request_url(self, **kwargs):
         return "/tensorboards/v1/{}".format(kwargs["id"])
 
-    def _get_request_json(self, **kwargs):
+    def _get_request_json(self, kwargs):
         return {
             "added_experiments": kwargs.get("added_experiments", list()),
             "removed_experiments": kwargs.get("removed_experiments", list())

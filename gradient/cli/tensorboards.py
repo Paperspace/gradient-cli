@@ -104,7 +104,7 @@ def list_tensorboards(api_key, options_file):
 )
 @common.api_key_option
 @common.options_file
-def add_experiments_to_tensorboard(id, api_key, options_file, **kwargs):
+def add_experiments_to_tensorboard(api_key, options_file, **kwargs):
     command = tensorboards_commands.AddExperimentToTensorboard(api_key=api_key)
     command.execute(**kwargs)
 
@@ -127,6 +127,6 @@ def add_experiments_to_tensorboard(id, api_key, options_file, **kwargs):
 )
 @common.api_key_option
 @common.options_file
-def remove_experiments_to_tensorboard(id, api_key, options_file, **kwargs):
+def remove_experiments_to_tensorboard(api_key, options_file, **kwargs):
     command = tensorboards_commands.RemoveExperimentToTensorboard(api_key=api_key)
-    command.execute(id, **kwargs)
+    command.execute(**kwargs)

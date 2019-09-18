@@ -145,6 +145,12 @@ class TestTensorboardsDetail(object):
 | Instance size  | large                            |
 | Instance count | 2                                |
 +----------------+----------------------------------+
++--------------------------+
+| Experiments ID           |
++--------------------------+
+| some_experiment_id       |
+| some_other_experiment_id |
++--------------------------+
 """
     # TODO later change response to contain information about state: | State          | 1                             |
 

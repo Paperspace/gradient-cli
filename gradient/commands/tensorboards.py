@@ -1,5 +1,6 @@
 import abc
 import pydoc
+from itertools import islice
 
 import halo
 import six
@@ -44,18 +45,33 @@ class GetTensorboardCommand(GetTensorboardClientCommandMixin, common.BaseCommand
         return instance
 
     def _log_object(self, instance):
-
         table_str = self._make_table(instance)
         if len(table_str.splitlines()) > get_terminal_lines():
             pydoc.pager(table_str)
         else:
             self.logger.log(table_str)
 
+        # experiment table
+        experiment_table_str = self._make_exp_table(instance)
+        if len(experiment_table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(experiment_table_str)
+        else:
+            self.logger.log(experiment_table_str)
+
     def _make_table(self, instance):
         """
         :param api_sdk.Tensorboard:
         """
         data = self._get_table_data(instance)
+        ascii_table = terminaltables.AsciiTable(data)
+        table_string = ascii_table.table
+        return table_string
+
+    def _make_exp_table(self, instance):
+        """
+        :param api_sdk.Tensorboard:
+        """
+        data = self._get_exp_table_data(instance)
         ascii_table = terminaltables.AsciiTable(data)
         table_string = ascii_table.table
         return table_string
@@ -74,6 +90,17 @@ class GetTensorboardCommand(GetTensorboardClientCommandMixin, common.BaseCommand
             ("Instance size", instance.instance.size),
             ("Instance count", instance.instance.count),
         )
+        return data
+
+    @staticmethod
+    def _get_exp_table_data(instance):
+        """
+        :param api_sdk.Tensorboard instance:
+        """
+        data = [["Experiments ID", ]]
+
+        for e in instance.experiments:
+            data.append([e.get("id")])
         return data
 
 
