@@ -74,6 +74,18 @@ def common_experiments_create_options(f):
             cls=common.GradientOption,
         ),
         click.option(
+            "--workspaceUsername",
+            "workspace_username",
+            help="Workspace username",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--workspacePassword",
+            "workspace_password",
+            help="Workspace password",
+            cls=common.GradientOption,
+        ),
+        click.option(
             "--ignoreFiles",
             "ignore_files",
             help="Ignore certain files from uploading",

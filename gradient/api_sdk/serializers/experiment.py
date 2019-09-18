@@ -9,6 +9,8 @@ class BaseExperimentSchema(BaseSchema):
     name = marshmallow.fields.Str(required=True)
     ports = marshmallow.fields.Str()
     workspace_url = marshmallow.fields.Str(dump_to="workspaceUrl", load_from="workspaceUrl")
+    workspace_username = marshmallow.fields.Str(dump_to="workspaceUsername", load_from="workspaceUsername")
+    workspace_password = marshmallow.fields.Str(dump_to="workspacePassword", load_from="workspacePassword")
     working_directory = marshmallow.fields.Str(dump_to="workingDirectory", load_from="workingDirectory")
     artifact_directory = marshmallow.fields.Str(dump_to="artifactDirectory", load_from="artifactDirectory")
     cluster_id = marshmallow.fields.String(dump_to="clusterId", load_from="clusterId")

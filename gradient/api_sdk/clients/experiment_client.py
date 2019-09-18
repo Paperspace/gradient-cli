@@ -12,6 +12,8 @@ class ExperimentsClient(BaseClient):
             command,
             ports=None,
             workspace_url=None,
+            workspace_username=None,
+            workspace_password=None,
             working_directory=None,
             artifact_directory=None,
             cluster_id=None,
@@ -41,6 +43,8 @@ class ExperimentsClient(BaseClient):
             --machineType K80
             --command "python mnist.py"
             --workspaceUrl https://github.com/Paperspace/mnist-sample.git
+            --workspaceUsername example-username
+            --workspacePassword example-password
             --modelType Tensorflow
             --modelPath /artifacts
 
@@ -55,6 +59,8 @@ class ExperimentsClient(BaseClient):
         :param str command: Container entrypoint command  [required]
         :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
+        :param str workspace_username: Project git repository username
+        :param str workspace_password: Project git repository password
         :param str working_directory: Working directory for the experiment
         :param str artifact_directory: Artifacts directory
         :param str cluster_id: Cluster ID
@@ -83,6 +89,8 @@ class ExperimentsClient(BaseClient):
             machine_type=machine_type,
             ports=ports,
             workspace_url=workspace_url,
+            workspace_username=workspace_username,
+            workspace_password=workspace_password,
             working_directory=working_directory,
             artifact_directory=artifact_directory,
             cluster_id=cluster_id,
@@ -117,6 +125,8 @@ class ExperimentsClient(BaseClient):
             parameter_server_count,
             ports=None,
             workspace_url=None,
+            workspace_username=None,
+            workspace_password=None,
             working_directory=None,
             artifact_directory=None,
             cluster_id=None,
@@ -152,6 +162,8 @@ class ExperimentsClient(BaseClient):
             --parameterServerCommand "python mnist.py"
             --parameterServerCount 1
             --workspaceUrl https://github.com/Paperspace/mnist-sample.git
+            --workspaceUsername example-username
+            --workspacePassword example-password
             --modelType Tensorflow
 
         Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model,
@@ -173,6 +185,8 @@ class ExperimentsClient(BaseClient):
         :param int parameter_server_count: Parameter server count  [required]
         :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
+        :param str workspace_username: Project git repository username
+        :param str workspace_password: Project git repository password
         :param str working_directory: Working directory for the experiment
         :param str artifact_directory: Artifacts directory
         :param str cluster_id: Cluster ID
@@ -211,6 +225,8 @@ class ExperimentsClient(BaseClient):
             parameter_server_count=parameter_server_count,
             ports=ports,
             workspace_url=workspace_url,
+            workspace_username=workspace_username,
+            workspace_password=workspace_password,
             working_directory=working_directory,
             artifact_directory=artifact_directory,
             cluster_id=cluster_id,
@@ -240,6 +256,8 @@ class ExperimentsClient(BaseClient):
             command,
             ports=None,
             workspace_url=None,
+            workspace_username=None,
+            workspace_password=None,
             working_directory=None,
             artifact_directory=None,
             cluster_id=None,
@@ -266,6 +284,8 @@ class ExperimentsClient(BaseClient):
             --machineType K80
             --command "python mnist.py"
             --workspaceUrl https://github.com/Paperspace/mnist-sample.git
+            --workspaceUsername example-username
+            --workspacePassword example-password
             --modelType Tensorflow
             --modelPath /artifacts
 
@@ -280,6 +300,8 @@ class ExperimentsClient(BaseClient):
         :param str command: Container entrypoint command  [required]
         :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
+        :param str workspace_username: Project git repository username
+        :param str workspace_password: Project git repository password
         :param str working_directory: Working directory for the experiment
         :param str artifact_directory: Artifacts directory
         :param str cluster_id: Cluster ID
@@ -308,6 +330,8 @@ class ExperimentsClient(BaseClient):
             machine_type=machine_type,
             ports=ports,
             workspace_url=workspace_url,
+            workspace_username=workspace_username,
+            workspace_password=workspace_password,
             working_directory=working_directory,
             artifact_directory=artifact_directory,
             cluster_id=cluster_id,
@@ -342,6 +366,8 @@ class ExperimentsClient(BaseClient):
             parameter_server_count,
             ports=None,
             workspace_url=None,
+            workspace_username=None,
+            workspace_password=None,
             working_directory=None,
             artifact_directory=None,
             cluster_id=None,
@@ -380,6 +406,8 @@ class ExperimentsClient(BaseClient):
             --parameterServerCommand "python mnist.py"
             --parameterServerCount 1
             --workspaceUrl https://github.com/Paperspace/mnist-sample.git
+            --workspaceUsername example-username
+            --workspacePassword example-password
             --modelType Tensorflow
 
         Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model, since
@@ -398,6 +426,8 @@ class ExperimentsClient(BaseClient):
         :param int parameter_server_count: Parameter server count  [required]
         :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
+        :param str workspace_username: Project git repository username
+        :param str workspace_password: Project git repository password
         :param str working_directory: Working directory for the experiment
         :param str artifact_directory: Artifacts directory
         :param str cluster_id: Cluster ID
@@ -436,6 +466,8 @@ class ExperimentsClient(BaseClient):
             parameter_server_count=parameter_server_count,
             ports=ports,
             workspace_url=workspace_url,
+            workspace_username=workspace_username,
+            workspace_password=workspace_password,
             working_directory=working_directory,
             artifact_directory=artifact_directory,
             cluster_id=cluster_id,
