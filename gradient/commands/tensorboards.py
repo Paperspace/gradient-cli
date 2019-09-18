@@ -99,7 +99,7 @@ class AddExperimentToTensorboard(GetTensorboardClientCommandMixin, common.BaseCo
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
             tensorboard_id = self.client.add_experiments(id, added_experiments=kwargs.get('experiments'))
 
-        self.logger.log("Experiments added to tensorboard {}".format(len(kwargs.get('experiments')), id))
+        self.logger.log("{} experiments added to tensorboard {}".format(len(kwargs.get('experiments')), id))
 
 
 class RemoveExperimentToTensorboard(GetTensorboardClientCommandMixin, common.BaseCommand):
@@ -109,4 +109,4 @@ class RemoveExperimentToTensorboard(GetTensorboardClientCommandMixin, common.Bas
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
             tensorboard_id = self.client.add_experiments(id, removed_experiments=kwargs.get('experiments'))
 
-        self.logger.log("Experiments added to tensorboard {}".format(len(kwargs.get('experiments')), id))
+        self.logger.log("{} experiments added to tensorboard {}".format(len(kwargs.get('experiments')), id))

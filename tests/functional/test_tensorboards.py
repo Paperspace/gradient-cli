@@ -7,7 +7,7 @@ from tests import MockResponse, example_responses
 
 
 class TestTensorboardsCreate(object):
-    URL = "https://api.paperspace.io/tensorboards/v1/"
+    URL = "https://services.paperspace.io/tensorboards/v1/"
     COMMAND = [
         "tensorboards",
         "create",
@@ -129,7 +129,7 @@ class TestTensorboardsCreate(object):
 
 
 class TestTensorboardsDetail(object):
-    URL = "https://api.paperspace.io/tensorboards/v1/some_id/"
+    URL = "https://services.paperspace.io/tensorboards/v1/some_id/"
     COMMAND = [
         "tensorboards",
         "details",
@@ -208,7 +208,7 @@ class TestTensorboardsDetail(object):
 
 
 class TestTensorboardsList(object):
-    URL = "https://api.paperspace.io/tensorboards/v1/"
+    URL = "https://services.paperspace.io/tensorboards/v1/"
     COMMAND = ["tensorboards", "list"]
     EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_LIST_RESPONSE_JSON
     EXPECTED_STDOUT = """+-----------------+------+
@@ -273,3 +273,8 @@ class TestTensorboardsList(object):
                                              json=None,
                                              params=None)
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+
+class TestAddExperimentsToTensorboard(object):
+    URL = "https://services.paperspace.io/tensorboards/v1/"
+    COMMAND = ["tensorboards", "add-experiments", "--id", "some_id", "--experiments", "some_third_experiment_id"]

@@ -95,8 +95,8 @@ def list_tensorboards(api_key, options_file):
     cls=common.GradientOption,
 )
 @click.option(
-    "--experiments",
-    "experiments",
+    "--experiment",
+    "experiment",
     multiple=True,
     required=True,
     help="IDs of experiments",
@@ -118,7 +118,7 @@ def add_experiments_to_tensorboard(id, api_key, options_file, **kwargs):
     cls=common.GradientOption,
 )
 @click.option(
-    "--experiments",
+    "--experiment",
     "experiments",
     multiple=True,
     required=True,
