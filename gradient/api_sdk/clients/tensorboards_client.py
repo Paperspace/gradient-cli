@@ -38,3 +38,13 @@ class TensorboardClient(BaseClient):
         repository = repositories.ListTensorboards(api_key=self.api_key, logger=self.logger)
         tensorboards = repository.list()
         return tensorboards
+
+    def add_experiments(self, id, added_experiments):
+        repository = repositories.UpdateTensorboard(api_key=self.api_key, logger=self.logger)
+        tensorboard = repository.update(id=id, added_experiments=added_experiments)
+        return tensorboard
+
+    def remove_experiments(self, id, removed_experiments):
+        repository = repositories.UpdateTensorboard(api_key=self.api_key, logger=self.logger)
+        tensorboard = repository.update(id=id, removed_experiments=removed_experiments)
+        return tensorboard

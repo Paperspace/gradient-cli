@@ -69,7 +69,7 @@ class GetTensorboardCommand(GetTensorboardClientCommandMixin, common.BaseCommand
             ("ID", instance.id),
             ("Image", instance.image),
             ("URL", instance.url),
-            ("State", instance.state),
+            # ("State", instance.state),        TODO: later add state when state will be available in response
             ("Instance type", instance.instance.type),
             ("Instance size", instance.instance.size),
             ("Instance count", instance.instance.count),
@@ -85,7 +85,28 @@ class ListTensorboardsCommand(GetTensorboardClientCommandMixin, common.ListComma
         return instances
 
     def _get_table_data(self, objects):
-        data = [("ID", "State", "URL")]
+        # TODO later we need to add information about state
+        data = [("ID", "URL")]
         for obj in objects:
-            data.append((obj.id, obj.state, obj.url))
+            data.append((obj.id, obj.url))
         return data
+
+
+class AddExperimentToTensorboard(GetTensorboardClientCommandMixin, common.BaseCommand):
+    SPINNER_MESSAGE = "Adding experiments to tensorboard"
+
+    def execute(self, id, **kwargs):
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
+            tensorboard_id = self.client.add_experiments(id, added_experiments=kwargs.get('experiments'))
+
+        self.logger.log("Experiments added to tensorboard {}".format(len(kwargs.get('experiments')), id))
+
+
+class RemoveExperimentToTensorboard(GetTensorboardClientCommandMixin, common.BaseCommand):
+    SPINNER_MESSAGE = "Removing experiments from tensorboard"
+
+    def execute(self, id, **kwargs):
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
+            tensorboard_id = self.client.add_experiments(id, removed_experiments=kwargs.get('experiments'))
+
+        self.logger.log("Experiments added to tensorboard {}".format(len(kwargs.get('experiments')), id))

@@ -10,10 +10,6 @@ class GetTensorboardApiUrlMixin(object):
 
 class ParseTensorboardMixin(object):
     def _parse_object(self, instance_dict, **kwargs):
-        # this ugly hack is here because marshmallow disallows reading value into `id` field
-        # if JSON's field was named differently (despite using load_from in schema definition)
-        instance_dict["id"] = instance_dict["handle"]
-
         machine_instance_dict = instance_dict.get("instance")
         if machine_instance_dict:
             machine_instance = serializers.InstanceSchema().get_instance(machine_instance_dict)
@@ -32,7 +28,7 @@ class CreateTensorboard(GetTensorboardApiUrlMixin, common.CreateResource):
         return "/tensorboards/v1/"
 
     def _get_id_from_response(self, response):
-        handle = response.data["data"]["handle"]
+        handle = response.data["data"]["id"]
         return handle
 
 
@@ -58,3 +54,17 @@ class ListTensorboards(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common.
 
     def get_request_url(self, **kwargs):
         return "/tensorboards/v1/"
+
+
+class UpdateTensorboard(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common.AlterResource):
+    def update(self, id, **kwargs):
+        self._run(id=id, **kwargs)
+
+    def get_request_url(self, **kwargs):
+        return "/tensorboards/v1/{}".format(kwargs["id"])
+
+    def _get_request_json(self, **kwargs):
+        return {
+            "added_experiments": kwargs.get("added_experiments", list()),
+            "removed_experiments": kwargs.get("removed_experiments", list())
+        }

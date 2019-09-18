@@ -135,18 +135,18 @@ class TestTensorboardsDetail(object):
         "details",
         "--id", "some_id",
     ]
-    EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_CREATE_RESPONSE_JSON
+    EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_DETAIL_RESPONSE_JSON
     EXPECTED_STDOUT = """+----------------+----------------------------------+
 | ID             | some_id                          |
 +----------------+----------------------------------+
 | Image          | tensorflow/tensorflow:latest-py3 |
 | URL            | None                             |
-| State          | 1                                |
 | Instance type  | cpu                              |
 | Instance size  | large                            |
 | Instance count | 2                                |
 +----------------+----------------------------------+
 """
+    # TODO later change response to contain information about state: | State          | 1                             |
 
     COMMAND_WITH_API_KEY_CHANGED = [
         "tensorboards",
@@ -207,20 +207,18 @@ class TestTensorboardsDetail(object):
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
 
-class TestTensorboardsDetail(object):
+class TestTensorboardsList(object):
     URL = "https://api.paperspace.io/tensorboards/v1/"
     COMMAND = ["tensorboards", "list"]
-    EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_CREATE_RESPONSE_JSON
-    EXPECTED_STDOUT = """+----------------+----------------------------------+
-| ID             | some_id                          |
-+----------------+----------------------------------+
-| Image          | tensorflow/tensorflow:latest-py3 |
-| URL            | None                             |
-| State          | 1                                |
-| Instance type  | cpu                              |
-| Instance size  | large                            |
-| Instance count | 2                                |
-+----------------+----------------------------------+
+    EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_LIST_RESPONSE_JSON
+    EXPECTED_STDOUT = """+-----------------+------+
+| ID              | URL  |
++-----------------+------+
+| tbrs2kcjman4ly  | None |
+| tbskzep6d9po04d | None |
+| tbsaq6hggzxcnet | None |
+| tbwuzalec7ik58  | None |
++-----------------+------+
 """
 
     COMMAND_WITH_API_KEY_CHANGED = ["tensorboards", "list", "--apiKey", "some_key"]
