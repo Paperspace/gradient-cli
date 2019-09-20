@@ -96,7 +96,7 @@ def list_tensorboards(api_key, options_file):
 )
 @click.option(
     "--experiment",
-    "experiment",
+    "experiments",
     multiple=True,
     required=True,
     help="IDs of experiments",

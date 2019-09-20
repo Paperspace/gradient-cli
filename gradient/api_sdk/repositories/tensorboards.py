@@ -1,3 +1,5 @@
+from gradient.api_sdk.serializers import TensorboardSchema
+
 from gradient.config import config
 from . import common
 from .. import serializers, models
@@ -58,7 +60,9 @@ class ListTensorboards(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common.
 
 class UpdateTensorboard(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common.AlterResource):
     def update(self, id, **kwargs):
-        self._run(id=id, **kwargs)
+        resp = self._run(id=id, **kwargs)
+        tensorboard = self._parse_object(resp.data)
+        return tensorboard
 
     def get_request_url(self, **kwargs):
         return "/tensorboards/v1/{}".format(kwargs["id"])
@@ -68,3 +72,19 @@ class UpdateTensorboard(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common
             "added_experiments": kwargs.get("added_experiments", list()),
             "removed_experiments": kwargs.get("removed_experiments", list())
         }
+
+    def _parse_object(self, instance_dict, **kwargs):
+        instance_dict = instance_dict["data"]
+        instance = self._get_instance(instance_dict)
+        return instance
+
+    def _get_instance(self, instance_dict):
+        machine_instance_dict = instance_dict.get("instance")
+        if machine_instance_dict:
+            machine_instance = serializers.InstanceSchema().get_instance(machine_instance_dict)
+        else:
+            machine_instance = models.Instance()
+
+        instance = serializers.TensorboardDetailSchema().get_instance(instance_dict)
+        instance.instance = machine_instance
+        return instance

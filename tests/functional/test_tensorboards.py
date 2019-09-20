@@ -281,6 +281,70 @@ class TestTensorboardsList(object):
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
 
-class TestAddExperimentsToTensorboard(object):
-    URL = "https://services.paperspace.io/tensorboards/v1/"
-    COMMAND = ["tensorboards", "add-experiments", "--id", "some_id", "--experiments", "some_third_experiment_id"]
+class TestTensorboardsAddExperiment(object):
+    URL = "https://services.paperspace.io/tensorboards/v1/some_id"
+    COMMAND = ["tensorboards", "add-experiments", "--id", "some_id", "--experiment", "some_third_experiment_id"]
+
+    EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_UPDATE_RESPONSE_JSON
+    EXPECTED_REQUEST_JSON = {"added_experiments": ["some_third_experiment_id"], "removed_experiments": []}
+    EXPECTED_STDOUT = """+----------------+----------------------------------+
+| ID             | some_id                          |
++----------------+----------------------------------+
+| Image          | tensorflow/tensorflow:latest-py3 |
+| URL            | None                             |
+| Instance type  | cpu                              |
+| Instance size  | large                            |
+| Instance count | 2                                |
++----------------+----------------------------------+
++--------------------------+
+| Experiments ID           |
++--------------------------+
+| some_experiment_id       |
+| some_other_experiment_id |
+| some_third_experiment_id |
++--------------------------+
+"""
+
+    COMMAND_WITH_API_KEY_CHANGED = [
+        "tensorboards", "add-experiments", "--id", "some_id",
+        "--experiment", "some_third_experiment_id", "--apiKey", "some_key"
+    ]
+
+    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"title": "Invalid credentials provided"}
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data\n"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_valid_request_when_command_was_executed_with_required_options(self, post_patched):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             params=None,
+                                             data=None,
+                                             files=None
+                                             )
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    # TODO after fix in API to return correct response status code when credentials are incorrect
+    # @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    # def test_should_send_request_with_changed_api_key_when_api_key_option_was_used(self, post_patched):
+    #     post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN)
+    #
+    #     runner = CliRunner()
+    #     result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_CHANGED)
+    #
+    #     assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
+    #     post_patched.assert_called_once_with(self.URL,
+    #                                          headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+    #                                          json=self.EXPECTED_REQUEST_JSON,
+    #                                          params=None)
+    #     assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"

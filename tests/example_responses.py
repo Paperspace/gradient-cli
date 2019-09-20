@@ -5379,75 +5379,36 @@ TENSORBOARD_DETAIL_RESPONSE_JSON = {
     }
 }
 
-# TENSORBOARD_LIST_RESPONSE_JSON = {
-#     "message": "success",
-#     "data": [
-#         {
-#             "id": 4,
-#             "handle": "tbwuzalec7ik58",
-#             "url": None,
-#             "created_by_user_id": 1655,
-#             "team_id": 1212,
-#             "state": 1,
-#             "image": "tensorflow/tensorflow:latest-py3",
-#             "username": None,
-#             "password": None,
-#             "instance": None,
-#             "dt_created": "2019-09-11 11:02:05.819204-0400",
-#             "dt_deleted": None,
-#             "cluster_id": None
-#         },
-#         {
-#             "id": 5,
-#             "handle": "tblx74r1q0o7xl",
-#             "url": None,
-#             "created_by_user_id": 1655,
-#             "team_id": 1212,
-#             "state": 1,
-#             "image": "tensorflow/tensorflow:latest-py3",
-#             "username": None,
-#             "password": None,
-#             "instance": None,
-#             "dt_created": "2019-09-11 11:05:50.631692-0400",
-#             "dt_deleted": None,
-#             "cluster_id": None
-#         },
-#         {
-#             "id": 6,
-#             "handle": "tbhfoz2np4usf6",
-#             "url": None,
-#             "created_by_user_id": 1655,
-#             "team_id": 1212,
-#             "state": 1,
-#             "image": "tensorflow/tensorflow:latest-py3",
-#             "username": None,
-#             "password": None,
-#             "instance": None,
-#             "dt_created": "2019-09-12 07:14:31.539722-0400",
-#             "dt_deleted": None,
-#             "cluster_id": None
-#         },
-#         {
-#             "id": 15,
-#             "handle": "tbdm20v23mtz0f",
-#             "url": None,
-#             "created_by_user_id": 1655,
-#             "team_id": 1212,
-#             "state": 1,
-#             "image": "tensorflow/tensorflow",
-#             "username": "someusrname",
-#             "password": "somepass",
-#             "instance": {
-#                 "size": "large",
-#                 "type": "cpu",
-#                 "count": 2
-#             },
-#             "dt_created": "2019-09-12 12:18:57.047442-0400",
-#             "dt_deleted": None,
-#             "cluster_id": None
-#         }
-#     ]
-# }
+TENSORBOARD_UPDATE_RESPONSE_JSON = {
+        "message": "success",
+        "data": {
+            "cluster_id": "some_cluster_id",
+            "url": None,
+            "id": "some_id",
+            "instance": {
+                "type": "cpu",
+                "size": "large",
+                "count": 2
+            },
+            "dt_created": "2019-09-18T12:10:09.817102+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "some_project_id",
+                    "id": "some_experiment_id"
+                },
+                {
+                    "project_id": "some_project_id",
+                    "id": "some_other_experiment_id"
+                },
+                {
+                    "project_id": "some_project_id",
+                    "id": "some_third_experiment_id"
+                }
+            ],
+            "dt_deleted": None
+        }
+    }
 
 TENSORBOARD_LIST_RESPONSE_JSON = {
     "message": "success",

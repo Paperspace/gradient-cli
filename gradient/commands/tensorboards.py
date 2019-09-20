@@ -17,33 +17,6 @@ class GetTensorboardClientCommandMixin(BaseCommand):
         client = api_sdk.clients.TensorboardClient(api_key=api_key, logger=logger)
         return client
 
-
-class CreateTensorboardCommand(GetTensorboardClientCommandMixin, common.BaseCommand):
-    SPINNER_MESSAGE = "Creating new tensorboard"
-
-    def execute(self, **kwargs):
-        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            notebook_id = self.client.create(**kwargs)
-
-        self.logger.log("Created new tensorboard with id: {}".format(notebook_id))
-
-
-class GetTensorboardCommand(GetTensorboardClientCommandMixin, common.BaseCommand):
-    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
-
-    def execute(self, id_):
-        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            instance = self._get_instance(id_)
-
-        self._log_object(instance)
-
-    def _get_instance(self, id_):
-        """
-        :rtype: api_sdk.Tensorboard
-        """
-        instance = self.client.get(id_)
-        return instance
-
     def _log_object(self, instance):
         table_str = self._make_table(instance)
         if len(table_str.splitlines()) > get_terminal_lines():
@@ -104,6 +77,33 @@ class GetTensorboardCommand(GetTensorboardClientCommandMixin, common.BaseCommand
         return data
 
 
+class CreateTensorboardCommand(GetTensorboardClientCommandMixin, common.BaseCommand):
+    SPINNER_MESSAGE = "Creating new tensorboard"
+
+    def execute(self, **kwargs):
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
+            notebook_id = self.client.create(**kwargs)
+
+        self.logger.log("Created new tensorboard with id: {}".format(notebook_id))
+
+
+class GetTensorboardCommand(GetTensorboardClientCommandMixin, common.BaseCommand):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
+
+    def execute(self, id_):
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            instance = self._get_instance(id_)
+
+        self._log_object(instance)
+
+    def _get_instance(self, id_):
+        """
+        :rtype: api_sdk.Tensorboard
+        """
+        instance = self.client.get(id_)
+        return instance
+
+
 class ListTensorboardsCommand(GetTensorboardClientCommandMixin, common.ListCommandMixin, common.BaseCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
@@ -113,9 +113,9 @@ class ListTensorboardsCommand(GetTensorboardClientCommandMixin, common.ListComma
 
     def _get_table_data(self, objects):
         # TODO later we need to add information about state
-        data = [("ID", "URL")]
+        data = [["ID", "URL"]]
         for obj in objects:
-            data.append((obj.id, obj.url))
+            data.append([obj.id, obj.url])
         return data
 
 
@@ -124,9 +124,9 @@ class AddExperimentToTensorboard(GetTensorboardClientCommandMixin, common.BaseCo
 
     def execute(self, id, **kwargs):
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            tensorboard_id = self.client.add_experiments(id, added_experiments=kwargs.get('experiments'))
+            tensorboard = self.client.add_experiments(id, added_experiments=list(kwargs.get('experiments')))
 
-        self.logger.log("{} experiments added to tensorboard {}".format(len(kwargs.get('experiments')), id))
+        self._log_object(tensorboard)
 
 
 class RemoveExperimentToTensorboard(GetTensorboardClientCommandMixin, common.BaseCommand):
@@ -134,6 +134,6 @@ class RemoveExperimentToTensorboard(GetTensorboardClientCommandMixin, common.Bas
 
     def execute(self, id, **kwargs):
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            tensorboard_id = self.client.add_experiments(id, removed_experiments=kwargs.get('experiments'))
+            tensorboard = self.client.add_experiments(id, removed_experiments=kwargs.get('experiments'))
 
-        self.logger.log("{} experiments added to tensorboard {}".format(len(kwargs.get('experiments')), id))
+        self._log_object(tensorboard)
