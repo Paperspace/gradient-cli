@@ -46,7 +46,7 @@ https://docs.paperspace.com
 If you depend on functionality not listed there, please file an issue."""
 
     def new_invoke(self, ctx):
-        click.echo(click.style(deprecated_invoke_notice, fg='red'), err=True)
+        click.echo(click.style(deprecated_invoke_notice, fg='yellow'), err=False)
         super(type(self), self).invoke(ctx)
 
     def decorator(f):
