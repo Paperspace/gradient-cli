@@ -66,9 +66,27 @@ class BaseRepository(object):
 
 @six.add_metaclass(abc.ABCMeta)
 class ListResources(BaseRepository):
-    @abc.abstractmethod
+    SERIALIZER_CLS = None
+
     def _parse_objects(self, data, **kwargs):
-        pass
+        instances = []
+        instance_dicts = self._get_instance_dicts(data, **kwargs)
+        for instance_dict in instance_dicts:
+            instance = self._parse_object(instance_dict)
+            instances.append(instance)
+
+        return instances
+
+    def _get_instance_dicts(self, data, **kwargs):
+        return data
+
+    def _parse_object(self, instance_dict):
+        """
+        :param dict instance_dict:
+        :return: model instance
+        """
+        instance = self.SERIALIZER_CLS().get_instance(instance_dict)
+        return instance
 
     def list(self, use_vpc=False, **kwargs):
         response = self._get(kwargs, use_vpc=use_vpc)
@@ -86,9 +104,15 @@ class ListResources(BaseRepository):
 
 @six.add_metaclass(abc.ABCMeta)
 class GetResource(BaseRepository):
-    @abc.abstractmethod
-    def _parse_object(self, data, **kwargs):
-        pass
+    SERIALIZER_CLS = None
+
+    def _parse_object(self, instance_dict, **kwargs):
+        """
+        :param dict instance_dict:
+        :return: model instance
+        """
+        instance = self.SERIALIZER_CLS().get_instance(instance_dict)
+        return instance
 
     def get(self, **kwargs):
         response = self._get(kwargs)
@@ -99,7 +123,7 @@ class GetResource(BaseRepository):
     def _get_instance(self, response, **kwargs):
         try:
             objects = self._parse_object(response.data, **kwargs)
-        except KeyError:
+        except Exception:
             msg = "Error parsing response data: {}".format(str(response.body))
             raise ResourceFetchingError(msg)
 

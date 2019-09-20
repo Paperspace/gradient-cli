@@ -5330,3 +5330,175 @@ NOTEBOOKS_LIST_RESPONSE_JSON = {
   "runningTotal": 2,
   "displayTotal": 9
 }
+
+TENSORBOARD_CREATE_RESPONSE_JSON = {
+    "message": "success",
+    "data": {
+        "cluster_id": "some_cluster_id",
+        "url": None,
+        "id": "some_id",
+        "instance": None,
+        "dt_created": "2019-09-18T12:10:09.817102+00:00",
+        "image": "tensorflow/tensorflow:latest-py3",
+        "experiments": [
+            {
+                "project_id": "some_project_id",
+                "id": "some_experiment_id"
+            }, {
+                "project_id": "some_project_id",
+                "id": "some_other_experiment_id"
+            }
+        ],
+        "dt_deleted": None
+    }
+}
+
+TENSORBOARD_DETAIL_RESPONSE_JSON = {
+    "message": "success",
+    "data": {
+        "cluster_id": "some_cluster_id",
+        "url": None,
+        "id": "some_id",
+        "instance": {
+            "type": "cpu",
+            "size": "large",
+            "count": 2
+        },
+        "dt_created": "2019-09-18T12:10:09.817102+00:00",
+        "image": "tensorflow/tensorflow:latest-py3",
+        "experiments": [
+            {
+                "project_id": "some_project_id",
+                "id": "some_experiment_id"
+            }, {
+                "project_id": "some_project_id",
+                "id": "some_other_experiment_id"
+            }
+        ],
+        "dt_deleted": None
+    }
+}
+
+TENSORBOARD_UPDATE_RESPONSE_JSON = {
+        "message": "success",
+        "data": {
+            "cluster_id": "some_cluster_id",
+            "url": None,
+            "id": "some_id",
+            "instance": {
+                "type": "cpu",
+                "size": "large",
+                "count": 2
+            },
+            "dt_created": "2019-09-18T12:10:09.817102+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "some_project_id",
+                    "id": "some_experiment_id"
+                },
+                {
+                    "project_id": "some_project_id",
+                    "id": "some_other_experiment_id"
+                },
+                {
+                    "project_id": "some_project_id",
+                    "id": "some_third_experiment_id"
+                }
+            ],
+            "dt_deleted": None
+        }
+    }
+
+TENSORBOARD_UPDATE_REMOVE_RESPONSE_JSON = {
+        "message": "success",
+        "data": {
+            "cluster_id": "some_cluster_id",
+            "url": None,
+            "id": "some_id",
+            "instance": {
+                "type": "cpu",
+                "size": "large",
+                "count": 2
+            },
+            "dt_created": "2019-09-18T12:10:09.817102+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "some_project_id",
+                    "id": "some_experiment_id"
+                }
+            ],
+            "dt_deleted": None
+        }
+    }
+
+TENSORBOARD_LIST_RESPONSE_JSON = {
+    "message": "success",
+    "data": [
+        {
+            "cluster_id": "clmtkpnm2",
+            "url": None,
+            "id": "tbrs2kcjman4ly",
+            "instance": None,
+            "dt_created": "2019-09-16T09:28:10.415478+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "prrdpg67x",
+                    "id": "ers2kcjman4ly"
+                }
+            ],
+            "dt_deleted": None
+        },
+        {
+            "cluster_id": "clmtkpnm2",
+            "url": None,
+            "id": "tbskzep6d9po04d",
+            "instance": None,
+            "dt_created": "2019-09-16T09:28:56.908450+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "prrdpg67x",
+                    "id": "ers2kcjman4ly"
+                }
+            ],
+            "dt_deleted": None
+        },
+        {
+            "cluster_id": "clmtkpnm2",
+            "url": None,
+            "id": "tbsaq6hggzxcnet",
+            "instance": None,
+            "dt_created": "2019-09-16T12:59:20.788663+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "prrdpg67x",
+                    "id": "ers2kcjman4ly"
+                }
+            ],
+            "dt_deleted": None
+        },
+        {
+            "cluster_id": "clmtkpnm2",
+            "url": None,
+            "id": "tbwuzalec7ik58",
+            "instance": {
+                "size": "large",
+                "type": "cpu",
+                "count": 2
+            },
+            "dt_created": "2019-09-17T07:43:39.679876+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "prrdpg67x",
+                    "id": "ers2kcjman4ly"
+                }
+            ],
+            "dt_deleted": None
+        }
+    ]
+}

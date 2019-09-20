@@ -1,5 +1,15 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.3.2a
+### New features
+* Support for tensorboard
+    * Create tensorboard
+    * List user tensorboards
+    * Details of user tensorboard
+    * Add experiments to existing tensorboard
+    * Remove experiments from existing tensorboard
+* Add support for experiments workspace credentials
+
 # Release Notes for 0.3.1
 ### Fixes
 * Fixed bug preventing showing logs when 'experiments run' was executed

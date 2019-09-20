@@ -48,14 +48,14 @@ class ListCommandMixin(object):
             return
 
         table_data = self._get_table_data(objects)
-        table_str = self._make_table(table_data)
+        table_str = self._make_list_table(table_data)
         if len(table_str.splitlines()) > get_terminal_lines():
             pydoc.pager(table_str)
         else:
             self.logger.log(table_str)
 
     @staticmethod
-    def _make_table(table_data):
+    def _make_list_table(table_data):
         ascii_table = terminaltables.AsciiTable(table_data)
         table_string = ascii_table.table
         return table_string

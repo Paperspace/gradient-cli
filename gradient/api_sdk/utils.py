@@ -18,7 +18,7 @@ class MessageExtractor(object):
     def get_error_messages(self, data, add_prefix=False):
         if isinstance(data, dict):
             for key, value in sorted(data.items()):
-                if key in ("error", "errors", "message", "messages"):
+                if key in ("error", "errors", "message", "messages", "title", "description"):
                     for message in self.get_error_messages(value):
                         yield message
 

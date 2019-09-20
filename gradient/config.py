@@ -29,6 +29,7 @@ _DEFAULT_CONFIG_HOST = "https://api.paperspace.io"
 _DEFAULT_CONFIG_LOG_HOST = "https://logs.paperspace.io"
 _DEFAULT_CONFIG_EXPERIMENTS_HOST = "https://services.paperspace.io/experiments/v1/"
 _DEFAULT_CONFIG_EXPERIMENTS_HOST_V2 = "https://services.paperspace.io/experiments/v2/"
+_DEFAULT_CONFIG_SERVICE_HOST = "https://services.paperspace.io"
 _DEFAULT_CONFIG_DIR_PATH = "~/.paperspace"
 _DEFAULT_CONFIG_FILE_NAME = os.path.expanduser("config.json")
 _DEFAULT_HELP_HEADERS_COLOR = "yellow"
@@ -43,6 +44,7 @@ class config(object):
     CONFIG_EXPERIMENTS_HOST = os.environ.get("PAPERSPACE_CONFIG_EXPERIMENTS_HOST", _DEFAULT_CONFIG_EXPERIMENTS_HOST)
     CONFIG_EXPERIMENTS_HOST_V2 = os.environ.get("PAPERSPACE_CONFIG_EXPERIMENTS_HOST_V2",
                                                 _DEFAULT_CONFIG_EXPERIMENTS_HOST_V2)
+    CONFIG_SERVICE_HOST = os.environ.get("PAPERSPACE_CONFIG_SERVICE_HOST", _DEFAULT_CONFIG_SERVICE_HOST)
     CONFIG_DIR_PATH = os.path.expanduser(os.environ.get("PAPERSPACE_CONFIG_PATH", _DEFAULT_CONFIG_DIR_PATH))
     CONFIG_FILE_NAME = os.environ.get("PAPERSPACE_CONFIG_FILE_NAME", _DEFAULT_CONFIG_FILE_NAME)
     PAPERSPACE_API_KEY = os.environ.get("PAPERSPACE_API_KEY", get_api_key(CONFIG_DIR_PATH, CONFIG_FILE_NAME))
