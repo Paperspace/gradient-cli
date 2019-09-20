@@ -134,6 +134,6 @@ class RemoveExperimentToTensorboard(GetTensorboardClientCommandMixin, common.Bas
 
     def execute(self, id, **kwargs):
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            tensorboard = self.client.add_experiments(id, removed_experiments=kwargs.get('experiments'))
+            tensorboard = self.client.remove_experiments(id, removed_experiments=list(kwargs.get('experiments')))
 
         self._log_object(tensorboard)

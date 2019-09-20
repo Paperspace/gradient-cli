@@ -5410,6 +5410,29 @@ TENSORBOARD_UPDATE_RESPONSE_JSON = {
         }
     }
 
+TENSORBOARD_UPDATE_REMOVE_RESPONSE_JSON = {
+        "message": "success",
+        "data": {
+            "cluster_id": "some_cluster_id",
+            "url": None,
+            "id": "some_id",
+            "instance": {
+                "type": "cpu",
+                "size": "large",
+                "count": 2
+            },
+            "dt_created": "2019-09-18T12:10:09.817102+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "some_project_id",
+                    "id": "some_experiment_id"
+                }
+            ],
+            "dt_deleted": None
+        }
+    }
+
 TENSORBOARD_LIST_RESPONSE_JSON = {
     "message": "success",
     "data": [
