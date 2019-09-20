@@ -67,6 +67,10 @@ class UpdateTensorboard(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common
     def get_request_url(self, **kwargs):
         return "/tensorboards/v1/{}".format(kwargs["id"])
 
+    def _send_request(self, client, url, json_data=None):
+        response = client.put(url, json=json_data)
+        return response
+
     def _get_request_json(self, kwargs):
         return {
             "added_experiments": kwargs.get("added_experiments", list()),
