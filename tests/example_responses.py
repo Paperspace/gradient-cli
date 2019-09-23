@@ -5502,3 +5502,7 @@ TENSORBOARD_LIST_RESPONSE_JSON = {
         }
     ]
 }
+
+TENSORBOARD_DELETE_RESPONSE_JSON = {
+    "message": "success"
+}
