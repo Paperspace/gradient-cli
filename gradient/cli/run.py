@@ -1,6 +1,6 @@
 import click
 
-from gradient import utils
+from gradient import utils, logger
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.common import del_if_value_is_none, deprecated, jsonify_dicts
@@ -9,9 +9,7 @@ from gradient.commands.run import RunCommand
 from gradient.constants import RunMode
 
 
-@deprecated("DeprecatedWarning: \nWARNING: This command will not be included in version 0.6.0\n"
-            "DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
-            "options will not be included in version 0.6.0")
+@deprecated("DeprecatedWarning: \nWARNING: This command will not be included in version 0.6.0\n")
 @cli.command(
     "run",
     help="Run script or command on remote cluster",
@@ -43,6 +41,10 @@ from gradient.constants import RunMode
 @common.options_file
 def run(api_key, options_file, **kwargs):
     utils.validate_workspace_input(kwargs)
+    if kwargs["workspace_archive"] or kwargs["workspace_url"]:
+        logger.Logger().error("WARNING: --workspaceUrl and --workspaceArchive options will not be included "
+                              "in version 0.6.0")
+
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
 
