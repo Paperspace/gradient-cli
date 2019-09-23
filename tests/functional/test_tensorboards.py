@@ -432,7 +432,7 @@ class TestTensorboardsDelete(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"title": "Invalid credentials provided"}
-    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid credentials provided\n"
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to delete resource: Invalid credentials provided\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.delete")
     def test_should_send_valid_request_when_command_was_executed_with_required_options(self, delete_patched):
@@ -445,6 +445,22 @@ class TestTensorboardsDelete(object):
         delete_patched.assert_called_once_with(
             self.URL,
             headers=self.EXPECTED_HEADERS,
+            json=None,
+            params=None
+        )
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.delete")
+    def test_should_send_request_with_changed_api_key_when_api_key_option_was_used(self, delete_patched):
+        delete_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=401)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_CHANGED)
+
+        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
+        delete_patched.assert_called_once_with(
+            self.URL,
+            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
             json=None,
             params=None
         )
