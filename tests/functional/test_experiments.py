@@ -443,6 +443,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--machineType", "testType",
         "--command", "testCommand",
         "--workspaceUrl", "some-workspace",
+        "--no-logs",
         "--vpc",
     ]
     EXPECTED_STDOUT = "New experiment created and started with ID: sadkfhlskdjh\n"
@@ -524,6 +525,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--parameterServerCount", 2,
         "--workerContainerUser", "usr",
         "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+        "--no-logs",
         "--vpc",
     ]
     EXPECTED_STDOUT = "New experiment created and started with ID: sadkfhlskdjh\n"

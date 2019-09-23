@@ -194,6 +194,8 @@ class JobLogsCommand(BaseJobCommand):
 class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
 
     def _create(self, json_, data):
+        # because ignore_files is used by workspace handlers and not needed anymore (will fail if not "popped")
+        json_.pop("ignore_files", None)
         return self.client.create(data=data, **json_)
 
 
@@ -216,7 +218,6 @@ class JobRunClient(BaseClient):
             workspace_archive=None,
             workspace_url=None,
             working_directory=None,
-            ignore_files=None,
             experiment_id=None,
             job_env=None,
             use_dockerfile=None,
@@ -243,7 +244,6 @@ class JobRunClient(BaseClient):
             workspace_archive=workspace_archive,
             workspace_url=workspace_url,
             working_directory=working_directory,
-            ignore_files=ignore_files,
             experiment_id=experiment_id,
             job_env=job_env,
             use_dockerfile=use_dockerfile,
@@ -268,7 +268,7 @@ class RunJobCommand(CreateJobCommand):
             return self.client
 
         http_client_ = http_client.API(config.config.CONFIG_HOST, api_key=api_key, logger=logger_)
-        client = JobRunClient(http_client_, logger_, http_client_)
+        client = JobRunClient(http_client_, api_key=api_key, logger=logger_)
         return client
 
 
