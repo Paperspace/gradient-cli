@@ -1,4 +1,4 @@
-![Artboard 1](https://user-images.githubusercontent.com/585865/59315146-781a3300-8c86-11e9-9b7d-0cbca81d4278.png)
+![GitHubSplash](https://user-images.githubusercontent.com/585865/65443342-e630d300-ddfb-11e9-9bcd-de1d2033ea60.png)
 
 Gradient CLI
 =================
