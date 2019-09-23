@@ -492,7 +492,6 @@ class TestJobsCreate(object):
         "cluster": "some_cluster_name",
         "startedByUserId": "some_user_id",
         "isPreemptible": True,
-        "ignoreFiles": "file1,file2",
         "container": "some_container",
         "workingDirectory": "/some/path",
         "projectId": "some_project_id",

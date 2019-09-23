@@ -77,7 +77,6 @@ class Job(object):
     workspace = attr.ib(type=str, default=None)
     workspace_archive = attr.ib(type=str, default=None)
     workspace_file_name = attr.ib(type=str, default=None)
-    ignore_files = attr.ib(type=str, default=None)
     use_dockerfile = attr.ib(type=str, default=None)
     rel_dockerfile_path = attr.ib(type=str, default=None)
     registry_username = attr.ib(type=str, default=None)

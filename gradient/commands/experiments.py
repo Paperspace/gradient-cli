@@ -28,9 +28,6 @@ class BaseCreateExperimentCommandMixin(object):
         self.workspace_handler = workspace_handler
 
     def execute(self, json_, use_vpc=False):
-        if "ignore_files" in json_:
-            json_["ignore_files"] = self._parse_comma_separated_to_list(json_["ignore_files"])
-
         self._handle_workspace(json_)
 
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
@@ -55,14 +52,6 @@ class BaseCreateExperimentCommandMixin(object):
     @abc.abstractmethod
     def _create(self, json_, use_vpc):
         pass
-
-    @staticmethod
-    def _parse_comma_separated_to_list(s):
-        if not s:
-            return []
-
-        list_of_str = [s.strip() for s in s.split(",")]
-        return list_of_str
 
 
 class CreateSingleNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):

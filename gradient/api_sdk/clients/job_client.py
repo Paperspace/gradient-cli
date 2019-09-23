@@ -41,7 +41,6 @@ class JobsClient(BaseClient):
             workspace_archive=None,
             workspace_url=None,
             working_directory=None,
-            ignore_files=None,
             experiment_id=None,
             job_env=None,
             use_dockerfile=None,
@@ -115,8 +114,6 @@ class JobsClient(BaseClient):
         :param str workspace_url: url to repo with code to run inside of job.
             (Currently being deprecated in an upcoming version.)
         :param str working_directory: location of code to run. By default ``/paperspace``
-        :param str ignore_files: This field is used with CLI to upload workspace from your computer without specified
-            files. Provide string with comma `,` separated name of files that should be ignored with upload of workspace.
         :param str experiment_id: Id of experiment to which job should be connected. If not provided there will be
             created new experiment for this job.
         :param dict job_env: key value collection of envs that are used in code
@@ -150,7 +147,6 @@ class JobsClient(BaseClient):
             workspace_archive=workspace_archive,
             workspace_url=workspace_url,
             working_directory=working_directory,
-            ignore_files=ignore_files,
             experiment_id=experiment_id,
             job_env=job_env,
             use_dockerfile=use_dockerfile,

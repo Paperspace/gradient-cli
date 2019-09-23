@@ -81,7 +81,6 @@ class JobSchema(BaseSchema):
     command = marshmallow.fields.Str()
     workspace = marshmallow.fields.Str()
     workspace_archive = marshmallow.fields.Str(dump_to="workspaceArchive", load_from="workspaceArchive")
-    ignore_files = marshmallow.fields.Str(dump_to="ignoreFiles", load_from="ignoreFiles")
     use_dockerfile = marshmallow.fields.Bool(dump_to="useDockerfile", load_from="useDockerfile")
     rel_dockerfile_path = marshmallow.fields.Str(dump_to="relDockerfilePath", load_from="relDockerfilePath")
     registry_username = marshmallow.fields.Str(dump_to="registryUsername", load_from="registryUsername")
