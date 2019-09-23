@@ -144,6 +144,5 @@ class TestRunCommand(object):
                                                 'jobEnv': {'key': 'val'},
                                                 'registryUsername': 'some_registry_username',
                                                 'startedByUserId': 'some_user_id',
-                                                'ignoreFiles': 'file1,file2',
                                                 'ports': '8080,9000:9900',
                                                 'workspaceUrl': 'some.url'})
