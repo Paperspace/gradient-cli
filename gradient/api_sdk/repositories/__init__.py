@@ -9,4 +9,4 @@ from .machines import CheckMachineAvailability, CreateMachine, CreateResource, S
 from .models import ListModels
 from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks
 from .projects import CreateProject, ListProjects
-from .tensorboards import CreateTensorboard, GetTensorboard, ListTensorboards, UpdateTensorboard
+from .tensorboards import CreateTensorboard, GetTensorboard, ListTensorboards, UpdateTensorboard, DeleteTensorboard

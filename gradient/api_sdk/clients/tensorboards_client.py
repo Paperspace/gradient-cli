@@ -48,3 +48,8 @@ class TensorboardClient(BaseClient):
         repository = repositories.UpdateTensorboard(api_key=self.api_key, logger=self.logger)
         tensorboard = repository.update(id=id, removed_experiments=removed_experiments)
         return tensorboard
+
+    def delete(self, id):
+        repository = repositories.DeleteTensorboard(api_key=self.api_key, logger=self.logger)
+        tensorboard = repository.delete(id=id)
+        return tensorboard

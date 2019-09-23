@@ -92,3 +92,7 @@ class UpdateTensorboard(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common
         instance = serializers.TensorboardDetailSchema().get_instance(instance_dict)
         instance.instance = machine_instance
         return instance
+
+
+class DeleteTensorboard(common.DeleteResource):
+    pass
