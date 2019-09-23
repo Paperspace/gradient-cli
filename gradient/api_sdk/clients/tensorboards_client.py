@@ -51,5 +51,4 @@ class TensorboardClient(BaseClient):
 
     def delete(self, id):
         repository = repositories.DeleteTensorboard(api_key=self.api_key, logger=self.logger)
-        tensorboard = repository.delete(id=id)
-        return tensorboard
+        repository.delete(id_=id)

@@ -94,5 +94,6 @@ class UpdateTensorboard(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common
         return instance
 
 
-class DeleteTensorboard(common.DeleteResource):
-    pass
+class DeleteTensorboard(GetTensorboardApiUrlMixin, common.DeleteResource):
+    def get_request_url(self, **kwargs):
+        return "/tensorboards/v1/{}".format(kwargs["id_"])
