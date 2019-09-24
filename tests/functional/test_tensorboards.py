@@ -33,9 +33,6 @@ class TestTensorboardsCreate(object):
         "--image", "some_image",
         "--username", "some_username",
         "--password", "some_password",
-        "--instanceType", "some_instance_type",
-        "--instanceSize", "some_instance_size",
-        "--instancesCount", 2,
         "--apiKey", "some_key",
     ]
 
@@ -46,12 +43,7 @@ class TestTensorboardsCreate(object):
         ],
         "image": "some_image",
         "username": "some_username",
-        "password": "some_password",
-        "instance": {
-            "type": "some_instance_type",
-            "size": "some_instance_size",
-            "count": 2,
-        }
+        "password": "some_password"
     }
     COMMAND_WITH_OPTIONS_FILE_USED = ["tensorboards", "create", "--optionsFile", ]  # path added in test
 
@@ -136,15 +128,12 @@ class TestTensorboardsDetail(object):
         "--id", "some_id",
     ]
     EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_DETAIL_RESPONSE_JSON
-    EXPECTED_STDOUT = """+----------------+----------------------------------+
-| ID             | some_id                          |
-+----------------+----------------------------------+
-| Image          | tensorflow/tensorflow:latest-py3 |
-| URL            | None                             |
-| Instance type  | cpu                              |
-| Instance size  | large                            |
-| Instance count | 2                                |
-+----------------+----------------------------------+
+    EXPECTED_STDOUT = """+-------+----------------------------------+
+| ID    | some_id                          |
++-------+----------------------------------+
+| Image | tensorflow/tensorflow:latest-py3 |
+| URL   | None                             |
++-------+----------------------------------+
 +--------------------------+
 | Experiments ID           |
 +--------------------------+
@@ -287,15 +276,12 @@ class TestTensorboardsAddExperiment(object):
 
     EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_UPDATE_RESPONSE_JSON
     EXPECTED_REQUEST_JSON = {"added_experiments": ["some_third_experiment_id"], "removed_experiments": []}
-    EXPECTED_STDOUT = """+----------------+----------------------------------+
-| ID             | some_id                          |
-+----------------+----------------------------------+
-| Image          | tensorflow/tensorflow:latest-py3 |
-| URL            | None                             |
-| Instance type  | cpu                              |
-| Instance size  | large                            |
-| Instance count | 2                                |
-+----------------+----------------------------------+
+    EXPECTED_STDOUT = """+-------+----------------------------------+
+| ID    | some_id                          |
++-------+----------------------------------+
+| Image | tensorflow/tensorflow:latest-py3 |
+| URL   | None                             |
++-------+----------------------------------+
 +--------------------------+
 | Experiments ID           |
 +--------------------------+
@@ -355,15 +341,12 @@ class TestTensorboardsRemoveExperiment(object):
 
     EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_UPDATE_REMOVE_RESPONSE_JSON
     EXPECTED_REQUEST_JSON = {"added_experiments": [], "removed_experiments": ["some_other_experiment_id"]}
-    EXPECTED_STDOUT = """+----------------+----------------------------------+
-| ID             | some_id                          |
-+----------------+----------------------------------+
-| Image          | tensorflow/tensorflow:latest-py3 |
-| URL            | None                             |
-| Instance type  | cpu                              |
-| Instance size  | large                            |
-| Instance count | 2                                |
-+----------------+----------------------------------+
+    EXPECTED_STDOUT = """+-------+----------------------------------+
+| ID    | some_id                          |
++-------+----------------------------------+
+| Image | tensorflow/tensorflow:latest-py3 |
+| URL   | None                             |
++-------+----------------------------------+
 +--------------------+
 | Experiments ID     |
 +--------------------+
