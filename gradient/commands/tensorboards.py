@@ -137,3 +137,13 @@ class RemoveExperimentToTensorboard(GetTensorboardClientCommandMixin, common.Bas
             tensorboard = self.client.remove_experiments(id, removed_experiments=list(kwargs.get('experiments')))
 
         self._log_object(tensorboard)
+
+
+class DeleteTensorboard(GetTensorboardClientCommandMixin, common.BaseCommand):
+    SPINNER_MESSAGE = "Deleting tensorboard"
+
+    def execute(self, *args, **kwargs):
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
+            self.client.delete(**kwargs)
+
+        self.logger.log("Delete tensorboard ({}) ended with success".format(kwargs.get("id")))

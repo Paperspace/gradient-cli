@@ -130,3 +130,18 @@ def add_experiments_to_tensorboard(api_key, options_file, **kwargs):
 def remove_experiments_to_tensorboard(api_key, options_file, **kwargs):
     command = tensorboards_commands.RemoveExperimentToTensorboard(api_key=api_key)
     command.execute(**kwargs)
+
+
+@tensorboards_group.command("delete", help="Delete tensorboard")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    help="Tensorboard ID",
+    cls=common.GradientOption,
+)
+@common.api_key_option
+@common.options_file
+def delete_tensorboard(api_key, options_file, **kwargs):
+    command = tensorboards_commands.DeleteTensorboard(api_key=api_key)
+    command.execute(**kwargs)

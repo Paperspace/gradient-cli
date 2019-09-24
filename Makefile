@@ -18,7 +18,11 @@ pip-install-dev: pip-update
 build:
 	python setup.py sdist bdist_wheel
 
-gh-pages:
+prepare-docs-source:
+	@sphinx-apidoc -f -o source gradient
+	@cp source/cli_docs/gradient.cli.rst source/gradient.cli.rst
+
+gh-pages: prepare-docs-source
 	@make html
 	@cp -a build/html/. docs
 

@@ -95,7 +95,7 @@ class MachinesClient(BaseClient):
 
         :return: If specified machine is available in the region
         :rtype: bool
-        s"""
+        """
 
         repository = CheckMachineAvailability(api_key=self.api_key, logger=self.logger)
         handle = repository.get(machine_type=machine_type, region=region)

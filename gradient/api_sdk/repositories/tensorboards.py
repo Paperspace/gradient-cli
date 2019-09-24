@@ -92,3 +92,12 @@ class UpdateTensorboard(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common
         instance = serializers.TensorboardDetailSchema().get_instance(instance_dict)
         instance.instance = machine_instance
         return instance
+
+
+class DeleteTensorboard(GetTensorboardApiUrlMixin, common.DeleteResource):
+    def get_request_url(self, **kwargs):
+        return "/tensorboards/v1/{}".format(kwargs["id"])
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.delete(url, json=json_data)
+        return response
