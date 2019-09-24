@@ -68,6 +68,14 @@ gradient.commands.models module
    :undoc-members:
    :show-inheritance:
 
+gradient.commands.notebooks module
+----------------------------------
+
+.. automodule:: gradient.commands.notebooks
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.commands.projects module
 ---------------------------------
 
@@ -80,6 +88,14 @@ gradient.commands.run module
 ----------------------------
 
 .. automodule:: gradient.commands.run
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.commands.tensorboards module
+-------------------------------------
+
+.. automodule:: gradient.commands.tensorboards
    :members:
    :undoc-members:
    :show-inheritance:

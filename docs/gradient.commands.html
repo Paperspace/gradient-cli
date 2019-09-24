@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>gradient.commands package &#8212; Gradient-CLI  documentation</title>
+    <title>gradient.commands package &#8212; Gradient-CLI alpha documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/gradient.css" />
@@ -139,39 +139,6 @@
 
 </dd></dl>
 
-<dl class="class">
-<dt id="gradient.commands.common.CommandBase">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.common.</code><code class="sig-name descname">CommandBase</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.common.CommandBase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="gradient.commands.common.CommandBase.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.common.CommandBase.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="gradient.commands.common.ListCommand">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.common.</code><code class="sig-name descname">ListCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.common.ListCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#gradient.commands.common.CommandBase" title="gradient.commands.common.CommandBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.CommandBase</span></code></a></p>
-<dl class="attribute">
-<dt id="gradient.commands.common.ListCommand.WAITING_FOR_RESPONSE_MESSAGE">
-<code class="sig-name descname">WAITING_FOR_RESPONSE_MESSAGE</code><em class="property"> = 'Waiting for data...'</em><a class="headerlink" href="#gradient.commands.common.ListCommand.WAITING_FOR_RESPONSE_MESSAGE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gradient.commands.common.ListCommand.request_url">
-<em class="property">property </em><code class="sig-name descname">request_url</code><a class="headerlink" href="#gradient.commands.common.ListCommand.request_url" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gradient.commands.common.ListCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.common.ListCommand.execute" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </div>
 <div class="section" id="module-gradient.commands.deployments">
 <span id="gradient-commands-deployments-module"></span><h2>gradient.commands.deployments module<a class="headerlink" href="#module-gradient.commands.deployments" title="Permalink to this headline">¶</a></h2>
@@ -181,7 +148,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.deployments._DeploymentCommand</span></code></p>
 <dl class="method">
 <dt id="gradient.commands.deployments.CreateDeploymentCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.deployments.CreateDeploymentCommand.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">use_vpc=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.deployments.CreateDeploymentCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -197,7 +164,7 @@
 
 <dl class="method">
 <dt id="gradient.commands.deployments.ListDeploymentsCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.deployments.ListDeploymentsCommand.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">use_vpc=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.deployments.ListDeploymentsCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -208,7 +175,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.deployments._DeploymentCommand</span></code></p>
 <dl class="method">
 <dt id="gradient.commands.deployments.StartDeploymentCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.deployments.StartDeploymentCommand.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">use_vpc=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.deployments.StartDeploymentCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -219,7 +186,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.deployments._DeploymentCommand</span></code></p>
 <dl class="method">
 <dt id="gradient.commands.deployments.StopDeploymentCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.deployments.StopDeploymentCommand.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">use_vpc=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.deployments.StopDeploymentCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -255,7 +222,7 @@
 
 <dl class="method">
 <dt id="gradient.commands.experiments.BaseCreateExperimentCommandMixin.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">json_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.experiments.BaseCreateExperimentCommandMixin.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">json_</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.experiments.BaseCreateExperimentCommandMixin.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -310,10 +277,13 @@
 <dd><p>Bases: <a class="reference internal" href="#gradient.commands.experiments.BaseExperimentCommand" title="gradient.commands.experiments.BaseExperimentCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.experiments.BaseExperimentCommand</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.experiments.StartExperimentCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">experiment_id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.experiments.StartExperimentCommand.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">experiment_id</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.experiments.StartExperimentCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>experiment_id</strong> (<em>str</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment_id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>use_vpc</strong> (<em>bool</em>) – </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -326,10 +296,13 @@
 <dd><p>Bases: <a class="reference internal" href="#gradient.commands.experiments.BaseExperimentCommand" title="gradient.commands.experiments.BaseExperimentCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.experiments.BaseExperimentCommand</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.experiments.StopExperimentCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">experiment_id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.experiments.StopExperimentCommand.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">experiment_id</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.experiments.StopExperimentCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>experiment_id</strong> (<em>str</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment_id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>use_vpc</strong> (<em>str</em>) – </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -372,12 +345,6 @@
 </div>
 <div class="section" id="module-gradient.commands.hyperparameters">
 <span id="gradient-commands-hyperparameters-module"></span><h2>gradient.commands.hyperparameters module<a class="headerlink" href="#module-gradient.commands.hyperparameters" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="gradient.commands.hyperparameters.HyperparametersCommandBase">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.hyperparameters.</code><code class="sig-name descname">HyperparametersCommandBase</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.hyperparameters.HyperparametersCommandBase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#gradient.commands.common.CommandBase" title="gradient.commands.common.CommandBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.CommandBase</span></code></a></p>
-</dd></dl>
-
 <dl class="class">
 <dt id="gradient.commands.hyperparameters.BaseHyperparameterCommand">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.commands.hyperparameters.</code><code class="sig-name descname">BaseHyperparameterCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.hyperparameters.BaseHyperparameterCommand" title="Permalink to this definition">¶</a></dt>
@@ -541,6 +508,46 @@
 </dd></dl>
 
 <dl class="class">
+<dt id="gradient.commands.jobs.JobRunClient">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.jobs.</code><code class="sig-name descname">JobRunClient</code><span class="sig-paren">(</span><em class="sig-param">http_client_</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.jobs.JobRunClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="gradient.api_sdk.clients.html#gradient.api_sdk.clients.base_client.BaseClient" title="gradient.api_sdk.clients.base_client.BaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.clients.base_client.BaseClient</span></code></a></p>
+<dl class="method">
+<dt id="gradient.commands.jobs.JobRunClient.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">http_client_</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.jobs.JobRunClient.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class. All client classes inherit from it.</p>
+<p>An API key can be created at paperspace.com after you sign in to your account. After obtaining it, you can set
+it in the CLI using the command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">apiKey</span> <span class="n">XXXXXXXXXXXXXXXXXXX</span>
+</pre></div>
+</div>
+<p>or you can provide your API key in any command, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">experiments</span> <span class="n">run</span> <span class="o">...</span> <span class="o">--</span><span class="n">apiKey</span> <span class="n">XXXXXXXXXXXXXXXXXXX</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_key</strong> (<em>str</em>) – your API key</p></li>
+<li><p><strong>logger</strong> (<em>sdk_logger.Logger</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.commands.jobs.JobRunClient.create">
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">machine_type</em>, <em class="sig-param">container</em>, <em class="sig-param">project_id</em>, <em class="sig-param">data=None</em>, <em class="sig-param">name=None</em>, <em class="sig-param">command=None</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">is_public=None</em>, <em class="sig-param">workspace=None</em>, <em class="sig-param">workspace_archive=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">ignore_files=None</em>, <em class="sig-param">experiment_id=None</em>, <em class="sig-param">job_env=None</em>, <em class="sig-param">use_dockerfile=None</em>, <em class="sig-param">is_preemptible=None</em>, <em class="sig-param">project=None</em>, <em class="sig-param">started_by_user_id=None</em>, <em class="sig-param">rel_dockerfile_path=None</em>, <em class="sig-param">registry_username=None</em>, <em class="sig-param">registry_password=None</em>, <em class="sig-param">cluster=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">node_attrs=None</em>, <em class="sig-param">workspace_file_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.jobs.JobRunClient.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.commands.jobs.RunJobCommand">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.jobs.</code><code class="sig-name descname">RunJobCommand</code><span class="sig-paren">(</span><em class="sig-param">workspace_handler</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.jobs.RunJobCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.jobs.CreateJobCommand" title="gradient.commands.jobs.CreateJobCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.jobs.CreateJobCommand</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
 <dt id="gradient.commands.jobs.ArtifactsDestroyCommand">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.commands.jobs.</code><code class="sig-name descname">ArtifactsDestroyCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.jobs.ArtifactsDestroyCommand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.commands.jobs.BaseJobCommand" title="gradient.commands.jobs.BaseJobCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.jobs.BaseJobCommand</span></code></a></p>
@@ -582,9 +589,21 @@
 <div class="section" id="module-gradient.commands.login">
 <span id="gradient-commands-login-module"></span><h2>gradient.commands.login module<a class="headerlink" href="#module-gradient.commands.login" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
+<dt id="gradient.commands.login.CommandBase">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.login.</code><code class="sig-name descname">CommandBase</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.login.CommandBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="gradient.commands.login.CommandBase.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.login.CommandBase.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="gradient.commands.login.LogInCommand">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.commands.login.</code><code class="sig-name descname">LogInCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.login.LogInCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#gradient.commands.common.CommandBase" title="gradient.commands.common.CommandBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.CommandBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.login.CommandBase" title="gradient.commands.login.CommandBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.login.CommandBase</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.login.LogInCommand.execute">
 <code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">email</em>, <em class="sig-param">password</em>, <em class="sig-param">api_token_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.login.LogInCommand.execute" title="Permalink to this definition">¶</a></dt>
@@ -595,7 +614,7 @@
 <dl class="class">
 <dt id="gradient.commands.login.LogOutCommand">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.commands.login.</code><code class="sig-name descname">LogOutCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.login.LogOutCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#gradient.commands.common.CommandBase" title="gradient.commands.common.CommandBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.CommandBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.login.CommandBase" title="gradient.commands.login.CommandBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.login.CommandBase</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.login.LogOutCommand.execute">
 <code class="sig-name descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.login.LogOutCommand.execute" title="Permalink to this definition">¶</a></dt>
@@ -606,7 +625,7 @@
 <dl class="class">
 <dt id="gradient.commands.login.ShowVersionCommand">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.commands.login.</code><code class="sig-name descname">ShowVersionCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.login.ShowVersionCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#gradient.commands.common.CommandBase" title="gradient.commands.common.CommandBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.CommandBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.login.CommandBase" title="gradient.commands.login.CommandBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.login.CommandBase</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.login.ShowVersionCommand.execute">
 <code class="sig-name descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.login.ShowVersionCommand.execute" title="Permalink to this definition">¶</a></dt>
@@ -617,7 +636,7 @@
 <dl class="class">
 <dt id="gradient.commands.login.SetApiKeyCommand">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.commands.login.</code><code class="sig-name descname">SetApiKeyCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.login.SetApiKeyCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#gradient.commands.common.CommandBase" title="gradient.commands.common.CommandBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.CommandBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.login.CommandBase" title="gradient.commands.login.CommandBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.login.CommandBase</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.login.SetApiKeyCommand.execute">
 <code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">api_key</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.login.SetApiKeyCommand.execute" title="Permalink to this definition">¶</a></dt>
@@ -629,20 +648,26 @@
 <div class="section" id="module-gradient.commands.machines">
 <span id="gradient-commands-machines-module"></span><h2>gradient.commands.machines module<a class="headerlink" href="#module-gradient.commands.machines" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
+<dt id="gradient.commands.machines.GetMachinesClientMixin">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">GetMachinesClientMixin</code><a class="headerlink" href="#gradient.commands.machines.GetMachinesClientMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
 <dt id="gradient.commands.machines.CheckAvailabilityCommand">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">CheckAvailabilityCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.CheckAvailabilityCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines._MachinesCommandBase</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">CheckAvailabilityCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.CheckAvailabilityCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.machines.GetMachinesClientMixin" title="gradient.commands.machines.GetMachinesClientMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines.GetMachinesClientMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.machines.CheckAvailabilityCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">region</em>, <em class="sig-param">machine_type</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.CheckAvailabilityCommand.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">machine_type</em>, <em class="sig-param">region</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.CheckAvailabilityCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="gradient.commands.machines.CreateMachineCommand">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">CreateMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.CreateMachineCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines._MachinesCommandBase</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">CreateMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.CreateMachineCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.machines.GetMachinesClientMixin" title="gradient.commands.machines.GetMachinesClientMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines.GetMachinesClientMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.machines.CreateMachineCommand.execute">
 <code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.CreateMachineCommand.execute" title="Permalink to this definition">¶</a></dt>
@@ -652,8 +677,8 @@
 
 <dl class="class">
 <dt id="gradient.commands.machines.UpdateMachineCommand">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">UpdateMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.UpdateMachineCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines._MachinesCommandBase</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">UpdateMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.UpdateMachineCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.machines.GetMachinesClientMixin" title="gradient.commands.machines.GetMachinesClientMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines.GetMachinesClientMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.machines.UpdateMachineCommand.execute">
 <code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">machine_id</em>, <em class="sig-param">kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.UpdateMachineCommand.execute" title="Permalink to this definition">¶</a></dt>
@@ -663,95 +688,90 @@
 
 <dl class="class">
 <dt id="gradient.commands.machines.StartMachineCommand">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">StartMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.StartMachineCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines._MachinesCommandBase</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">StartMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.StartMachineCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.machines.GetMachinesClientMixin" title="gradient.commands.machines.GetMachinesClientMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines.GetMachinesClientMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.machines.StartMachineCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">machine_id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.StartMachineCommand.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.StartMachineCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="gradient.commands.machines.StopMachineCommand">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">StopMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.StopMachineCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines._MachinesCommandBase</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">StopMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.StopMachineCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.machines.GetMachinesClientMixin" title="gradient.commands.machines.GetMachinesClientMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines.GetMachinesClientMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.machines.StopMachineCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">machine_id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.StopMachineCommand.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.StopMachineCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="gradient.commands.machines.RestartMachineCommand">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">RestartMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.RestartMachineCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines._MachinesCommandBase</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">RestartMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.RestartMachineCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.machines.GetMachinesClientMixin" title="gradient.commands.machines.GetMachinesClientMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines.GetMachinesClientMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.machines.RestartMachineCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">machine_id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.RestartMachineCommand.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.RestartMachineCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="gradient.commands.machines.ShowMachineCommand">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">ShowMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ShowMachineCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines._MachinesCommandBase</span></code></p>
-<dl class="method">
-<dt id="gradient.commands.machines.ShowMachineCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">machine_id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ShowMachineCommand.execute" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">ShowMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ShowMachineCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.machines.GetMachinesClientMixin" title="gradient.commands.machines.GetMachinesClientMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines.GetMachinesClientMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.commands.machines.ShowMachineCommand.WAITING_FOR_RESPONSE_MESSAGE">
+<code class="sig-name descname">WAITING_FOR_RESPONSE_MESSAGE</code><em class="property"> = 'Waiting for data...'</em><a class="headerlink" href="#gradient.commands.machines.ShowMachineCommand.WAITING_FOR_RESPONSE_MESSAGE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="gradient.commands.machines.ShowMachineCommand.make_details_table">
-<em class="property">static </em><code class="sig-name descname">make_details_table</code><span class="sig-paren">(</span><em class="sig-param">machine</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ShowMachineCommand.make_details_table" title="Permalink to this definition">¶</a></dt>
+<dt id="gradient.commands.machines.ShowMachineCommand.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">id_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ShowMachineCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="gradient.commands.machines.ListMachinesCommand">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">ListMachinesCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ListMachinesCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#gradient.commands.common.ListCommand" title="gradient.commands.common.ListCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.ListCommand</span></code></a></p>
-<dl class="method">
-<dt id="gradient.commands.machines.ListMachinesCommand.request_url">
-<em class="property">property </em><code class="sig-name descname">request_url</code><a class="headerlink" href="#gradient.commands.machines.ListMachinesCommand.request_url" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">ListMachinesCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ListMachinesCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.machines.GetMachinesClientMixin" title="gradient.commands.machines.GetMachinesClientMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines.GetMachinesClientMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.ListCommandMixin" title="gradient.commands.common.ListCommandMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.ListCommandMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="gradient.commands.machines.DestroyMachineCommand">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">DestroyMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.DestroyMachineCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines._MachinesCommandBase</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">DestroyMachineCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.DestroyMachineCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.machines.GetMachinesClientMixin" title="gradient.commands.machines.GetMachinesClientMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines.GetMachinesClientMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.machines.DestroyMachineCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">machine_id</em>, <em class="sig-param">release_public_ip</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.DestroyMachineCommand.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">machine_type</em>, <em class="sig-param">region</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.DestroyMachineCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="gradient.commands.machines.ShowMachineUtilisationCommand">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">ShowMachineUtilisationCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ShowMachineUtilisationCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines._MachinesCommandBase</span></code></p>
+<dt id="gradient.commands.machines.ShowMachineUtilizationCommand">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">ShowMachineUtilizationCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ShowMachineUtilizationCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.machines.GetMachinesClientMixin" title="gradient.commands.machines.GetMachinesClientMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines.GetMachinesClientMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
 <dl class="method">
-<dt id="gradient.commands.machines.ShowMachineUtilisationCommand.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">machine_id</em>, <em class="sig-param">billing_month</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ShowMachineUtilisationCommand.execute" title="Permalink to this definition">¶</a></dt>
+<dt id="gradient.commands.machines.ShowMachineUtilizationCommand.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">machine_id</em>, <em class="sig-param">billing_month</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ShowMachineUtilizationCommand.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="gradient.commands.machines.ShowMachineUtilisationCommand.make_details_table">
-<em class="property">static </em><code class="sig-name descname">make_details_table</code><span class="sig-paren">(</span><em class="sig-param">machine</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ShowMachineUtilisationCommand.make_details_table" title="Permalink to this definition">¶</a></dt>
+<dt id="gradient.commands.machines.ShowMachineUtilizationCommand.make_details_table">
+<em class="property">static </em><code class="sig-name descname">make_details_table</code><span class="sig-paren">(</span><em class="sig-param">usage</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.ShowMachineUtilizationCommand.make_details_table" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="gradient.commands.machines.WaitForMachineStateCommand">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">WaitForMachineStateCommand</code><span class="sig-paren">(</span><em class="sig-param">api=None</em>, <em class="sig-param">logger_=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.WaitForMachineStateCommand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines._MachinesCommandBase</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.machines.</code><code class="sig-name descname">WaitForMachineStateCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.WaitForMachineStateCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.machines.GetMachinesClientMixin" title="gradient.commands.machines.GetMachinesClientMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.machines.GetMachinesClientMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
 <dl class="method">
 <dt id="gradient.commands.machines.WaitForMachineStateCommand.execute">
 <code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">machine_id</em>, <em class="sig-param">state</em>, <em class="sig-param">interval=5</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.machines.WaitForMachineStateCommand.execute" title="Permalink to this definition">¶</a></dt>
@@ -772,6 +792,74 @@
 <dt id="gradient.commands.models.ListModelsCommand">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.commands.models.</code><code class="sig-name descname">ListModelsCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.models.ListModelsCommand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.commands.common.ListCommandMixin" title="gradient.commands.common.ListCommandMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.ListCommandMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.models.BaseModelCommand" title="gradient.commands.models.BaseModelCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.models.BaseModelCommand</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.commands.notebooks">
+<span id="gradient-commands-notebooks-module"></span><h2>gradient.commands.notebooks module<a class="headerlink" href="#module-gradient.commands.notebooks" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.commands.notebooks.BaseNotebookCommand">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.notebooks.</code><code class="sig-name descname">BaseNotebookCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.notebooks.BaseNotebookCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.commands.notebooks.CreateNotebookCommand">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.notebooks.</code><code class="sig-name descname">CreateNotebookCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.notebooks.CreateNotebookCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.notebooks.BaseNotebookCommand" title="gradient.commands.notebooks.BaseNotebookCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.notebooks.BaseNotebookCommand</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.commands.notebooks.CreateNotebookCommand.SPINNER_MESSAGE">
+<code class="sig-name descname">SPINNER_MESSAGE</code><em class="property"> = 'Creating new notebook'</em><a class="headerlink" href="#gradient.commands.notebooks.CreateNotebookCommand.SPINNER_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.commands.notebooks.CreateNotebookCommand.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.notebooks.CreateNotebookCommand.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.commands.notebooks.DeleteNotebookCommand">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.notebooks.</code><code class="sig-name descname">DeleteNotebookCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.notebooks.DeleteNotebookCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.notebooks.BaseNotebookCommand" title="gradient.commands.notebooks.BaseNotebookCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.notebooks.BaseNotebookCommand</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.commands.notebooks.DeleteNotebookCommand.WAITING_FOR_RESPONSE_MESSAGE">
+<code class="sig-name descname">WAITING_FOR_RESPONSE_MESSAGE</code><em class="property"> = 'Deleting notebook'</em><a class="headerlink" href="#gradient.commands.notebooks.DeleteNotebookCommand.WAITING_FOR_RESPONSE_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.commands.notebooks.DeleteNotebookCommand.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">id_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.notebooks.DeleteNotebookCommand.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.commands.notebooks.ListNotebooksCommand">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.notebooks.</code><code class="sig-name descname">ListNotebooksCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.notebooks.ListNotebooksCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.common.ListCommandMixin" title="gradient.commands.common.ListCommandMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.ListCommandMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.notebooks.BaseNotebookCommand" title="gradient.commands.notebooks.BaseNotebookCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.notebooks.BaseNotebookCommand</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.commands.notebooks.ListNotebooksCommand.SPINNER_MESSAGE">
+<code class="sig-name descname">SPINNER_MESSAGE</code><em class="property"> = 'Waiting for data'</em><a class="headerlink" href="#gradient.commands.notebooks.ListNotebooksCommand.SPINNER_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.commands.notebooks.ShowNotebookDetailsCommand">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.notebooks.</code><code class="sig-name descname">ShowNotebookDetailsCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.notebooks.ShowNotebookDetailsCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.notebooks.BaseNotebookCommand" title="gradient.commands.notebooks.BaseNotebookCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.notebooks.BaseNotebookCommand</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.commands.notebooks.ShowNotebookDetailsCommand.WAITING_FOR_RESPONSE_MESSAGE">
+<code class="sig-name descname">WAITING_FOR_RESPONSE_MESSAGE</code><em class="property"> = 'Waiting for data'</em><a class="headerlink" href="#gradient.commands.notebooks.ShowNotebookDetailsCommand.WAITING_FOR_RESPONSE_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.commands.notebooks.ShowNotebookDetailsCommand.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">id_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.notebooks.ShowNotebookDetailsCommand.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -826,6 +914,106 @@
 <dl class="method">
 <dt id="gradient.commands.run.RunCommand.execute">
 <code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">mode=None</em>, <em class="sig-param">script=None</em>, <em class="sig-param">**json_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.run.RunCommand.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.commands.tensorboards">
+<span id="gradient-commands-tensorboards-module"></span><h2>gradient.commands.tensorboards module<a class="headerlink" href="#module-gradient.commands.tensorboards" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.commands.tensorboards.GetTensorboardClientCommandMixin">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.tensorboards.</code><code class="sig-name descname">GetTensorboardClientCommandMixin</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.tensorboards.GetTensorboardClientCommandMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.commands.tensorboards.CreateTensorboardCommand">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.tensorboards.</code><code class="sig-name descname">CreateTensorboardCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.tensorboards.CreateTensorboardCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.tensorboards.GetTensorboardClientCommandMixin" title="gradient.commands.tensorboards.GetTensorboardClientCommandMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.tensorboards.GetTensorboardClientCommandMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.commands.tensorboards.CreateTensorboardCommand.SPINNER_MESSAGE">
+<code class="sig-name descname">SPINNER_MESSAGE</code><em class="property"> = 'Creating new tensorboard'</em><a class="headerlink" href="#gradient.commands.tensorboards.CreateTensorboardCommand.SPINNER_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.commands.tensorboards.CreateTensorboardCommand.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.tensorboards.CreateTensorboardCommand.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.commands.tensorboards.GetTensorboardCommand">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.tensorboards.</code><code class="sig-name descname">GetTensorboardCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.tensorboards.GetTensorboardCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.tensorboards.GetTensorboardClientCommandMixin" title="gradient.commands.tensorboards.GetTensorboardClientCommandMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.tensorboards.GetTensorboardClientCommandMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.commands.tensorboards.GetTensorboardCommand.WAITING_FOR_RESPONSE_MESSAGE">
+<code class="sig-name descname">WAITING_FOR_RESPONSE_MESSAGE</code><em class="property"> = 'Waiting for data...'</em><a class="headerlink" href="#gradient.commands.tensorboards.GetTensorboardCommand.WAITING_FOR_RESPONSE_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.commands.tensorboards.GetTensorboardCommand.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">id_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.tensorboards.GetTensorboardCommand.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.commands.tensorboards.ListTensorboardsCommand">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.tensorboards.</code><code class="sig-name descname">ListTensorboardsCommand</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.tensorboards.ListTensorboardsCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.tensorboards.GetTensorboardClientCommandMixin" title="gradient.commands.tensorboards.GetTensorboardClientCommandMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.tensorboards.GetTensorboardClientCommandMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.ListCommandMixin" title="gradient.commands.common.ListCommandMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.ListCommandMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.commands.tensorboards.ListTensorboardsCommand.WAITING_FOR_RESPONSE_MESSAGE">
+<code class="sig-name descname">WAITING_FOR_RESPONSE_MESSAGE</code><em class="property"> = 'Waiting for data...'</em><a class="headerlink" href="#gradient.commands.tensorboards.ListTensorboardsCommand.WAITING_FOR_RESPONSE_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.commands.tensorboards.AddExperimentToTensorboard">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.tensorboards.</code><code class="sig-name descname">AddExperimentToTensorboard</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.tensorboards.AddExperimentToTensorboard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.tensorboards.GetTensorboardClientCommandMixin" title="gradient.commands.tensorboards.GetTensorboardClientCommandMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.tensorboards.GetTensorboardClientCommandMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.commands.tensorboards.AddExperimentToTensorboard.SPINNER_MESSAGE">
+<code class="sig-name descname">SPINNER_MESSAGE</code><em class="property"> = 'Adding experiments to tensorboard'</em><a class="headerlink" href="#gradient.commands.tensorboards.AddExperimentToTensorboard.SPINNER_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.commands.tensorboards.AddExperimentToTensorboard.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.tensorboards.AddExperimentToTensorboard.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.commands.tensorboards.RemoveExperimentToTensorboard">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.tensorboards.</code><code class="sig-name descname">RemoveExperimentToTensorboard</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.tensorboards.RemoveExperimentToTensorboard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.tensorboards.GetTensorboardClientCommandMixin" title="gradient.commands.tensorboards.GetTensorboardClientCommandMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.tensorboards.GetTensorboardClientCommandMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.commands.tensorboards.RemoveExperimentToTensorboard.SPINNER_MESSAGE">
+<code class="sig-name descname">SPINNER_MESSAGE</code><em class="property"> = 'Removing experiments from tensorboard'</em><a class="headerlink" href="#gradient.commands.tensorboards.RemoveExperimentToTensorboard.SPINNER_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.commands.tensorboards.RemoveExperimentToTensorboard.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.tensorboards.RemoveExperimentToTensorboard.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gradient.commands.tensorboards.DeleteTensorboard">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.commands.tensorboards.</code><code class="sig-name descname">DeleteTensorboard</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.logger.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.tensorboards.DeleteTensorboard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.commands.tensorboards.GetTensorboardClientCommandMixin" title="gradient.commands.tensorboards.GetTensorboardClientCommandMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.tensorboards.GetTensorboardClientCommandMixin</span></code></a>, <a class="reference internal" href="#gradient.commands.common.BaseCommand" title="gradient.commands.common.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.commands.common.BaseCommand</span></code></a></p>
+<dl class="attribute">
+<dt id="gradient.commands.tensorboards.DeleteTensorboard.SPINNER_MESSAGE">
+<code class="sig-name descname">SPINNER_MESSAGE</code><em class="property"> = 'Deleting tensorboard'</em><a class="headerlink" href="#gradient.commands.tensorboards.DeleteTensorboard.SPINNER_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gradient.commands.tensorboards.DeleteTensorboard.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.commands.tensorboards.DeleteTensorboard.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

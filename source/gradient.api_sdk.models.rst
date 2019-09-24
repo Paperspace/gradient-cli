@@ -44,6 +44,14 @@ gradient.api\_sdk.models.log module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.models.machine module
+---------------------------------------
+
+.. automodule:: gradient.api_sdk.models.machine
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.models.model module
 -------------------------------------
 
@@ -52,10 +60,26 @@ gradient.api\_sdk.models.model module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.models.notebook module
+----------------------------------------
+
+.. automodule:: gradient.api_sdk.models.notebook
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.models.project module
 ---------------------------------------
 
 .. automodule:: gradient.api_sdk.models.project
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.models.tensorboard module
+-------------------------------------------
+
+.. automodule:: gradient.api_sdk.models.tensorboard
    :members:
    :undoc-members:
    :show-inheritance:
