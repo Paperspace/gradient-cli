@@ -59,9 +59,9 @@ class GetTensorboardClientCommandMixin(BaseCommand):
             ("Image", instance.image),
             ("URL", instance.url),
             # ("State", instance.state),        TODO: later add state when state will be available in response
-            ("Instance type", instance.instance.type),
-            ("Instance size", instance.instance.size),
-            ("Instance count", instance.instance.count),
+            # ("Instance type", instance.instance.type),    TODO: for now
+            # ("Instance size", instance.instance.size),
+            # ("Instance count", instance.instance.count),
         )
         return data
 
