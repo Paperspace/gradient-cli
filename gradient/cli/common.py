@@ -3,7 +3,6 @@ import json
 import re
 
 import click
-import colorama
 import termcolor
 import yaml
 from click.exceptions import Exit
