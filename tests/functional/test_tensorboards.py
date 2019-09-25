@@ -434,6 +434,14 @@ class TestTensorboardsDelete(object):
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"title": "Invalid credentials provided"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to delete resource: Invalid credentials provided\n"
 
+    RESPONSE_JSON_WITH_WRONG_ACCESS = {
+        "error": "You don't have access to tensorboard some_id",
+        "title": "401 Unauthorized"
+    }
+    EXPECTED_WRONG_ACCESS_RESPONSE = """Failed to delete resource: You don't have access to tensorboard some_id
+401 Unauthorized
+"""
+
     @mock.patch("gradient.api_sdk.clients.http_client.requests.delete")
     def test_should_send_valid_request_when_command_was_executed_with_required_options(self, delete_patched):
         delete_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON, status_code=200)
@@ -464,3 +472,19 @@ class TestTensorboardsDelete(object):
             json=None,
             params=None
         )
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.delete")
+    def test_should_send_request_to_remove_tensorboard_without_proper_access(self, delete_patched):
+        delete_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_ACCESS, status_code=401)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.EXPECTED_WRONG_ACCESS_RESPONSE, result.exc_info
+        delete_patched.assert_called_once_with(
+            self.URL,
+            headers=self.EXPECTED_HEADERS,
+            json=None,
+            params=None
+        )
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
