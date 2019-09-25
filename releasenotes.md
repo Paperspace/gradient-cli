@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.3.2
+### Fixes
+* Fixed bug raising exception when `experiment create's` `--ignoreFiles` option was used
+
 # Release Notes for 0.3.1
 ### Fixes
 * Fixed bug preventing showing logs when 'experiments run' was executed
