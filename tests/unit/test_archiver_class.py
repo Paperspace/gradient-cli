@@ -3,6 +3,7 @@ import shutil
 import tempfile
 import zipfile
 
+import gradient.api_sdk.s3_uploader
 from gradient import api_sdk
 
 
@@ -35,14 +36,14 @@ def create_test_dir_tree(dir_path=None):
 
 class TestZipArchiver(object):
     def test_should_get_valid_excluded_paths_when_empty_list_was_passed_to_get_excluded_paths(self):
-        archiver = api_sdk.ZipArchiver()
+        archiver = gradient.api_sdk.s3_uploader.ZipArchiver()
 
         excluded = archiver.get_excluded_paths()
 
         assert excluded == {".git", ".idea", ".pytest_cache"}
 
     def test_should_get_valid_excluded_paths_when_list_of_files_was_passed_to_get_excluded_paths(self):
-        archiver = api_sdk.ZipArchiver()
+        archiver = gradient.api_sdk.s3_uploader.ZipArchiver()
 
         excluded = archiver.get_excluded_paths(["some_file", "some_dir/some_other_file"])
 
@@ -58,7 +59,7 @@ class TestZipArchiver(object):
             "subdir2/file5": os.path.join(test_dir, "subdir2/file5"),
         }
 
-        paths = api_sdk.ZipArchiver.get_file_paths(test_dir, excluded_paths=["file2", "subdir2/file4"])
+        paths = gradient.api_sdk.s3_uploader.ZipArchiver.get_file_paths(test_dir, excluded_paths=["file2", "subdir2/file4"])
 
         assert paths == expected_paths
 
@@ -71,7 +72,7 @@ class TestZipArchiver(object):
         }
 
         try:
-            paths = api_sdk.ZipArchiver.get_file_paths(test_dir, excluded_paths=["file2", "subdir1/file3", "subdir2"])
+            paths = gradient.api_sdk.s3_uploader.ZipArchiver.get_file_paths(test_dir, excluded_paths=["file2", "subdir1/file3", "subdir2"])
 
             assert paths == expected_paths
         finally:
@@ -96,12 +97,12 @@ class TestZipArchiver(object):
         }
 
         try:
-            archiver = api_sdk.ZipArchiver()
+            archiver = gradient.api_sdk.s3_uploader.ZipArchiver()
             archiver.archive(temp_input_dir, archive_file_path, exclude=["file2", "subdir1/file3", "subdir2"])
 
             zip_file = zipfile.ZipFile(archive_file_path)
             zip_file.extractall(temp_dir_for_extracted_files)
-            archiver2 = api_sdk.ZipArchiver()
+            archiver2 = gradient.api_sdk.s3_uploader.ZipArchiver()
             archiver2.default_excluded_paths = []
             paths_in_extracted_dir = archiver2.get_file_paths(temp_dir_for_extracted_files)
 
