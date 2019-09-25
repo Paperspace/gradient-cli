@@ -33,9 +33,6 @@ class TestTensorboardsCreate(object):
         "--image", "some_image",
         "--username", "some_username",
         "--password", "some_password",
-        "--instanceType", "some_instance_type",
-        "--instanceSize", "some_instance_size",
-        "--instancesCount", 2,
         "--apiKey", "some_key",
     ]
 
@@ -46,12 +43,7 @@ class TestTensorboardsCreate(object):
         ],
         "image": "some_image",
         "username": "some_username",
-        "password": "some_password",
-        "instance": {
-            "type": "some_instance_type",
-            "size": "some_instance_size",
-            "count": 2,
-        }
+        "password": "some_password"
     }
     COMMAND_WITH_OPTIONS_FILE_USED = ["tensorboards", "create", "--optionsFile", ]  # path added in test
 
@@ -136,15 +128,12 @@ class TestTensorboardsDetail(object):
         "--id", "some_id",
     ]
     EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_DETAIL_RESPONSE_JSON
-    EXPECTED_STDOUT = """+----------------+----------------------------------+
-| ID             | some_id                          |
-+----------------+----------------------------------+
-| Image          | tensorflow/tensorflow:latest-py3 |
-| URL            | None                             |
-| Instance type  | cpu                              |
-| Instance size  | large                            |
-| Instance count | 2                                |
-+----------------+----------------------------------+
+    EXPECTED_STDOUT = """+-------+----------------------------------+
+| ID    | some_id                          |
++-------+----------------------------------+
+| Image | tensorflow/tensorflow:latest-py3 |
+| URL   | None                             |
++-------+----------------------------------+
 +--------------------------+
 | Experiments ID           |
 +--------------------------+
@@ -287,15 +276,12 @@ class TestTensorboardsAddExperiment(object):
 
     EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_UPDATE_RESPONSE_JSON
     EXPECTED_REQUEST_JSON = {"added_experiments": ["some_third_experiment_id"], "removed_experiments": []}
-    EXPECTED_STDOUT = """+----------------+----------------------------------+
-| ID             | some_id                          |
-+----------------+----------------------------------+
-| Image          | tensorflow/tensorflow:latest-py3 |
-| URL            | None                             |
-| Instance type  | cpu                              |
-| Instance size  | large                            |
-| Instance count | 2                                |
-+----------------+----------------------------------+
+    EXPECTED_STDOUT = """+-------+----------------------------------+
+| ID    | some_id                          |
++-------+----------------------------------+
+| Image | tensorflow/tensorflow:latest-py3 |
+| URL   | None                             |
++-------+----------------------------------+
 +--------------------------+
 | Experiments ID           |
 +--------------------------+
@@ -355,15 +341,12 @@ class TestTensorboardsRemoveExperiment(object):
 
     EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_UPDATE_REMOVE_RESPONSE_JSON
     EXPECTED_REQUEST_JSON = {"added_experiments": [], "removed_experiments": ["some_other_experiment_id"]}
-    EXPECTED_STDOUT = """+----------------+----------------------------------+
-| ID             | some_id                          |
-+----------------+----------------------------------+
-| Image          | tensorflow/tensorflow:latest-py3 |
-| URL            | None                             |
-| Instance type  | cpu                              |
-| Instance size  | large                            |
-| Instance count | 2                                |
-+----------------+----------------------------------+
+    EXPECTED_STDOUT = """+-------+----------------------------------+
+| ID    | some_id                          |
++-------+----------------------------------+
+| Image | tensorflow/tensorflow:latest-py3 |
+| URL   | None                             |
++-------+----------------------------------+
 +--------------------+
 | Experiments ID     |
 +--------------------+
@@ -434,6 +417,14 @@ class TestTensorboardsDelete(object):
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"title": "Invalid credentials provided"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to delete resource: Invalid credentials provided\n"
 
+    RESPONSE_JSON_WITH_WRONG_ACCESS = {
+        "error": "You don't have access to tensorboard some_id",
+        "title": "401 Unauthorized"
+    }
+    EXPECTED_WRONG_ACCESS_RESPONSE = """Failed to delete resource: You don't have access to tensorboard some_id
+401 Unauthorized
+"""
+
     @mock.patch("gradient.api_sdk.clients.http_client.requests.delete")
     def test_should_send_valid_request_when_command_was_executed_with_required_options(self, delete_patched):
         delete_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON, status_code=200)
@@ -464,3 +455,19 @@ class TestTensorboardsDelete(object):
             json=None,
             params=None
         )
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.delete")
+    def test_should_send_request_to_remove_tensorboard_without_proper_access(self, delete_patched):
+        delete_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_ACCESS, status_code=401)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.EXPECTED_WRONG_ACCESS_RESPONSE, result.exc_info
+        delete_patched.assert_called_once_with(
+            self.URL,
+            headers=self.EXPECTED_HEADERS,
+            json=None,
+            params=None
+        )
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"

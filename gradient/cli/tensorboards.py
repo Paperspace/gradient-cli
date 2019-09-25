@@ -37,25 +37,25 @@ def tensorboards_group():
     help="Password",
     cls=common.GradientOption,
 )
-@click.option(
-    "--instanceType",
-    "instance_type",
-    help="Instance type",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--instanceSize",
-    "instance_size",
-    help="Instance size",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--instancesCount",
-    "instances_count",
-    type=int,
-    help="Instances count",
-    cls=common.GradientOption,
-)
+# @click.option(
+#     "--instanceType",
+#     "instance_type",
+#     help="Instance type",
+#     cls=common.GradientOption,
+# )
+# @click.option(
+#     "--instanceSize",
+#     "instance_size",
+#     help="Instance size",
+#     cls=common.GradientOption,
+# )
+# @click.option(
+#     "--instancesCount",
+#     "instances_count",
+#     type=int,
+#     help="Instances count",
+#     cls=common.GradientOption,
+# )
 @common.api_key_option
 @common.options_file
 def create_tensorboard(api_key, options_file, **kwargs):
