@@ -85,6 +85,9 @@ class ReadValueFromConfigFile(click.Parameter):
 class ColorExtrasInCommandHelpMixin(object):
     def get_help_record(self, *args, **kwargs):
         rv = super(ColorExtrasInCommandHelpMixin, self).get_help_record(*args, **kwargs)
+        if not rv:
+            return rv
+        
         if not config.USE_CONSOLE_COLORS:
             return rv
 
