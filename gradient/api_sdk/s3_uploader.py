@@ -1,9 +1,9 @@
 import collections
 import os
 import tempfile
-import zipfile
 
 import progressbar
+import zipfile
 from requests_toolbelt.multipart import encoder
 
 from gradient.api_sdk import exceptions
@@ -42,9 +42,9 @@ class MultipartEncoderWithProgressbar(MultipartEncoder):
 class ZipArchiver(object):
     DEFAULT_EXCLUDED_PATHS = [".git", ".idea", ".pytest_cache"]
 
-    def __init__(self, logger=MuteLogger()):
-        self.logger = logger
-        self.default_excluded_paths = self.DEFAULT_EXCLUDED_PATHS
+    def __init__(self, logger=None):
+        self.logger = logger or MuteLogger()
+        self.default_excluded_paths = self.DEFAULT_EXCLUDED_PATHS.copy()
 
     def archive(self, input_dir_path, output_file_path, overwrite_existing_archive=True, exclude=None):
         """
@@ -114,6 +114,11 @@ class ZipArchiver(object):
         return file_paths
 
     def _archive(self, file_paths, output_file_path):
+        """Create ZIP archive and add files to it
+
+        :param dict[str,str] file_paths:
+        :param str output_file_path:
+        """
         zip_file = zipfile.ZipFile(output_file_path, 'w')
         with zip_file:
             i = 0
@@ -129,6 +134,11 @@ class ZipArchiver(object):
 
 class ZipArchiverWithProgressbar(ZipArchiver):
     def _archive(self, file_paths, output_file_path):
+        """Create ZIP archive and add files to it and show progress bar in terminal
+
+        :param dict[str,str] file_paths:
+        :param str output_file_path:
+        """
         self.bar = progressbar.ProgressBar(max_value=len(file_paths))
         super(ZipArchiverWithProgressbar, self)._archive(file_paths, output_file_path)
         self.bar.finish()
@@ -140,11 +150,26 @@ class ZipArchiverWithProgressbar(ZipArchiver):
 class S3FileUploader(object):
     DEFAULT_MULTIPART_ENCODER_CLS = MultipartEncoder
 
-    def __init__(self, multipart_encoder_cls=None, logger=MuteLogger()):
+    def __init__(self, multipart_encoder_cls=None, logger=None):
+        """
+        :param type(MultipartEncoder) multipart_encoder_cls:
+        :param Logger logger:
+        """
         self.multipart_encoder_cls = multipart_encoder_cls or self.DEFAULT_MULTIPART_ENCODER_CLS
-        self.logger = logger
+        self.logger = logger or MuteLogger()
 
     def upload(self, file_path, url, bucket_name, s3_fields):
+        """Upload a file to S3
+
+        :param str file_path:
+        :param str url:
+        :param str bucket_name:
+        :param dict[str,str] s3_fields:
+
+        :rtype: str
+        :return: URL to S3 bucket
+        """
+        # the S3 service requires the file field be the last one in sent object so dict needs to be ordered
         ordered_s3_fields = collections.OrderedDict(s3_fields)
         with open(file_path, "rb") as file_handle:
             ordered_s3_fields["file"] = (file_path, file_handle)
@@ -157,6 +182,11 @@ class S3FileUploader(object):
         return bucket_url
 
     def _upload(self, url, data):
+        """Send data to S3 and raise exception if it was not a success
+
+        :param str url:
+        :param MultipartEncoder data:
+        """
         client = self._get_client(url)
         response = client.post("", data=data)
         if not response.ok:
@@ -167,28 +197,59 @@ class S3FileUploader(object):
         return client
 
     def _get_multipart_encoder_monitor(self, fields):
+        """
+        :param dict fields:
+        :rtype: encoder.MultipartEncoderMonitor
+        """
         multipart_encoder = self.multipart_encoder_cls(fields)
         monitor = multipart_encoder.get_monitor()
         return monitor
 
-    def _get_bucket_url(self, bucket_name, s3_fields):
+    @staticmethod
+    def _get_bucket_url(bucket_name, s3_fields):
+        """
+        :param str bucket_name:
+        :param dict s3_fields:
+        :rtype: str
+        """
         s3_object_path = s3_fields["key"]
         url = "s3://{}/{}".format(bucket_name, s3_object_path)
         return url
 
 
 class S3ProjectFileUploader(object):
-    def __init__(self, api_key, s3uploader=None, logger=MuteLogger()):
+    def __init__(self, api_key, s3uploader=None, logger=None):
+        """
+        :param str api_key:
+        :param S3FileUploader s3uploader:
+        :param Logger logger:
+        """
         self.s3uploader = s3uploader or S3FileUploader()
         self.experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
-        self.logger = logger
+        self.logger = logger or MuteLogger()
 
     def upload(self, file_path, project_id):
+        """Upload file to S3 bucket for a project
+
+        :param str file_path:
+        :param str project_id:
+
+        :rtype: str
+        :return: S3 bucket's URL
+        """
         url, bucket_name, s3_fields = self._get_upload_data(file_path, project_id)
         bucket_url = self.s3uploader.upload(file_path, url, bucket_name, s3_fields)
         return bucket_url
 
     def _get_upload_data(self, file_path, project_handle):
+        """Ask API for data required to upload a file to S3
+
+        :param str file_path:
+        :param str project_handle:
+
+        :rtype: tuple[str,str,dict]
+        :return: URL to which send the file, name of the bucket and a dictionary required by S3 service
+        """
         file_name = os.path.basename(file_path)
         response = self.experiments_api.get("/workspace/get_presigned_url",
                                             params={'workspaceName': file_name, 'projectHandle': project_handle})
@@ -217,12 +278,28 @@ class S3ProjectFileUploader(object):
 
 class S3WorkspaceDirectoryUploader(object):
     def __init__(self, api_key, temp_dir=None, archiver=None, project_uploader=None):
+        """
+        :param str api_key:
+        :param str temp_dir:
+        :param ZipArchiver archiver:
+        :param S3ProjectFileUploader project_uploader:
+        """
         self.temp_dir = temp_dir or tempfile.gettempdir()
         self.archiver = archiver or ZipArchiver()
         self.project_uploader = project_uploader or S3ProjectFileUploader(api_key)
         self.experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
 
     def upload(self, workspace_dir_path, project_id, exclude=None, temp_file_name="temp.zip"):
+        """Archive and upload a workspace directory
+
+        :param str workspace_dir_path:
+        :param str project_id:
+        :param list|tuple|None exclude:
+        :param str temp_file_name:
+
+        :rtype: str
+        :return: URL to the S3 bucket
+        """
         archive_path = self.get_archive_path(temp_file_name)
         self.archiver.archive(workspace_dir_path, archive_path, exclude=exclude)
         bucket_url = self.project_uploader.upload(archive_path, project_id)
