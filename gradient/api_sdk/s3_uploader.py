@@ -44,7 +44,7 @@ class ZipArchiver(object):
 
     def __init__(self, logger=None):
         self.logger = logger or MuteLogger()
-        self.default_excluded_paths = self.DEFAULT_EXCLUDED_PATHS.copy()
+        self.default_excluded_paths = self.DEFAULT_EXCLUDED_PATHS[:]
 
     def archive(self, input_dir_path, output_file_path, overwrite_existing_archive=True, exclude=None):
         """
