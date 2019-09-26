@@ -1,8 +1,12 @@
 # Gradient CLI Release Notes
 
-# Release Notes for 0.3.3
+# Release Notes for 0.3.4
 ### Fixes
 * Fixed bug causing exception be raised when `--help` option was used with some commands (like `gradient run`)
+
+# Release Notes for 0.3.3
+### Fixes
+* ~~Fixed bug causing exception be raised when `--help` option was used with some commands (like `gradient run`)~~
 
 # Release Notes for 0.3.2
 ### Fixes
