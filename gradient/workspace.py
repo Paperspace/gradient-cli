@@ -1,14 +1,10 @@
 import os
-import zipfile
-from collections import OrderedDict
 
 import progressbar
-import requests
 from requests_toolbelt.multipart import encoder
 
 from gradient import utils
-from gradient.exceptions import S3UploadFailedError, ProjectAccessDeniedError, PresignedUrlAccessDeniedError, \
-    PresignedUrlUnreachableError, PresignedUrlConnectionError, PresignedUrlMalformedResponseError, PresignedUrlError
+from gradient.api_sdk import s3_uploader
 from gradient.logger import Logger
 
 
@@ -40,6 +36,8 @@ class MultipartEncoderWithProgressbar(MultipartEncoder):
 
 
 class WorkspaceHandler(object):
+    WORKSPACE_ARCHIVER_CLS = s3_uploader.ZipArchiver
+
     def __init__(self, logger_=None):
         """
 
@@ -48,30 +46,6 @@ class WorkspaceHandler(object):
         self.logger = logger_ or Logger()
         self.archive_path = None
         self.archive_basename = None
-
-    @staticmethod
-    def _retrieve_file_paths(dir_name, ignored_files=None):
-        # setup file paths variable
-        file_paths = {}
-
-        exclude = ['.git', '.idea', '.pytest_cache']
-        if ignored_files:
-            exclude += ignored_files.split(',')
-
-        # Read all directory, subdirectories and file lists
-        for root, dirs, files in os.walk(dir_name, topdown=True):
-            dirs[:] = [d for d in dirs if d not in exclude]
-            for filename in files:
-                # Create the full filepath by using os module.
-                relpath = os.path.relpath(root, dir_name)
-                if relpath == '.':
-                    file_path = filename
-                else:
-                    file_path = os.path.join(os.path.relpath(root, dir_name), filename)
-                if file_path not in exclude:
-                    file_paths[file_path] = os.path.join(root, filename)
-
-        return file_paths
 
     def _zip_workspace(self, workspace_path, ignore_files):
         if not workspace_path:
@@ -82,30 +56,12 @@ class WorkspaceHandler(object):
 
         zip_file_path = os.path.join(workspace_path, zip_file_name)
 
-        if os.path.exists(zip_file_path):
-            self.logger.log('Removing existing archive')
-            os.remove(zip_file_path)
-        file_paths = self._retrieve_file_paths(workspace_path, ignore_files)
+        if ignore_files:
+            ignore_files = ignore_files.split(",")
+        zip_archiver = self._get_workspace_archiver()
+        zip_archiver.archive(workspace_path, zip_file_path, exclude=ignore_files)
 
-        self.logger.log('Creating zip archive: %s' % zip_file_name)
-        zip_file = zipfile.ZipFile(zip_file_path, 'w')
-
-        self._zip_files(zip_file, file_paths)
-
-        self.logger.log('\nFinished creating archive: %s' % zip_file_name)
         return zip_file_path
-
-    def _zip_files(self, zip_file, file_paths):
-        with zip_file:
-            i = 0
-            for relpath, abspath in file_paths.items():
-                i += 1
-                self.logger.debug('Adding %s to archive' % relpath)
-                zip_file.write(abspath, arcname=relpath)
-                self._zip_files_iterate_callback(i)
-
-    def _zip_files_iterate_callback(self, i):
-        pass
 
     def handle(self, input_data):
         workspace_archive, workspace_path, workspace_url = self._validate_input(input_data)
@@ -126,6 +82,10 @@ class WorkspaceHandler(object):
         self.archive_path = archive_path
         self.archive_basename = os.path.basename(archive_path)
         return archive_path
+
+    def _get_workspace_archiver(self):
+        workspace_archiver = self.WORKSPACE_ARCHIVER_CLS(logger=self.logger)
+        return workspace_archiver
 
     @staticmethod
     def _validate_input(input_data):
@@ -150,86 +110,40 @@ class WorkspaceHandler(object):
 
 
 class S3WorkspaceHandler(WorkspaceHandler):
-    DEFAULT_MULTIPART_ENCODER_CLS = MultipartEncoder
+    WORKSPACE_UPLOADER_CLS = s3_uploader.S3ProjectFileUploader
 
-    def __init__(self, experiments_api, logger_=None,
-                 multipart_encoder_cls=DEFAULT_MULTIPART_ENCODER_CLS):
+    def __init__(self, api_key, logger_=None):
         """
-
-        :param gradient.api_sdk.clients.http_client.API experiments_api:
+        :param str api_key:
         :param gradient.logger.Logger logger_:
-        :param type[MultipartEncoder] multipart_encoder_cls:
         """
         super(S3WorkspaceHandler, self).__init__(logger_=logger_)
-        self.experiments_api = experiments_api
-        self.multipart_encoder_cls = multipart_encoder_cls
+        self.api_key = api_key
 
     def handle(self, input_data):
         workspace = super(S3WorkspaceHandler, self).handle(input_data)
         if not self.archive_path:
             return workspace
+
         archive_path = workspace
-        file_name = os.path.basename(archive_path)
         project_handle = input_data.get('projectHandle') or input_data["project_id"]
+        workspace = self._upload(archive_path, project_handle)
+        return workspace
 
-        s3_upload_data = self._get_upload_data(file_name, project_handle)
+    def _upload(self, archive_path, project_id):
+        uploader = self._get_workspace_uploader(self.api_key)
+        workspace = uploader.upload(archive_path, project_id)
+        return workspace
 
-        bucket_name = s3_upload_data['bucket_name']
-        s3_object_path = s3_upload_data['fields']['key']
-
-        self.logger.log('Uploading zipped workspace to S3')
-
-        self._upload(archive_path, s3_upload_data)
-
-        self.logger.log('\nUploading completed')
-
-        return 's3://{}/{}'.format(bucket_name, s3_object_path)
-
-    def _upload(self, archive_path, s3_upload_data):
-        files = self._get_files_dict(archive_path)
-        fields = OrderedDict(s3_upload_data['fields'])
-        fields.update(files)
-
-        monitor = self.multipart_encoder_cls(fields).get_monitor()
-        s3_response = requests.post(s3_upload_data['url'], data=monitor, headers={'Content-Type': monitor.content_type})
-        self.logger.debug("S3 upload response: {}".format(s3_response.headers))
-        if not s3_response.ok:
-            raise S3UploadFailedError(s3_response)
-
-    def _get_files_dict(self, archive_path):
-        files = {'file': (archive_path, open(archive_path, 'rb'))}
-        return files
-
-    def _get_upload_data(self, file_name, project_handle):
-        response = self.experiments_api.get("/workspace/get_presigned_url",
-                                            params={'workspaceName': file_name, 'projectHandle': project_handle})
-        if response.status_code == 401:
-            raise ProjectAccessDeniedError(project_handle)
-        if response.status_code == 403:
-            raise PresignedUrlAccessDeniedError
-        if response.status_code == 404:
-            raise PresignedUrlUnreachableError
-        if not response.ok:
-            raise PresignedUrlConnectionError(response.reason)
-
-        response_content = response.json()
-        try:
-            response_message = response_content['message']
-            response_data = response_content['data']
-        except KeyError:
-            raise PresignedUrlMalformedResponseError(response_content)
-        if response_message != 'success':
-            raise PresignedUrlError(response)
-        return response_data
+    def _get_workspace_uploader(self, api_key):
+        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(api_key)
+        return workspace_uploader
 
 
 class S3WorkspaceHandlerWithProgressbar(S3WorkspaceHandler):
-    DEFAULT_MULTIPART_ENCODER_CLS = MultipartEncoderWithProgressbar
+    WORKSPACE_ARCHIVER = s3_uploader.ZipArchiverWithProgressbar
 
-    def _zip_files(self, zip_file, file_paths):
-        self.bar = progressbar.ProgressBar(max_value=len(file_paths))
-        super(S3WorkspaceHandlerWithProgressbar, self)._zip_files(zip_file, file_paths)
-        self.bar.finish()
-
-    def _zip_files_iterate_callback(self, i):
-        self.bar.update(i)
+    def _get_workspace_uploader(self, api_key):
+        file_uploader = s3_uploader.S3FileUploader(s3_uploader.MultipartEncoderWithProgressbar, logger=self.logger)
+        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(api_key, s3uploader=file_uploader)
+        return workspace_uploader
