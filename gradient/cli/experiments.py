@@ -143,6 +143,15 @@ def common_experiments_create_options(f):
             help="Flag: is preemptible",
             cls=common.GradientOption,
         ),
+        # TODO: Figure out how to make option value optional (merge option and flag's functionality)
+        click.option(
+            "--tensorboard",
+            "tensorboard_id",
+            default=experiments_commands.NoTensorboardId,
+            help="Add to tensorboard. If option was used but ID of a tensorboard is not provided it will be added to the existing one "
+                 "or a new tensorboard will be created",
+            cls=common.GradientOption,
+        ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 

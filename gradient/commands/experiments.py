@@ -6,9 +6,13 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import constants, api_sdk, exceptions
+from gradient import constants, api_sdk, exceptions, TensorboardClient
 from gradient.commands.common import BaseCommand, ListCommandMixin
 from gradient.utils import get_terminal_lines
+
+
+class NoTensorboardId(object):
+    pass
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -16,6 +20,32 @@ class BaseExperimentCommand(BaseCommand):
     def _get_client(self, api_key, logger):
         client = api_sdk.clients.ExperimentsClient(api_key=api_key, logger=logger)
         return client
+
+
+class TensorboardHandler(object):
+    def __init__(self, api_key):
+        self.tensorboard_client = TensorboardClient(api_key)
+
+    def maybe_add_to_tensorboard(self, tensorboard_id, experiment_id):
+        if isinstance(tensorboard_id, six.string_types):
+            self._add_experiment_to_tensorboard(tensorboard_id, experiment_id)
+            return
+
+        tensorboards = self._get_tensorboards()
+        if len(tensorboards) == 1:
+            self._add_experiment_to_tensorboard(tensorboards[0].id, experiment_id)
+        else:
+            self._create_tensorboard_with_experiment(experiment_id)
+
+    def _add_experiment_to_tensorboard(self, tensorboard_id, experiment_id):
+        self.tensorboard_client.add_experiments(tensorboard_id, experiment_id)
+
+    def _get_tensorboards(self):
+        tensorboards = self.tensorboard_client.list()
+        return tensorboards
+
+    def _create_tensorboard_with_experiment(self, experiment_id):
+        self.tensorboard_client.create(experiments=[experiment_id])
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -28,6 +58,8 @@ class BaseCreateExperimentCommandMixin(object):
         self.workspace_handler = workspace_handler
 
     def execute(self, json_, use_vpc=False):
+        tensorboard_id = json_.pop("tensorboard_id", None)
+
         self._handle_workspace(json_)
 
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
@@ -38,6 +70,7 @@ class BaseCreateExperimentCommandMixin(object):
                 return
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(experiment_id))
+        self._maybe_add_to_tensorboard(tensorboard_id, experiment_id, json_["api_key"])
         return experiment_id
 
     def _handle_workspace(self, instance_dict):
@@ -48,6 +81,11 @@ class BaseCreateExperimentCommandMixin(object):
         instance_dict.pop("workspace_url", None)
         if handler and handler != "none":
             instance_dict["workspace_url"] = handler
+
+    def _maybe_add_to_tensorboard(self, tensorboard_id, experiment_id, api_key):
+        if tensorboard_id is not NoTensorboardId:
+            tensorboard_handler = TensorboardHandler(api_key)
+            tensorboard_handler.maybe_add_to_tensorboard(tensorboard_id, experiment_id)
 
     @abc.abstractmethod
     def _create(self, json_, use_vpc):
