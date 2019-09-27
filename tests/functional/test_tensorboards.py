@@ -133,6 +133,7 @@ class TestTensorboardsDetail(object):
 +-------+----------------------------------+
 | Image | tensorflow/tensorflow:latest-py3 |
 | URL   | None                             |
+| State | None                             |
 +-------+----------------------------------+
 +--------------------------+
 | Experiments ID           |
@@ -206,14 +207,14 @@ class TestTensorboardsList(object):
     URL = "https://services.paperspace.io/tensorboards/v1/"
     COMMAND = ["tensorboards", "list"]
     EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_LIST_RESPONSE_JSON
-    EXPECTED_STDOUT = """+-----------------+------+
-| ID              | URL  |
-+-----------------+------+
-| tbrs2kcjman4ly  | None |
-| tbskzep6d9po04d | None |
-| tbsaq6hggzxcnet | None |
-| tbwuzalec7ik58  | None |
-+-----------------+------+
+    EXPECTED_STDOUT = """+-----------------+------+-------+
+| ID              | URL  | STATE |
++-----------------+------+-------+
+| tbrs2kcjman4ly  | None | None  |
+| tbskzep6d9po04d | None | None  |
+| tbsaq6hggzxcnet | None | None  |
+| tbwuzalec7ik58  | None | None  |
++-----------------+------+-------+
 """
 
     COMMAND_WITH_API_KEY_CHANGED = ["tensorboards", "list", "--apiKey", "some_key"]
@@ -281,6 +282,7 @@ class TestTensorboardsAddExperiment(object):
 +-------+----------------------------------+
 | Image | tensorflow/tensorflow:latest-py3 |
 | URL   | None                             |
+| State | None                             |
 +-------+----------------------------------+
 +--------------------------+
 | Experiments ID           |
@@ -346,6 +348,7 @@ class TestTensorboardsRemoveExperiment(object):
 +-------+----------------------------------+
 | Image | tensorflow/tensorflow:latest-py3 |
 | URL   | None                             |
+| State | None                             |
 +-------+----------------------------------+
 +--------------------+
 | Experiments ID     |
