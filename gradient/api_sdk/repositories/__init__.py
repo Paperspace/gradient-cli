@@ -1,6 +1,7 @@
 from .deployments import ListDeployments, CreateDeployment, StartDeployment, StopDeployment
 from .experiments import ListExperiments, GetExperiment, ListExperimentLogs, StartExperiment, StopExperiment, \
-    CreateSingleNodeExperiment, CreateMultiNodeExperiment, RunSingleNodeExperiment, RunMultiNodeExperiment
+    CreateSingleNodeExperiment, CreateMultiNodeExperiment, RunSingleNodeExperiment, RunMultiNodeExperiment, \
+    CreateMpiMultiNodeExperiment, RunMpiMultiNodeExperiment
 from .hyperparameter import CreateHyperparameterJob, CreateAndStartHyperparameterJob, ListHyperparameterJobs, \
     GetHyperparameterTuningJob, StartHyperparameterTuningJob
 from .jobs import ListJobs, ListResources, ListJobArtifacts, ListJobLogs

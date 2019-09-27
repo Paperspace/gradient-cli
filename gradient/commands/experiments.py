@@ -66,12 +66,27 @@ class CreateMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExp
         return handle
 
 
+class CreateMpiMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
+    def _create(self, json_, use_vpc=False):
+        handle = self.client.create_mpi_multi_node(use_vpc=use_vpc, **json_)
+        return handle
+
+
 class CreateAndStartMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
     SPINNER_MESSAGE = "Creating and starting new experiment"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
 
     def _create(self, json_, use_vpc=False):
         handle = self.client.run_multi_node(use_vpc=use_vpc, **json_)
+        return handle
+
+
+class CreateAndStartMpiMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
+    SPINNER_MESSAGE = "Creating and starting new experiment"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with id: {}"
+
+    def _create(self, json_, use_vpc=False):
+        handle = self.client.run_mpi_multi_node(use_vpc=use_vpc, **json_)
         return handle
 
 

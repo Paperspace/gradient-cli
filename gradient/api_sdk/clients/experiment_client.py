@@ -119,10 +119,14 @@ class ExperimentsClient(BaseClient):
             worker_machine_type,
             worker_command,
             worker_count,
-            parameter_server_container,
-            parameter_server_machine_type,
-            parameter_server_command,
-            parameter_server_count,
+            parameter_server_container=None,
+            parameter_server_machine_type=None,
+            parameter_server_command=None,
+            parameter_server_count=None,
+            master_server_container=None,
+            master_machine_type=None,
+            master_command=None,
+            master_count=None,
             ports=None,
             workspace_url=None,
             workspace_username=None,
@@ -142,6 +146,10 @@ class ExperimentsClient(BaseClient):
             parameter_server_registry_username=None,
             parameter_server_registry_password=None,
             parameter_server_registry_url=None,
+            master_container_user=None,
+            master_registry_username=None,
+            master_registry_password=None,
+            master_registry_url=None,
             use_vpc=False,
     ):
         """
@@ -245,6 +253,80 @@ class ExperimentsClient(BaseClient):
         )
 
         repository = repositories.CreateMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
+        handle = repository.create(experiment, use_vpc=use_vpc)
+        return handle
+
+    def create_mpi_multinode(
+            self,
+            name,
+            project_id,
+            experiment_type_id,
+            worker_container,
+            worker_machine_type,
+            worker_command,
+            worker_count,
+            master_container=None,
+            master_machine_type=None,
+            master_command=None,
+            master_count=None,
+            ports=None,
+            workspace_url=None,
+            workspace_username=None,
+            workspace_password=None,
+            working_directory=None,
+            artifact_directory=None,
+            cluster_id=None,
+            experiment_env=None,
+            model_type=None,
+            model_path=None,
+            is_preemptible=False,
+            worker_container_user=None,
+            worker_registry_username=None,
+            worker_registry_password=None,
+            worker_registry_url=None,
+            master_container_user=None,
+            master_registry_username=None,
+            master_registry_password=None,
+            master_registry_url=None,
+            use_vpc=False,
+    ):
+        if not is_preemptible:
+            is_preemptible = None
+
+        experiment = models.MpiMultiNodeExperiment(
+                name=name,
+                project_id=project_id,
+                experiment_type_id=experiment_type_id,
+                worker_container=worker_container,
+                worker_machine_type=worker_machine_type,
+                worker_command=worker_command,
+                worker_count=worker_count,
+                master_container=master_container,
+                master_machine_type=master_machine_type,
+                master_command=master_command,
+                master_count=master_count,
+                ports=ports,
+                workspace_url=workspace_url,
+                workspace_username=workspace_username,
+                workspace_password=workspace_password,
+                working_directory=working_directory,
+                artifact_directory=artifact_directory,
+                cluster_id=cluster_id,
+                experiment_env=experiment_env,
+                model_type=model_type,
+                model_path=model_path,
+                is_preemptible=is_preemptible,
+                worker_container_user=worker_container_user,
+                worker_registry_username=worker_registry_username,
+                worker_registry_password=worker_registry_password,
+                worker_registry_url=worker_registry_url,
+                master_container_user=master_container_user,
+                master_registry_username=master_registry_username,
+                master_registry_password=master_registry_password,
+                master_registry_url=master_registry_url,
+        )
+
+        repository = repositories.CreateMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
         return handle
 
@@ -486,6 +568,80 @@ class ExperimentsClient(BaseClient):
         )
 
         repository = repositories.RunMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
+        handle = repository.create(experiment, use_vpc=use_vpc)
+        return handle
+
+    def run_mpi_multi_node(
+            self,
+            name,
+            project_id,
+            experiment_type_id,
+            worker_container,
+            worker_machine_type,
+            worker_command,
+            worker_count,
+            master_container,
+            master_machine_type,
+            master_command,
+            master_count,
+            ports=None,
+            workspace_url=None,
+            workspace_username=None,
+            workspace_password=None,
+            working_directory=None,
+            artifact_directory=None,
+            cluster_id=None,
+            experiment_env=None,
+            model_type=None,
+            model_path=None,
+            is_preemptible=False,
+            worker_container_user=None,
+            worker_registry_username=None,
+            worker_registry_password=None,
+            worker_registry_url=None,
+            master_container_user=None,
+            master_registry_username=None,
+            master_registry_password=None,
+            master_registry_url=None,
+            use_vpc=False,
+    ):
+        if not is_preemptible:
+            is_preemptible = None
+
+        experiment = models.MpiMultiNodeExperiment(
+                name=name,
+                project_id=project_id,
+                experiment_type_id=experiment_type_id,
+                worker_container=worker_container,
+                worker_machine_type=worker_machine_type,
+                worker_command=worker_command,
+                worker_count=worker_count,
+                master_container=master_container,
+                master_machine_type=master_machine_type,
+                master_command=master_command,
+                master_count=master_count,
+                ports=ports,
+                workspace_url=workspace_url,
+                workspace_username=workspace_username,
+                workspace_password=workspace_password,
+                working_directory=working_directory,
+                artifact_directory=artifact_directory,
+                cluster_id=cluster_id,
+                experiment_env=experiment_env,
+                model_type=model_type,
+                model_path=model_path,
+                is_preemptible=is_preemptible,
+                worker_container_user=worker_container_user,
+                worker_registry_username=worker_registry_username,
+                worker_registry_password=worker_registry_password,
+                worker_registry_url=worker_registry_url,
+                master_container_user=master_container_user,
+                master_registry_username=master_registry_username,
+                master_registry_password=master_registry_password,
+                master_registry_url=master_registry_url,
+        )
+
+        repository = repositories.RunMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
         return handle
 

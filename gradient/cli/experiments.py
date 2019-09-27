@@ -19,6 +19,16 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
     )
 )
 
+MULTI_NODE_CREATE_EXPERIMENT_COMMANDS = {
+    constants.ExperimentType.GRPC_MULTI_NODE: experiments_commands.CreateMultiNodeExperimentCommand,
+    constants.ExperimentType.MPI_MULTI_NODE: experiments_commands.CreateMpiMultiNodeExperimentCommand,
+}
+
+MULTI_NODE_RUN_EXPERIMENT_COMMANDS = {
+    constants.ExperimentType.GRPC_MULTI_NODE: experiments_commands.CreateAndStartMultiNodeExperimentCommand,
+    constants.ExperimentType.MPI_MULTI_NODE: experiments_commands.CreateAndStartMultiNodeExperimentCommand,
+}
+
 
 def get_workspace_handler(api_key):
     client = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
@@ -412,8 +422,9 @@ def create_multi_node(api_key, use_vpc, options_file, **kwargs):
 
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
-
-    command = experiments_commands.CreateMultiNodeExperimentCommand(
+    experiment_type = kwargs.get('experimentType')
+    command_class = MULTI_NODE_CREATE_EXPERIMENT_COMMANDS.get(experiment_type)
+    command = command_class(
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
@@ -458,7 +469,10 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, options_file, 
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
-    command = experiments_commands.CreateAndStartMultiNodeExperimentCommand(
+    experiment_type = kwargs.get('experimentType')
+    command_class = MULTI_NODE_RUN_EXPERIMENT_COMMANDS.get(experiment_type)
+
+    command = command_class(
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )

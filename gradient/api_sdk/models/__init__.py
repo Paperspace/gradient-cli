@@ -1,5 +1,5 @@
 from .deployment import Deployment
-from .experiment import BaseExperiment, MultiNodeExperiment, SingleNodeExperiment
+from .experiment import BaseExperiment, MultiNodeExperiment, SingleNodeExperiment, MpiMultiNodeExperiment
 from .hyperparameter import Hyperparameter
 from .job import Job
 from .log import LogRow
