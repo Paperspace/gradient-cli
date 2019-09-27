@@ -90,7 +90,7 @@ class ColorExtrasInCommandHelpMixin(object):
 
         try:
             help_str = rv[1]
-        except IndexError:
+        except (IndexError, TypeError):
             return rv
 
         if help_str:
