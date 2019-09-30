@@ -70,10 +70,10 @@ class GetTensorboardClientCommandMixin(BaseCommand):
         """
         :param api_sdk.Tensorboard instance:
         """
-        data = [["Experiments ID", ]]
+        data = [["Experiments ID", "State"]]
 
         for e in instance.experiments:
-            data.append([e.get("id")])
+            data.append([e.get("id"), e.get('state')])
         return data
 
 
