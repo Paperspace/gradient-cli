@@ -26,7 +26,7 @@ MULTI_NODE_CREATE_EXPERIMENT_COMMANDS = {
 
 MULTI_NODE_RUN_EXPERIMENT_COMMANDS = {
     constants.ExperimentType.GRPC_MULTI_NODE: experiments_commands.CreateAndStartMultiNodeExperimentCommand,
-    constants.ExperimentType.MPI_MULTI_NODE: experiments_commands.CreateAndStartMultiNodeExperimentCommand,
+    constants.ExperimentType.MPI_MULTI_NODE: experiments_commands.CreateAndStartMpiMultiNodeExperimentCommand,
 }
 
 
@@ -202,7 +202,7 @@ def common_experiment_create_multi_node_options(f):
             required=True,
             help="Parameter server container (GRPC only)",
             cls=common.OptionNotRequiredIfOtherPresent,
-            not_required_if_present="master_container",
+            not_required_if_present=["master_container"],
         ),
         click.option(
             "--parameterServerMachineType",
@@ -210,7 +210,7 @@ def common_experiment_create_multi_node_options(f):
             required=True,
             help="Parameter server machine type (GRPC only)",
             cls=common.OptionNotRequiredIfOtherPresent,
-            not_required_if_present="master_machine_type",
+            not_required_if_present=["master_machine_type"],
         ),
         click.option(
             "--parameterServerCommand",
@@ -218,7 +218,7 @@ def common_experiment_create_multi_node_options(f):
             required=True,
             help="Parameter server command (GRPC only)",
             cls=common.OptionNotRequiredIfOtherPresent,
-            not_required_if_present="master_command",
+            not_required_if_present=["master_command"],
         ),
         click.option(
             "--parameterServerCount",
@@ -227,7 +227,7 @@ def common_experiment_create_multi_node_options(f):
             required=True,
             help="Parameter server count (GRPC only)",
             cls=common.OptionNotRequiredIfOtherPresent,
-            not_required_if_present="master_count",
+            not_required_if_present=["master_count"],
         ),
         click.option(
             "--masterContainer",
@@ -235,7 +235,7 @@ def common_experiment_create_multi_node_options(f):
             required=True,
             help="Master container (MPI only)",
             cls=common.OptionNotRequiredIfOtherPresent,
-            not_required_if_present="parameter_server_container",
+            not_required_if_present=["parameter_server_container"],
         ),
         click.option(
             "--masterMachineType",
@@ -243,7 +243,7 @@ def common_experiment_create_multi_node_options(f):
             required=True,
             help="Master machine type (MPI only)",
             cls=common.OptionNotRequiredIfOtherPresent,
-            not_required_if_present="parameter_server_machine_type",
+            not_required_if_present=["parameter_server_machine_type"],
         ),
         click.option(
             "--masterCount",
@@ -251,7 +251,7 @@ def common_experiment_create_multi_node_options(f):
             required=True,
             help="Master count (MPI only)",
             cls=common.OptionNotRequiredIfOtherPresent,
-            not_required_if_present="parameter_server_count",
+            not_required_if_present=["parameter_server_count"],
         ),
         click.option(
             "--masterCommand",
@@ -259,7 +259,7 @@ def common_experiment_create_multi_node_options(f):
             required=True,
             help="Master command (MPI only)",
             cls=common.OptionNotRequiredIfOtherPresent,
-            not_required_if_present="parameter_server_command",
+            not_required_if_present=["parameter_server_command"],
         ),
         click.option(
             "--workerContainerUser",
@@ -422,7 +422,7 @@ def create_multi_node(api_key, use_vpc, options_file, **kwargs):
 
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
-    experiment_type = kwargs.get('experimentType')
+    experiment_type = kwargs.get('experiment_type_id')
     command_class = MULTI_NODE_CREATE_EXPERIMENT_COMMANDS.get(experiment_type)
     command = command_class(
         api_key=api_key,
@@ -469,7 +469,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, options_file, 
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
-    experiment_type = kwargs.get('experimentType')
+    experiment_type = kwargs.get('experiment_type_id')
     command_class = MULTI_NODE_RUN_EXPERIMENT_COMMANDS.get(experiment_type)
 
     command = command_class(

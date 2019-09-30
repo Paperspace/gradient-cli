@@ -123,10 +123,6 @@ class ExperimentsClient(BaseClient):
             parameter_server_machine_type=None,
             parameter_server_command=None,
             parameter_server_count=None,
-            master_server_container=None,
-            master_machine_type=None,
-            master_command=None,
-            master_count=None,
             ports=None,
             workspace_url=None,
             workspace_username=None,
@@ -146,10 +142,6 @@ class ExperimentsClient(BaseClient):
             parameter_server_registry_username=None,
             parameter_server_registry_password=None,
             parameter_server_registry_url=None,
-            master_container_user=None,
-            master_registry_username=None,
-            master_registry_password=None,
-            master_registry_url=None,
             use_vpc=False,
     ):
         """
@@ -256,7 +248,7 @@ class ExperimentsClient(BaseClient):
         handle = repository.create(experiment, use_vpc=use_vpc)
         return handle
 
-    def create_mpi_multinode(
+    def create_mpi_multi_node(
             self,
             name,
             project_id,
