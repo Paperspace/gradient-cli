@@ -128,18 +128,19 @@ class TestTensorboardsDetail(object):
         "--id", "some_id",
     ]
     EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_DETAIL_RESPONSE_JSON
-    EXPECTED_STDOUT = """+-------+----------------------------------+
-| ID    | some_id                          |
-+-------+----------------------------------+
-| Image | tensorflow/tensorflow:latest-py3 |
-| URL   | None                             |
-+-------+----------------------------------+
-+--------------------------+
-| Experiments ID           |
-+--------------------------+
-| some_experiment_id       |
-| some_other_experiment_id |
-+--------------------------+
+    EXPECTED_STDOUT = """+-------+--------------------------------------------------------+
+| ID    | some_id                                                |
++-------+--------------------------------------------------------+
+| Image | tensorflow/tensorflow:latest-py3                       |
+| URL   | https://aws-testing.paperspace.io/tensorboard/some_id/ |
+| State | Some State                                             |
++-------+--------------------------------------------------------+
++--------------------------+------------+
+| Experiments ID           | State      |
++--------------------------+------------+
+| some_experiment_id       | Some State |
+| some_other_experiment_id | Some State |
++--------------------------+------------+
 """
     # TODO later change response to contain information about state: | State          | 1                             |
 
@@ -206,14 +207,14 @@ class TestTensorboardsList(object):
     URL = "https://services.paperspace.io/tensorboards/v1/"
     COMMAND = ["tensorboards", "list"]
     EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_LIST_RESPONSE_JSON
-    EXPECTED_STDOUT = """+-----------------+------+
-| ID              | URL  |
-+-----------------+------+
-| tbrs2kcjman4ly  | None |
-| tbskzep6d9po04d | None |
-| tbsaq6hggzxcnet | None |
-| tbwuzalec7ik58  | None |
-+-----------------+------+
+    EXPECTED_STDOUT = """+-----------------+----------------------------------------------------------------+------------+
+| ID              | URL                                                            | STATE      |
++-----------------+----------------------------------------------------------------+------------+
+| tbrs2kcjman4ly  | https://aws-testing.paperspace.io/tensorboard/tbrs2kcjman4ly/  | Some State |
+| tbskzep6d9po04d | https://aws-testing.paperspace.io/tensorboard/tbskzep6d9po04d/ | Some State |
+| tbsaq6hggzxcnet | https://aws-testing.paperspace.io/tensorboard/tbsaq6hggzxcnet/ | Some State |
+| tbwuzalec7ik58  | https://aws-testing.paperspace.io/tensorboard/tbwuzalec7ik58/  | Some State |
++-----------------+----------------------------------------------------------------+------------+
 """
 
     COMMAND_WITH_API_KEY_CHANGED = ["tensorboards", "list", "--apiKey", "some_key"]
@@ -276,19 +277,20 @@ class TestTensorboardsAddExperiment(object):
 
     EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_UPDATE_RESPONSE_JSON
     EXPECTED_REQUEST_JSON = {"added_experiments": ["some_third_experiment_id"], "removed_experiments": []}
-    EXPECTED_STDOUT = """+-------+----------------------------------+
-| ID    | some_id                          |
-+-------+----------------------------------+
-| Image | tensorflow/tensorflow:latest-py3 |
-| URL   | None                             |
-+-------+----------------------------------+
-+--------------------------+
-| Experiments ID           |
-+--------------------------+
-| some_experiment_id       |
-| some_other_experiment_id |
-| some_third_experiment_id |
-+--------------------------+
+    EXPECTED_STDOUT = """+-------+--------------------------------------------------------+
+| ID    | some_id                                                |
++-------+--------------------------------------------------------+
+| Image | tensorflow/tensorflow:latest-py3                       |
+| URL   | https://aws-testing.paperspace.io/tensorboard/some_id/ |
+| State | Some State                                             |
++-------+--------------------------------------------------------+
++--------------------------+------------+
+| Experiments ID           | State      |
++--------------------------+------------+
+| some_experiment_id       | Some State |
+| some_other_experiment_id | Some State |
+| some_third_experiment_id | Some State |
++--------------------------+------------+
 """
 
     COMMAND_WITH_API_KEY_CHANGED = [
@@ -341,17 +343,18 @@ class TestTensorboardsRemoveExperiment(object):
 
     EXPECTED_RESPONSE_JSON = example_responses.TENSORBOARD_UPDATE_REMOVE_RESPONSE_JSON
     EXPECTED_REQUEST_JSON = {"added_experiments": [], "removed_experiments": ["some_other_experiment_id"]}
-    EXPECTED_STDOUT = """+-------+----------------------------------+
-| ID    | some_id                          |
-+-------+----------------------------------+
-| Image | tensorflow/tensorflow:latest-py3 |
-| URL   | None                             |
-+-------+----------------------------------+
-+--------------------+
-| Experiments ID     |
-+--------------------+
-| some_experiment_id |
-+--------------------+
+    EXPECTED_STDOUT = """+-------+--------------------------------------------------------+
+| ID    | some_id                                                |
++-------+--------------------------------------------------------+
+| Image | tensorflow/tensorflow:latest-py3                       |
+| URL   | https://aws-testing.paperspace.io/tensorboard/some_id/ |
+| State | Some State                                             |
++-------+--------------------------------------------------------+
++--------------------+------------+
+| Experiments ID     | State      |
++--------------------+------------+
+| some_experiment_id | Some State |
++--------------------+------------+
 """
 
     COMMAND_WITH_API_KEY_CHANGED = [

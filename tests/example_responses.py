@@ -5357,7 +5357,7 @@ TENSORBOARD_DETAIL_RESPONSE_JSON = {
     "message": "success",
     "data": {
         "cluster_id": "some_cluster_id",
-        "url": None,
+        "url": "https://aws-testing.paperspace.io/tensorboard/some_id/",
         "id": "some_id",
         "instance": {
             "type": "cpu",
@@ -5369,13 +5369,16 @@ TENSORBOARD_DETAIL_RESPONSE_JSON = {
         "experiments": [
             {
                 "project_id": "some_project_id",
-                "id": "some_experiment_id"
+                "id": "some_experiment_id",
+                "state": "Some State"
             }, {
                 "project_id": "some_project_id",
-                "id": "some_other_experiment_id"
+                "id": "some_other_experiment_id",
+                "state": "Some State"
             }
         ],
-        "dt_deleted": None
+        "dt_deleted": None,
+        "state": "Some State"
     }
 }
 
@@ -5383,7 +5386,7 @@ TENSORBOARD_UPDATE_RESPONSE_JSON = {
         "message": "success",
         "data": {
             "cluster_id": "some_cluster_id",
-            "url": None,
+            "url": "https://aws-testing.paperspace.io/tensorboard/some_id/",
             "id": "some_id",
             "instance": {
                 "type": "cpu",
@@ -5395,18 +5398,22 @@ TENSORBOARD_UPDATE_RESPONSE_JSON = {
             "experiments": [
                 {
                     "project_id": "some_project_id",
-                    "id": "some_experiment_id"
+                    "id": "some_experiment_id",
+                    "state": "Some State"
                 },
                 {
                     "project_id": "some_project_id",
-                    "id": "some_other_experiment_id"
+                    "id": "some_other_experiment_id",
+                    "state": "Some State"
                 },
                 {
                     "project_id": "some_project_id",
-                    "id": "some_third_experiment_id"
+                    "id": "some_third_experiment_id",
+                    "state": "Some State"
                 }
             ],
-            "dt_deleted": None
+            "dt_deleted": None,
+            "state": "Some State"
         }
     }
 
@@ -5414,7 +5421,7 @@ TENSORBOARD_UPDATE_REMOVE_RESPONSE_JSON = {
         "message": "success",
         "data": {
             "cluster_id": "some_cluster_id",
-            "url": None,
+            "url": "https://aws-testing.paperspace.io/tensorboard/some_id/",
             "id": "some_id",
             "instance": {
                 "type": "cpu",
@@ -5426,10 +5433,12 @@ TENSORBOARD_UPDATE_REMOVE_RESPONSE_JSON = {
             "experiments": [
                 {
                     "project_id": "some_project_id",
-                    "id": "some_experiment_id"
+                    "id": "some_experiment_id",
+                    "state": "Some State"
                 }
             ],
-            "dt_deleted": None
+            "dt_deleted": None,
+            "state": "Some State"
         }
     }
 
@@ -5438,7 +5447,7 @@ TENSORBOARD_LIST_RESPONSE_JSON = {
     "data": [
         {
             "cluster_id": "clmtkpnm2",
-            "url": None,
+            "url": "https://aws-testing.paperspace.io/tensorboard/tbrs2kcjman4ly/",
             "id": "tbrs2kcjman4ly",
             "instance": None,
             "dt_created": "2019-09-16T09:28:10.415478+00:00",
@@ -5446,14 +5455,16 @@ TENSORBOARD_LIST_RESPONSE_JSON = {
             "experiments": [
                 {
                     "project_id": "prrdpg67x",
-                    "id": "ers2kcjman4ly"
+                    "id": "ers2kcjman4ly",
+                    "state": "Some State"
                 }
             ],
-            "dt_deleted": None
+            "dt_deleted": None,
+            "state": "Some State"
         },
         {
             "cluster_id": "clmtkpnm2",
-            "url": None,
+            "url": "https://aws-testing.paperspace.io/tensorboard/tbskzep6d9po04d/",
             "id": "tbskzep6d9po04d",
             "instance": None,
             "dt_created": "2019-09-16T09:28:56.908450+00:00",
@@ -5461,14 +5472,16 @@ TENSORBOARD_LIST_RESPONSE_JSON = {
             "experiments": [
                 {
                     "project_id": "prrdpg67x",
-                    "id": "ers2kcjman4ly"
+                    "id": "ers2kcjman4ly",
+                    "state": "Some State"
                 }
             ],
-            "dt_deleted": None
+            "dt_deleted": None,
+            "state": "Some State"
         },
         {
             "cluster_id": "clmtkpnm2",
-            "url": None,
+            "url": "https://aws-testing.paperspace.io/tensorboard/tbsaq6hggzxcnet/",
             "id": "tbsaq6hggzxcnet",
             "instance": None,
             "dt_created": "2019-09-16T12:59:20.788663+00:00",
@@ -5476,14 +5489,16 @@ TENSORBOARD_LIST_RESPONSE_JSON = {
             "experiments": [
                 {
                     "project_id": "prrdpg67x",
-                    "id": "ers2kcjman4ly"
+                    "id": "ers2kcjman4ly",
+                    "state": "Some State"
                 }
             ],
-            "dt_deleted": None
+            "dt_deleted": None,
+            "state": "Some State"
         },
         {
             "cluster_id": "clmtkpnm2",
-            "url": None,
+            "url": "https://aws-testing.paperspace.io/tensorboard/tbwuzalec7ik58/",
             "id": "tbwuzalec7ik58",
             "instance": {
                 "size": "large",
@@ -5495,10 +5510,12 @@ TENSORBOARD_LIST_RESPONSE_JSON = {
             "experiments": [
                 {
                     "project_id": "prrdpg67x",
-                    "id": "ers2kcjman4ly"
+                    "id": "ers2kcjman4ly",
+                    "state": "Some State"
                 }
             ],
-            "dt_deleted": None
+            "dt_deleted": None,
+            "state": "Some State"
         }
     ]
 }

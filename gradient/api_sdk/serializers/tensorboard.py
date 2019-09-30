@@ -28,6 +28,7 @@ class InstanceSchema(BaseSchema):
 class TBExperimentSchema(BaseSchema):
     id = marshmallow.fields.String()
     project_id = marshmallow.fields.String()
+    state = marshmallow.fields.String()
 
 
 class TensorboardDetailSchema(BaseSchema):
@@ -40,7 +41,7 @@ class TensorboardDetailSchema(BaseSchema):
     instance = marshmallow.fields.Nested(InstanceSchema, required=False, default=None)
     experiments = marshmallow.fields.List(marshmallow.fields.Nested(TBExperimentSchema))
     url = marshmallow.fields.Str()
-    state = marshmallow.fields.Int()
+    state = marshmallow.fields.String()
 
 
 class TensorboardSchema(BaseSchema):
@@ -53,4 +54,4 @@ class TensorboardSchema(BaseSchema):
     instance = marshmallow.fields.Nested(InstanceSchema, required=False, default=None)
     experiments = marshmallow.fields.List(marshmallow.fields.String())
     url = marshmallow.fields.Str()
-    state = marshmallow.fields.Int()
+    state = marshmallow.fields.String()
