@@ -58,7 +58,7 @@ class GetTensorboardClientCommandMixin(BaseCommand):
             ("ID", instance.id),
             ("Image", instance.image),
             ("URL", instance.url),
-            # ("State", instance.state),        TODO: later add state when state will be available in response
+            ("State", instance.state),
             # ("Instance type", instance.instance.type),    TODO: for now
             # ("Instance size", instance.instance.size),
             # ("Instance count", instance.instance.count),
@@ -70,10 +70,10 @@ class GetTensorboardClientCommandMixin(BaseCommand):
         """
         :param api_sdk.Tensorboard instance:
         """
-        data = [["Experiments ID", ]]
+        data = [["Experiments ID", "State"]]
 
         for e in instance.experiments:
-            data.append([e.get("id")])
+            data.append([e.get("id"), e.get('state')])
         return data
 
 
@@ -113,9 +113,9 @@ class ListTensorboardsCommand(GetTensorboardClientCommandMixin, common.ListComma
 
     def _get_table_data(self, objects):
         # TODO later we need to add information about state
-        data = [["ID", "URL"]]
+        data = [["ID", "URL", "STATE"]]
         for obj in objects:
-            data.append([obj.id, obj.url])
+            data.append([obj.id, obj.url, obj.state])
         return data
 
 
