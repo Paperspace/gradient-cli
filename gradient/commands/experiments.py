@@ -83,7 +83,7 @@ class CreateAndStartMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin,
 
 class CreateAndStartMpiMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
     SPINNER_MESSAGE = "Creating and starting new experiment"
-    CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with id: {}"
+    CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
 
     def _create(self, json_, use_vpc=False):
         handle = self.client.run_mpi_multi_node(use_vpc=use_vpc, **json_)

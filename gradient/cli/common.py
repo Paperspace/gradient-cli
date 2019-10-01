@@ -116,23 +116,6 @@ class GradientOption(ColorExtrasInCommandHelpMixin, ReadValueFromConfigFile, cli
     pass
 
 
-class OptionNotRequiredIfOtherPresent(GradientOption):
-    def __init__(self, *args, **kwargs):
-        self.not_required_if_present = kwargs.pop('not_required_if_present')
-        assert self.not_required_if_present, "'not_required_if_present' parameter required"
-        super(OptionNotRequiredIfOtherPresent, self).__init__(*args, **kwargs)
-
-    def handle_parse_result(self, ctx, opts, args):
-        is_current_present = self.name in opts
-
-        for other_present_options in self.not_required_if_present:
-            if other_present_options in opts:
-                if not is_current_present:
-                    self.required = False
-
-        return super(OptionNotRequiredIfOtherPresent, self).handle_parse_result(ctx, opts, args)
-
-
 api_key_option = click.option(
         "--apiKey",
         "api_key",
