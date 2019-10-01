@@ -5,7 +5,7 @@ import click
 
 from gradient import constants, utils, logger, workspace
 from gradient.api_sdk.clients import http_client
-from gradient.cli import common
+from gradient.cli import common, validators
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
 from gradient.cli.common import api_key_option, ClickGroup
@@ -404,6 +404,7 @@ If you depend on functionality not listed there, please file an issue."""
 def create_multi_node(api_key, use_vpc, options_file, **kwargs):
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
 
+    validators.validate_multi_node(kwargs)
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
     experiment_type = kwargs.get('experiment_type_id')
@@ -450,6 +451,7 @@ def create_single_node(api_key, use_vpc, options_file, **kwargs):
 def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, options_file, **kwargs):
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
 
+    validators.validate_multi_node(kwargs)
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 

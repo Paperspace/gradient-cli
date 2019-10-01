@@ -27,7 +27,7 @@ def validate_email(ctx, param, value):
     return value
 
 
-def validate_multi_node(**params):
+def validate_multi_node(params):
     experiment_type = params.get('experiment_type_id')
     required_params = REQUIRED_PARAMS_PER_EXPERIMENT_TYPE.get(experiment_type)
 
