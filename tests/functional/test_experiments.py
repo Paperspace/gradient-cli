@@ -190,6 +190,81 @@ class TestExperimentsCreateSingleNode(object):
         assert self.EXPECTED_STDOUT_PROJECT_NOT_FOUND in result.output, result.exc_info[1]
         assert result.exit_code == 0
 
+    @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
+            self, post_patched, tensorboard_handler_class):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
+        tensorboard_handler = mock.MagicMock()
+        tensorboard_handler_class.return_value = tensorboard_handler
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+        assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
+
+        tensorboard_handler_class.assert_called_once_with("some_key")
+        tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with("some_tensorboard_id", "sadkfhlskdjh")
+
+    @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
+            self, post_patched, tensorboard_handler_class):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
+        tensorboard_handler = mock.MagicMock()
+        tensorboard_handler_class.return_value = tensorboard_handler
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+        assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
+
+        tensorboard_handler_class.assert_called_once_with("some_key")
+        tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
+
+    @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
+            self, post_patched, tensorboard_handler_class):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
+        tensorboard_handler = mock.MagicMock()
+        tensorboard_handler_class.return_value = tensorboard_handler
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+        assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
+
+        tensorboard_handler_class.assert_called_once_with("some_key")
+        tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
+
 
 class TestExperimentsCreateMultiNode(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/"
@@ -389,6 +464,81 @@ class TestExperimentsCreateMultiNode(object):
                                              files=None,
                                              data=None)
         assert result.exit_code == 0
+
+    @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
+            self, post_patched, tensorboard_handler_class):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
+        tensorboard_handler = mock.MagicMock()
+        tensorboard_handler_class.return_value = tensorboard_handler
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+        assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
+
+        tensorboard_handler_class.assert_called_once_with("some_key")
+        tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with("some_tensorboard_id", "sadkfhlskdjh")
+
+    @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
+            self, post_patched, tensorboard_handler_class):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
+        tensorboard_handler = mock.MagicMock()
+        tensorboard_handler_class.return_value = tensorboard_handler
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+        assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
+
+        tensorboard_handler_class.assert_called_once_with("some_key")
+        tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
+
+    @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
+            self, post_patched, tensorboard_handler_class):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
+        tensorboard_handler = mock.MagicMock()
+        tensorboard_handler_class.return_value = tensorboard_handler
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+        assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
+
+        tensorboard_handler_class.assert_called_once_with("some_key")
+        tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
 
 
 class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):

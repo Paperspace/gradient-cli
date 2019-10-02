@@ -6,8 +6,10 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import constants, api_sdk, exceptions
+from gradient import constants, api_sdk, exceptions, TensorboardClient
+from gradient.commands import tensorboards as tensorboards_commands
 from gradient.commands.common import BaseCommand, ListCommandMixin
+from gradient.logger import Logger
 from gradient.utils import get_terminal_lines
 
 
@@ -16,6 +18,54 @@ class BaseExperimentCommand(BaseCommand):
     def _get_client(self, api_key, logger):
         client = api_sdk.clients.ExperimentsClient(api_key=api_key, logger=logger)
         return client
+
+
+class TensorboardHandler(object):
+    def __init__(self, api_key, logger=Logger()):
+        self.api_key = api_key
+        self.logger = logger
+
+    def maybe_add_to_tensorboard(self, tensorboard_id, experiment_id):
+        """Add experiment to existing or new tensorboard
+
+        :param str|bool tensorboard_id:
+        :param str experiment_id:
+        """
+        if isinstance(tensorboard_id, six.string_types):
+            self._add_experiment_to_tensorboard(tensorboard_id, experiment_id)
+            return
+
+        tensorboards = self._get_tensorboards()
+        if len(tensorboards) == 1:
+            self._add_experiment_to_tensorboard(tensorboards[0].id, experiment_id)
+        else:
+            self._create_tensorboard_with_experiment(experiment_id)
+
+    def _add_experiment_to_tensorboard(self, tensorboard_id, experiment_id):
+        """Add experiment to tensorboard
+
+        :param str tensorboard_id:
+        :param str experiment_id:
+        """
+        command = tensorboards_commands.AddExperimentToTensorboard(api_key=self.api_key)
+        command.execute(tensorboard_id, [experiment_id])
+
+    def _get_tensorboards(self):
+        """Get tensorboards
+
+        :rtype: list[api_sdk.Tensorboard]
+        """
+        tensorboard_client = TensorboardClient(api_key=self.api_key, logger=self.logger)
+        tensorboards = tensorboard_client.list()
+        return tensorboards
+
+    def _create_tensorboard_with_experiment(self, experiment_id):
+        """Create tensorboard with experiment
+
+        :param str experiment_id:
+        """
+        command = tensorboards_commands.CreateTensorboardCommand(api_key=self.api_key)
+        command.execute(experiments=[experiment_id])
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -27,7 +77,7 @@ class BaseCreateExperimentCommandMixin(object):
         super(BaseCreateExperimentCommandMixin, self).__init__(*args, **kwargs)
         self.workspace_handler = workspace_handler
 
-    def execute(self, json_, use_vpc=False):
+    def execute(self, json_, add_to_tensorboard=False, use_vpc=False):
         self._handle_workspace(json_)
 
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
@@ -38,6 +88,7 @@ class BaseCreateExperimentCommandMixin(object):
                 return
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(experiment_id))
+        self._maybe_add_to_tensorboard(add_to_tensorboard, experiment_id, self.api_key)
         return experiment_id
 
     def _handle_workspace(self, instance_dict):
@@ -48,6 +99,16 @@ class BaseCreateExperimentCommandMixin(object):
         instance_dict.pop("workspace_url", None)
         if handler and handler != "none":
             instance_dict["workspace_url"] = handler
+
+    def _maybe_add_to_tensorboard(self, tensorboard_id, experiment_id, api_key):
+        """
+        :param str|bool tensorboard_id:
+        :param str experiment_id:
+        :param str api_key:
+        """
+        if tensorboard_id is not False:
+            tensorboard_handler = TensorboardHandler(api_key)
+            tensorboard_handler.maybe_add_to_tensorboard(tensorboard_id, experiment_id)
 
     @abc.abstractmethod
     def _create(self, json_, use_vpc):

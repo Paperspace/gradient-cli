@@ -12,6 +12,7 @@ from gradient.utils import get_terminal_lines
 @six.add_metaclass(abc.ABCMeta)
 class BaseCommand:
     def __init__(self, api_key, logger=Logger()):
+        self.api_key = api_key
         self.client = self._get_client(api_key, logger)
         self.logger = logger
 
