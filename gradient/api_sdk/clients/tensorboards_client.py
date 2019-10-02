@@ -137,7 +137,7 @@ class TensorboardClient(BaseClient):
             tb_list = tb_client.list()
 
         :return: list of active tensorboards
-        :rtype: list
+        :rtype: list[models.Tensorboard]
 
         :raises: ResourceFetchingError: When there is problem with response from API
         """
