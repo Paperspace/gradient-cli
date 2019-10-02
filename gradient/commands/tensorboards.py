@@ -58,10 +58,10 @@ class GetTensorboardClientCommandMixin(BaseCommand):
             ("ID", instance.id),
             ("Image", instance.image),
             ("URL", instance.url),
-            # ("State", instance.state),        TODO: later add state when state will be available in response
-            ("Instance type", instance.instance.type),
-            ("Instance size", instance.instance.size),
-            ("Instance count", instance.instance.count),
+            ("State", instance.state),
+            # ("Instance type", instance.instance.type),    TODO: for now
+            # ("Instance size", instance.instance.size),
+            # ("Instance count", instance.instance.count),
         )
         return data
 
@@ -70,10 +70,10 @@ class GetTensorboardClientCommandMixin(BaseCommand):
         """
         :param api_sdk.Tensorboard instance:
         """
-        data = [["Experiments ID", ]]
+        data = [["Experiments ID", "State"]]
 
         for e in instance.experiments:
-            data.append([e.get("id")])
+            data.append([e.get("id"), e.get('state')])
         return data
 
 
@@ -113,18 +113,22 @@ class ListTensorboardsCommand(GetTensorboardClientCommandMixin, common.ListComma
 
     def _get_table_data(self, objects):
         # TODO later we need to add information about state
-        data = [["ID", "URL"]]
+        data = [["ID", "URL", "STATE"]]
         for obj in objects:
-            data.append([obj.id, obj.url])
+            data.append([obj.id, obj.url, obj.state])
         return data
 
 
 class AddExperimentToTensorboard(GetTensorboardClientCommandMixin, common.BaseCommand):
     SPINNER_MESSAGE = "Adding experiments to tensorboard"
 
-    def execute(self, id, **kwargs):
+    def execute(self, id, experiments):
+        """
+        :param str id:
+        :param list[str] experiments:
+        """
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            tensorboard = self.client.add_experiments(id, added_experiments=list(kwargs.get('experiments')))
+            tensorboard = self.client.add_experiments(id, added_experiments=list(experiments))
 
         self._log_object(tensorboard)
 

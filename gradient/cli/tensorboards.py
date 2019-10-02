@@ -37,25 +37,25 @@ def tensorboards_group():
     help="Password",
     cls=common.GradientOption,
 )
-@click.option(
-    "--instanceType",
-    "instance_type",
-    help="Instance type",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--instanceSize",
-    "instance_size",
-    help="Instance size",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--instancesCount",
-    "instances_count",
-    type=int,
-    help="Instances count",
-    cls=common.GradientOption,
-)
+# @click.option(
+#     "--instanceType",
+#     "instance_type",
+#     help="Instance type",
+#     cls=common.GradientOption,
+# )
+# @click.option(
+#     "--instanceSize",
+#     "instance_size",
+#     help="Instance size",
+#     cls=common.GradientOption,
+# )
+# @click.option(
+#     "--instancesCount",
+#     "instances_count",
+#     type=int,
+#     help="Instances count",
+#     cls=common.GradientOption,
+# )
 @common.api_key_option
 @common.options_file
 def create_tensorboard(api_key, options_file, **kwargs):
@@ -89,7 +89,7 @@ def list_tensorboards(api_key, options_file):
 @tensorboards_group.command("add-experiments", help="Update tensorboard experiments")
 @click.option(
     "--id",
-    "id",
+    "tensorboard_id",
     required=True,
     help="Tensorboard ID",
     cls=common.GradientOption,
@@ -104,9 +104,9 @@ def list_tensorboards(api_key, options_file):
 )
 @common.api_key_option
 @common.options_file
-def add_experiments_to_tensorboard(api_key, options_file, **kwargs):
+def add_experiments_to_tensorboard(tensorboard_id, experiments, api_key, options_file):
     command = tensorboards_commands.AddExperimentToTensorboard(api_key=api_key)
-    command.execute(**kwargs)
+    command.execute(tensorboard_id, experiments)
 
 
 @tensorboards_group.command("remove-experiments", help="Update tensorboard experiments")

@@ -9,6 +9,8 @@ from gradient.cli import common, validators
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
 from gradient.cli.common import api_key_option, ClickGroup
+from gradient.cli.utils.flag_with_value import GradientRegisterReaderOption, GradientRegisterWriterOption, \
+    GradientRegisterWriterCommand
 from gradient.commands import experiments as experiments_commands
 from gradient.config import config
 
@@ -396,13 +398,48 @@ If you depend on functionality not listed there, please file an issue."""
         logger.Logger().error(msg)
 
 
-@create_experiment.command(name="multinode", help="Create multi node experiment")
+def tensorboard_option(f):
+    options = [
+        click.option(
+            "--tensorboard",
+            is_flag=True,
+            # default=experiments_commands.NoTensorboardId,
+            help="Add to existing tensorboard. If no or many tensorboards exists a new one will be created",
+            cls=GradientRegisterReaderOption,
+        ),
+        click.option(
+            "--tensorboard_set",
+            help="Add to existing tensorboard",
+            cls=GradientRegisterWriterOption,
+        ),
+    ]
+    return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
+
+
+def parse_tensorboard_options(tensorboard, tensorboard_set):
+    """
+    :param str|bool tensorboard:
+    :param str|None tensorboard_set:
+    :rtype: str|bool
+    """
+    if tensorboard is True:
+        return True
+
+    if tensorboard_set:
+        return tensorboard_set
+    else:
+        return False
+
+
+@create_experiment.command(name="multinode", help="Create multi node experiment", cls=GradientRegisterWriterCommand)
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
+@tensorboard_option
 @api_key_option
 @common.options_file
-def create_multi_node(api_key, use_vpc, options_file, **kwargs):
+def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+    add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
     validators.validate_multi_node(kwargs)
     utils.validate_workspace_input(kwargs)
@@ -413,16 +450,18 @@ def create_multi_node(api_key, use_vpc, options_file, **kwargs):
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    command.execute(kwargs, use_vpc=use_vpc)
+    command.execute(kwargs, add_to_tensorboard=add_to_tensorboard, use_vpc=use_vpc)
 
 
-@create_experiment.command(name="singlenode", help="Create single node experiment")
+@create_experiment.command(name="singlenode", help="Create single node experiment", cls=GradientRegisterWriterCommand)
 @common_experiments_create_options
 @common_experiments_create_single_node_options
+@tensorboard_option
 @api_key_option
 @common.options_file
-def create_single_node(api_key, use_vpc, options_file, **kwargs):
+def create_single_node(api_key, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+    add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
@@ -431,10 +470,11 @@ def create_single_node(api_key, use_vpc, options_file, **kwargs):
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    command.execute(kwargs, use_vpc=use_vpc)
+    command.execute(kwargs, add_to_tensorboard=add_to_tensorboard, use_vpc=use_vpc)
 
 
-@create_and_start_experiment.command(name="multinode", help="Create and start new multi node experiment")
+@create_and_start_experiment.command(name="multinode", help="Create and start new multi node experiment",
+                                     cls=GradientRegisterWriterCommand)
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
 @click.option(
@@ -445,11 +485,13 @@ def create_single_node(api_key, use_vpc, options_file, **kwargs):
     default=True,
     help="Don't show logs. Only create, start and exit",
 )
+@tensorboard_option
 @api_key_option
 @common.options_file
 @click.pass_context
-def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, options_file, **kwargs):
+def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+    add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
     validators.validate_multi_node(kwargs)
     utils.validate_workspace_input(kwargs)
@@ -462,12 +504,13 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, options_file, 
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    experiment_id = command.execute(kwargs, use_vpc=use_vpc)
+    experiment_id = command.execute(kwargs, add_to_tensorboard=add_to_tensorboard, use_vpc=use_vpc)
     if experiment_id and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
 
-@create_and_start_experiment.command(name="singlenode", help="Create and start new single node experiment")
+@create_and_start_experiment.command(name="singlenode", help="Create and start new single node experiment",
+                                     cls=GradientRegisterWriterCommand)
 @common_experiments_create_options
 @common_experiments_create_single_node_options
 @click.option(
@@ -478,11 +521,14 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, options_file, 
     default=True,
     help="Don't show logs. Only create, start and exit",
 )
+@tensorboard_option
 @api_key_option
 @common.options_file
 @click.pass_context
-def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, options_file, **kwargs):
+def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, tensorboard, tensorboard_set, options_file,
+                                 **kwargs):
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+    add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
@@ -491,7 +537,7 @@ def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, options_file,
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    experiment_id = command.execute(kwargs, use_vpc=use_vpc)
+    experiment_id = command.execute(kwargs, add_to_tensorboard=add_to_tensorboard, use_vpc=use_vpc)
     if experiment_id and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
