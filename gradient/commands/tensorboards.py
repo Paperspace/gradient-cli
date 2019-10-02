@@ -122,9 +122,13 @@ class ListTensorboardsCommand(GetTensorboardClientCommandMixin, common.ListComma
 class AddExperimentToTensorboard(GetTensorboardClientCommandMixin, common.BaseCommand):
     SPINNER_MESSAGE = "Adding experiments to tensorboard"
 
-    def execute(self, id, **kwargs):
+    def execute(self, id, experiments):
+        """
+        :param str id:
+        :param list[str] experiments:
+        """
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            tensorboard = self.client.add_experiments(id, added_experiments=list(kwargs.get('experiments')))
+            tensorboard = self.client.add_experiments(id, added_experiments=list(experiments))
 
         self._log_object(tensorboard)
 
