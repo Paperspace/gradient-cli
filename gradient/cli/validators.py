@@ -32,5 +32,5 @@ def validate_multi_node(params):
     required_params = REQUIRED_PARAMS_PER_EXPERIMENT_TYPE.get(experiment_type)
 
     for param_name in required_params:
-        if not params.get(param_name, None):
+        if not params.get(param_name):
             raise click.UsageError("Param %s is required for this experiment type" % param_name)

@@ -122,10 +122,10 @@ class GradientOption(ColorExtrasInCommandHelpMixin, ReadValueFromConfigFile, cli
 
 
 api_key_option = click.option(
-        "--apiKey",
-        "api_key",
-        help="API key to use this time only",
-        cls=GradientOption,
+    "--apiKey",
+    "api_key",
+    help="API key to use this time only",
+    cls=GradientOption,
 )
 
 
@@ -157,17 +157,17 @@ def generate_options_template(ctx, param, value):
 def options_file(f):
     options = [
         click.option(
-                "--" + OPTIONS_FILE_OPTION_NAME,
-                OPTIONS_FILE_PARAMETER_NAME,
-                help="Path to YAML file with predefined options",
-                type=click.Path(exists=True, resolve_path=True)
+            "--" + OPTIONS_FILE_OPTION_NAME,
+            OPTIONS_FILE_PARAMETER_NAME,
+            help="Path to YAML file with predefined options",
+            type=click.Path(exists=True, resolve_path=True)
         ),
         click.option(
-                "--" + OPTIONS_DUMP_FILE_OPTION_NAME,
-                callback=generate_options_template,
-                expose_value=False,
-                help="Generate template options file",
-                type=click.Path(writable=True, resolve_path=True)
+            "--" + OPTIONS_DUMP_FILE_OPTION_NAME,
+            callback=generate_options_template,
+            expose_value=False,
+            help="Generate template options file",
+            type=click.Path(writable=True, resolve_path=True)
         )
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)

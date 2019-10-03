@@ -31,28 +31,6 @@ class ExperimentsClient(BaseClient):
         """
         Create single node experiment
 
-        .. code-block:: python
-            :linenos:
-            :emphasize-lines: 3,5
-
-            gradient experiments create singlenode
-            --projectId <your-project-id>
-            --name singleEx
-            --experimentEnv "{"EPOCHS_EVAL":5,"TRAIN_EPOCHS":10,"MAX_STEPS":1000,"EVAL_SECS":10}"
-            --container tensorflow/tensorflow:1.13.1-gpu-py3
-            --machineType K80
-            --command "python mnist.py"
-            --workspaceUrl https://github.com/Paperspace/mnist-sample.git
-            --workspaceUsername example-username
-            --workspacePassword example-password
-            --modelType Tensorflow
-            --modelPath /artifacts
-
-        Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model,
-        since Deployments currently only use Tensorflow Serving to serve models. Also, ``--modelPath /artifacts``
-        is currently required for singlenode experiments if you need your model to appear in your Model Repository so
-        that you can deploy it using Deployments.
-
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
         :param str machine_type: Machine type [required]
@@ -146,31 +124,6 @@ class ExperimentsClient(BaseClient):
     ):
         """
         Create multinode experiment
-
-        *EXAMPLE*::
-
-            gradient experiments create multinode
-            --name multiEx
-            --projectId <your-project-id>
-            --experimentType GRPC
-            --workerContainer tensorflow/tensorflow:1.13.1-gpu-py3
-            --workerMachineType K80
-            --workerCommand "python mnist.py"
-            --workerCount 2
-            --parameterServerContainer tensorflow/tensorflow:1.13.1-gpu-py3
-            --parameterServerMachineType K80
-            --parameterServerCommand "python mnist.py"
-            --parameterServerCount 1
-            --workspaceUrl https://github.com/Paperspace/mnist-sample.git
-            --workspaceUsername example-username
-            --workspacePassword example-password
-            --modelType Tensorflow
-
-        Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model,
-        since Deployments currently only use Tensorflow Serving to serve models. Also, ``--modelPath /artifacts``
-        is currently required for singlenode experiments if you need your model to appear in your Model Repository so
-        that you can deploy it using Deployments.
-
 
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
@@ -285,31 +238,6 @@ class ExperimentsClient(BaseClient):
         """
         Create multinode experiment using MPI
 
-        *EXAMPLE*::
-
-            gradient experiments create multinode
-            --name multiEx
-            --projectId <your-project-id>
-            --experimentType MPI
-            --workerContainer tensorflow/tensorflow:1.13.1-gpu-py3
-            --workerMachineType K80
-            --workerCommand "python mnist.py"
-            --workerCount 2
-            --masterContainer tensorflow/tensorflow:1.13.1-gpu-py3
-            --masterMachineType K80
-            --masterCommand "python mnist.py"
-            --masterCount 1
-            --workspaceUrl https://github.com/Paperspace/mnist-sample.git
-            --workspaceUsername example-username
-            --workspacePassword example-password
-            --modelType Tensorflow
-
-        Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model,
-        since Deployments currently only use Tensorflow Serving to serve models. Also, ``--modelPath /artifacts``
-        is currently required for singlenode experiments if you need your model to appear in your Model Repository so
-        that you can deploy it using Deployments.
-
-
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
         :param int experiment_type_id: Experiment Type ID [required]
@@ -411,26 +339,6 @@ class ExperimentsClient(BaseClient):
     ):
         """Create and start single node experiment
 
-        *EXAMPLE*::
-
-            gradient experiments run singlenode
-            --projectId <your-project-id>
-            --name singleEx
-            --experimentEnv "{"EPOCHS_EVAL":5,"TRAIN_EPOCHS":10,"MAX_STEPS":1000,"EVAL_SECS":10}"
-            --container tensorflow/tensorflow:1.13.1-gpu-py3
-            --machineType K80
-            --command "python mnist.py"
-            --workspaceUrl https://github.com/Paperspace/mnist-sample.git
-            --workspaceUsername example-username
-            --workspacePassword example-password
-            --modelType Tensorflow
-            --modelPath /artifacts
-
-        Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model,
-        since Deployments currently only use Tensorflow Serving to serve models. Also, ``--modelPath /artifacts``
-        is currently required for singlenode experiments if you need your model to appear in your Model Repository so
-        that you can deploy it using Deployments.
-
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
         :param str machine_type: Machine type [required]
@@ -523,32 +431,6 @@ class ExperimentsClient(BaseClient):
             use_vpc=False,
     ):
         """Create and start multinode experiment
-
-        The following command creates and starts a multinode experiment called multiEx and places it within the Gradient
-        Project identified by the --projectId option. (Note: in some early versions of the CLI this option was called
-        --projectHandle.)
-
-        *EXAMPLE*::
-
-            gradient experiments run multinode
-            --name multiEx
-            --projectId <your-project-id>
-            --experimentType GRPC
-            --workerContainer tensorflow/tensorflow:1.13.1-gpu-py3
-            --workerMachineType K80
-            --workerCommand "python mnist.py"
-            --workerCount 2
-            --parameterServerContainer tensorflow/tensorflow:1.13.1-gpu-py3
-            --parameterServerMachineType K80
-            --parameterServerCommand "python mnist.py"
-            --parameterServerCount 1
-            --workspaceUrl https://github.com/Paperspace/mnist-sample.git
-            --workspaceUsername example-username
-            --workspacePassword example-password
-            --modelType Tensorflow
-
-        Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model, since
-        Deployments currently only use Tensorflow Serving to serve models.
 
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
@@ -662,32 +544,6 @@ class ExperimentsClient(BaseClient):
     ):
         """Create and start multinode experiment using MPI
 
-        The following command creates and starts a multinode experiment called multiEx and places it within the Gradient
-        Project identified by the --projectId option. (Note: in some early versions of the CLI this option was called
-        --projectHandle.)
-
-        *EXAMPLE*::
-
-            gradient experiments run multinode
-            --name multiEx
-            --projectId <your-project-id>
-            --experimentType MPI
-            --workerContainer tensorflow/tensorflow:1.13.1-gpu-py3
-            --workerMachineType K80
-            --workerCommand "python mnist.py"
-            --workerCount 2
-            --masterContainer tensorflow/tensorflow:1.13.1-gpu-py3
-            --masterMachineType K80
-            --masterCommand "python mnist.py"
-            --masterCount 1
-            --workspaceUrl https://github.com/Paperspace/mnist-sample.git
-            --workspaceUsername example-username
-            --workspacePassword example-password
-            --modelType Tensorflow
-
-        Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model, since
-        Deployments currently only use Tensorflow Serving to serve models.
-
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
         :param int experiment_type_id: Experiment Type ID [required]
@@ -766,10 +622,6 @@ class ExperimentsClient(BaseClient):
     def start(self, experiment_id, use_vpc=False):
         """Start existing experiment that has not run
 
-        *EXAMPLE*::
-
-            gradient experiments start <experiment_id>
-
         :param str experiment_id: Experiment ID
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
@@ -782,10 +634,6 @@ class ExperimentsClient(BaseClient):
     def stop(self, experiment_id, use_vpc=False):
         """Stop running experiment
 
-        *EXAMPLE*::
-
-            gradient experiments stop <experiment_id>
-
         :param str experiment_id: Experiment ID
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
@@ -797,26 +645,6 @@ class ExperimentsClient(BaseClient):
 
     def list(self, project_id=None):
         """Get a list of experiments. Optionally filter by project ID
-
-        *EXAMPLE*::
-
-            gradient experiments list
-
-        *EXAMPLE RETURN*::
-
-            +-----------------------------+----------------+----------+
-            | Name                        | ID             | Status   |
-            +-----------------------------+----------------+----------+
-            | mnist-multinode             | experiment-id  | canceled |
-            | mnist-multinode             | experiment-id  | failed   |
-            | mnist-multinode             | experiment-id  | created  |
-            | mnist-multinode             | experiment-id  | canceled |
-            | mnist-multinode             | experiment-id  | canceled |
-            | mnist-multinode             | experiment-id  | canceled |
-            | mnist-multinode             | experiment-id  | canceled |
-            | mnist                       | experiment-id  | stopped  |
-            +-----------------------------+----------------+----------+
-
 
         :param str|list|None project_id:
         :return: experiments
@@ -839,10 +667,6 @@ class ExperimentsClient(BaseClient):
 
     def logs(self, experiment_id, line=0, limit=10000):
         """Show list of latest logs from the specified experiment.
-
-        *EXAMPLE*::
-
-            gradient experiments logs --experimentId
 
         :param str experiment_id: Experiment ID
         :param int line: line number at which logs starts to display on screen
