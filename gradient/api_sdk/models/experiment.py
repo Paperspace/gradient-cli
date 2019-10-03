@@ -180,3 +180,24 @@ class MultiNodeExperiment(BaseExperiment):
             raise ValueError("Multi node experiment's type must equal {} or {}".
                              format(constants.ExperimentType.GRPC_MULTI_NODE,
                                     constants.ExperimentType.MPI_MULTI_NODE))
+
+
+@attr.s
+class MpiMultiNodeExperiment(BaseExperiment):
+    experiment_type_id = attr.ib(type=int, default=None)
+    worker_container = attr.ib(type=str, default=None)
+    worker_machine_type = attr.ib(type=str, default=None)
+    worker_command = attr.ib(type=str, default=None)
+    worker_count = attr.ib(type=int, default=None)
+    master_container = attr.ib(type=str, default=None)
+    master_machine_type = attr.ib(type=str, default=None)
+    master_command = attr.ib(type=str, default=None)
+    master_count = attr.ib(type=str, default=None)
+    worker_container_user = attr.ib(type=str, default=None)
+    worker_registry_username = attr.ib(type=str, default=None)
+    worker_registry_password = attr.ib(type=str, default=None)
+    worker_registry_url = attr.ib(type=str, default=None)
+    master_container_user = attr.ib(type=str, default=None)
+    master_registry_username = attr.ib(type=str, default=None)
+    master_registry_password = attr.ib(type=str, default=None)
+    master_registry_url = attr.ib(type=str, default=None)

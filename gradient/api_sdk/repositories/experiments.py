@@ -143,12 +143,21 @@ class CreateMultiNodeExperiment(BaseCreateExperiment):
     SERIALIZER_CLS = serializers.MultiNodeExperimentSchema
 
 
+class CreateMpiMultiNodeExperiment(BaseCreateExperiment):
+    SERIALIZER_CLS = serializers.MpiMultiNodeExperimentSchema
+
+
 class RunSingleNodeExperiment(CreateSingleNodeExperiment):
     def get_request_url(self, **_):
         return "/experiments/run/"
 
 
 class RunMultiNodeExperiment(CreateMultiNodeExperiment):
+    def get_request_url(self, **_):
+        return "/experiments/run/"
+
+
+class RunMpiMultiNodeExperiment(CreateMpiMultiNodeExperiment):
     def get_request_url(self, **_):
         return "/experiments/run/"
 

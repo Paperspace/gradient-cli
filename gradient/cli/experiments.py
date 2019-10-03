@@ -5,7 +5,7 @@ import click
 
 from gradient import constants, utils, logger, workspace
 from gradient.api_sdk.clients import http_client
-from gradient.cli import common
+from gradient.cli import common, validators
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
 from gradient.cli.common import api_key_option, ClickGroup
@@ -20,6 +20,16 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
         ("MPI", constants.ExperimentType.MPI_MULTI_NODE),
     )
 )
+
+MULTI_NODE_CREATE_EXPERIMENT_COMMANDS = {
+    constants.ExperimentType.GRPC_MULTI_NODE: experiments_commands.CreateMultiNodeExperimentCommand,
+    constants.ExperimentType.MPI_MULTI_NODE: experiments_commands.CreateMpiMultiNodeExperimentCommand,
+}
+
+MULTI_NODE_RUN_EXPERIMENT_COMMANDS = {
+    constants.ExperimentType.GRPC_MULTI_NODE: experiments_commands.CreateAndStartMultiNodeExperimentCommand,
+    constants.ExperimentType.MPI_MULTI_NODE: experiments_commands.CreateAndStartMpiMultiNodeExperimentCommand,
+}
 
 
 def get_workspace_handler(api_key):
@@ -191,30 +201,50 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--parameterServerContainer",
             "parameter_server_container",
-            required=True,
-            help="Parameter server container",
+            help="Parameter server container (GRPC only)",
             cls=common.GradientOption,
         ),
         click.option(
             "--parameterServerMachineType",
             "parameter_server_machine_type",
-            required=True,
-            help="Parameter server machine type",
+            help="Parameter server machine type (GRPC only)",
             cls=common.GradientOption,
         ),
         click.option(
             "--parameterServerCommand",
             "parameter_server_command",
-            required=True,
-            help="Parameter server command",
+            help="Parameter server command (GRPC only)",
             cls=common.GradientOption,
         ),
         click.option(
             "--parameterServerCount",
             "parameter_server_count",
             type=int,
-            required=True,
-            help="Parameter server count",
+            help="Parameter server count (GRPC only)",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--masterContainer",
+            "master_container",
+            help="Master container (MPI only)",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--masterMachineType",
+            "master_machine_type",
+            help="Master machine type (MPI only)",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--masterCount",
+            "master_count",
+            help="Master count (MPI only)",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--masterCommand",
+            "master_command",
+            help="Master command (MPI only)",
             cls=common.GradientOption,
         ),
         click.option(
@@ -264,6 +294,30 @@ def common_experiment_create_multi_node_options(f):
             "parameter_server_registry_url",
             help="Parameter server registry URL",
             cls=common.GradientOption,
+        ),
+        click.option(
+            "--masterContainerUser",
+            "master_container_user",
+            help="Master container user (MPI only)",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--masterRegistryUsername",
+            "master_registry_username",
+            help="Master registry username (MPI only)",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--masterRegistryPassword",
+            "master_registry_password",
+            help="Master registry password (MPI only)",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--masterRegistryUrl",
+            "master_registry_url",
+            help="Master registry URL (MPI only)",
+            cls=common.GradientOption
         ),
         click.option(
             "--vpc",
@@ -387,10 +441,12 @@ def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_fi
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
+    validators.validate_multi_node(kwargs)
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
-
-    command = experiments_commands.CreateMultiNodeExperimentCommand(
+    experiment_type = kwargs.get('experiment_type_id')
+    command_class = MULTI_NODE_CREATE_EXPERIMENT_COMMANDS.get(experiment_type)
+    command = command_class(
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
@@ -437,10 +493,14 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, t
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
+    validators.validate_multi_node(kwargs)
     utils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs, del_all_falsy=True)
 
-    command = experiments_commands.CreateAndStartMultiNodeExperimentCommand(
+    experiment_type = kwargs.get('experiment_type_id')
+    command_class = MULTI_NODE_RUN_EXPERIMENT_COMMANDS.get(experiment_type)
+
+    command = command_class(
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
