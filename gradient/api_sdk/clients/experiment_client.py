@@ -70,9 +70,9 @@ class ExperimentsClient(BaseClient):
         :param bool is_preemptible: Is preemptible
         :param str container: Container (dockerfile) [required]
         :param str container_user: Container user for running the specified command in the container. If no containerUser is specified, the user will default to 'root' in the container.
-        :param str registry_username: Registry username for accessing private docker registry container if nessesary
-        :param str registry_password: Registry password for accessing private docker registry container if nessesary
-        :param str registry_url: Registry server URL for accessing private docker registry container if nessesary
+        :param str registry_username: Registry username for accessing private docker registry container if necessary
+        :param str registry_password: Registry password for accessing private docker registry container if necessary
+        :param str registry_url: Registry server URL for accessing private docker registry container if necessary
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -119,10 +119,10 @@ class ExperimentsClient(BaseClient):
             worker_machine_type,
             worker_command,
             worker_count,
-            parameter_server_container=None,
-            parameter_server_machine_type=None,
-            parameter_server_command=None,
-            parameter_server_count=None,
+            parameter_server_container,
+            parameter_server_machine_type,
+            parameter_server_command,
+            parameter_server_count,
             ports=None,
             workspace_url=None,
             workspace_username=None,
@@ -195,13 +195,13 @@ class ExperimentsClient(BaseClient):
         :param str model_path: Model path
         :param bool is_preemptible: Is preemptible
         :param str worker_container_user: Worker container user
-        :param str worker_registry_username: Registry username for accessing private docker registry container if nessesary
-        :param str worker_registry_password: Registry password for accessing private docker registry container if nessesary
-        :param str worker_registry_url: Registry server URL for accessing private docker registry container if nessesary
+        :param str worker_registry_username: Registry username for accessing private docker registry container if necessary
+        :param str worker_registry_password: Registry password for accessing private docker registry container if necessary
+        :param str worker_registry_url: Registry server URL for accessing private docker registry container if necessary
         :param str parameter_server_container_user: Parameter server container user
-        :param str parameter_server_registry_username: Registry username for accessing private docker registry container if nessesary
-        :param str parameter_server_registry_password: Registry password for accessing private docker registry container if nessesary
-        :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if nessesary
+        :param str parameter_server_registry_username: Registry username for accessing private docker registry container if necessary
+        :param str parameter_server_registry_password: Registry password for accessing private docker registry container if necessary
+        :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if necessary
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -282,6 +282,69 @@ class ExperimentsClient(BaseClient):
             master_registry_url=None,
             use_vpc=False,
     ):
+        """
+        Create multinode experiment using MPI
+
+        *EXAMPLE*::
+
+            gradient experiments create multinode
+            --name multiEx
+            --projectId <your-project-id>
+            --experimentType MPI
+            --workerContainer tensorflow/tensorflow:1.13.1-gpu-py3
+            --workerMachineType K80
+            --workerCommand "python mnist.py"
+            --workerCount 2
+            --masterContainer tensorflow/tensorflow:1.13.1-gpu-py3
+            --masterMachineType K80
+            --masterCommand "python mnist.py"
+            --masterCount 1
+            --workspaceUrl https://github.com/Paperspace/mnist-sample.git
+            --workspaceUsername example-username
+            --workspacePassword example-password
+            --modelType Tensorflow
+
+        Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model,
+        since Deployments currently only use Tensorflow Serving to serve models. Also, ``--modelPath /artifacts``
+        is currently required for singlenode experiments if you need your model to appear in your Model Repository so
+        that you can deploy it using Deployments.
+
+
+        :param str name: Name of new experiment  [required]
+        :param str project_id: Project ID  [required]
+        :param int experiment_type_id: Experiment Type ID [required]
+        :param str worker_container: Worker container (dockerfile) [required]
+        :param str worker_machine_type: Worker machine type  [required]
+        :param str worker_command: Worker command  [required]
+        :param int worker_count: Worker count  [required]
+        :param str master_container: Master container  [required]
+        :param str master_machine_type: Master machine type  [required]
+        :param str master_command: Master command  [required]
+        :param int master_count: Master count  [required]
+        :param str ports: Port to use in new experiment
+        :param str workspace_url: Project git repository url
+        :param str workspace_username: Project git repository username
+        :param str workspace_password: Project git repository password
+        :param str working_directory: Working directory for the experiment
+        :param str artifact_directory: Artifacts directory
+        :param str cluster_id: Cluster ID
+        :param dict experiment_env: Environment variables in a JSON
+        :param str model_type: defines the type of model that is being generated by the experiment. Model type must be one of Tensorflow, ONNX, or Custom
+        :param str model_path: Model path
+        :param bool is_preemptible: Is preemptible
+        :param str worker_container_user: Worker container user
+        :param str worker_registry_username: Registry username for accessing private docker registry container if necessary
+        :param str worker_registry_password: Registry password for accessing private docker registry container if necessary
+        :param str worker_registry_url: Registry server URL for accessing private docker registry container if necessary
+        :param str master_container_user: Master container user
+        :param str master_registry_username: Registry username for accessing private docker registry container if necessary
+        :param str master_registry_password: Registry password for accessing private docker registry container if necessary
+        :param str master_registry_url: Registry server URL for accessing private docker registry container if necessary
+        :param bool use_vpc: Set to True when using Virtual Private Cloud
+
+        :returns: experiment handle
+        :rtype: str
+        """
         if not is_preemptible:
             is_preemptible = None
 
@@ -385,9 +448,9 @@ class ExperimentsClient(BaseClient):
         :param bool is_preemptible: Is preemptible
         :param str container: Container (dockerfile) [required]
         :param str container_user: Container user for running the specified command in the container. If no containerUser is specified, the user will default to 'root' in the container.
-        :param str registry_username: Registry username for accessing private docker registry container if nessesary
-        :param str registry_password: Registry password for accessing private docker registry container if nessesary
-        :param str registry_url: Registry server URL for accessing private docker registry container if nessesary
+        :param str registry_username: Registry username for accessing private docker registry container if necessary
+        :param str registry_password: Registry password for accessing private docker registry container if necessary
+        :param str registry_url: Registry server URL for accessing private docker registry container if necessary
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -510,13 +573,13 @@ class ExperimentsClient(BaseClient):
         :param str model_path: Model path
         :param bool is_preemptible: Is preemptible
         :param str worker_container_user: Worker container user
-        :param str worker_registry_username: Registry username for accessing private docker registry container if nessesary
-        :param str worker_registry_password: Registry password for accessing private docker registry container if nessesary
-        :param str worker_registry_url: Registry server URL for accessing private docker registry container if nessesary
+        :param str worker_registry_username: Registry username for accessing private docker registry container if necessary
+        :param str worker_registry_password: Registry password for accessing private docker registry container if necessary
+        :param str worker_registry_url: Registry server URL for accessing private docker registry container if necessary
         :param str parameter_server_container_user: Parameter server container user
-        :param str parameter_server_registry_username: Registry username for accessing private docker registry container if nessesary
-        :param str parameter_server_registry_password: Registry password for accessing private docker registry container if nessesary
-        :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if nessesary
+        :param str parameter_server_registry_username: Registry username for accessing private docker registry container if necessary
+        :param str parameter_server_registry_password: Registry password for accessing private docker registry container if necessary
+        :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if necessary
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -597,6 +660,69 @@ class ExperimentsClient(BaseClient):
             master_registry_url=None,
             use_vpc=False,
     ):
+        """Create and start multinode experiment using MPI
+
+        The following command creates and starts a multinode experiment called multiEx and places it within the Gradient
+        Project identified by the --projectId option. (Note: in some early versions of the CLI this option was called
+        --projectHandle.)
+
+        *EXAMPLE*::
+
+            gradient experiments run multinode
+            --name multiEx
+            --projectId <your-project-id>
+            --experimentType MPI
+            --workerContainer tensorflow/tensorflow:1.13.1-gpu-py3
+            --workerMachineType K80
+            --workerCommand "python mnist.py"
+            --workerCount 2
+            --masterContainer tensorflow/tensorflow:1.13.1-gpu-py3
+            --masterMachineType K80
+            --masterCommand "python mnist.py"
+            --masterCount 1
+            --workspaceUrl https://github.com/Paperspace/mnist-sample.git
+            --workspaceUsername example-username
+            --workspacePassword example-password
+            --modelType Tensorflow
+
+        Note: ``--modelType Tensorflow`` is currently required if you wish you create a Deployment from your model, since
+        Deployments currently only use Tensorflow Serving to serve models.
+
+        :param str name: Name of new experiment  [required]
+        :param str project_id: Project ID  [required]
+        :param int experiment_type_id: Experiment Type ID [required]
+        :param str worker_container: Worker container (dockerfile) [required]
+        :param str worker_machine_type: Worker machine type  [required]
+        :param str worker_command: Worker command  [required]
+        :param int worker_count: Worker count  [required]
+        :param str master_container: Master container  [required]
+        :param str master_machine_type: Master machine type  [required]
+        :param str master_command: Master command  [required]
+        :param int master_count: Master count  [required]
+        :param str ports: Port to use in new experiment
+        :param str workspace_url: Project git repository url
+        :param str workspace_username: Project git repository username
+        :param str workspace_password: Project git repository password
+        :param str working_directory: Working directory for the experiment
+        :param str artifact_directory: Artifacts directory
+        :param str cluster_id: Cluster ID
+        :param dict experiment_env: Environment variables in a JSON
+        :param str model_type: defines the type of model that is being generated by the experiment. Model type must be one of Tensorflow, ONNX, or Custom
+        :param str model_path: Model path
+        :param bool is_preemptible: Is preemptible
+        :param str worker_container_user: Worker container user
+        :param str worker_registry_username: Registry username for accessing private docker registry container if necessary
+        :param str worker_registry_password: Registry password for accessing private docker registry container if necessary
+        :param str worker_registry_url: Registry server URL for accessing private docker registry container if necessary
+        :param str master_container_user: Master container user
+        :param str master_registry_username: Registry username for accessing private docker registry container if necessary
+        :param str master_registry_password: Registry password for accessing private docker registry container if necessary
+        :param str master_registry_url: Registry server URL for accessing private docker registry container if necessary
+        :param bool use_vpc: Set to True when using Virtual Private Cloud
+
+        :returns: experiment handle
+        :rtype: str
+        """
         if not is_preemptible:
             is_preemptible = None
 
