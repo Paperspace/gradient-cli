@@ -353,12 +353,12 @@ def list_artifacts(job_id, size, links, files, options_file, api_key=None):
 @click.option(
     "--jobId",
     "job_id",
-    cls=common.GradientArgument,
+    cls=common.GradientOption,
 )
 @click.option(
-    "--destinationDir"
+    "--destinationDir",
     "destination_directory",
-    cls=common.GradientArgument,
+    cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
