@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.3.5
+### Fixes
+* Fix StopIteration exception in Python 3.7
+
 # Release Notes for 0.3.4
 ### Fixes
 * Fixed bug causing exception be raised when `--help` option was used with some commands (like `gradient run`)
