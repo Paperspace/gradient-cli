@@ -60,7 +60,7 @@ class ListJobLogs(ListResources):
 
             for log in logs:
                 if log.message == "PSEOF":
-                    raise StopIteration()
+                    return
 
                 last_line_number += 1
                 yield log
