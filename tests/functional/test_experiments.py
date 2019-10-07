@@ -960,6 +960,7 @@ class TestExperimentLogs(object):
                                        params={"line": 20, "limit": 30, "experimentId": "some-id"})
         assert "Downloading https://storage.googleapis.com/cvdf-datasets/mnist/t10k-labels" \
                "-idx1-ubyte.gz to /tmp/tmpbrss4txl.gz" in result.output
+        assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_all_received_logs_when_logs_command_was_used_with_follow_flag(self, get_patched):

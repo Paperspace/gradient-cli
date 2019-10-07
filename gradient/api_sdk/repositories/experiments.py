@@ -110,7 +110,7 @@ class ListExperimentLogs(ListResources):
             for log in logs:
                 # stop generator - "PSEOF" indicates there are no more logs
                 if log.message == "PSEOF":
-                    raise StopIteration()
+                    return
 
                 last_line_number += 1
                 yield log
