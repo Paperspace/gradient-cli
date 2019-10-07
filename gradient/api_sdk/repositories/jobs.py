@@ -1,6 +1,6 @@
 from gradient import config
 from gradient.api_sdk import serializers
-from .common import ListResources, CreateResource, BaseRepository, GetResource
+from .common import ListResources, CreateResource, BaseRepository, GetResource, DeleteResource, StopResource
 from ..serializers import JobSchema, LogRowSchema
 
 
@@ -106,26 +106,24 @@ class RunJob(CreateJob):
         return self.http_client
 
 
-class DeleteJob(GetBaseJobApiUrlMixin, BaseRepository):
+class DeleteJob(GetBaseJobApiUrlMixin, DeleteResource):
 
     def get_request_url(self, **kwargs):
-        return "/job/{}/destroy/".format(kwargs.get("id_"))
+        return "/jobs/{}/destroy".format(kwargs.get("id"))
 
-    def delete(self, id_, **kwargs):
-        url = self.get_request_url(id_=id_)
-        response = self.client.post(url)
-        self._validate_response(response)
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response
 
 
-class StopJob(GetBaseJobApiUrlMixin, BaseRepository):
+class StopJob(GetBaseJobApiUrlMixin, StopResource):
 
     def get_request_url(self, **kwargs):
-        return "/job/{}/stop/".format(kwargs.get('id_'))
+        return "/jobs/{}/stop".format(kwargs.get('id'))
 
-    def stop(self, id_, **kwargs):
-        url = self.get_request_url(id_=id_)
-        response = self.client.post(url)
-        self._validate_response(response)
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response
 
 
 class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
@@ -156,16 +154,16 @@ class DeleteJobArtifacts(GetBaseJobApiUrlMixin, BaseRepository):
     VALIDATION_ERROR_MESSAGE = "Failed to delete resource"
 
     def get_request_url(self, **kwargs):
-        return "/jobs/{}/artifactsDestroy/".format(kwargs.get("id_"))
+        return "/jobs/{}/artifactsDestroy".format(kwargs.get("id"))
 
-    def delete(self, id_, **kwargs):
-        url = self.get_request_url(id_=id_)
-
-        params = self._get_request_params(kwargs)
-
-        client = self._get_client()
-        response = client.post(url, json=kwargs.get("json"), params=params)
-        self._validate_response(response)
+    # def delete(self, id_, **kwargs):
+    #     url = self.get_request_url(id_=id_)
+    #
+    #     params = self._get_request_params(kwargs)
+    #
+    #     client = self._get_client()
+    #     response = client.post(url, json=kwargs.get("json"), params=params)
+    #     self._validate_response(response)
 
     def _get_request_params(self, kwargs):
         filters = dict()
