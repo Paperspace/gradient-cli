@@ -130,7 +130,9 @@ class StopJob(GetBaseJobApiUrlMixin, BaseRepository):
 
 class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
     def _parse_objects(self, data, **kwargs):
-        return data
+        serializer = serializers.ArtifactSchema()
+        files = serializer.get_instance(data, many=True)
+        return files
 
     def get_request_url(self, **kwargs):
         return "/jobs/artifactsList"

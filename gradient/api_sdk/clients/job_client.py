@@ -4,7 +4,7 @@ Jobs related client handler logic.
 Remember that in code snippets all highlighted lines are required other lines are optional.
 """
 from .base_client import BaseClient
-from ..models import Job
+from ..models import Artifact, Job
 from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts, CreateJob, DeleteJob, StopJob, \
     DeleteJobArtifacts, GetJobArtifacts
 
@@ -339,6 +339,6 @@ class JobsClient(BaseClient):
         :param bool links: flag to show file url. Default value is set to True.
 
         :returns: list of files with description if specified from job artifacts.
-        :rtype: list
+        :rtype: list[Artifact]
         """
         return ListJobArtifacts(self.api_key, self.logger).list(jobId=job_id, files=files, links=links, size=size)
