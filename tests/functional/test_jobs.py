@@ -311,7 +311,7 @@ class TestDestroyJobArtifactsCommands(TestJobs):
                                               "some_key"])
 
         assert result.exit_code == 0, result.exc_info
-        post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy/".format(self.URL, job_id),
+        post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy".format(self.URL, job_id),
                                         files=None,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
@@ -324,7 +324,7 @@ class TestDestroyJobArtifactsCommands(TestJobs):
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--apiKey", "some_key"])
 
-        post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy/".format(self.URL, job_id),
+        post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy".format(self.URL, job_id),
                                         files=None,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
@@ -340,7 +340,7 @@ class TestDestroyJobArtifactsCommands(TestJobs):
         result = self.runner.invoke(cli.cli, command)
 
         assert result.exit_code == 0, result.exc_info
-        post_patched.assert_called_with("{}/jobs/some_id/artifactsDestroy/".format(self.URL),
+        post_patched.assert_called_with("{}/jobs/some_id/artifactsDestroy".format(self.URL),
                                         files=None,
                                         headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,

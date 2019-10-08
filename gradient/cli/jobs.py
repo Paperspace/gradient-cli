@@ -32,7 +32,7 @@ def jobs_group():
     help="Delete job with given ID",
 )
 @api_key_option
-def delete_job(job_id, api_key=None):
+def delete_job(job_id, api_key):
     command = jobs_commands.DeleteJobCommand(api_key=api_key)
     command.execute(job_id)
 
