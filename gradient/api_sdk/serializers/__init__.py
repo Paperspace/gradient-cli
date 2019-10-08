@@ -1,4 +1,4 @@
-from .base import BaseSchema
+from .artifact import ArtifactSchema
 from .deployment import DeploymentSchema
 from .experiment import BaseExperimentSchema, MultiNodeExperimentSchema, SingleNodeExperimentSchema, \
     MpiMultiNodeExperimentSchema

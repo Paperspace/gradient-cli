@@ -1,8 +1,9 @@
-import marshmallow
 from enum import Enum
+
+import marshmallow
 from marshmallow.validate import OneOf
 
-from . import BaseSchema
+from .base import BaseSchema
 from .. import models
 
 
