@@ -347,7 +347,7 @@ class DownloadArtifactsCommand(BaseJobCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
     def execute(self, job_id, destination_directory):
-        artifact_downloader = JobArtifactsDownloader(self.api_key)
+        artifact_downloader = JobArtifactsDownloader(self.api_key, logger=self.logger)
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
             try:
                 artifact_downloader.download_artifacts(job_id, destination_directory)

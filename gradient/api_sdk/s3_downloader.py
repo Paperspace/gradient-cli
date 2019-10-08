@@ -3,6 +3,7 @@ import os
 import requests
 
 from .clients.job_client import JobsClient
+from .logger import MuteLogger
 
 
 class S3FilesDownloader(object):
@@ -42,9 +43,10 @@ class S3FilesDownloader(object):
 
 
 class JobArtifactsDownloader(object):
-    def __init__(self, api_key):
+    def __init__(self, api_key, logger=MuteLogger()):
         self.api_key = api_key
-        self.jobs_client = JobsClient(api_key)
+        self.logger = logger
+        self.jobs_client = JobsClient(api_key, logger=logger)
 
     def download_artifacts(self, job_id, destination):
         files = self._get_files_list(job_id)
