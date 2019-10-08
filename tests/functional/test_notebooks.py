@@ -279,7 +279,7 @@ class TestNotebooksDelete(object):
 
 
 class TestNotebooksShow(object):
-    URL = "https://api.paperspace.io/notebooks/some_id/getNotebook"
+    URL = "https://api.paperspace.io/notebooks/getNotebook"
     COMMAND = ["notebooks", "show", "--id", "some_id"]
     EXPECTED_STDOUT = """+---------+-----------------------------------+
 | Name    | some_name                         |
@@ -313,7 +313,7 @@ class TestNotebooksShow(object):
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS,
-                                             json=None,
+                                             json={"notebookId": "some_id"},
                                              params=None)
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
@@ -327,7 +327,7 @@ class TestNotebooksShow(object):
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
-                                             json=None,
+                                             json={"notebookId": "some_id"},
                                              params=None)
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
@@ -342,7 +342,7 @@ class TestNotebooksShow(object):
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
-                                             json=None,
+                                             json={"notebookId": "some_id"},
                                              params=None)
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
@@ -356,7 +356,7 @@ class TestNotebooksShow(object):
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
-                                       json=None,
+                                       json={"notebookId": "some_id"},
                                        params=None)
         assert result.exit_code == 0
 
@@ -370,7 +370,7 @@ class TestNotebooksShow(object):
         assert result.output == "Failed to fetch data\n", result.exc_info
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
-                                       json=None,
+                                       json={"notebookId": "some_id"},
                                        params=None)
         assert result.exit_code == 0
 

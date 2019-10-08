@@ -110,7 +110,7 @@ class ListExperimentLogs(ListResources):
             for log in logs:
                 # stop generator - "PSEOF" indicates there are no more logs
                 if log.message == "PSEOF":
-                    raise StopIteration()
+                    return
 
                 last_line_number += 1
                 yield log
@@ -143,12 +143,21 @@ class CreateMultiNodeExperiment(BaseCreateExperiment):
     SERIALIZER_CLS = serializers.MultiNodeExperimentSchema
 
 
+class CreateMpiMultiNodeExperiment(BaseCreateExperiment):
+    SERIALIZER_CLS = serializers.MpiMultiNodeExperimentSchema
+
+
 class RunSingleNodeExperiment(CreateSingleNodeExperiment):
     def get_request_url(self, **_):
         return "/experiments/run/"
 
 
 class RunMultiNodeExperiment(CreateMultiNodeExperiment):
+    def get_request_url(self, **_):
+        return "/experiments/run/"
+
+
+class RunMpiMultiNodeExperiment(CreateMpiMultiNodeExperiment):
     def get_request_url(self, **_):
         return "/experiments/run/"
 

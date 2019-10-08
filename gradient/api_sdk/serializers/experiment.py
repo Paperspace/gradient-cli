@@ -1,6 +1,6 @@
 import marshmallow
 
-from . import BaseSchema
+from .base import BaseSchema
 from .. import models
 
 
@@ -78,3 +78,36 @@ class MultiNodeExperimentSchema(BaseExperimentSchema):
                                                                 load_from="parameterServerRegistryPassword")
     parameter_server_registry_url = marshmallow.fields.Str(dump_to="parameterServerRegistryUrl",
                                                            load_from="parameterServerRegistryUrl")
+
+
+class MpiMultiNodeExperimentSchema(BaseExperimentSchema):
+    MODEL = models.MpiMultiNodeExperiment
+
+    worker_container = marshmallow.fields.Str(required=True, dump_to="workerContainer", load_from="workerContainer")
+    worker_machine_type = marshmallow.fields.Str(required=True, dump_to="workerMachineType",
+                                                 load_from="workerMachineType")
+    worker_command = marshmallow.fields.Str(required=True, dump_to="workerCommand", load_from="workerCommand")
+    worker_count = marshmallow.fields.Int(required=True, dump_to="workerCount", load_from="workerCount")
+    master_container = marshmallow.fields.Str(required=True, dump_to="masterContainer",
+                                              load_from="masterContainer")
+    master_machine_type = marshmallow.fields.Str(required=True, dump_to="masterMachineType",
+                                                 load_from="masterMachineType")
+    master_command = marshmallow.fields.Str(required=True, dump_to="masterCommand",
+                                            load_from="masterCommand")
+    master_count = marshmallow.fields.Int(required=True, dump_to="masterCount",
+                                          load_from="masterCount")
+    worker_container_user = marshmallow.fields.Str(dump_to="workerContainerUser", load_from="workerContainerUser")
+    worker_registry_username = marshmallow.fields.Str(dump_to="workerRegistryUsername",
+                                                      load_from="workerRegistryUsername")
+    worker_registry_password = marshmallow.fields.Str(dump_to="workerRegistryPassword",
+                                                      load_from="workerRegistryPassword")
+    worker_registry_url = marshmallow.fields.Str(dump_to="workerRegistryUrl",
+                                                 load_from="workerRegistryUrl")
+    master_container_user = marshmallow.fields.Str(required=True, dump_to="masterContainerUser",
+                                                   load_from="masterContainerUser")
+    master_registry_username = marshmallow.fields.Str(dump_to="masterRegistryUsername",
+                                                      load_from="masterRegistryUsername")
+    master_registry_password = marshmallow.fields.Str(dump_to="masterRegistryPassword",
+                                                      load_from="masterRegistryPassword")
+    master_registry_url = marshmallow.fields.Str(dump_to="masterRegistryUrl",
+                                                 load_from="masterRegistryUrl")

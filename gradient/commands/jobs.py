@@ -6,7 +6,7 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import api_sdk, exceptions, Job, config
+from gradient import api_sdk, exceptions, Job, config, JobArtifactsDownloader
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.clients.base_client import BaseClient
 from gradient.api_sdk.repositories.jobs import RunJob
@@ -305,18 +305,22 @@ class ArtifactsListCommand(BaseJobCommand):
 
     def _get_table_data(self, artifacts, kwargs):
         columns = ['Files']
-        if kwargs.get('size'):
+
+        show_size = "size" in kwargs
+        show_url = "url" in kwargs
+
+        if show_size:
             columns.append('Size (in bytes)')
-        if kwargs.get('links'):
+        if show_url:
             columns.append('URL')
 
         data = [tuple(columns)]
         for artifact in artifacts:
-            row = [artifact.get('file')]
-            if 'size' in artifact.keys():
-                row.append(artifact['size'])
-            if 'url' in artifact.keys():
-                row.append(artifact['url'])
+            row = [artifact.file]
+            if show_size:
+                row.append(artifact.size)
+            if show_url:
+                row.append(artifact.url)
             data.append(tuple(row))
         return data
 
@@ -337,3 +341,15 @@ class ArtifactsListCommand(BaseJobCommand):
         ascii_table = terminaltables.AsciiTable(table_data)
         table_string = ascii_table.table
         return table_string
+
+
+class DownloadArtifactsCommand(BaseJobCommand):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
+
+    def execute(self, job_id, destination_directory):
+        artifact_downloader = JobArtifactsDownloader(self.api_key, logger=self.logger)
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            try:
+                artifact_downloader.download_artifacts(job_id, destination_directory)
+            except OSError as e:
+                raise api_sdk.GradientSdkError(e)

@@ -1,6 +1,7 @@
 from gradient import config
 from gradient.api_sdk import serializers
-from .common import ListResources, CreateResource, BaseRepository, GetResource
+from gradient.api_sdk.clients import http_client
+from .common import ListResources, CreateResource, BaseRepository, GetResource, DeleteResource, StopResource
 from ..serializers import JobSchema, LogRowSchema
 
 
@@ -60,7 +61,7 @@ class ListJobLogs(ListResources):
 
             for log in logs:
                 if log.message == "PSEOF":
-                    raise StopIteration()
+                    return
 
                 last_line_number += 1
                 yield log
@@ -106,31 +107,31 @@ class RunJob(CreateJob):
         return self.http_client
 
 
-class DeleteJob(GetBaseJobApiUrlMixin, BaseRepository):
+class DeleteJob(GetBaseJobApiUrlMixin, DeleteResource):
 
     def get_request_url(self, **kwargs):
-        return "/job/{}/destroy/".format(kwargs.get("id_"))
+        return "/jobs/{}/destroy".format(kwargs.get("id"))
 
-    def delete(self, id_, **kwargs):
-        url = self.get_request_url(id_=id_)
-        response = self.client.post(url)
-        self._validate_response(response)
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response
 
 
-class StopJob(GetBaseJobApiUrlMixin, BaseRepository):
+class StopJob(GetBaseJobApiUrlMixin, StopResource):
 
     def get_request_url(self, **kwargs):
-        return "/job/{}/stop/".format(kwargs.get('id_'))
+        return "/jobs/{}/stop".format(kwargs.get('id'))
 
-    def stop(self, id_, **kwargs):
-        url = self.get_request_url(id_=id_)
-        response = self.client.post(url)
-        self._validate_response(response)
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response
 
 
 class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
     def _parse_objects(self, data, **kwargs):
-        return data
+        serializer = serializers.ArtifactSchema()
+        files = serializer.get_instance(data, many=True)
+        return files
 
     def get_request_url(self, **kwargs):
         return "/jobs/artifactsList"
@@ -152,20 +153,22 @@ class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
         return params
 
 
-class DeleteJobArtifacts(GetBaseJobApiUrlMixin, BaseRepository):
+class DeleteJobArtifacts(GetBaseJobApiUrlMixin, DeleteResource):
     VALIDATION_ERROR_MESSAGE = "Failed to delete resource"
 
     def get_request_url(self, **kwargs):
-        return "/jobs/{}/artifactsDestroy/".format(kwargs.get("id_"))
+        return "/jobs/{}/artifactsDestroy".format(kwargs.get("id"))
 
-    def delete(self, id_, **kwargs):
-        url = self.get_request_url(id_=id_)
+    def _send(self, url, use_vpc=False, **kwargs):
+        client = self._get_client(use_vpc=use_vpc)
+        params_data = self._get_request_params(kwargs)
+        response = self._send_request(client, url, params_data=params_data)
+        gradient_response = http_client.GradientResponse.interpret_response(response)
+        return gradient_response
 
-        params = self._get_request_params(kwargs)
-
-        client = self._get_client()
-        response = client.post(url, json=kwargs.get("json"), params=params)
-        self._validate_response(response)
+    def _send_request(self, client, url, params_data=None):
+        response = client.post(url, params=params_data)
+        return response
 
     def _get_request_params(self, kwargs):
         filters = dict()

@@ -1,7 +1,7 @@
 import marshmallow
 
 from gradient.api_sdk import models
-from . import BaseSchema
+from .base import BaseSchema
 
 
 class JobSchema(BaseSchema):

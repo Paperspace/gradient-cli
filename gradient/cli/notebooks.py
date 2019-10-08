@@ -115,7 +115,7 @@ def list_notebooks(api_key, options_file):
     command.execute()
 
 
-@notebooks_group.command("show", help="Show notebook details", hidden=True)
+@notebooks_group.command("show", help="Show notebook details")
 @click.option(
     "--id",
     "id",

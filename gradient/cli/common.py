@@ -78,7 +78,7 @@ class ReadValueFromConfigFile(click.Parameter):
                     opts[self.name] = value
 
         return super(ReadValueFromConfigFile, self).handle_parse_result(
-            ctx, opts, args)
+                ctx, opts, args)
 
 
 class ColorExtrasInCommandHelpMixin(object):
