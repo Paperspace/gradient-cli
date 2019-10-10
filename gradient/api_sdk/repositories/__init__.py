@@ -1,4 +1,4 @@
-from .deployments import ListDeployments, CreateDeployment, StartDeployment, StopDeployment
+from .deployments import ListDeployments, CreateDeployment, StartDeployment, StopDeployment, DeleteDeployment
 from .experiments import ListExperiments, GetExperiment, ListExperimentLogs, StartExperiment, StopExperiment, \
     CreateSingleNodeExperiment, CreateMultiNodeExperiment, RunSingleNodeExperiment, RunMultiNodeExperiment, \
     CreateMpiMultiNodeExperiment, RunMpiMultiNodeExperiment
