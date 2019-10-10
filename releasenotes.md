@@ -1,5 +1,10 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.3.6
+### Fixes
+* Fix `job delete` and `job stop` commands
+* Fix how some error messages are printed
+
 # Release Notes for 0.3.5
 ### Fixes
 * Fix StopIteration exception in Python 3.7
