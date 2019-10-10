@@ -1,3 +1,7 @@
+import os
+import tempfile
+import zipfile
+
 import mock
 from click.testing import CliRunner
 
@@ -5,6 +9,7 @@ from gradient import constants
 from gradient.api_sdk.clients import http_client
 from gradient.cli import cli
 from tests import example_responses, MockResponse
+from tests.unit.test_archiver_class import create_test_dir_tree
 
 
 class TestExperimentsCreateSingleNode(object):
@@ -21,6 +26,15 @@ class TestExperimentsCreateSingleNode(object):
         "--machineType", "testType",
         "--command", "testCommand",
         "--workspaceUrl", "some-workspace",
+    ]
+    BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE = [
+        "experiments", "create", "singlenode",
+        "--name", "exp1",
+        "--projectId", "testHandle",
+        "--container", "testContainer",
+        "--machineType", "testType",
+        "--command", "testCommand",
+        "--workspace",  # local path added in test
     ]
     FULL_OPTIONS_COMMAND = [
         "experiments", "create", "singlenode",
@@ -264,6 +278,88 @@ class TestExperimentsCreateSingleNode(object):
 
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
+
+    @mock.patch("gradient.workspace.s3_uploader.MultipartEncoderWithProgressbar")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_zip_and_upload_local_workspace_when_local_path_was_passed_to_workspace_option(
+            self, get_patched, post_patched, multipart_encoder_cls_patched):
+        multipart_encoder_patched = mock.MagicMock()
+        multipart_encoder_content_type = mock.MagicMock()
+        # multipart_encoder_patched.content_type = multipart_encoder_content_type
+        multipart_monitor = mock.MagicMock()
+        multipart_monitor.content_type = multipart_encoder_content_type
+        multipart_encoder_patched.get_monitor.return_value = multipart_monitor
+        multipart_encoder_cls_patched.return_value = multipart_encoder_patched
+
+        headers_for_uploading_to_s3 = self.EXPECTED_HEADERS.copy()
+        headers_for_uploading_to_s3["Content-Type"] = multipart_encoder_content_type
+
+        get_patched.return_value = MockResponse(example_responses.GET_PRESIGNED_URL_FOR_S3_BUCKET_RESPONSE_JSON)
+        post_patched.side_effect = [
+            MockResponse(status_code=204),
+            MockResponse(status_code=201),
+        ]
+
+        workspace_path = create_test_dir_tree()
+        zip_file_name = os.path.basename(workspace_path) + ".zip"
+        command = self.BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE[:] + [workspace_path]
+        zip_file_path = os.path.join(tempfile.gettempdir(), zip_file_name)
+        temporary_directory_for_extracted_files = os.path.join(tempfile.gettempdir(), "extracted_files")
+        create_experiment_request_json = self.BASIC_OPTIONS_REQUEST.copy()
+        create_experiment_request_json["workspaceUrl"] = \
+            "s3://ps-projects/" + example_responses.GET_PRESIGNED_URL_FOR_S3_BUCKET_RESPONSE_JSON["data"]["fields"][
+                "key"]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        # assert self.EXPECTED_STDOUT in result.output, result.exc_info
+
+        with zipfile.ZipFile(zip_file_path) as zip_handler:
+            zip_handler.extractall(temporary_directory_for_extracted_files)
+
+        file1_path = os.path.join(temporary_directory_for_extracted_files, "file1")
+        assert os.path.exists(file1_path)
+        assert os.path.isfile(file1_path)
+        with open(file1_path) as h:
+            assert h.read() == "keton"
+
+        file2_path = os.path.join(temporary_directory_for_extracted_files, "subdir1", "file2")
+        assert os.path.exists(file2_path)
+        assert os.path.isfile(file2_path)
+        with open(file2_path) as h:
+            assert h.read() == "keton"
+
+        get_patched.assert_called_once_with(
+            "https://services.paperspace.io/experiments/v1/workspace/get_presigned_url",
+            headers=self.EXPECTED_HEADERS,
+            json=None,
+            params={"projectHandle": "testHandle", "workspaceName": zip_file_name},
+        )
+
+        post_patched.assert_has_calls(
+            [
+                mock.call(
+                    "https://ps-projects.s3.amazonaws.com/",
+                    json=None,
+                    params=None,
+                    headers=headers_for_uploading_to_s3,
+                    files=None,
+                    data=multipart_monitor,
+                ),
+                mock.call(
+                    self.URL,
+                    json=create_experiment_request_json,
+                    params=None,
+                    headers=self.EXPECTED_HEADERS,
+                    files=None,
+                    data=None,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0
 
 
 class TestExperimentsCreateMultiNode(object):
@@ -553,6 +649,15 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--command", "testCommand",
         "--workspaceUrl", "some-workspace",
         "--no-logs",
+    ]
+    BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE = [
+        "experiments", "run", "singlenode",
+        "--name", "exp1",
+        "--projectId", "testHandle",
+        "--container", "testContainer",
+        "--machineType", "testType",
+        "--command", "testCommand",
+        "--workspace",  # local path added in test
     ]
     FULL_OPTIONS_COMMAND = [
         "experiments", "run", "singlenode",

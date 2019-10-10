@@ -1,9 +1,9 @@
 import collections
 import os
 import tempfile
+import zipfile
 
 import progressbar
-import zipfile
 from requests_toolbelt.multipart import encoder
 
 from gradient.api_sdk import exceptions
@@ -185,7 +185,7 @@ class S3FileUploader(object):
         """Send data to S3 and raise exception if it was not a success
 
         :param str url:
-        :param MultipartEncoder data:
+        :param encoder.MultipartEncoderMonitor data:
         """
         client = self._get_client(url)
         response = client.post("", data=data)
@@ -224,9 +224,9 @@ class S3ProjectFileUploader(object):
         :param S3FileUploader s3uploader:
         :param Logger logger:
         """
-        self.s3uploader = s3uploader or S3FileUploader()
-        self.experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
         self.logger = logger or MuteLogger()
+        self.experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key, logger=self.logger)
+        self.s3uploader = s3uploader or S3FileUploader(logger=self.logger)
 
     def upload(self, file_path, project_id):
         """Upload file to S3 bucket for a project
@@ -287,7 +287,6 @@ class S3WorkspaceDirectoryUploader(object):
         self.temp_dir = temp_dir or tempfile.gettempdir()
         self.archiver = archiver or ZipArchiver()
         self.project_uploader = project_uploader or S3ProjectFileUploader(api_key)
-        self.experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
 
     def upload(self, workspace_dir_path, project_id, exclude=None, temp_file_name="temp.zip"):
         """Archive and upload a workspace directory

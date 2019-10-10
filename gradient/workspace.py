@@ -1,4 +1,5 @@
 import os
+import tempfile
 
 import progressbar
 from requests_toolbelt.multipart import encoder
@@ -54,7 +55,7 @@ class WorkspaceHandler(object):
         else:
             zip_file_name = os.path.basename(workspace_path) + '.zip'
 
-        zip_file_path = os.path.join(workspace_path, zip_file_name)
+        zip_file_path = os.path.join(tempfile.gettempdir(), zip_file_name)
 
         if ignore_files:
             ignore_files = ignore_files.split(",")
@@ -96,7 +97,7 @@ class WorkspaceHandler(object):
         workspace_archive = input_data.get('workspaceArchive') or input_data.get("workspace_archive")
 
         if workspace_path not in ("none", None):
-            path_type = utils.PathParser().parse_path(workspace_path)
+            path_type = utils.PathParser.parse_path(workspace_path)
 
             if path_type != utils.PathParser.LOCAL_DIR:
                 if path_type == utils.PathParser.LOCAL_FILE:
@@ -136,7 +137,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
         return workspace
 
     def _get_workspace_uploader(self, api_key):
-        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(api_key)
+        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(api_key, logger=self.logger)
         return workspace_uploader
 
 
@@ -145,5 +146,5 @@ class S3WorkspaceHandlerWithProgressbar(S3WorkspaceHandler):
 
     def _get_workspace_uploader(self, api_key):
         file_uploader = s3_uploader.S3FileUploader(s3_uploader.MultipartEncoderWithProgressbar, logger=self.logger)
-        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(api_key, s3uploader=file_uploader)
+        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(api_key, s3uploader=file_uploader, logger=self.logger)
         return workspace_uploader

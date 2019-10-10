@@ -643,4 +643,5 @@ class TestDownloadJobArtifacts(TestJobs):
         assert not os.path.isdir(elo_txt_path)
         with open(elo_txt_path) as h:
             assert h.read() == "\"Elo\n\""
+
         assert result.exit_code == 0
