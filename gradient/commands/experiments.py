@@ -31,11 +31,7 @@ class BaseCreateExperimentCommandMixin(object):
         self._handle_workspace(json_)
 
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            try:
-                experiment_id = self._create(json_, use_vpc=use_vpc)
-            except api_sdk.GradientSdkError as e:
-                self.logger.error(e)
-                return
+            experiment_id = self._create(json_, use_vpc=use_vpc)
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(experiment_id))
         return experiment_id

@@ -20,11 +20,7 @@ class CreateProjectCommand(BaseProjectCommand):
 
     def execute(self, project_dict):
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            try:
-                project_id = self.client.create(**project_dict)
-            except api_sdk.GradientSdkError as e:
-                self.logger.error(e)
-                return
+            project_id = self.client.create(**project_dict)
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(project_id))
 
