@@ -36,11 +36,7 @@ class BaseCreateJobCommandMixin(object):
         json_, data = self._handle_workspace(json_)
 
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            try:
-                job_id = self._create(json_, data)
-            except api_sdk.GradientSdkError as e:
-                self.logger.error(e)
-                return
+            job_id = self._create(json_, data)
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(job_id))
 

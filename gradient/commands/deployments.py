@@ -30,12 +30,9 @@ class _DeploymentCommand(object):
 class CreateDeploymentCommand(_DeploymentCommand):
     def execute(self, use_vpc=False, **kwargs):
         with halo.Halo(text="Creating new deployment", spinner="dots"):
-            try:
-                deployment_id = self.deployment_client.create(use_vpc=use_vpc, **kwargs)
-            except api_sdk.GradientSdkError as e:
-                self.logger.error(e)
-            else:
-                self.logger.log("New deployment created with id: {}".format(deployment_id))
+            deployment_id = self.deployment_client.create(use_vpc=use_vpc, **kwargs)
+
+        self.logger.log("New deployment created with id: {}".format(deployment_id))
 
 
 class ListDeploymentsCommand(_DeploymentCommand):
