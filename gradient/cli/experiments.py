@@ -4,7 +4,6 @@ import functools
 import click
 
 from gradient import constants, utils, logger, workspace
-from gradient.api_sdk.clients import http_client
 from gradient.cli import common, validators
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
@@ -12,7 +11,6 @@ from gradient.cli.common import api_key_option, ClickGroup
 from gradient.cli.utils.flag_with_value import GradientRegisterReaderOption, GradientRegisterWriterOption, \
     GradientRegisterWriterCommand
 from gradient.commands import experiments as experiments_commands
-from gradient.config import config
 
 MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
     (
@@ -33,9 +31,8 @@ MULTI_NODE_RUN_EXPERIMENT_COMMANDS = {
 
 
 def get_workspace_handler(api_key):
-    client = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key)
     logger_ = logger.Logger()
-    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(experiments_api=client, logger_=logger_)
+    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(api_key=api_key, logger_=logger_)
     return workspace_handler
 
 

@@ -5538,3 +5538,17 @@ LIST_JOB_FILES_RESPONSE_JSON = [
         "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/keton/elo.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=tHriojGx03S%2FKkVGQGVI5CQRFTo%3D&response-content-disposition=attachment%3Bfilename%3D%22elo.txt%22&x-amz-security-token=some_amz_security_token"
     }
 ]
+
+GET_PRESIGNED_URL_FOR_S3_BUCKET_RESPONSE_JSON = {
+    "data": {
+        "bucket_name": "ps-projects",
+        "fields": {
+            "AWSAccessKeyId": "SOME_AWS_ACCESS_KEY_ID",
+            "key": "some/path/to/file/demo.zip",
+            "policy": "base64policy=",
+            "signature": "base64signature="
+        },
+        "url": "https://ps-projects.s3.amazonaws.com/"
+    },
+    "message": "success"
+}
