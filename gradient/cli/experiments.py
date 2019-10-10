@@ -37,16 +37,16 @@ def get_workspace_handler(api_key):
 
 
 @cli.group("experiments", help="Manage experiments", cls=ClickGroup)
-def experiments():
+def experiments_group():
     pass
 
 
-@experiments.group("create", help="Create new experiment", cls=ClickGroup)
+@experiments_group.group("create", help="Create new experiment", cls=ClickGroup)
 def create_experiment():
     pass
 
 
-@experiments.group(name="run", help="Create and start new experiment", cls=ClickGroup)
+@experiments_group.group(name="run", help="Create and start new experiment", cls=ClickGroup)
 def create_and_start_experiment():
     pass
 
@@ -539,7 +539,7 @@ def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, tensorboard, 
         ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
 
-@experiments.command("start", help="Start experiment")
+@experiments_group.command("start", help="Start experiment")
 @click.argument("id", cls=common.GradientArgument)
 @click.option(
     "--logs",
@@ -565,7 +565,7 @@ def start_experiment(ctx, id, show_logs, api_key, options_file, use_vpc):
         ctx.invoke(list_logs, experiment_id=id, line=0, limit=100, follow=True, api_key=api_key)
 
 
-@experiments.command("stop", help="Stop experiment")
+@experiments_group.command("stop", help="Stop experiment")
 @click.argument("id", cls=common.GradientArgument)
 @api_key_option
 @click.option(
@@ -581,7 +581,7 @@ def stop_experiment(id, api_key, options_file, use_vpc):
     command.execute(id, use_vpc=use_vpc)
 
 
-@experiments.command("list", help="List experiments")
+@experiments_group.command("list", help="List experiments")
 @click.option("--projectId", "-p", "project_ids", multiple=True, cls=common.GradientOption)
 @api_key_option
 @common.options_file
@@ -590,7 +590,7 @@ def list_experiments(project_ids, api_key, options_file):
     command.execute(project_id=project_ids)
 
 
-@experiments.command("details", help="Show detail of an experiment")
+@experiments_group.command("details", help="Show detail of an experiment")
 @click.argument("id", cls=common.GradientArgument)
 @api_key_option
 @common.options_file
@@ -599,7 +599,7 @@ def get_experiment_details(id, options_file, api_key):
     command.execute(id)
 
 
-@experiments.command("logs", help="List experiment logs")
+@experiments_group.command("logs", help="List experiment logs")
 @click.option(
     "--experimentId",
     "experiment_id",
