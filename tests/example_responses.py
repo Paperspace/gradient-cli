@@ -5552,3 +5552,11 @@ GET_PRESIGNED_URL_FOR_S3_BUCKET_RESPONSE_JSON = {
     },
     "message": "success"
 }
+
+DELETE_MODEL_404_RESPONSE_JSON = {
+    "error": {
+        "name": "Error",
+        "status": 404,
+        "message": "Unable to find model",
+    },
+}

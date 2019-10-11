@@ -28,3 +28,17 @@ def models_group():
 def list_models(api_key, experiment_id, project_id, options_file):
     command = models_commands.ListModelsCommand(api_key=api_key)
     command.execute(experiment_id=experiment_id, project_id=project_id)
+
+
+@models_group.command("delete", help="Delete model")
+@click.option(
+    "--id",
+    "model_id",
+    help="Model ID",
+    cls=common.GradientOption,
+)
+@common.api_key_option
+@common.options_file
+def list_models(api_key, model_id, options_file):
+    command = models_commands.DeleteModelCommand(api_key=api_key)
+    command.execute(model_id=model_id)
