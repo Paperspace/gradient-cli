@@ -1,5 +1,5 @@
 from gradient import config
-from .common import ListResources, CreateResource, StartResource, StopResource
+from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource
 from .. import serializers
 
 
@@ -83,6 +83,25 @@ class StopDeployment(GetBaseDeploymentApiUrlMixin, StopResource):
             return "/deployments/v2/updateDeployment/"
 
         return "/deployments/updateDeployment/"
+
+    def _get_request_json(self, kwargs):
+        data = {
+            "id": kwargs["id"],
+            "isRunning": False,
+        }
+        return data
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response
+
+
+class DeleteDeployment(GetBaseDeploymentApiUrlMixin, DeleteResource):
+    def get_request_url(self, **kwargs):
+        if kwargs.get("use_vpc") or config.config.USE_VPC:
+            return "/deployments/v2/deleteDeployment"
+
+        return "/deployments/deleteDeployment"
 
     def _get_request_json(self, kwargs):
         data = {

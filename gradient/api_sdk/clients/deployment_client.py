@@ -126,3 +126,7 @@ class DeploymentsClient(BaseClient):
         repository = repositories.ListDeployments(api_key=self.api_key, logger=self.logger)
         deployments = repository.list(state=state, project_id=project_id, model_id=model_id, use_vpc=use_vpc)
         return deployments
+
+    def delete(self, deployment_id, use_vpc=False):
+        repository = repositories.DeleteDeployment(api_key=self.api_key, logger=self.logger)
+        repository.delete(deployment_id, use_vpc=use_vpc)

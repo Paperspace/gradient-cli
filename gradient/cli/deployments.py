@@ -193,3 +193,26 @@ def stop_deployment(id_, use_vpc, options_file, api_key=None):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.StopDeploymentCommand(deployment_client=deployment_client)
     command.execute(deployment_id=id_, use_vpc=use_vpc)
+
+
+@deployments.command("delete", help="Delete deployment")
+@click.option(
+    "--id",
+    "id_",
+    required=True,
+    help="Deployment ID",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--vpc",
+    "use_vpc",
+    type=bool,
+    is_flag=True,
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def delete_deployment(id_, use_vpc, options_file, api_key):
+    deployment_client = get_deployment_client(api_key)
+    command = deployments_commands.DeleteDeploymentCommand(deployment_client=deployment_client)
+    command.execute(deployment_id=id_, use_vpc=use_vpc)

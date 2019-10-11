@@ -95,3 +95,9 @@ class StopDeploymentCommand(_DeploymentCommand):
     def execute(self, use_vpc=False, **kwargs):
         self.deployment_client.stop(use_vpc=use_vpc, **kwargs)
         self.logger.log("Deployment stopped")
+
+
+class DeleteDeploymentCommand(_DeploymentCommand):
+    def execute(self, **kwargs):
+        self.deployment_client.delete(**kwargs)
+        self.logger.log("Deployment deleted")
