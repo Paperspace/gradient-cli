@@ -1,6 +1,6 @@
 from gradient import config
 from .. import serializers
-from ..repositories.common import ListResources
+from ..repositories.common import ListResources, DeleteResource
 
 
 class ParseModelDictMixin(object):
@@ -45,3 +45,15 @@ class ListModels(GetBaseModelsApiUrlMixin, ParseModelDictMixin, ListResources):
 
         json_ = {"filter": {"where": {"and": [filters]}}}
         return json_
+
+
+class DeleteModel(GetBaseModelsApiUrlMixin, DeleteResource):
+    def get_request_url(self, **kwargs):
+        return "/mlModels/deleteModel/"
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response
+
+    def _get_request_json(self, kwargs):
+        return kwargs

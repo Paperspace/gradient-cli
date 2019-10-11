@@ -123,3 +123,105 @@ class TestModelsList(object):
                                             params={"limit": -1})
 
         assert result.output == "Failed to fetch data: No such API token\n"
+
+
+class TestDeleteModel(object):
+    URL = "https://api.paperspace.io/mlModels/deleteModel/"
+    COMMAND = ["models", "delete", "--id", "some_id"]
+    EXPECTED_REQUEST_JSON = {"id": "some_id"}
+
+    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+    COMMAND_WITH_API_KEY_PARAMETER_USED = ["models", "delete", "--id", "some_id", "--apiKey", "some_key"]
+    COMMAND_WITH_OPTIONS_FILE = ["models", "delete", "--id", "some_id", "--optionsFile", ]  # path added in test
+
+    EXPECTED_STDOUT = "Model deleted\n"
+
+    EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 400, "message": "Invalid API token"}
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_post_request_when_models_delete_command_was_executed(self, post_patched):
+        post_patched.return_value = MockResponse(status_code=204)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             files=None,
+                                             data=None,
+                                             params=None)
+
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(status_code=204)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             files=None,
+                                             data=None,
+                                             params=None)
+
+        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_options_from_yaml_file(self, post_patched, models_delete_config_path):
+        post_patched.return_value = MockResponse(status_code=204)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [models_delete_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             files=None,
+                                             data=None,
+                                             params=None)
+
+        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_post_request_and_print_proper_message_when_model_with_given_id_was_not_found(
+            self, post_patched):
+        post_patched.return_value = MockResponse(example_responses.DELETE_MODEL_404_RESPONSE_JSON, status_code=404)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             files=None,
+                                             data=None,
+                                             params=None)
+
+        assert result.output == "Failed to delete resource: Unable to find model\n"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_proper_message_when_wrong_api_key_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             files=None,
+                                             data=None,
+                                             params=None)
+
+        assert result.output == "Failed to delete resource: Invalid API token\n"
