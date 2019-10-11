@@ -79,6 +79,13 @@ def deployments_start_config_path():
 @pytest.fixture
 def deployments_stop_config_path():
     p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "deployments_delete.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def deployments_delete_config_path():
+    p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "deployments_stop.yaml"
     return str(fixture_dir.resolve())
 

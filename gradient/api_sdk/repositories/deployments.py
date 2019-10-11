@@ -109,3 +109,7 @@ class DeleteDeployment(GetBaseDeploymentApiUrlMixin, DeleteResource):
             "isRunning": False,
         }
         return data
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response
