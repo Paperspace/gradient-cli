@@ -125,6 +125,7 @@ class CreateMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExp
 
 class CreateMpiMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
     def _create(self, json_, use_vpc=False):
+        json_.pop("experiment_type_id", None)  # for MPI there is no experiment_type_id parameter in client method
         handle = self.client.create_mpi_multi_node(use_vpc=use_vpc, **json_)
         return handle
 
@@ -143,6 +144,7 @@ class CreateAndStartMpiMultiNodeExperimentCommand(BaseCreateExperimentCommandMix
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
 
     def _create(self, json_, use_vpc=False):
+        json_.pop("experiment_type_id", None)  # for MPI there is no experiment_type_id parameter in client method
         handle = self.client.run_mpi_multi_node(use_vpc=use_vpc, **json_)
         return handle
 

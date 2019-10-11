@@ -205,7 +205,6 @@ class ExperimentsClient(BaseClient):
             self,
             name,
             project_id,
-            experiment_type_id,
             worker_container,
             worker_machine_type,
             worker_command,
@@ -240,7 +239,6 @@ class ExperimentsClient(BaseClient):
 
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
-        :param int experiment_type_id: Experiment Type ID [required]
         :param str worker_container: Worker container (dockerfile) [required]
         :param str worker_machine_type: Worker machine type  [required]
         :param str worker_command: Worker command  [required]
@@ -275,6 +273,8 @@ class ExperimentsClient(BaseClient):
         """
         if not is_preemptible:
             is_preemptible = None
+
+        experiment_type_id = constants.ExperimentType.MPI_MULTI_NODE
 
         experiment = models.MpiMultiNodeExperiment(
                 name=name,
@@ -512,7 +512,6 @@ class ExperimentsClient(BaseClient):
             self,
             name,
             project_id,
-            experiment_type_id,
             worker_container,
             worker_machine_type,
             worker_command,
@@ -546,7 +545,6 @@ class ExperimentsClient(BaseClient):
 
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
-        :param int experiment_type_id: Experiment Type ID [required]
         :param str worker_container: Worker container (dockerfile) [required]
         :param str worker_machine_type: Worker machine type  [required]
         :param str worker_command: Worker command  [required]
@@ -581,6 +579,8 @@ class ExperimentsClient(BaseClient):
         """
         if not is_preemptible:
             is_preemptible = None
+
+        experiment_type_id = constants.ExperimentType.MPI_MULTI_NODE
 
         experiment = models.MpiMultiNodeExperiment(
                 name=name,
