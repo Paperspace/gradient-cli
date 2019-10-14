@@ -1,6 +1,6 @@
 import time
 
-from gradient.config import config
+from gradient.api_sdk.config import config
 from .common import BaseRepository, CreateResource, DeleteResource, ListResources, StartResource, StopResource, \
     GetResource, AlterResource
 from .. import serializers, models

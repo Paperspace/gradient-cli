@@ -3,7 +3,8 @@ import functools
 
 import click
 
-from gradient import constants, utils, logger, workspace
+from gradient import utils, logger, workspace
+from gradient.api_sdk import constants
 from gradient.cli import common, validators
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType

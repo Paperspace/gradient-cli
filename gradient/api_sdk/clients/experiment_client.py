@@ -1,6 +1,5 @@
-from gradient import constants
 from .base_client import BaseClient
-from .. import repositories, models
+from .. import repositories, models, constants
 
 
 class ExperimentsClient(BaseClient):

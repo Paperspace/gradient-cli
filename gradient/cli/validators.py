@@ -2,7 +2,7 @@ import re
 
 import click
 
-from gradient import constants
+from gradient.api_sdk import constants
 
 REQUIRED_PARAMS_PER_EXPERIMENT_TYPE = {
     constants.ExperimentType.GRPC_MULTI_NODE: ["parameter_server_container", "parameter_server_machine_type",

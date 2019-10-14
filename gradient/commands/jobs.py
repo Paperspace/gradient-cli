@@ -6,7 +6,8 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import api_sdk, exceptions, Job, config, JobArtifactsDownloader
+from gradient import api_sdk, exceptions, Job, JobArtifactsDownloader
+from gradient.api_sdk import config
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.clients.base_client import BaseClient
 from gradient.api_sdk.repositories.jobs import RunJob

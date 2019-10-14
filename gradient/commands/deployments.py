@@ -7,7 +7,7 @@ from halo import halo
 
 from gradient import version, logger as gradient_logger, api_sdk, exceptions
 from gradient.api_sdk.clients import http_client
-from gradient.config import config
+from gradient.api_sdk.config import config
 from gradient.utils import get_terminal_lines
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,

@@ -6,10 +6,10 @@ import zipfile
 import progressbar
 from requests_toolbelt.multipart import encoder
 
-from gradient.api_sdk import exceptions
-from gradient.api_sdk.clients import http_client
-from gradient.api_sdk.logger import MuteLogger
-from gradient.config import config
+from .clients import http_client
+from .config import config
+from .logger import MuteLogger
+from ..api_sdk import exceptions
 
 
 class MultipartEncoder(object):

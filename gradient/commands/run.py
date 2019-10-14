@@ -2,7 +2,7 @@ import os
 import sys
 
 from gradient.commands.jobs import RunJobCommand
-from gradient.constants import RunMode
+from gradient.api_sdk.constants import RunMode
 from gradient.logger import Logger
 from gradient.workspace import WorkspaceHandler
 

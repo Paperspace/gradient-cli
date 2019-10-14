@@ -1,6 +1,6 @@
 from click import secho
 
-from .config import config
+from gradient.api_sdk.config import config
 
 
 class Logger(object):

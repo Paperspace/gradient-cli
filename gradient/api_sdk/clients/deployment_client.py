@@ -3,9 +3,8 @@ Deployment related client handler logic.
 
 Remember that in code snippets all highlighted lines are required other lines are optional.
 """
-from gradient import config
 from .base_client import BaseClient
-from .. import models, repositories
+from .. import config, models, repositories
 
 
 class DeploymentsClient(BaseClient):

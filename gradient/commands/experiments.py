@@ -6,7 +6,8 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import constants, api_sdk, exceptions, TensorboardClient
+from gradient import api_sdk, exceptions, TensorboardClient
+from gradient.api_sdk import constants
 from gradient.commands import tensorboards as tensorboards_commands
 from gradient.commands.common import BaseCommand, ListCommandMixin
 from gradient.logger import Logger

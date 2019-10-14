@@ -2,9 +2,8 @@ import abc
 
 import six
 
-from gradient import config
 from .common import ListResources, GetResource, CreateResource, StartResource, StopResource
-from .. import serializers
+from .. import config, serializers
 from ..serializers import utils
 
 

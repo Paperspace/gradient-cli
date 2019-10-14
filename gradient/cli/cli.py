@@ -5,7 +5,7 @@ from gradient.logger import Logger
 from gradient.api_sdk.exceptions import GradientSdkError
 from gradient.cli import common
 from gradient.commands import login as login_commands
-from gradient.config import config
+from gradient.api_sdk.config import config
 from gradient.exceptions import ApplicationError
 
 click_completion.init()
