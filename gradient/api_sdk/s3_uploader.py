@@ -6,10 +6,10 @@ import zipfile
 import progressbar
 from requests_toolbelt.multipart import encoder
 
+from . import sdk_exceptions
 from .clients import http_client
 from .config import config
 from .logger import MuteLogger
-from ..api_sdk import exceptions
 
 
 class MultipartEncoder(object):
@@ -190,7 +190,7 @@ class S3FileUploader(object):
         client = self._get_client(url)
         response = client.post("", data=data)
         if not response.ok:
-            raise exceptions.S3UploadFailedError(response)
+            raise sdk_exceptions.S3UploadFailedError(response)
 
     def _get_client(self, url):
         client = http_client.API(url, logger=self.logger)
@@ -254,24 +254,24 @@ class S3ProjectFileUploader(object):
         response = self.experiments_api.get("/workspace/get_presigned_url",
                                             params={'workspaceName': file_name, 'projectHandle': project_handle})
         if response.status_code == 401:
-            raise exceptions.ProjectAccessDeniedError("Access to project denied")
+            raise sdk_exceptions.ProjectAccessDeniedError("Access to project denied")
         if response.status_code == 403:
-            raise exceptions.PresignedUrlAccessDeniedError("Access denied")
+            raise sdk_exceptions.PresignedUrlAccessDeniedError("Access denied")
         if response.status_code == 404:
-            raise exceptions.PresignedUrlUnreachableError("URL not found")
+            raise sdk_exceptions.PresignedUrlUnreachableError("URL not found")
         if not response.ok:
-            raise exceptions.PresignedUrlConnectionError(response.reason)
+            raise sdk_exceptions.PresignedUrlConnectionError(response.reason)
 
         try:
             response_data = response.json()
             if response_data["message"] != "success":
-                raise exceptions.PresignedUrlError("Presigned url error: {}".format(response_data))
+                raise sdk_exceptions.PresignedUrlError("Presigned url error: {}".format(response_data))
 
             url = response_data["data"]["url"]
             bucket_name = response_data["data"]["bucket_name"]
             s3_fields = response_data["data"]["fields"]
         except (KeyError, ValueError):
-            raise exceptions.PresignedUrlMalformedResponseError("Response malformed")
+            raise sdk_exceptions.PresignedUrlMalformedResponseError("Response malformed")
 
         return url, bucket_name, s3_fields
 

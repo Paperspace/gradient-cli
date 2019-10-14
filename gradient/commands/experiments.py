@@ -7,7 +7,7 @@ from click import style
 from halo import halo
 
 from gradient import api_sdk, exceptions, TensorboardClient
-from gradient.api_sdk import constants
+from gradient.api_sdk import constants, sdk_exceptions
 from gradient.commands import tensorboards as tensorboards_commands
 from gradient.commands.common import BaseCommand, ListCommandMixin
 from gradient.logger import Logger
@@ -184,7 +184,7 @@ class ListExperimentsCommand(ListCommandMixin, BaseExperimentCommand):
         project_id = kwargs.get("project_id")
         try:
             instances = self.client.list(project_id)
-        except api_sdk.GradientSdkError as e:
+        except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
         return instances
@@ -215,7 +215,7 @@ class GetExperimentCommand(BaseExperimentCommand):
         """
         try:
             instance = self.client.get(id_)
-        except api_sdk.GradientSdkError as e:
+        except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
         return instance

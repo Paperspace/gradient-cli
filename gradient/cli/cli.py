@@ -1,12 +1,12 @@
 import click
 import click_completion
 
-from gradient.logger import Logger
-from gradient.api_sdk.exceptions import GradientSdkError
+from gradient.api_sdk.config import config
+from gradient.api_sdk.sdk_exceptions import GradientSdkError
 from gradient.cli import common
 from gradient.commands import login as login_commands
-from gradient.api_sdk.config import config
 from gradient.exceptions import ApplicationError
+from gradient.logger import Logger
 
 click_completion.init()
 

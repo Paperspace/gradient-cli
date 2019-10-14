@@ -5,7 +5,8 @@ import six
 import terminaltables
 from halo import halo
 
-from gradient import version, logger as gradient_logger, api_sdk, exceptions
+from gradient import version, logger as gradient_logger, exceptions
+from gradient.api_sdk import sdk_exceptions
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.config import config
 from gradient.utils import get_terminal_lines
@@ -47,7 +48,7 @@ class ListDeploymentsCommand(_DeploymentCommand):
     def _get_instances(self, use_vpc=False, **kwargs):
         try:
             instances = self.deployment_client.list(use_vpc=use_vpc, **kwargs)
-        except api_sdk.GradientSdkError as e:
+        except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
         return instances

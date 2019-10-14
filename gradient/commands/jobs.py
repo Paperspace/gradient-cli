@@ -7,7 +7,7 @@ from click import style
 from halo import halo
 
 from gradient import api_sdk, exceptions, Job, JobArtifactsDownloader
-from gradient.api_sdk import config
+from gradient.api_sdk import config, sdk_exceptions
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.clients.base_client import BaseClient
 from gradient.api_sdk.repositories.jobs import RunJob
@@ -107,7 +107,7 @@ class ListJobsCommand(BaseJobCommand):
 
         try:
             instances = self.client.list(**kwargs)
-        except api_sdk.GradientSdkError as e:
+        except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
         return instances
@@ -295,7 +295,7 @@ class ArtifactsListCommand(BaseJobCommand):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
             try:
                 instances = self.client.artifacts_list(**kwargs)
-            except api_sdk.GradientSdkError as e:
+            except sdk_exceptions.GradientSdkError as e:
                 raise exceptions.ReceivingDataFailedError(e)
 
         self._log_objects_list(instances, kwargs)
@@ -349,4 +349,4 @@ class DownloadArtifactsCommand(BaseJobCommand):
             try:
                 artifact_downloader.download_artifacts(job_id, destination_directory)
             except OSError as e:
-                raise api_sdk.GradientSdkError(e)
+                raise sdk_exceptions.GradientSdkError(e)
