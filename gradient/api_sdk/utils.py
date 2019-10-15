@@ -1,3 +1,5 @@
+import random
+import string
 from collections import OrderedDict
 
 import six
@@ -63,3 +65,25 @@ class ExperimentsClientHelpersMixin(object):
             raise sdk_exceptions.GradientSdkError("Invalid experiment type: {}".format(e))
 
         return experiment_type_id
+
+
+def validate_auth_options(auth_username, auth_password, generate_auth):
+    if generate_auth and any((auth_username, auth_password)):
+        raise sdk_exceptions.InvalidParametersError(
+            "Use either auth_username and auth_password or generate_auth",
+        )
+
+    # checking if both or none auth parameters were used
+    if len([val for val in (auth_username, auth_password) if not bool(val)]) == 1:
+        raise sdk_exceptions.InvalidParametersError("auth_username and auth_password have to be used together")
+
+
+def generate_credential(n):
+    cred = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(n))
+    return cred
+
+
+def generate_credentials_pair(n):
+    username = generate_credential(n)
+    password = generate_credential(n)
+    return username, password

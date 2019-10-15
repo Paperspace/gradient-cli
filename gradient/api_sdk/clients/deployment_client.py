@@ -33,6 +33,8 @@ class DeploymentsClient(BaseClient):
             image_url,
             instance_count,
             cluster_id=None,
+            auth_username=None,
+            auth_password=None,
             use_vpc=False,
     ):
         """
@@ -56,13 +58,15 @@ class DeploymentsClient(BaseClient):
         To obtain your Model ID, you can run ``command gradient models list`` and copy the target Model ID from
         your available Models.
 
-        :param  str deployment_type: Model deployment type. Only TensorFlow Model deployment type is currently supported  [required]
+        :param str deployment_type: Model deployment type. Only TensorFlow Model deployment type is currently supported  [required]
         :param str model_id: ID of a trained model [required]
         :param str name: Human-friendly name for new model deployment [required]
         :param str machine_type: [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]
         :param str image_url: Docker image for model deployment  [required]
         :param int instance_count: Number of machine instances  [required]
         :param str cluster_id: cluster ID
+        :param str auth_username: Username
+        :param str auth_password: Password
         :param bool use_vpc:
 
         :returns: Created deployment id
@@ -75,6 +79,8 @@ class DeploymentsClient(BaseClient):
             machine_type=machine_type,
             image_url=image_url,
             instance_count=instance_count,
+            auth_username=auth_username,
+            auth_password=auth_password,
             cluster_id=cluster_id,
         )
 

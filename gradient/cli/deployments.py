@@ -9,6 +9,7 @@ from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
 from gradient.commands import deployments as deployments_commands
+from gradient import utils
 
 
 @cli.group("deployments", help="Manage deployments", cls=ClickGroup)
@@ -89,6 +90,25 @@ def get_deployment_client(api_key):
     cls=common.GradientOption,
 )
 @click.option(
+    "--authUsername",
+    "auth_username",
+    help="Username",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--authPassword",
+    "auth_password",
+    help="Password",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--auth",
+    "generate_auth",
+    is_flag=True,
+    help="Generate username and password. Mutually exclusive with --authUsername and --authPassword",
+    cls=common.GradientOption,
+)
+@click.option(
     "--vpc",
     "use_vpc",
     type=bool,
@@ -98,6 +118,8 @@ def get_deployment_client(api_key):
 @api_key_option
 @common.options_file
 def create_deployment(api_key, use_vpc, options_file, **kwargs):
+    utils.validate_auth_options(kwargs)
+
     del_if_value_is_none(kwargs)
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.CreateDeploymentCommand(deployment_client=deployment_client)
