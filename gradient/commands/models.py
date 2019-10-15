@@ -3,6 +3,7 @@ import abc
 import six
 
 from gradient import api_sdk, exceptions
+from gradient.api_sdk import sdk_exceptions
 from gradient.commands.common import BaseCommand, ListCommandMixin
 
 
@@ -17,7 +18,7 @@ class ListModelsCommand(GetModelsClientMixin, ListCommandMixin, BaseCommand):
     def _get_instances(self, kwargs):
         try:
             instances = self.client.list(**kwargs)
-        except api_sdk.GradientSdkError as e:
+        except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
         return instances

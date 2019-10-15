@@ -1,6 +1,6 @@
 from gradient.api_sdk.serializers import TensorboardSchema
 
-from gradient.config import config
+from gradient.api_sdk.config import config
 from . import common
 from .. import serializers, models
 

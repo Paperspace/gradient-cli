@@ -1,9 +1,9 @@
-import collections
 import functools
 
 import click
 
-from gradient import constants, utils, logger, workspace
+from gradient import utils, logger, workspace
+from gradient.api_sdk import constants
 from gradient.cli import common, validators
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
@@ -11,13 +11,6 @@ from gradient.cli.common import api_key_option, ClickGroup
 from gradient.cli.utils.flag_with_value import GradientRegisterReaderOption, GradientRegisterWriterOption, \
     GradientRegisterWriterCommand
 from gradient.commands import experiments as experiments_commands
-
-MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
-    (
-        ("GRPC", constants.ExperimentType.GRPC_MULTI_NODE),
-        ("MPI", constants.ExperimentType.MPI_MULTI_NODE),
-    )
-)
 
 MULTI_NODE_CREATE_EXPERIMENT_COMMANDS = {
     constants.ExperimentType.GRPC_MULTI_NODE: experiments_commands.CreateMultiNodeExperimentCommand,
@@ -161,7 +154,7 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--experimentType",
             "experiment_type_id",
-            type=ChoiceType(MULTI_NODE_EXPERIMENT_TYPES_MAP, case_sensitive=False),
+            type=ChoiceType(constants.MULTI_NODE_EXPERIMENT_TYPES_MAP, case_sensitive=False),
             required=True,
             help="Experiment Type",
             cls=common.GradientOption,

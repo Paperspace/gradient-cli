@@ -1,9 +1,8 @@
-from gradient import constants
 from .base_client import BaseClient
-from .. import repositories, models
+from .. import repositories, models, constants, utils
 
 
-class ExperimentsClient(BaseClient):
+class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
     def create_single_node(
             self,
             name,
@@ -92,7 +91,6 @@ class ExperimentsClient(BaseClient):
             self,
             name,
             project_id,
-            experiment_type_id,
             worker_container,
             worker_machine_type,
             worker_command,
@@ -101,6 +99,7 @@ class ExperimentsClient(BaseClient):
             parameter_server_machine_type,
             parameter_server_command,
             parameter_server_count,
+            experiment_type_id=constants.ExperimentType.GRPC_MULTI_NODE,
             ports=None,
             workspace_url=None,
             workspace_username=None,
@@ -127,7 +126,6 @@ class ExperimentsClient(BaseClient):
 
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
-        :param int experiment_type_id: Experiment Type ID [required]
         :param str worker_container: Worker container (dockerfile) [required]
         :param str worker_machine_type: Worker machine type  [required]
         :param str worker_command: Worker command  [required]
@@ -136,6 +134,7 @@ class ExperimentsClient(BaseClient):
         :param str parameter_server_machine_type: Parameter server machine type  [required]
         :param str parameter_server_command: Parameter server command  [required]
         :param int parameter_server_count: Parameter server count  [required]
+        :param int|str experiment_type_id: Experiment Type ID
         :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
         :param str workspace_username: Project git repository username
@@ -160,6 +159,8 @@ class ExperimentsClient(BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+
+        experiment_type_id = self._get_experiment_type_id(experiment_type_id)
 
         if not is_preemptible:
             is_preemptible = None
@@ -400,7 +401,6 @@ class ExperimentsClient(BaseClient):
             self,
             name,
             project_id,
-            experiment_type_id,
             worker_container,
             worker_machine_type,
             worker_command,
@@ -409,6 +409,7 @@ class ExperimentsClient(BaseClient):
             parameter_server_machine_type,
             parameter_server_command,
             parameter_server_count,
+            experiment_type_id=constants.ExperimentType.GRPC_MULTI_NODE,
             ports=None,
             workspace_url=None,
             workspace_username=None,
@@ -434,7 +435,6 @@ class ExperimentsClient(BaseClient):
 
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
-        :param int experiment_type_id: Experiment Type ID [required]
         :param str worker_container: Worker container (dockerfile) [required]
         :param str worker_machine_type: Worker machine type  [required]
         :param str worker_command: Worker command  [required]
@@ -443,6 +443,7 @@ class ExperimentsClient(BaseClient):
         :param str parameter_server_machine_type: Parameter server machine type  [required]
         :param str parameter_server_command: Parameter server command  [required]
         :param int parameter_server_count: Parameter server count  [required]
+        :param int|str experiment_type_id: Experiment Type ID [required]
         :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
         :param str workspace_username: Project git repository username
@@ -467,6 +468,8 @@ class ExperimentsClient(BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+
+        experiment_type_id = self._get_experiment_type_id(experiment_type_id)
 
         if not is_preemptible:
             is_preemptible = None

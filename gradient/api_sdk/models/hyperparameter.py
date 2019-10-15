@@ -1,7 +1,7 @@
 import attr
 
-from gradient import constants
 from .experiment import BaseExperiment
+from .. import constants
 
 
 @attr.s

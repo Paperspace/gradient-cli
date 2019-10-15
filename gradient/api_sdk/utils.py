@@ -2,6 +2,8 @@ from collections import OrderedDict
 
 import six
 
+from . import constants, sdk_exceptions
+
 
 class MessageExtractor(object):
     def get_message_from_response_data(self, response_data, sep="\n"):
@@ -48,3 +50,16 @@ def print_dict_recursive(input_dict, logger, indent=0, tabulator="  "):
             print_dict_recursive(OrderedDict(val), logger, indent + 1)
         else:
             logger.log("%s%s" % (tabulator * (indent + 1), val))
+
+
+class ExperimentsClientHelpersMixin(object):
+    def _get_experiment_type_id(self, value):
+        if isinstance(value, int):
+            return value
+
+        try:
+            experiment_type_id = constants.MULTI_NODE_EXPERIMENT_TYPES_MAP[value]
+        except KeyError as e:
+            raise sdk_exceptions.GradientSdkError("Invalid experiment type: {}".format(e))
+
+        return experiment_type_id

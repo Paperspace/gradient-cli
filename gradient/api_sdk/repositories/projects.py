@@ -1,3 +1,4 @@
+import gradient.api_sdk.config
 from gradient import config
 from .. import serializers
 from ..repositories.common import CreateResource, ListResources
@@ -5,7 +6,7 @@ from ..repositories.common import CreateResource, ListResources
 
 class GetBaseProjectsApiUrlMixin(object):
     def _get_api_url(self, **_):
-        return config.config.CONFIG_HOST
+        return gradient.api_sdk.config.config.CONFIG_HOST
 
 
 class CreateProject(GetBaseProjectsApiUrlMixin, CreateResource):

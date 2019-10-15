@@ -1,6 +1,5 @@
-from gradient import config
 from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource
-from .. import serializers
+from .. import serializers, config
 
 
 class GetBaseDeploymentApiUrlMixin(object):

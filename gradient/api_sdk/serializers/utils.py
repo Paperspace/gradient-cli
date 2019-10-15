@@ -1,4 +1,4 @@
-from ..exceptions import GradientSdkError
+from ..sdk_exceptions import GradientSdkError
 
 from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema, HyperparameterSchema
 
