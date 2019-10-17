@@ -37,6 +37,7 @@ class ListProjectsCommand(ListCommandMixin, BaseProjectCommand):
     def _get_table_data(self, objects):
         data = [("ID", "Name", "Repository", "Created")]
         for obj in objects:
-            data.append((obj.id, obj.name, obj.repository_url, obj.created))
+            created_str = obj.created.strftime("%Y-%m-%d %H:%M:%S.%f")
+            data.append((obj.id, obj.name, obj.repository_url, created_str))
 
         return data
