@@ -1,3 +1,4 @@
+import base64
 from collections import OrderedDict
 
 import six
@@ -48,3 +49,20 @@ def print_dict_recursive(input_dict, logger, indent=0, tabulator="  "):
             print_dict_recursive(OrderedDict(val), logger, indent + 1)
         else:
             logger.log("%s%s" % (tabulator * (indent + 1), val))
+
+
+def base64_encode(s):
+    if six.PY3:
+        s = bytes(s, encoding="utf8")
+
+    encoded_str = base64.b64encode(s)
+
+    if six.PY3:  # Python3's base64.b64encode returns a bytes instance so it should be converted back to unicode
+        encoded_str = encoded_str.decode("utf-8")
+
+    return encoded_str
+
+
+def base64_encode_attribute(data, name):
+    encoded_value = base64_encode(getattr(data, name))
+    setattr(data, name, encoded_value)

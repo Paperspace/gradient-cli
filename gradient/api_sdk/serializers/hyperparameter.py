@@ -1,7 +1,9 @@
+import copy
+
 import marshmallow
 
 from .experiment import BaseExperimentSchema
-from .. import models
+from .. import models, utils
 
 
 class HyperparameterSchema(BaseExperimentSchema):
@@ -28,3 +30,11 @@ class HyperparameterSchema(BaseExperimentSchema):
                                                              load_from="hyperparameterServerContainer")
     hyperparameter_server_container_user = marshmallow.fields.Str(dump_to="hyperparameterServerContainerUser",
                                                                   load_from="hyperparameterServerContainerUser")
+
+    @marshmallow.pre_dump
+    def preprocess(self, data, **kwargs):
+        data = copy.copy(data)
+
+        utils.base64_encode_attribute(data, "worker_command")
+        utils.base64_encode_attribute(data, "tuning_command")
+        return data
