@@ -1,5 +1,10 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.3.7
+### Fixes
+* Fix formatting of datetime in `projects list` table
+* Fix sending some bash commands using `--*command` options caused Cloudflare's filter to stop request
+
 # Release Notes for 0.3.6
 ### Fixes
 * Fix `job delete` and `job stop` commands
