@@ -1,7 +1,9 @@
+import copy
+
 import marshmallow
 
-from . import BaseSchema
-from .. import models
+from .base import BaseSchema
+from .. import models, utils
 
 
 class BaseExperimentSchema(BaseSchema):
@@ -22,7 +24,7 @@ class BaseExperimentSchema(BaseSchema):
     id = marshmallow.fields.Str(load_from="handle")
     state = marshmallow.fields.Int()
 
-    def get_instance(self, obj_dict):
+    def get_instance(self, obj_dict, many=False):
         # without popping these marshmallow wouldn't use load_from
         obj_dict.pop("id", None)
         obj_dict.pop("project_id", None)
@@ -31,7 +33,7 @@ class BaseExperimentSchema(BaseSchema):
         if isinstance(ports, int):
             obj_dict["ports"] = str(ports)
 
-        instance = super(BaseExperimentSchema, self).get_instance(obj_dict)
+        instance = super(BaseExperimentSchema, self).get_instance(obj_dict, many=many)
         return instance
 
 
@@ -45,6 +47,13 @@ class SingleNodeExperimentSchema(BaseExperimentSchema):
     registry_username = marshmallow.fields.Str(dump_to="registryUsername", load_from="registryUsername")
     registry_password = marshmallow.fields.Str(dump_to="registryPassword", load_from="registryPassword")
     registry_url = marshmallow.fields.Str(dump_to="registryUrl", load_from="registryUrl")
+
+    @marshmallow.pre_dump
+    def preprocess(self, data, **kwargs):
+        data = copy.copy(data)
+
+        utils.base64_encode_attribute(data, "command")
+        return data
 
 
 class MultiNodeExperimentSchema(BaseExperimentSchema):
@@ -79,6 +88,14 @@ class MultiNodeExperimentSchema(BaseExperimentSchema):
     parameter_server_registry_url = marshmallow.fields.Str(dump_to="parameterServerRegistryUrl",
                                                            load_from="parameterServerRegistryUrl")
 
+    @marshmallow.pre_dump
+    def preprocess(self, data, **kwargs):
+        data = copy.copy(data)
+
+        utils.base64_encode_attribute(data, "worker_command")
+        utils.base64_encode_attribute(data, "parameter_server_command")
+        return data
+
 
 class MpiMultiNodeExperimentSchema(BaseExperimentSchema):
     MODEL = models.MpiMultiNodeExperiment
@@ -92,10 +109,8 @@ class MpiMultiNodeExperimentSchema(BaseExperimentSchema):
                                               load_from="masterContainer")
     master_machine_type = marshmallow.fields.Str(required=True, dump_to="masterMachineType",
                                                  load_from="masterMachineType")
-    master_command = marshmallow.fields.Str(required=True, dump_to="masterCommand",
-                                            load_from="masterCommand")
-    master_count = marshmallow.fields.Int(required=True, dump_to="masterCount",
-                                          load_from="masterCount")
+    master_command = marshmallow.fields.Str(required=True, dump_to="masterCommand", load_from="masterCommand")
+    master_count = marshmallow.fields.Int(required=True, dump_to="masterCount", load_from="masterCount")
     worker_container_user = marshmallow.fields.Str(dump_to="workerContainerUser", load_from="workerContainerUser")
     worker_registry_username = marshmallow.fields.Str(dump_to="workerRegistryUsername",
                                                       load_from="workerRegistryUsername")
@@ -111,3 +126,11 @@ class MpiMultiNodeExperimentSchema(BaseExperimentSchema):
                                                       load_from="masterRegistryPassword")
     master_registry_url = marshmallow.fields.Str(dump_to="masterRegistryUrl",
                                                  load_from="masterRegistryUrl")
+
+    @marshmallow.pre_dump
+    def preprocess(self, data, **kwargs):
+        data = copy.copy(data)
+
+        utils.base64_encode_attribute(data, "worker_command")
+        utils.base64_encode_attribute(data, "master_command")
+        return data
