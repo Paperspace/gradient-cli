@@ -1,3 +1,4 @@
+import base64
 from collections import OrderedDict
 
 import six
@@ -63,3 +64,20 @@ class ExperimentsClientHelpersMixin(object):
             raise sdk_exceptions.GradientSdkError("Invalid experiment type: {}".format(e))
 
         return experiment_type_id
+
+
+def base64_encode(s):
+    if six.PY3:
+        s = bytes(s, encoding="utf8")
+
+    encoded_str = base64.b64encode(s)
+
+    if six.PY3:  # Python3's base64.b64encode returns a bytes instance so it should be converted back to unicode
+        encoded_str = encoded_str.decode("utf-8")
+
+    return encoded_str
+
+
+def base64_encode_attribute(data, name):
+    encoded_value = base64_encode(getattr(data, name))
+    setattr(data, name, encoded_value)
