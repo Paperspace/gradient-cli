@@ -1,3 +1,4 @@
+import base64
 import random
 import string
 from collections import OrderedDict
@@ -87,3 +88,20 @@ def generate_credentials_pair(n):
     username = generate_credential(n)
     password = generate_credential(n)
     return username, password
+
+
+def base64_encode(s):
+    if six.PY3:
+        s = bytes(s, encoding="utf8")
+
+    encoded_str = base64.b64encode(s)
+
+    if six.PY3:  # Python3's base64.b64encode returns a bytes instance so it should be converted back to unicode
+        encoded_str = encoded_str.decode("utf-8")
+
+    return encoded_str
+
+
+def base64_encode_attribute(data, name):
+    encoded_value = base64_encode(getattr(data, name))
+    setattr(data, name, encoded_value)
