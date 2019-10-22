@@ -625,3 +625,12 @@ def get_experiment_details(id, options_file, api_key):
 def list_logs(experiment_id, line, limit, follow, options_file, api_key=None):
     command = experiments_commands.ExperimentLogsCommand(api_key=api_key)
     command.execute(experiment_id, line, limit, follow)
+
+
+@experiments_group.command("delete", help="Delete an experiment")
+@click.argument("id", cls=common.GradientArgument)
+@api_key_option
+@common.options_file
+def delete_experiment(id, options_file, api_key):
+    command = experiments_commands.DeleteExperimentCommand(api_key=api_key)
+    command.execute(id)

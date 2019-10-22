@@ -697,3 +697,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         repository = repositories.ListExperimentLogs(api_key=self.api_key, logger=self.logger)
         logs_generator = repository.yield_logs(experiment_id, line, limit)
         return logs_generator
+
+    def delete(self, experiment_id):
+        repository = repositories.DeleteExperiment(api_key=self.api_key, logger=self.logger)
+        repository.delete(experiment_id)

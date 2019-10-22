@@ -340,3 +340,9 @@ class ExperimentLogsCommand(BaseExperimentCommand):
         return (style(fg="blue", text=experiment_id),
                 style(fg="red", text=str(log_row.line)),
                 log_row.message)
+
+
+class DeleteExperimentCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, *args, **kwargs):
+        self.client.delete(experiment_id)
+        self.logger.log("Experiment deleted")

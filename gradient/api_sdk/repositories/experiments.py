@@ -2,7 +2,7 @@ import abc
 
 import six
 
-from .common import ListResources, GetResource, CreateResource, StartResource, StopResource
+from .common import ListResources, GetResource, CreateResource, StartResource, StopResource, DeleteResource
 from .. import config, serializers
 from ..serializers import utils
 
@@ -177,3 +177,9 @@ class StopExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, StopResource
         id_ = kwargs["id"]
         url = "/experiments/{}/stop/".format(id_)
         return url
+
+
+class DeleteExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, DeleteResource):
+    def get_request_url(self, **kwargs):
+        experiment_id = kwargs["id"]
+        return "/experiments/{}/".format(experiment_id)

@@ -312,3 +312,10 @@ def tensorboards_details_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "tensorboards_details.yaml"
     return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def experiments_delete_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "experiments_delete.yaml"
+    return str(fixture_dir.resolve())
