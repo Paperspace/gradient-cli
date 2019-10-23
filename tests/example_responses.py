@@ -4548,7 +4548,7 @@ NOTEBOOK_GET_RESPONSE = {
     "fqdn": "ngw7piq9.dgradient.paperspace.com",
     "startedByUser": "first last",
     "startedByUserId": "ukgvw4i8",
-    "namespace": "username",
+    "namespace": "some_namespace",
     "parentJobId": None,
     "jobError": None,
     "dtCreated": "2019-09-03T11:06:18.154Z",

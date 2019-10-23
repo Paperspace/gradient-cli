@@ -11,7 +11,7 @@ from gradient.api_sdk import config, sdk_exceptions
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.clients.base_client import BaseClient
 from gradient.api_sdk.repositories.jobs import RunJob
-from gradient.api_sdk.utils import print_dict_recursive
+from gradient.api_sdk.utils import print_dict_recursive, urljoin
 from gradient.commands.common import BaseCommand
 from gradient.utils import get_terminal_lines
 from gradient.workspace import MultipartEncoder
@@ -40,6 +40,12 @@ class BaseCreateJobCommandMixin(object):
             job_id = self._create(json_, data)
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(job_id))
+        self.logger.log(self.get_instance_url(job_id))
+
+    @staticmethod
+    def get_instance_url(instance_id):
+        url = urljoin(config.config.WEB_URL, "console/jobs/{}".format(instance_id))
+        return url
 
     def _handle_workspace(self, instance_dict):
         """

@@ -9,6 +9,7 @@ from gradient import version, logger as gradient_logger, exceptions
 from gradient.api_sdk import sdk_exceptions
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.config import config
+from gradient.api_sdk.utils import urljoin
 from gradient.utils import get_terminal_lines
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
@@ -34,6 +35,11 @@ class CreateDeploymentCommand(_DeploymentCommand):
             deployment_id = self.deployment_client.create(use_vpc=use_vpc, **kwargs)
 
         self.logger.log("New deployment created with id: {}".format(deployment_id))
+        self.logger.log(self.get_instance_url(deployment_id))
+
+    def get_instance_url(self, instance_id):
+        url = urljoin(config.WEB_URL, "/console/deployments/{}".format(instance_id))
+        return url
 
 
 class ListDeploymentsCommand(_DeploymentCommand):

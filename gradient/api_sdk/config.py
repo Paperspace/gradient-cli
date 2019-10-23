@@ -16,6 +16,7 @@ def get_api_key(config_dir_path, config_file_name):
     return ''
 
 
+_DEFAULT_WEB_URL = "https://www.paperspace.com"
 _DEFAULT_CONFIG_HOST = "https://api.paperspace.io"
 _DEFAULT_CONFIG_LOG_HOST = "https://logs.paperspace.io"
 _DEFAULT_CONFIG_EXPERIMENTS_HOST = "https://services.paperspace.io/experiments/v1/"
@@ -30,6 +31,8 @@ _DEFAULT_USE_CONSOLE_COLORS = True
 
 class config(object):
     DEBUG = os.environ.get("PAPERSPACE_CLI_DEBUG") in ("true", "1")
+
+    WEB_URL = os.environ.get("PAPERSPACE_WEB_URL", _DEFAULT_WEB_URL)
     CONFIG_HOST = os.environ.get("PAPERSPACE_CONFIG_HOST", _DEFAULT_CONFIG_HOST)
     CONFIG_LOG_HOST = os.environ.get("PAPERSPACE_CONFIG_LOG_HOST", _DEFAULT_CONFIG_LOG_HOST)
     CONFIG_EXPERIMENTS_HOST = os.environ.get("PAPERSPACE_CONFIG_EXPERIMENTS_HOST", _DEFAULT_CONFIG_EXPERIMENTS_HOST)

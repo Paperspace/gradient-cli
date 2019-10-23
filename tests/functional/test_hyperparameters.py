@@ -17,7 +17,7 @@ class TestCreateHyperparameters(object):
         "--workerMachineType", "k80",
         "--workerCommand", "some worker command",
         "--workerCount", "1",
-        "--projectId", "pr4yxj956",
+        "--projectId", "some_project_id",
         "--workspace", "none",
     ]
     EXPECTED_REQUEST_JSON = {
@@ -28,7 +28,7 @@ class TestCreateHyperparameters(object):
         "workerCount": 1,
         "workerCommand": "c29tZSB3b3JrZXIgY29tbWFuZA==",
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
-        "projectHandle": "pr4yxj956",
+        "projectHandle": "some_project_id",
     }
 
     COMMAND_WHEN_ALL_PARAMETERS_WERE_USED = [
@@ -97,7 +97,8 @@ class TestCreateHyperparameters(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_RESPONSE = {"handle": "eshgvasywz9k1w", "message": "success"}
-    EXPECTED_STDOUT = "Hyperparameter tuning job created with ID: eshgvasywz9k1w\n"
+    EXPECTED_STDOUT = "Hyperparameter tuning job created with ID: eshgvasywz9k1w\n" \
+                      "https://www.paperspace.com/console/projects/some_project_id/experiments/eshgvasywz9k1w\n"
 
     EXPECTED_RESPONSE_JSON_WITH_ERROR = {
         "details": {
@@ -116,7 +117,7 @@ class TestCreateHyperparameters(object):
         "--workerMachineType", "k80",
         "--workerCommand", "some worker command",
         "--workerCount", "1",
-        "--projectId", "pr4yxj956",
+        "--projectId", "some_project_id",
         "--workspace", "none",
         "--apiKey", "some_key",
     ]
@@ -176,14 +177,13 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
+        assert result.output == self.EXPECTED_STDOUT
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
-
-        assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -266,7 +266,7 @@ class TestCreateAndStartHyperparameters(object):
         "--workerMachineType", "k80",
         "--workerCommand", "some worker command",
         "--workerCount", "1",
-        "--projectId", "pr4yxj956",
+        "--projectId", "some_project_id",
         "--workspace", "none",
     ]
     EXPECTED_REQUEST_JSON = {
@@ -276,7 +276,7 @@ class TestCreateAndStartHyperparameters(object):
         "tuningCommand": "c29tZSBjb21tYW5k",
         "workerCount": 1,
         "workerCommand": "c29tZSB3b3JrZXIgY29tbWFuZA==",
-        "projectHandle": "pr4yxj956",
+        "projectHandle": "some_project_id",
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
     }
 
@@ -346,7 +346,8 @@ class TestCreateAndStartHyperparameters(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_RESPONSE = {"handle": "eshgvasywz9k1w", "message": "success"}
-    EXPECTED_STDOUT = "Hyperparameter tuning job created and started with ID: eshgvasywz9k1w\n"
+    EXPECTED_STDOUT = "Hyperparameter tuning job created and started with ID: eshgvasywz9k1w\n" \
+                      "https://www.paperspace.com/console/projects/some_project_id/experiments/eshgvasywz9k1w\n"
 
     EXPECTED_RESPONSE_JSON_WITH_ERROR = {
         "details": {
@@ -365,7 +366,7 @@ class TestCreateAndStartHyperparameters(object):
         "--workerMachineType", "k80",
         "--workerCommand", "some worker command",
         "--workerCount", "1",
-        "--projectId", "pr4yxj956",
+        "--projectId", "some_project_id",
         "--apiKey", "some_key",
         "--workspace", "none",
     ]
