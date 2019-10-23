@@ -276,7 +276,11 @@ class TestCreateAndStartHyperparameters(object):
         "tuningCommand": "c29tZSBjb21tYW5k",
         "workerCount": 1,
         "workerCommand": "c29tZSB3b3JrZXIgY29tbWFuZA==",
+<<<<<<< HEAD
         "projectHandle": "some_project_id",
+=======
+        "projectHandle": "pr4yxj956",
+>>>>>>> v0.4.0a5
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
     }
 

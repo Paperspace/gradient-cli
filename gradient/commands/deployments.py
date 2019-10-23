@@ -35,11 +35,14 @@ class CreateDeploymentCommand(_DeploymentCommand):
             deployment_id = self.deployment_client.create(use_vpc=use_vpc, **kwargs)
 
         self.logger.log("New deployment created with id: {}".format(deployment_id))
+<<<<<<< HEAD
         self.logger.log(self.get_instance_url(deployment_id))
 
     def get_instance_url(self, instance_id):
         url = urljoin(config.WEB_URL, "/console/deployments/{}".format(instance_id))
         return url
+=======
+>>>>>>> v0.4.0a5
 
 
 class ListDeploymentsCommand(_DeploymentCommand):

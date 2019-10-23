@@ -1,6 +1,13 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.4.0a5
+### Fixes
+* Fix formatting of datetime in `projects list` table
+* Fix sending some bash commands using `--*command` options caused Cloudflare's filter to stop request
 
+# Release Notes for 0.4.0a4
+### Fixes
+* Fix how some error messages are printed
 
 # Release Notes for 0.4.0a3
 ### New features
