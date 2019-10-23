@@ -1,5 +1,22 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.4.0
+##### Note: this list includes all changes made in alpha releases since 0.3.2a
+### New features
+* Command for deleting a tensorboard
+* Optional adding new experiment to tensorboard with new `--tensorboard` option. Available for `experiments create` and `experiments run`
+* Add MPI-specific options for creating experiments
+### Fixes
+* Fixed AttributeError raised when `--ignoreFiles` was used
+* Fixed showing help for some commands
+* Fixed URL for fetching notebook details
+* Fix StopIteration exception in Python 3.7
+* Fix `job delete` and `job stop` commands
+* Fix how some error messages are printed
+* Fix formatting of datetime in `projects list` table
+* Fix sending some bash commands using `--*command` options caused Cloudflare's filter to stop request
+
+
 # Release Notes for 0.4.0a5
 ### Fixes
 * Fix formatting of datetime in `projects list` table
