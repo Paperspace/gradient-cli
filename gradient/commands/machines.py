@@ -1,11 +1,10 @@
-import pydoc
-
 import halo
 import terminaltables
 
 from gradient import api_sdk
+from gradient.api_sdk.config import config
+from gradient.api_sdk.utils import urljoin
 from gradient.commands import common, BaseCommand
-from gradient.utils import get_terminal_lines
 
 
 class GetMachinesClientMixin(object):
@@ -24,6 +23,11 @@ class CreateMachineCommand(GetMachinesClientMixin, BaseCommand):
     def execute(self, kwargs):
         handle = self.client.create(**kwargs)
         self.logger.log("New machine created with id: {}".format(handle))
+        self.logger.log(self.get_instance_url(handle))
+
+    def get_instance_url(self, machine_id):
+        url = urljoin(config.WEB_URL, "console/machines/{}".format(machine_id))
+        return url
 
 
 class UpdateMachineCommand(GetMachinesClientMixin, BaseCommand):

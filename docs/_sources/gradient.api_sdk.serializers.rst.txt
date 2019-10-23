@@ -52,6 +52,14 @@ gradient.api\_sdk.serializers.log module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.serializers.machine module
+--------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.machine
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.serializers.model module
 ------------------------------------------
 
@@ -60,10 +68,26 @@ gradient.api\_sdk.serializers.model module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.serializers.notebook module
+---------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.notebook
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.serializers.project module
 --------------------------------------------
 
 .. automodule:: gradient.api_sdk.serializers.project
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.serializers.tensorboard module
+------------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.tensorboard
    :members:
    :undoc-members:
    :show-inheritance:

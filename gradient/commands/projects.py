@@ -4,6 +4,9 @@ import halo
 import six
 
 from gradient import api_sdk, exceptions
+from gradient.api_sdk import sdk_exceptions
+from gradient.api_sdk.config import config
+from gradient.api_sdk.utils import urljoin
 from .common import BaseCommand, ListCommandMixin
 
 
@@ -23,13 +26,18 @@ class CreateProjectCommand(BaseProjectCommand):
             project_id = self.client.create(**project_dict)
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(project_id))
+        self.logger.log(self.get_instance_url(project_id))
+
+    def get_instance_url(self, project_id):
+        url = urljoin(config.WEB_URL, "console/projects/{}/machines".format(project_id))
+        return url
 
 
 class ListProjectsCommand(ListCommandMixin, BaseProjectCommand):
     def _get_instances(self, kwargs):
         try:
             instances = self.client.list()
-        except api_sdk.GradientSdkError as e:
+        except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
         return instances

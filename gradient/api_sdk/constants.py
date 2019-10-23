@@ -1,3 +1,6 @@
+import collections
+
+
 class ExperimentType:
     SINGLE_NODE = 1
     GRPC_MULTI_NODE = 2
@@ -70,3 +73,11 @@ class RunMode:
     RUN_MODE_PYTHON_COMMAND = 2
     RUN_MODE_SHELL_COMMAND = 3
     RUN_MODE_PYTHON_MODULE = 4
+
+
+MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
+    (
+        ("GRPC", ExperimentType.GRPC_MULTI_NODE),
+        ("MPI", ExperimentType.MPI_MULTI_NODE),
+    )
+)

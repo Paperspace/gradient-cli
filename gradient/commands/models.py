@@ -3,21 +3,22 @@ import abc
 import six
 
 from gradient import api_sdk, exceptions
+from gradient.api_sdk import sdk_exceptions
 from gradient.commands.common import BaseCommand, ListCommandMixin
 
 
 @six.add_metaclass(abc.ABCMeta)
-class BaseModelCommand(BaseCommand):
+class GetModelsClientMixin:
     def _get_client(self, api_key, logger):
         client = api_sdk.clients.ModelsClient(api_key=api_key, logger=logger)
         return client
 
 
-class ListModelsCommand(ListCommandMixin, BaseModelCommand):
+class ListModelsCommand(GetModelsClientMixin, ListCommandMixin, BaseCommand):
     def _get_instances(self, kwargs):
         try:
             instances = self.client.list(**kwargs)
-        except api_sdk.GradientSdkError as e:
+        except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
         return instances
@@ -33,3 +34,9 @@ class ListModelsCommand(ListCommandMixin, BaseModelCommand):
             data.append((name, id_, model_type, project_id, experiment_id))
 
         return data
+
+
+class DeleteModelCommand(GetModelsClientMixin, BaseCommand):
+    def execute(self, model_id, *args, **kwargs):
+        self.client.delete(model_id)
+        self.logger.log("Model deleted")

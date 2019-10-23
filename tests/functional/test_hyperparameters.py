@@ -1,7 +1,7 @@
 import mock
 from click.testing import CliRunner
 
-from gradient import constants
+from gradient.api_sdk import constants
 from gradient.api_sdk.clients import http_client
 from gradient.cli import cli
 from tests import MockResponse, example_responses
@@ -10,14 +10,14 @@ from tests import MockResponse, example_responses
 class TestCreateHyperparameters(object):
     URL = "https://services.paperspace.io/experiments/v1/hyperopt/"
     COMMAND = [
-        "hyperparameters", "create",
+        "experiments", "hyperparameters", "create",
         "--name", "some_name",
         "--tuningCommand", "some command",
         "--workerContainer", "some_container",
         "--workerMachineType", "k80",
         "--workerCommand", "some worker command",
         "--workerCount", "1",
-        "--projectId", "pr4yxj956",
+        "--projectId", "some_project_id",
         "--workspace", "none",
     ]
     EXPECTED_REQUEST_JSON = {
@@ -28,11 +28,11 @@ class TestCreateHyperparameters(object):
         "workerCount": 1,
         "workerCommand": "c29tZSB3b3JrZXIgY29tbWFuZA==",
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
-        "projectHandle": "pr4yxj956",
+        "projectHandle": "some_project_id",
     }
 
     COMMAND_WHEN_ALL_PARAMETERS_WERE_USED = [
-        "hyperparameters", "create",
+        "experiments", "hyperparameters", "create",
         "--name", "some_name",
         "--tuningCommand", "some command",
         "--workerContainer", "some_worker_container",
@@ -91,13 +91,14 @@ class TestCreateHyperparameters(object):
         "workingDirectory": "some_working_directory",
         "workspaceUrl": "s3://some.path",
     }
-    COMMAND_WITH_OPTIONS_FILE = ["hyperparameters", "create", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "create", "--optionsFile", ]  # path added in test
 
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_RESPONSE = {"handle": "eshgvasywz9k1w", "message": "success"}
-    EXPECTED_STDOUT = "Hyperparameter tuning job created with ID: eshgvasywz9k1w\n"
+    EXPECTED_STDOUT = "Hyperparameter tuning job created with ID: eshgvasywz9k1w\n" \
+                      "https://www.paperspace.com/console/projects/some_project_id/experiments/eshgvasywz9k1w\n"
 
     EXPECTED_RESPONSE_JSON_WITH_ERROR = {
         "details": {
@@ -109,14 +110,14 @@ class TestCreateHyperparameters(object):
                                           "\nExperiment data error\n"
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
-        "hyperparameters", "create",
+        "experiments", "hyperparameters", "create",
         "--name", "some_name",
         "--tuningCommand", "some command",
         "--workerContainer", "some_container",
         "--workerMachineType", "k80",
         "--workerCommand", "some worker command",
         "--workerCount", "1",
-        "--projectId", "pr4yxj956",
+        "--projectId", "some_project_id",
         "--workspace", "none",
         "--apiKey", "some_key",
     ]
@@ -176,14 +177,13 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
+        assert result.output == self.EXPECTED_STDOUT
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
-
-        assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -259,14 +259,14 @@ class TestCreateHyperparameters(object):
 class TestCreateAndStartHyperparameters(object):
     URL = "https://services.paperspace.io/experiments/v1/hyperopt/create_and_start/"
     COMMAND = [
-        "hyperparameters", "run",
+        "experiments", "hyperparameters", "run",
         "--name", "some_name",
         "--tuningCommand", "some command",
         "--workerContainer", "some_container",
         "--workerMachineType", "k80",
         "--workerCommand", "some worker command",
         "--workerCount", "1",
-        "--projectId", "pr4yxj956",
+        "--projectId", "some_project_id",
         "--workspace", "none",
     ]
     EXPECTED_REQUEST_JSON = {
@@ -276,12 +276,16 @@ class TestCreateAndStartHyperparameters(object):
         "tuningCommand": "c29tZSBjb21tYW5k",
         "workerCount": 1,
         "workerCommand": "c29tZSB3b3JrZXIgY29tbWFuZA==",
+<<<<<<< HEAD
+        "projectHandle": "some_project_id",
+=======
         "projectHandle": "pr4yxj956",
+>>>>>>> v0.4.0a5
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
     }
 
     COMMAND_WHEN_ALL_PARAMETERS_WERE_USED = [
-        "hyperparameters", "run",
+        "experiments", "hyperparameters", "run",
         "--name", "some_name",
         "--tuningCommand", "some command",
         "--workerContainer", "some_worker_container",
@@ -340,13 +344,14 @@ class TestCreateAndStartHyperparameters(object):
         "workingDirectory": "some_working_directory",
         "workspaceUrl": "s3://some.path",
     }
-    COMMAND_WITH_OPTIONS_FILE = ["hyperparameters", "run", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "run", "--optionsFile", ]  # path added in test
 
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_RESPONSE = {"handle": "eshgvasywz9k1w", "message": "success"}
-    EXPECTED_STDOUT = "Hyperparameter tuning job created and started with ID: eshgvasywz9k1w\n"
+    EXPECTED_STDOUT = "Hyperparameter tuning job created and started with ID: eshgvasywz9k1w\n" \
+                      "https://www.paperspace.com/console/projects/some_project_id/experiments/eshgvasywz9k1w\n"
 
     EXPECTED_RESPONSE_JSON_WITH_ERROR = {
         "details": {
@@ -358,14 +363,14 @@ class TestCreateAndStartHyperparameters(object):
                                           "projectHandle: Missing data for required field.\nExperiment data error\n"
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
-        "hyperparameters", "run",
+        "experiments", "hyperparameters", "run",
         "--name", "some_name",
         "--tuningCommand", "some command",
         "--workerContainer", "some_container",
         "--workerMachineType", "k80",
         "--workerCommand", "some worker command",
         "--workerCount", "1",
-        "--projectId", "pr4yxj956",
+        "--projectId", "some_project_id",
         "--apiKey", "some_key",
         "--workspace", "none",
     ]
@@ -507,11 +512,11 @@ class TestCreateAndStartHyperparameters(object):
 class TestStartHyperparameters(object):
     URL = "https://services.paperspace.io/experiments/v1/hyperopt/some_id/start/"
     COMMAND = [
-        "hyperparameters", "start",
+        "experiments", "hyperparameters", "start",
         "--id", "some_id",
     ]
 
-    COMMAND_WITH_OPTIONS_FILE = ["hyperparameters", "start", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "start", "--optionsFile", ]  # path added in test
 
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
@@ -523,7 +528,7 @@ class TestStartHyperparameters(object):
     EXPECTED_STDOUT_WHEN_ERROR_RECEIVED = "Failed to start hyperparameter tuning job: Could not find cluster meeting requirements\n"
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
-        "hyperparameters", "start",
+        "experiments", "hyperparameters", "start",
         "--id", "some_id",
         "--apiKey", "some_key",
     ]
@@ -622,14 +627,14 @@ class TestStartHyperparameters(object):
 
 class TestHyperparametersList(object):
     URL = "https://services.paperspace.io/experiments/v1/hyperopt/"
-    COMMAND = ["hyperparameters", "list"]
-    COMMAND_WITH_OPTIONS_FILE = ["hyperparameters", "list", "--optionsFile", ]  # path added in test
+    COMMAND = ["experiments", "hyperparameters", "list"]
+    COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "list", "--optionsFile", ]  # path added in test
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_REQUEST_PARAMS = {"limit": -1}
 
-    COMMAND_WITH_API_KEY_PARAMETER_USED = ["hyperparameters", "list", "--apiKey", "some_key"]
+    COMMAND_WITH_API_KEY_PARAMETER_USED = ["experiments", "hyperparameters", "list", "--apiKey", "some_key"]
 
     EXPECTED_RESPONSE_JSON_WHEN_NO_OBJECTS_WERE_FOUND = {
         "data": [],
@@ -731,14 +736,14 @@ class TestHyperparametersList(object):
 
 class TestHyperparametersDetails(object):
     URL = "https://services.paperspace.io/experiments/v1/hyperopt/some_id/"
-    COMMAND = ["hyperparameters", "details", "--id", "some_id"]
+    COMMAND = ["experiments", "hyperparameters", "details", "--id", "some_id"]
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
-    COMMAND_WITH_OPTIONS_FILE = ["hyperparameters", "details", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "details", "--optionsFile", ]  # path added in test
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
-        "hyperparameters", "details",
+        "experiments", "hyperparameters", "details",
         "--id", "some_id",
         "--apiKey", "some_key",
     ]

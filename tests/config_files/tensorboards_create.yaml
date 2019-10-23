@@ -1,0 +1,7 @@
+apiKey: some_key
+experiment:
+  - some_experiment_id
+  - some_other_experiment_id
+image: some_image
+password: some_password
+username: some_username

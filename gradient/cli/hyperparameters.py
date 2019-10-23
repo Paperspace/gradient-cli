@@ -4,13 +4,12 @@ import click
 
 from gradient import utils
 from gradient.cli import common
-from gradient.cli.cli import cli
 from gradient.cli.common import ClickGroup
-from gradient.cli.experiments import common_experiments_create_options, get_workspace_handler
+from gradient.cli.experiments import common_experiments_create_options, get_workspace_handler, experiments_group
 from gradient.commands import hyperparameters as hyperparameters_commands
 
 
-@cli.group("hyperparameters", help="Manage hyperparameters", cls=ClickGroup)
+@experiments_group.group("hyperparameters", help="Manage hyperparameters", cls=ClickGroup)
 def hyperparameters_group():
     pass
 

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>gradient.api_sdk.clients package &#8212; Gradient-CLI  documentation</title>
+    <title>gradient.api_sdk.clients package &#8212; Gradient-CLI alpha documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/gradient.css" />
@@ -112,11 +112,6 @@
 <dt id="gradient.api_sdk.clients.base_client.BaseClient">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.clients.base_client.</code><code class="sig-name descname">BaseClient</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.base_client.BaseClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="attribute">
-<dt id="gradient.api_sdk.clients.base_client.BaseClient.HOST_URL">
-<code class="sig-name descname">HOST_URL</code><em class="property"> = 'https://services.paperspace.io/experiments/v1/'</em><a class="headerlink" href="#gradient.api_sdk.clients.base_client.BaseClient.HOST_URL" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="gradient.api_sdk.clients.base_client.BaseClient.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.base_client.BaseClient.__init__" title="Permalink to this definition">¶</a></dt>
@@ -166,12 +161,12 @@ it in the CLI using the command:</p>
 </td></tr></table></div>
 <dl class="attribute">
 <dt id="gradient.api_sdk.clients.deployment_client.DeploymentsClient.HOST_URL">
-<code class="sig-name descname">HOST_URL</code><em class="property"> = 'https://api.paperspace.io'</em><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.HOST_URL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">HOST_URL</code><em class="property"> = 'https://dev-api.paperspace.io'</em><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.HOST_URL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.deployment_client.DeploymentsClient.create">
-<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">deployment_type</em>, <em class="sig-param">model_id</em>, <em class="sig-param">name</em>, <em class="sig-param">machine_type</em>, <em class="sig-param">image_url</em>, <em class="sig-param">instance_count</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.create" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">deployment_type</em>, <em class="sig-param">model_id</em>, <em class="sig-param">name</em>, <em class="sig-param">machine_type</em>, <em class="sig-param">image_url</em>, <em class="sig-param">instance_count</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to create a Deployment instance.</p>
 <p>To create a new Deployment, you must first create a Model. With a Model available, use the <code class="docutils literal notranslate"><span class="pre">create</span></code> subcommand
 and specify all of the following parameters: deployment type, base image, name, machine type, and container
@@ -192,12 +187,14 @@ your available Models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>deployment_type</strong> – Model deployment type. Only TensorFlow Model deployment type is currently supported  [required]</p></li>
-<li><p><strong>modelId</strong> – ID of a trained model [required]</p></li>
-<li><p><strong>name</strong> – Human-friendly name for new model deployment [required]</p></li>
-<li><p><strong>machine_type</strong> – [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]</p></li>
-<li><p><strong>image_url</strong> – Docker image for model deployment  [required]</p></li>
-<li><p><strong>instance_count</strong> – Number of machine instances  [required]</p></li>
+<li><p><strong>deployment_type</strong> (<em>str</em>) – Model deployment type. Only TensorFlow Model deployment type is currently supported  [required]</p></li>
+<li><p><strong>model_id</strong> (<em>str</em>) – ID of a trained model [required]</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Human-friendly name for new model deployment [required]</p></li>
+<li><p><strong>machine_type</strong> (<em>str</em>) – [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]</p></li>
+<li><p><strong>image_url</strong> (<em>str</em>) – Docker image for model deployment  [required]</p></li>
+<li><p><strong>instance_count</strong> (<em>int</em>) – Number of machine instances  [required]</p></li>
+<li><p><strong>cluster_id</strong> (<em>str</em>) – cluster ID</p></li>
+<li><p><strong>use_vpc</strong> (<em>bool</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -211,7 +208,7 @@ your available Models.</p>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.deployment_client.DeploymentsClient.start">
-<code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">deployment_id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.start" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">deployment_id</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start deployment</p>
 <p><em>EXAMPLE</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">deployments</span> <span class="n">start</span> <span class="o">--</span><span class="nb">id</span> <span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">deployment</span><span class="o">-</span><span class="nb">id</span><span class="o">&gt;</span>
@@ -219,14 +216,17 @@ your available Models.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>deployment_id</strong> (<em>str</em>) – Deployment ID</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deployment_id</strong> (<em>str</em>) – Deployment ID</p></li>
+<li><p><strong>use_vpc</strong> (<em>bool</em>) – </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.deployment_client.DeploymentsClient.stop">
-<code class="sig-name descname">stop</code><span class="sig-paren">(</span><em class="sig-param">deployment_id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.stop" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stop</code><span class="sig-paren">(</span><em class="sig-param">deployment_id</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop deployment</p>
 <p><em>EXAMPLE</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">deployments</span> <span class="n">stop</span> <span class="o">--</span><span class="nb">id</span> <span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">deployment</span><span class="o">-</span><span class="nb">id</span><span class="o">&gt;</span>
@@ -234,28 +234,26 @@ your available Models.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>deployment_id</strong> – Deployment ID</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deployment_id</strong> – Deployment ID</p></li>
+<li><p><strong>use_vpc</strong> (<em>bool</em>) – </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.deployment_client.DeploymentsClient.list">
-<code class="sig-name descname">list</code><span class="sig-paren">(</span><em class="sig-param">filters</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.list" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">list</code><span class="sig-paren">(</span><em class="sig-param">state=None</em>, <em class="sig-param">project_id=None</em>, <em class="sig-param">model_id=None</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.deployment_client.DeploymentsClient.list" title="Permalink to this definition">¶</a></dt>
 <dd><p>List deployments with optional filtering</p>
-<p>To view all running deployments in your team, run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">deployments</span> <span class="nb">list</span> <span class="o">--</span><span class="n">state</span> <span class="n">RUNNING</span>
-</pre></div>
-</div>
-<p>Options:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">state</span> <span class="p">[</span><span class="n">BUILDING</span><span class="o">|</span><span class="n">PROVISIONING</span><span class="o">|</span><span class="n">STARTING</span><span class="o">|</span><span class="n">RUNNING</span><span class="o">|</span><span class="n">STOPPING</span><span class="o">|</span><span class="n">STOPPED</span><span class="o">|</span><span class="n">ERROR</span><span class="p">]</span> <span class="n">Filter</span> <span class="n">by</span> <span class="n">deployment</span> <span class="n">state</span>
-<span class="o">--</span><span class="n">projectId</span> <span class="n">TEXT</span> <span class="n">Use</span> <span class="n">to</span> <span class="nb">filter</span> <span class="n">by</span> <span class="n">project</span> <span class="n">ID</span>
-<span class="o">--</span><span class="n">modelId</span> <span class="n">TEXT</span> <span class="n">Use</span> <span class="n">to</span> <span class="nb">filter</span> <span class="n">by</span> <span class="n">model</span> <span class="n">ID</span>
-</pre></div>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filters</strong> (<em>state|projectId|modelId</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<em>str</em>) – </p></li>
+<li><p><strong>project_id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>model_id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>use_vpc</strong> (<em>bool</em>) – </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -267,44 +265,11 @@ your available Models.</p>
 <span id="gradient-api-sdk-clients-experiment-client-module"></span><h2>gradient.api_sdk.clients.experiment_client module<a class="headerlink" href="#module-gradient.api_sdk.clients.experiment_client" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gradient.api_sdk.clients.experiment_client.ExperimentsClient">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.clients.experiment_client.</code><code class="sig-name descname">ExperimentsClient</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.clients.experiment_client.</code><code class="sig-name descname">ExperimentsClient</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.clients.base_client.BaseClient" title="gradient.api_sdk.clients.base_client.BaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.clients.base_client.BaseClient</span></code></a></p>
-<dl class="attribute">
-<dt id="gradient.api_sdk.clients.experiment_client.ExperimentsClient.HOST_URL">
-<code class="sig-name descname">HOST_URL</code><em class="property"> = 'https://services.paperspace.io/experiments/v1/'</em><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.HOST_URL" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="gradient.api_sdk.clients.experiment_client.ExperimentsClient.LOG_HOST_URL">
-<code class="sig-name descname">LOG_HOST_URL</code><em class="property"> = 'https://logs.paperspace.io'</em><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.LOG_HOST_URL" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gradient.api_sdk.clients.experiment_client.ExperimentsClient.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class. All client classes inherit from it.</p>
-<p>An API key can be created at paperspace.com after you sign in to your account. After obtaining it, you can set
-it in the CLI using the command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">apiKey</span> <span class="n">XXXXXXXXXXXXXXXXXXX</span>
-</pre></div>
-</div>
-<p>or you can provide your API key in any command, for example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">experiments</span> <span class="n">run</span> <span class="o">...</span> <span class="o">--</span><span class="n">apiKey</span> <span class="n">XXXXXXXXXXXXXXXXXXX</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>api_key</strong> (<em>str</em>) – your API key</p></li>
-<li><p><strong>logger</strong> (<em>sdk_logger.Logger</em>) – </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="method">
 <dt id="gradient.api_sdk.clients.experiment_client.ExperimentsClient.create_single_node">
-<code class="sig-name descname">create_single_node</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">project_id</em>, <em class="sig-param">machine_type</em>, <em class="sig-param">command</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">artifact_directory=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">experiment_env=None</em>, <em class="sig-param">model_type=None</em>, <em class="sig-param">model_path=None</em>, <em class="sig-param">container=None</em>, <em class="sig-param">container_user=None</em>, <em class="sig-param">registry_username=None</em>, <em class="sig-param">registry_password=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.create_single_node" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_single_node</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">project_id</em>, <em class="sig-param">machine_type</em>, <em class="sig-param">command</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">workspace_username=None</em>, <em class="sig-param">workspace_password=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">artifact_directory=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">experiment_env=None</em>, <em class="sig-param">model_type=None</em>, <em class="sig-param">model_path=None</em>, <em class="sig-param">is_preemptible=False</em>, <em class="sig-param">container=None</em>, <em class="sig-param">container_user=None</em>, <em class="sig-param">registry_username=None</em>, <em class="sig-param">registry_password=None</em>, <em class="sig-param">registry_url=None</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.create_single_node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create single node experiment</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -315,7 +280,9 @@ it in the CLI using the command:</p>
  7
  8
  9
-10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">experiments</span> <span class="n">create</span> <span class="n">singlenode</span>
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">experiments</span> <span class="n">create</span> <span class="n">singlenode</span>
 <span class="o">--</span><span class="n">projectId</span> <span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">project</span><span class="o">-</span><span class="nb">id</span><span class="o">&gt;</span>
 <span class="hll"><span class="o">--</span><span class="n">name</span> <span class="n">singleEx</span>
 </span><span class="o">--</span><span class="n">experimentEnv</span> <span class="s2">&quot;{&quot;</span><span class="n">EPOCHS_EVAL</span><span class="s2">&quot;:5,&quot;</span><span class="n">TRAIN_EPOCHS</span><span class="s2">&quot;:10,&quot;</span><span class="n">MAX_STEPS</span><span class="s2">&quot;:1000,&quot;</span><span class="n">EVAL_SECS</span><span class="s2">&quot;:10}&quot;</span>
@@ -323,6 +290,8 @@ it in the CLI using the command:</p>
 </span><span class="o">--</span><span class="n">machineType</span> <span class="n">K80</span>
 <span class="o">--</span><span class="n">command</span> <span class="s2">&quot;python mnist.py&quot;</span>
 <span class="o">--</span><span class="n">workspaceUrl</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Paperspace</span><span class="o">/</span><span class="n">mnist</span><span class="o">-</span><span class="n">sample</span><span class="o">.</span><span class="n">git</span>
+<span class="o">--</span><span class="n">workspaceUsername</span> <span class="n">example</span><span class="o">-</span><span class="n">username</span>
+<span class="o">--</span><span class="n">workspacePassword</span> <span class="n">example</span><span class="o">-</span><span class="n">password</span>
 <span class="o">--</span><span class="n">modelType</span> <span class="n">Tensorflow</span>
 <span class="o">--</span><span class="n">modelPath</span> <span class="o">/</span><span class="n">artifacts</span>
 </pre></div>
@@ -340,16 +309,21 @@ that you can deploy it using Deployments.</p>
 <li><p><strong>command</strong> (<em>str</em>) – Container entrypoint command  [required]</p></li>
 <li><p><strong>ports</strong> (<em>str</em>) – Port to use in new experiment</p></li>
 <li><p><strong>workspace_url</strong> (<em>str</em>) – Project git repository url</p></li>
+<li><p><strong>workspace_username</strong> (<em>str</em>) – Project git repository username</p></li>
+<li><p><strong>workspace_password</strong> (<em>str</em>) – Project git repository password</p></li>
 <li><p><strong>working_directory</strong> (<em>str</em>) – Working directory for the experiment</p></li>
 <li><p><strong>artifact_directory</strong> (<em>str</em>) – Artifacts directory</p></li>
 <li><p><strong>cluster_id</strong> (<em>str</em>) – Cluster ID</p></li>
 <li><p><strong>experiment_env</strong> (<em>dict</em>) – Environment variables in a JSON</p></li>
 <li><p><strong>model_type</strong> (<em>str</em>) – defines the type of model that is being generated by the experiment. Model type must be one of Tensorflow, ONNX, or Custom</p></li>
 <li><p><strong>model_path</strong> (<em>str</em>) – Model path</p></li>
+<li><p><strong>is_preemptible</strong> (<em>bool</em>) – Is preemptible</p></li>
 <li><p><strong>container</strong> (<em>str</em>) – Container (dockerfile) [required]</p></li>
 <li><p><strong>container_user</strong> (<em>str</em>) – Container user for running the specified command in the container. If no containerUser is specified, the user will default to ‘root’ in the container.</p></li>
 <li><p><strong>registry_username</strong> (<em>str</em>) – Registry username for accessing private docker registry container if nessesary</p></li>
 <li><p><strong>registry_password</strong> (<em>str</em>) – Registry password for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>registry_url</strong> (<em>str</em>) – Registry server URL for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>use_vpc</strong> (<em>bool</em>) – Set to True when using Virtual Private Cloud</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -363,7 +337,7 @@ that you can deploy it using Deployments.</p>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.experiment_client.ExperimentsClient.create_multi_node">
-<code class="sig-name descname">create_multi_node</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">project_id</em>, <em class="sig-param">experiment_type_id</em>, <em class="sig-param">worker_container</em>, <em class="sig-param">worker_machine_type</em>, <em class="sig-param">worker_command</em>, <em class="sig-param">worker_count</em>, <em class="sig-param">parameter_server_container</em>, <em class="sig-param">parameter_server_machine_type</em>, <em class="sig-param">parameter_server_command</em>, <em class="sig-param">parameter_server_count</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">artifact_directory=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">experiment_env=None</em>, <em class="sig-param">model_type=None</em>, <em class="sig-param">model_path=None</em>, <em class="sig-param">worker_container_user=None</em>, <em class="sig-param">worker_registry_username=None</em>, <em class="sig-param">worker_registry_password=None</em>, <em class="sig-param">parameter_server_container_user=None</em>, <em class="sig-param">parameter_server_registry_container_user=None</em>, <em class="sig-param">parameter_server_registry_password=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.create_multi_node" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_multi_node</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">project_id</em>, <em class="sig-param">experiment_type_id</em>, <em class="sig-param">worker_container</em>, <em class="sig-param">worker_machine_type</em>, <em class="sig-param">worker_command</em>, <em class="sig-param">worker_count</em>, <em class="sig-param">parameter_server_container</em>, <em class="sig-param">parameter_server_machine_type</em>, <em class="sig-param">parameter_server_command</em>, <em class="sig-param">parameter_server_count</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">workspace_username=None</em>, <em class="sig-param">workspace_password=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">artifact_directory=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">experiment_env=None</em>, <em class="sig-param">model_type=None</em>, <em class="sig-param">model_path=None</em>, <em class="sig-param">is_preemptible=False</em>, <em class="sig-param">worker_container_user=None</em>, <em class="sig-param">worker_registry_username=None</em>, <em class="sig-param">worker_registry_password=None</em>, <em class="sig-param">worker_registry_url=None</em>, <em class="sig-param">parameter_server_container_user=None</em>, <em class="sig-param">parameter_server_registry_username=None</em>, <em class="sig-param">parameter_server_registry_password=None</em>, <em class="sig-param">parameter_server_registry_url=None</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.create_multi_node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create multinode experiment</p>
 <p><em>EXAMPLE</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">experiments</span> <span class="n">create</span> <span class="n">multinode</span>
@@ -379,6 +353,8 @@ that you can deploy it using Deployments.</p>
 <span class="o">--</span><span class="n">parameterServerCommand</span> <span class="s2">&quot;python mnist.py&quot;</span>
 <span class="o">--</span><span class="n">parameterServerCount</span> <span class="mi">1</span>
 <span class="o">--</span><span class="n">workspaceUrl</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Paperspace</span><span class="o">/</span><span class="n">mnist</span><span class="o">-</span><span class="n">sample</span><span class="o">.</span><span class="n">git</span>
+<span class="o">--</span><span class="n">workspaceUsername</span> <span class="n">example</span><span class="o">-</span><span class="n">username</span>
+<span class="o">--</span><span class="n">workspacePassword</span> <span class="n">example</span><span class="o">-</span><span class="n">password</span>
 <span class="o">--</span><span class="n">modelType</span> <span class="n">Tensorflow</span>
 </pre></div>
 </div>
@@ -391,7 +367,7 @@ that you can deploy it using Deployments.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>str</em>) – Name of new experiment  [required]</p></li>
 <li><p><strong>project_id</strong> (<em>str</em>) – Project ID  [required]</p></li>
-<li><p><strong>experiment_type_id</strong> (<em>str</em>) – Experiment Type ID [GRPC|MPI] [required]</p></li>
+<li><p><strong>experiment_type_id</strong> (<em>int</em>) – Experiment Type ID [required]</p></li>
 <li><p><strong>worker_container</strong> (<em>str</em>) – Worker container (dockerfile) [required]</p></li>
 <li><p><strong>worker_machine_type</strong> (<em>str</em>) – Worker machine type  [required]</p></li>
 <li><p><strong>worker_command</strong> (<em>str</em>) – Worker command  [required]</p></li>
@@ -402,18 +378,24 @@ that you can deploy it using Deployments.</p>
 <li><p><strong>parameter_server_count</strong> (<em>int</em>) – Parameter server count  [required]</p></li>
 <li><p><strong>ports</strong> (<em>str</em>) – Port to use in new experiment</p></li>
 <li><p><strong>workspace_url</strong> (<em>str</em>) – Project git repository url</p></li>
+<li><p><strong>workspace_username</strong> (<em>str</em>) – Project git repository username</p></li>
+<li><p><strong>workspace_password</strong> (<em>str</em>) – Project git repository password</p></li>
 <li><p><strong>working_directory</strong> (<em>str</em>) – Working directory for the experiment</p></li>
 <li><p><strong>artifact_directory</strong> (<em>str</em>) – Artifacts directory</p></li>
 <li><p><strong>cluster_id</strong> (<em>str</em>) – Cluster ID</p></li>
 <li><p><strong>experiment_env</strong> (<em>dict</em>) – Environment variables in a JSON</p></li>
 <li><p><strong>model_type</strong> (<em>str</em>) – defines the type of model that is being generated by the experiment. Model type must be one of Tensorflow, ONNX, or Custom</p></li>
 <li><p><strong>model_path</strong> (<em>str</em>) – Model path</p></li>
+<li><p><strong>is_preemptible</strong> (<em>bool</em>) – Is preemptible</p></li>
 <li><p><strong>worker_container_user</strong> (<em>str</em>) – Worker container user</p></li>
 <li><p><strong>worker_registry_username</strong> (<em>str</em>) – Registry username for accessing private docker registry container if nessesary</p></li>
 <li><p><strong>worker_registry_password</strong> (<em>str</em>) – Registry password for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>worker_registry_url</strong> (<em>str</em>) – Registry server URL for accessing private docker registry container if nessesary</p></li>
 <li><p><strong>parameter_server_container_user</strong> (<em>str</em>) – Parameter server container user</p></li>
-<li><p><strong>parameter_server_registry_container_user</strong> (<em>str</em>) – Registry username for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>parameter_server_registry_username</strong> (<em>str</em>) – Registry username for accessing private docker registry container if nessesary</p></li>
 <li><p><strong>parameter_server_registry_password</strong> (<em>str</em>) – Registry password for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>parameter_server_registry_url</strong> (<em>str</em>) – Registry server URL for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>use_vpc</strong> (<em>bool</em>) – Set to True when using Virtual Private Cloud</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -427,7 +409,7 @@ that you can deploy it using Deployments.</p>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.experiment_client.ExperimentsClient.run_single_node">
-<code class="sig-name descname">run_single_node</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">project_id</em>, <em class="sig-param">machine_type</em>, <em class="sig-param">command</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">artifact_directory=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">experiment_env=None</em>, <em class="sig-param">model_type=None</em>, <em class="sig-param">model_path=None</em>, <em class="sig-param">container=None</em>, <em class="sig-param">container_user=None</em>, <em class="sig-param">registry_username=None</em>, <em class="sig-param">registry_password=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.run_single_node" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_single_node</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">project_id</em>, <em class="sig-param">machine_type</em>, <em class="sig-param">command</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">workspace_username=None</em>, <em class="sig-param">workspace_password=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">artifact_directory=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">experiment_env=None</em>, <em class="sig-param">model_type=None</em>, <em class="sig-param">model_path=None</em>, <em class="sig-param">is_preemptible=False</em>, <em class="sig-param">container=None</em>, <em class="sig-param">container_user=None</em>, <em class="sig-param">registry_username=None</em>, <em class="sig-param">registry_password=None</em>, <em class="sig-param">registry_url=None</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.run_single_node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and start single node experiment</p>
 <p><em>EXAMPLE</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">experiments</span> <span class="n">run</span> <span class="n">singlenode</span>
@@ -438,6 +420,8 @@ that you can deploy it using Deployments.</p>
 <span class="o">--</span><span class="n">machineType</span> <span class="n">K80</span>
 <span class="o">--</span><span class="n">command</span> <span class="s2">&quot;python mnist.py&quot;</span>
 <span class="o">--</span><span class="n">workspaceUrl</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Paperspace</span><span class="o">/</span><span class="n">mnist</span><span class="o">-</span><span class="n">sample</span><span class="o">.</span><span class="n">git</span>
+<span class="o">--</span><span class="n">workspaceUsername</span> <span class="n">example</span><span class="o">-</span><span class="n">username</span>
+<span class="o">--</span><span class="n">workspacePassword</span> <span class="n">example</span><span class="o">-</span><span class="n">password</span>
 <span class="o">--</span><span class="n">modelType</span> <span class="n">Tensorflow</span>
 <span class="o">--</span><span class="n">modelPath</span> <span class="o">/</span><span class="n">artifacts</span>
 </pre></div>
@@ -455,16 +439,21 @@ that you can deploy it using Deployments.</p>
 <li><p><strong>command</strong> (<em>str</em>) – Container entrypoint command  [required]</p></li>
 <li><p><strong>ports</strong> (<em>str</em>) – Port to use in new experiment</p></li>
 <li><p><strong>workspace_url</strong> (<em>str</em>) – Project git repository url</p></li>
+<li><p><strong>workspace_username</strong> (<em>str</em>) – Project git repository username</p></li>
+<li><p><strong>workspace_password</strong> (<em>str</em>) – Project git repository password</p></li>
 <li><p><strong>working_directory</strong> (<em>str</em>) – Working directory for the experiment</p></li>
 <li><p><strong>artifact_directory</strong> (<em>str</em>) – Artifacts directory</p></li>
 <li><p><strong>cluster_id</strong> (<em>str</em>) – Cluster ID</p></li>
 <li><p><strong>experiment_env</strong> (<em>dict</em>) – Environment variables in a JSON</p></li>
 <li><p><strong>model_type</strong> (<em>str</em>) – defines the type of model that is being generated by the experiment. Model type must be one of Tensorflow, ONNX, or Custom</p></li>
 <li><p><strong>model_path</strong> (<em>str</em>) – Model path</p></li>
+<li><p><strong>is_preemptible</strong> (<em>bool</em>) – Is preemptible</p></li>
 <li><p><strong>container</strong> (<em>str</em>) – Container (dockerfile) [required]</p></li>
 <li><p><strong>container_user</strong> (<em>str</em>) – Container user for running the specified command in the container. If no containerUser is specified, the user will default to ‘root’ in the container.</p></li>
 <li><p><strong>registry_username</strong> (<em>str</em>) – Registry username for accessing private docker registry container if nessesary</p></li>
 <li><p><strong>registry_password</strong> (<em>str</em>) – Registry password for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>registry_url</strong> (<em>str</em>) – Registry server URL for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>use_vpc</strong> (<em>bool</em>) – Set to True when using Virtual Private Cloud</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -478,7 +467,7 @@ that you can deploy it using Deployments.</p>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.experiment_client.ExperimentsClient.run_multi_node">
-<code class="sig-name descname">run_multi_node</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">project_id</em>, <em class="sig-param">experiment_type_id</em>, <em class="sig-param">worker_container</em>, <em class="sig-param">worker_machine_type</em>, <em class="sig-param">worker_command</em>, <em class="sig-param">worker_count</em>, <em class="sig-param">parameter_server_container</em>, <em class="sig-param">parameter_server_machine_type</em>, <em class="sig-param">parameter_server_command</em>, <em class="sig-param">parameter_server_count</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">artifact_directory=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">experiment_env=None</em>, <em class="sig-param">model_type=None</em>, <em class="sig-param">model_path=None</em>, <em class="sig-param">worker_container_user=None</em>, <em class="sig-param">worker_registry_username=None</em>, <em class="sig-param">worker_registry_password=None</em>, <em class="sig-param">parameter_server_container_user=None</em>, <em class="sig-param">parameter_server_registry_container_user=None</em>, <em class="sig-param">parameter_server_registry_password=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.run_multi_node" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_multi_node</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">project_id</em>, <em class="sig-param">experiment_type_id</em>, <em class="sig-param">worker_container</em>, <em class="sig-param">worker_machine_type</em>, <em class="sig-param">worker_command</em>, <em class="sig-param">worker_count</em>, <em class="sig-param">parameter_server_container</em>, <em class="sig-param">parameter_server_machine_type</em>, <em class="sig-param">parameter_server_command</em>, <em class="sig-param">parameter_server_count</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">workspace_username=None</em>, <em class="sig-param">workspace_password=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">artifact_directory=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">experiment_env=None</em>, <em class="sig-param">model_type=None</em>, <em class="sig-param">model_path=None</em>, <em class="sig-param">is_preemptible=False</em>, <em class="sig-param">worker_container_user=None</em>, <em class="sig-param">worker_registry_username=None</em>, <em class="sig-param">worker_registry_password=None</em>, <em class="sig-param">worker_registry_url=None</em>, <em class="sig-param">parameter_server_container_user=None</em>, <em class="sig-param">parameter_server_registry_username=None</em>, <em class="sig-param">parameter_server_registry_password=None</em>, <em class="sig-param">parameter_server_registry_url=None</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.run_multi_node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and start multinode experiment</p>
 <p>The following command creates and starts a multinode experiment called multiEx and places it within the Gradient
 Project identified by the –projectId option. (Note: in some early versions of the CLI this option was called
@@ -497,6 +486,8 @@ Project identified by the –projectId option. (Note: in some early versions of 
 <span class="o">--</span><span class="n">parameterServerCommand</span> <span class="s2">&quot;python mnist.py&quot;</span>
 <span class="o">--</span><span class="n">parameterServerCount</span> <span class="mi">1</span>
 <span class="o">--</span><span class="n">workspaceUrl</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Paperspace</span><span class="o">/</span><span class="n">mnist</span><span class="o">-</span><span class="n">sample</span><span class="o">.</span><span class="n">git</span>
+<span class="o">--</span><span class="n">workspaceUsername</span> <span class="n">example</span><span class="o">-</span><span class="n">username</span>
+<span class="o">--</span><span class="n">workspacePassword</span> <span class="n">example</span><span class="o">-</span><span class="n">password</span>
 <span class="o">--</span><span class="n">modelType</span> <span class="n">Tensorflow</span>
 </pre></div>
 </div>
@@ -507,7 +498,7 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>str</em>) – Name of new experiment  [required]</p></li>
 <li><p><strong>project_id</strong> (<em>str</em>) – Project ID  [required]</p></li>
-<li><p><strong>experiment_type_id</strong> (<em>str</em>) – Experiment Type ID [GRPC|MPI] [required]</p></li>
+<li><p><strong>experiment_type_id</strong> (<em>int</em>) – Experiment Type ID [required]</p></li>
 <li><p><strong>worker_container</strong> (<em>str</em>) – Worker container (dockerfile) [required]</p></li>
 <li><p><strong>worker_machine_type</strong> (<em>str</em>) – Worker machine type  [required]</p></li>
 <li><p><strong>worker_command</strong> (<em>str</em>) – Worker command  [required]</p></li>
@@ -518,18 +509,24 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 <li><p><strong>parameter_server_count</strong> (<em>int</em>) – Parameter server count  [required]</p></li>
 <li><p><strong>ports</strong> (<em>str</em>) – Port to use in new experiment</p></li>
 <li><p><strong>workspace_url</strong> (<em>str</em>) – Project git repository url</p></li>
+<li><p><strong>workspace_username</strong> (<em>str</em>) – Project git repository username</p></li>
+<li><p><strong>workspace_password</strong> (<em>str</em>) – Project git repository password</p></li>
 <li><p><strong>working_directory</strong> (<em>str</em>) – Working directory for the experiment</p></li>
 <li><p><strong>artifact_directory</strong> (<em>str</em>) – Artifacts directory</p></li>
 <li><p><strong>cluster_id</strong> (<em>str</em>) – Cluster ID</p></li>
 <li><p><strong>experiment_env</strong> (<em>dict</em>) – Environment variables in a JSON</p></li>
 <li><p><strong>model_type</strong> (<em>str</em>) – defines the type of model that is being generated by the experiment. Model type must be one of Tensorflow, ONNX, or Custom</p></li>
 <li><p><strong>model_path</strong> (<em>str</em>) – Model path</p></li>
+<li><p><strong>is_preemptible</strong> (<em>bool</em>) – Is preemptible</p></li>
 <li><p><strong>worker_container_user</strong> (<em>str</em>) – Worker container user</p></li>
 <li><p><strong>worker_registry_username</strong> (<em>str</em>) – Registry username for accessing private docker registry container if nessesary</p></li>
 <li><p><strong>worker_registry_password</strong> (<em>str</em>) – Registry password for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>worker_registry_url</strong> (<em>str</em>) – Registry server URL for accessing private docker registry container if nessesary</p></li>
 <li><p><strong>parameter_server_container_user</strong> (<em>str</em>) – Parameter server container user</p></li>
-<li><p><strong>parameter_server_registry_container_user</strong> (<em>str</em>) – Registry username for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>parameter_server_registry_username</strong> (<em>str</em>) – Registry username for accessing private docker registry container if nessesary</p></li>
 <li><p><strong>parameter_server_registry_password</strong> (<em>str</em>) – Registry password for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>parameter_server_registry_url</strong> (<em>str</em>) – Registry server URL for accessing private docker registry container if nessesary</p></li>
+<li><p><strong>use_vpc</strong> (<em>bool</em>) – Set to True when using Virtual Private Cloud</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -543,7 +540,7 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.experiment_client.ExperimentsClient.start">
-<code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">experiment_id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.start" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">experiment_id</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start existing experiment that has not run</p>
 <p><em>EXAMPLE</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">experiments</span> <span class="n">start</span> <span class="o">&lt;</span><span class="n">experiment_id</span><span class="o">&gt;</span>
@@ -551,7 +548,10 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>experiment_id</strong> (<em>str</em>) – Experiment ID</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment_id</strong> (<em>str</em>) – Experiment ID</p></li>
+<li><p><strong>use_vpc</strong> (<em>bool</em>) – Set to True when using Virtual Private Cloud</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p>exceptions.GradientSdkError</p>
@@ -561,7 +561,7 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.experiment_client.ExperimentsClient.stop">
-<code class="sig-name descname">stop</code><span class="sig-paren">(</span><em class="sig-param">experiment_id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.stop" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stop</code><span class="sig-paren">(</span><em class="sig-param">experiment_id</em>, <em class="sig-param">use_vpc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.experiment_client.ExperimentsClient.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop running experiment</p>
 <p><em>EXAMPLE</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">experiments</span> <span class="n">stop</span> <span class="o">&lt;</span><span class="n">experiment_id</span><span class="o">&gt;</span>
@@ -569,7 +569,10 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>experiment_id</strong> (<em>str</em>) – Experiment ID</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment_id</strong> (<em>str</em>) – Experiment ID</p></li>
+<li><p><strong>use_vpc</strong> (<em>bool</em>) – Set to True when using Virtual Private Cloud</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p>exceptions.GradientSdkError</p>
@@ -757,47 +760,48 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.clients.base_client.BaseClient" title="gradient.api_sdk.clients.base_client.BaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.clients.base_client.BaseClient</span></code></a></p>
 <dl class="method">
 <dt id="gradient.api_sdk.clients.hyperparameter_client.HyperparameterJobsClient.create">
-<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">project_id</em>, <em class="sig-param">tuning_command</em>, <em class="sig-param">worker_container</em>, <em class="sig-param">worker_machine_type</em>, <em class="sig-param">worker_command</em>, <em class="sig-param">worker_count</em>, <em class="sig-param">is_preemptible=True</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">artifact_directory=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">experiment_env=None</em>, <em class="sig-param">trigger_event_id=None</em>, <em class="sig-param">model_type=None</em>, <em class="sig-param">model_path=None</em>, <em class="sig-param">dockerfile_path=None</em>, <em class="sig-param">registry_username=None</em>, <em class="sig-param">registry_password=None</em>, <em class="sig-param">container_user=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">use_dockerfile=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.hyperparameter_client.HyperparameterJobsClient.create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create hyperparameter tuning job</p>
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">project_id</em>, <em class="sig-param">tuning_command</em>, <em class="sig-param">worker_container</em>, <em class="sig-param">worker_machine_type</em>, <em class="sig-param">worker_command</em>, <em class="sig-param">worker_count</em>, <em class="sig-param">worker_container_user=None</em>, <em class="sig-param">worker_registry_username=None</em>, <em class="sig-param">worker_registry_password=None</em>, <em class="sig-param">is_preemptible=False</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">artifact_directory=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">experiment_env=None</em>, <em class="sig-param">trigger_event_id=None</em>, <em class="sig-param">model_type=None</em>, <em class="sig-param">model_path=None</em>, <em class="sig-param">dockerfile_path=None</em>, <em class="sig-param">hyperparameter_server_registry_username=None</em>, <em class="sig-param">hyperparameter_server_registry_password=None</em>, <em class="sig-param">hyperparameter_server_container=None</em>, <em class="sig-param">hyperparameter_server_container_user=None</em>, <em class="sig-param">hyperparameter_server_machine_type=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">use_dockerfile=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.hyperparameter_client.HyperparameterJobsClient.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create hyperparameter tuning job
+:param str name: Name of new experiment [required]
+:param str project_id: Project ID [required]
+:param str tuning_command: Tuning command [required]
+:param str worker_container: Worker container  [required]
+:param str worker_machine_type: Worker machine type  [required]
+:param str worker_command: Worker command  [required]
+:param int worker_count: Worker count  [required]
+:param str worker_container_user: Worker Container user
+:param str worker_registry_username: Worker registry username
+:param str worker_registry_password: Worker registry password
+:param bool is_preemptible: Flag: is preemptible
+:param str ports: Port to use in new experiment
+:param str workspace_url: Project git repository url
+:param str artifact_directory: Artifacts directory
+:param str cluster_id: Cluster ID
+:param dict experiment_env: Environment variables (in JSON)
+:param str trigger_event_id: GradientCI trigger event id
+:param str model_type: Model type
+:param str model_path: Model path
+:param str dockerfile_path: Path to dockerfile in project
+:param str hyperparameter_server_registry_username: Hyperparameter server registry username
+:param str hyperparameter_server_registry_password: Hyperparameter server registry password
+:param str hyperparameter_server_container: Hyperparameter server container
+:param str hyperparameter_server_container_user: Hyperparameter server container user
+:param str hyperparameter_server_machine_type: Hyperparameter server machine type
+:param str working_directory: Working directory for the experiment
+:param bool use_dockerfile: Flag: use dockerfile</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – Name of new experiment [required]</p></li>
-<li><p><strong>project_id</strong> (<em>str</em>) – Project ID [required]</p></li>
-<li><p><strong>tuning_command</strong> (<em>str</em>) – Tuning command [required]</p></li>
-<li><p><strong>worker_container</strong> (<em>str</em>) – Worker container  [required]</p></li>
-<li><p><strong>worker_machine_type</strong> (<em>str</em>) – Worker machine type  [required]</p></li>
-<li><p><strong>worker_command</strong> (<em>str</em>) – Worker command  [required]</p></li>
-<li><p><strong>worker_count</strong> (<em>int</em>) – Worker count  [required]</p></li>
-<li><p><strong>is_preemptible</strong> (<em>bool</em>) – Flag: is preemptible</p></li>
-<li><p><strong>ports</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Port to use in new experiment</p></li>
-<li><p><strong>workspace_url</strong> (<em>str</em>) – Project git repository url</p></li>
-<li><p><strong>artifact_directory</strong> (<em>str</em>) – Artifacts directory</p></li>
-<li><p><strong>cluster_id</strong> (<em>str</em>) – Cluster ID</p></li>
-<li><p><strong>experiment_env</strong> (<em>dict</em>) – Environment variables (in JSON)</p></li>
-<li><p><strong>trigger_event_id</strong> (<em>str</em>) – GradientCI trigger event id</p></li>
-<li><p><strong>model_type</strong> (<em>str</em>) – Model type</p></li>
-<li><p><strong>model_path</strong> (<em>str</em>) – Model path</p></li>
-<li><p><strong>dockerfile_path</strong> (<em>str</em>) – Path to dockerfile in project</p></li>
-<li><p><strong>registry_username</strong> (<em>str</em>) – Hyperparameter server registry username</p></li>
-<li><p><strong>registry_password</strong> (<em>str</em>) – Hyperparameter server registry password</p></li>
-<li><p><strong>container_user</strong> (<em>str</em>) – Hyperparameter server container user</p></li>
-<li><p><strong>working_directory</strong> (<em>str</em>) – Working directory for the experiment</p></li>
-<li><p><strong>use_dockerfile</strong> (<em>bool</em>) – Flag: use dockerfile</p></li>
-</ul>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>ID of a new job</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>ID of a new job</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.hyperparameter_client.HyperparameterJobsClient.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">project_id</em>, <em class="sig-param">tuning_command</em>, <em class="sig-param">worker_container</em>, <em class="sig-param">worker_machine_type</em>, <em class="sig-param">worker_command</em>, <em class="sig-param">worker_count</em>, <em class="sig-param">is_preemptible=True</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">artifact_directory=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">experiment_env=None</em>, <em class="sig-param">trigger_event_id=None</em>, <em class="sig-param">model_type=None</em>, <em class="sig-param">model_path=None</em>, <em class="sig-param">dockerfile_path=None</em>, <em class="sig-param">registry_username=None</em>, <em class="sig-param">registry_password=None</em>, <em class="sig-param">container_user=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">use_dockerfile=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.hyperparameter_client.HyperparameterJobsClient.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">project_id</em>, <em class="sig-param">tuning_command</em>, <em class="sig-param">worker_container</em>, <em class="sig-param">worker_machine_type</em>, <em class="sig-param">worker_command</em>, <em class="sig-param">worker_count</em>, <em class="sig-param">worker_registry_username=None</em>, <em class="sig-param">worker_registry_password=None</em>, <em class="sig-param">worker_container_user=None</em>, <em class="sig-param">is_preemptible=False</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">artifact_directory=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">experiment_env=None</em>, <em class="sig-param">trigger_event_id=None</em>, <em class="sig-param">model_type=None</em>, <em class="sig-param">model_path=None</em>, <em class="sig-param">dockerfile_path=None</em>, <em class="sig-param">hyperparameter_server_registry_username=None</em>, <em class="sig-param">hyperparameter_server_registry_password=None</em>, <em class="sig-param">hyperparameter_server_container_user=None</em>, <em class="sig-param">hyperparameter_server_container=None</em>, <em class="sig-param">hyperparameter_server_machine_type=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">use_dockerfile=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.hyperparameter_client.HyperparameterJobsClient.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and start hyperparameter tuning job</p>
 <p><em>EXAMPLE</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">hyperparameters</span> <span class="n">run</span>
@@ -820,9 +824,12 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 <li><p><strong>worker_container</strong> (<em>str</em>) – Worker container  [required]</p></li>
 <li><p><strong>worker_machine_type</strong> (<em>str</em>) – Worker machine type  [required]</p></li>
 <li><p><strong>worker_command</strong> (<em>str</em>) – Worker command  [required]</p></li>
-<li><p><strong>worker_count</strong> (<em>str</em>) – Worker count  [required]</p></li>
+<li><p><strong>worker_count</strong> (<em>int</em>) – Worker count  [required]</p></li>
+<li><p><strong>worker_container_user</strong> (<em>str</em>) – Worker container user</p></li>
+<li><p><strong>worker_registry_password</strong> – Worker registry password</p></li>
+<li><p><strong>worker_registry_username</strong> – Worker registry username</p></li>
 <li><p><strong>is_preemptible</strong> (<em>bool</em>) – Flag: is preemptible</p></li>
-<li><p><strong>ports</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Port to use in new experiment</p></li>
+<li><p><strong>ports</strong> (<em>str</em>) – Port to use in new experiment</p></li>
 <li><p><strong>workspace_url</strong> (<em>str</em>) – Project git repository url</p></li>
 <li><p><strong>artifact_directory</strong> (<em>str</em>) – Artifacts directory</p></li>
 <li><p><strong>cluster_id</strong> (<em>str</em>) – Cluster ID</p></li>
@@ -831,9 +838,11 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 <li><p><strong>model_type</strong> (<em>str</em>) – Model type</p></li>
 <li><p><strong>model_path</strong> (<em>str</em>) – Model path</p></li>
 <li><p><strong>dockerfile_path</strong> (<em>str</em>) – Path to dockerfile</p></li>
-<li><p><strong>registry_username</strong> (<em>str</em>) – container registry username</p></li>
-<li><p><strong>registry_password</strong> (<em>str</em>) – container registry password</p></li>
-<li><p><strong>container_user</strong> (<em>str</em>) – container user</p></li>
+<li><p><strong>hyperparameter_server_registry_username</strong> (<em>str</em>) – container registry username</p></li>
+<li><p><strong>hyperparameter_server_registry_password</strong> (<em>str</em>) – container registry password</p></li>
+<li><p><strong>hyperparameter_server_container_user</strong> (<em>str</em>) – hps container user</p></li>
+<li><p><strong>hyperparameter_server_container</strong> (<em>str</em>) – hps container</p></li>
+<li><p><strong>hyperparameter_server_machine_type</strong> (<em>str</em>) – hps machine type</p></li>
 <li><p><strong>working_directory</strong> (<em>str</em>) – Working directory for the experiment</p></li>
 <li><p><strong>use_dockerfile</strong> (<em>bool</em>) – Flag: use dockerfile</p></li>
 </ul>
@@ -849,7 +858,7 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.hyperparameter_client.HyperparameterJobsClient.get">
-<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">id_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.hyperparameter_client.HyperparameterJobsClient.get" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.hyperparameter_client.HyperparameterJobsClient.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get Hyperparameter tuning job’s instance</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -866,7 +875,7 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 
 <dl class="method">
 <dt id="gradient.api_sdk.clients.hyperparameter_client.HyperparameterJobsClient.start">
-<code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">id_</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.hyperparameter_client.HyperparameterJobsClient.start" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.hyperparameter_client.HyperparameterJobsClient.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start existing hyperparameter tuning job</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -914,7 +923,7 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 <p>Remember that in code snippets all highlighted lines are required other lines are optional.</p>
 <dl class="class">
 <dt id="gradient.api_sdk.clients.job_client.JobsClient">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.clients.job_client.</code><code class="sig-name descname">JobsClient</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.job_client.JobsClient" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.clients.job_client.</code><code class="sig-name descname">JobsClient</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.job_client.JobsClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.clients.base_client.BaseClient" title="gradient.api_sdk.clients.base_client.BaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.clients.base_client.BaseClient</span></code></a></p>
 <p>Client to handle job related actions.</p>
 <p>How to create instance of job client:</p>
@@ -929,34 +938,6 @@ Deployments currently only use Tensorflow Serving to serve models.</p>
 </span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
-<dl class="attribute">
-<dt id="gradient.api_sdk.clients.job_client.JobsClient.HOST_URL">
-<code class="sig-name descname">HOST_URL</code><em class="property"> = 'https://api.paperspace.io'</em><a class="headerlink" href="#gradient.api_sdk.clients.job_client.JobsClient.HOST_URL" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="gradient.api_sdk.clients.job_client.JobsClient.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.job_client.JobsClient.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class. All client classes inherit from it.</p>
-<p>An API key can be created at paperspace.com after you sign in to your account. After obtaining it, you can set
-it in the CLI using the command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">apiKey</span> <span class="n">XXXXXXXXXXXXXXXXXXX</span>
-</pre></div>
-</div>
-<p>or you can provide your API key in any command, for example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradient</span> <span class="n">experiments</span> <span class="n">run</span> <span class="o">...</span> <span class="o">--</span><span class="n">apiKey</span> <span class="n">XXXXXXXXXXXXXXXXXXX</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>api_key</strong> (<em>str</em>) – your API key</p></li>
-<li><p><strong>logger</strong> (<em>sdk_logger.Logger</em>) – </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="method">
 <dt id="gradient.api_sdk.clients.job_client.JobsClient.create">
 <code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">machine_type</em>, <em class="sig-param">container</em>, <em class="sig-param">project_id</em>, <em class="sig-param">data=None</em>, <em class="sig-param">name=None</em>, <em class="sig-param">command=None</em>, <em class="sig-param">ports=None</em>, <em class="sig-param">is_public=None</em>, <em class="sig-param">workspace=None</em>, <em class="sig-param">workspace_archive=None</em>, <em class="sig-param">workspace_url=None</em>, <em class="sig-param">working_directory=None</em>, <em class="sig-param">ignore_files=None</em>, <em class="sig-param">experiment_id=None</em>, <em class="sig-param">job_env=None</em>, <em class="sig-param">use_dockerfile=None</em>, <em class="sig-param">is_preemptible=None</em>, <em class="sig-param">project=None</em>, <em class="sig-param">started_by_user_id=None</em>, <em class="sig-param">rel_dockerfile_path=None</em>, <em class="sig-param">registry_username=None</em>, <em class="sig-param">registry_password=None</em>, <em class="sig-param">cluster=None</em>, <em class="sig-param">cluster_id=None</em>, <em class="sig-param">node_attrs=None</em>, <em class="sig-param">workspace_file_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.job_client.JobsClient.create" title="Permalink to this definition">¶</a></dt>
@@ -1136,7 +1117,7 @@ cluster will be chosen so you do not need to provide it.</p></li>
 2
 3
 4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">job</span> <span class="o">=</span> <span class="n">job_client</span><span class="o">.</span><span class="n">logs</span><span class="p">(</span>
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">job_logs</span> <span class="o">=</span> <span class="n">job_client</span><span class="o">.</span><span class="n">logs</span><span class="p">(</span>
 <span class="hll">    <span class="n">job_id</span><span class="o">=</span><span class="s1">&#39;Your_job_id_here&#39;</span><span class="p">,</span>
 </span>    <span class="n">line</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="n">limit</span><span class="o">=</span><span class="mi">100</span>
@@ -1156,6 +1137,38 @@ cluster will be chosen so you do not need to provide it.</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.job_client.JobsClient.yield_logs">
+<code class="sig-name descname">yield_logs</code><span class="sig-paren">(</span><em class="sig-param">job_id</em>, <em class="sig-param">line=0</em>, <em class="sig-param">limit=10000</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.job_client.JobsClient.yield_logs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get log generator. Polls the API for new logs</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">job_logs_generator</span> <span class="o">=</span> <span class="n">job_client</span><span class="o">.</span><span class="n">yield_logs</span><span class="p">(</span>
+<span class="hll">    <span class="n">job_id</span><span class="o">=</span><span class="s1">&#39;Your_job_id_here&#39;</span><span class="p">,</span>
+</span>    <span class="n">line</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">limit</span><span class="o">=</span><span class="mi">100</span>
+<span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>job_id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>line</strong> (<em>int</em>) – line number at which logs starts to display on screen</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – maximum lines displayed on screen, default set to 10 000</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>generator yielding LogRow instances</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Iterator[models.LogRow]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1249,17 +1262,241 @@ separated by comma <code class="docutils literal notranslate"><span class="pre">
 </dd></dl>
 
 </div>
+<div class="section" id="module-gradient.api_sdk.clients.machines_client">
+<span id="gradient-api-sdk-clients-machines-client-module"></span><h2>gradient.api_sdk.clients.machines_client module<a class="headerlink" href="#module-gradient.api_sdk.clients.machines_client" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.clients.machines_client.MachinesClient">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.clients.machines_client.</code><code class="sig-name descname">MachinesClient</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.machines_client.MachinesClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.clients.base_client.BaseClient" title="gradient.api_sdk.clients.base_client.BaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.clients.base_client.BaseClient</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.clients.machines_client.MachinesClient.create">
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">machine_type</em>, <em class="sig-param">region</em>, <em class="sig-param">size</em>, <em class="sig-param">billing_type</em>, <em class="sig-param">template_id</em>, <em class="sig-param">assign_public_ip=None</em>, <em class="sig-param">dynamic_public_ip=None</em>, <em class="sig-param">network_id=None</em>, <em class="sig-param">team_id=None</em>, <em class="sig-param">user_id=None</em>, <em class="sig-param">email=None</em>, <em class="sig-param">password=None</em>, <em class="sig-param">first_name=None</em>, <em class="sig-param">last_name=None</em>, <em class="sig-param">notification_email=None</em>, <em class="sig-param">script_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.machines_client.MachinesClient.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new machine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – A memorable name for this machine [required]</p></li>
+<li><p><strong>machine_type</strong> (<em>str</em>) – Machine type  [required]</p></li>
+<li><p><strong>region</strong> (<em>str</em>) – Name of the region  [required]</p></li>
+<li><p><strong>size</strong> (<em>str</em>) – Storage size for the machine in GB [required]</p></li>
+<li><p><strong>billing_type</strong> (<em>str</em>) – Either ‘monthly’ or ‘hourly’ billing [required]</p></li>
+<li><p><strong>template_id</strong> (<em>str</em>) – Template id of the template to use for creating this machine  [required]</p></li>
+<li><p><strong>assign_public_ip</strong> (<em>bool</em>) – Assign a new public ip address. Cannot be used with dynamic_public_ip</p></li>
+<li><p><strong>dynamic_public_ip</strong> (<em>bool</em>) – Temporarily assign a new public ip address on machine.
+Cannot be used with assign_public_ip</p></li>
+<li><p><strong>network_id</strong> (<em>str</em>) – If creating on a specific network, specify its id</p></li>
+<li><p><strong>team_id</strong> (<em>str</em>) – If creating the machine for a team, specify the team id</p></li>
+<li><p><strong>user_id</strong> (<em>str</em>) – If assigning to an existing user other than yourself, specify the user id
+(mutually exclusive with email, password, first_name, last_name)</p></li>
+<li><p><strong>email</strong> (<em>str</em>) – If creating a new user for this machine, specify their email address
+(mutually exclusive with user_id)</p></li>
+<li><p><strong>password</strong> (<em>str</em>) – If creating a new user, specify their password (mutually exclusive with user_id)</p></li>
+<li><p><strong>first_name</strong> (<em>str</em>) – If creating a new user, specify their first name (mutually exclusive with user_id)</p></li>
+<li><p><strong>last_name</strong> (<em>str</em>) – If creating a new user, specify their last name (mutually exclusive with user_id)</p></li>
+<li><p><strong>notification_email</strong> (<em>str</em>) – Send a notification to this email address when complete</p></li>
+<li><p><strong>script_id</strong> (<em>str</em>) – The script id of a script to be run on startup</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ID of created machine</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.machines_client.MachinesClient.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.machines_client.MachinesClient.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get machine instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – ID of a machine [required]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Machine instance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>models.Machine</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.machines_client.MachinesClient.is_available">
+<code class="sig-name descname">is_available</code><span class="sig-paren">(</span><em class="sig-param">machine_type</em>, <em class="sig-param">region</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.machines_client.MachinesClient.is_available" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if specified machine is available in certain region</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>machine_type</strong> (<em>str</em>) – Machine type  [required]</p></li>
+<li><p><strong>region</strong> (<em>str</em>) – Name of the region  [required]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If specified machine is available in the region</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.machines_client.MachinesClient.restart">
+<code class="sig-name descname">restart</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.machines_client.MachinesClient.restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restart machine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – ID of a machine [required]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.machines_client.MachinesClient.start">
+<code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.machines_client.MachinesClient.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start machine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – ID of a machine [required]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.machines_client.MachinesClient.stop">
+<code class="sig-name descname">stop</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.machines_client.MachinesClient.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop machine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – ID of a machine [required]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.machines_client.MachinesClient.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">name=None</em>, <em class="sig-param">shutdown_timeout_in_hours=None</em>, <em class="sig-param">shutdown_timeout_forces=None</em>, <em class="sig-param">perform_auto_snapshot=None</em>, <em class="sig-param">auto_snapshot_frequency=None</em>, <em class="sig-param">auto_snapshot_save_count=None</em>, <em class="sig-param">dynamic_public_ip=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.machines_client.MachinesClient.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update machine instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – Id of the machine to update  [required]</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – New name for the machine</p></li>
+<li><p><strong>shutdown_timeout_in_hours</strong> (<em>int</em>) – Number of hours before machine is shutdown if no one is logged in
+via the Paperspace client</p></li>
+<li><p><strong>shutdown_timeout_forces</strong> (<em>bool</em>) – Force shutdown at shutdown timeout, even if there is
+a Paperspace client connection</p></li>
+<li><p><strong>perform_auto_snapshot</strong> (<em>bool</em>) – Perform auto snapshots</p></li>
+<li><p><strong>auto_snapshot_frequency</strong> (<em>str</em>) – One of ‘hour’, ‘day’, ‘week’, or None</p></li>
+<li><p><strong>auto_snapshot_save_count</strong> (<em>int</em>) – Number of snapshots to save</p></li>
+<li><p><strong>dynamic_public_ip</strong> (<em>str</em>) – If true, assigns a new public ip address on machine start and releases it
+from the account on machine stop</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.machines_client.MachinesClient.get_utilization">
+<code class="sig-name descname">get_utilization</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">billing_month</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.machines_client.MachinesClient.get_utilization" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – ID of the machine</p></li>
+<li><p><strong>billing_month</strong> – Billing month in “YYYY-MM” format</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Machine utilization info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>models.MachineUtilization</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.machines_client.MachinesClient.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">machine_id</em>, <em class="sig-param">release_public_ip=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.machines_client.MachinesClient.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Destroy machine with given ID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>machine_id</strong> (<em>str</em>) – ID of the machine</p></li>
+<li><p><strong>release_public_ip</strong> (<em>bool</em>) – If the assigned public IP should be released</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.machines_client.MachinesClient.wait_for_state">
+<code class="sig-name descname">wait_for_state</code><span class="sig-paren">(</span><em class="sig-param">machine_id</em>, <em class="sig-param">state</em>, <em class="sig-param">interval=5</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.machines_client.MachinesClient.wait_for_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for defined machine state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>machine_id</strong> (<em>str</em>) – ID of the machine</p></li>
+<li><p><strong>state</strong> (<em>str</em>) – State of machine to wait for</p></li>
+<li><p><strong>interval</strong> (<em>int</em>) – interval between polls</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.machines_client.MachinesClient.list">
+<code class="sig-name descname">list</code><span class="sig-paren">(</span><em class="sig-param">id=None</em>, <em class="sig-param">name=None</em>, <em class="sig-param">os=None</em>, <em class="sig-param">ram=None</em>, <em class="sig-param">cpus=None</em>, <em class="sig-param">gpu=None</em>, <em class="sig-param">storage_total=None</em>, <em class="sig-param">storage_used=None</em>, <em class="sig-param">usage_rate=None</em>, <em class="sig-param">shutdown_timeout_in_hours=None</em>, <em class="sig-param">perform_auto_snapshot=None</em>, <em class="sig-param">auto_snapshot_frequency=None</em>, <em class="sig-param">auto_snapshot_save_count=None</em>, <em class="sig-param">agent_type=None</em>, <em class="sig-param">created_timestamp=None</em>, <em class="sig-param">state=None</em>, <em class="sig-param">updates_pending=None</em>, <em class="sig-param">network_id=None</em>, <em class="sig-param">private_ip_address=None</em>, <em class="sig-param">public_ip_address=None</em>, <em class="sig-param">region=None</em>, <em class="sig-param">user_id=None</em>, <em class="sig-param">team_id=None</em>, <em class="sig-param">last_run_timestamp=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.machines_client.MachinesClient.list" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – Optional machine id to match on</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Filter by machine name</p></li>
+<li><p><strong>os</strong> (<em>str</em>) – Filter by os used</p></li>
+<li><p><strong>ram</strong> (<em>int</em>) – Filter by machine RAM (in bytes)</p></li>
+<li><p><strong>cpus</strong> (<em>int</em>) – Filter by CPU count</p></li>
+<li><p><strong>gpu</strong> (<em>str</em>) – Filter by GPU type</p></li>
+<li><p><strong>storage_total</strong> (<em>str</em>) – Filter by total storage</p></li>
+<li><p><strong>storage_used</strong> (<em>str</em>) – Filter by storage used</p></li>
+<li><p><strong>usage_rate</strong> (<em>str</em>) – Filter by usage rate</p></li>
+<li><p><strong>shutdown_timeout_in_hours</strong> (<em>int</em>) – Filter by shutdown timeout</p></li>
+<li><p><strong>perform_auto_snapshot</strong> (<em>bool</em>) – Filter by performAutoSnapshot flag</p></li>
+<li><p><strong>auto_snapshot_frequency</strong> (<em>str</em>) – Filter by autoSnapshotFrequency flag</p></li>
+<li><p><strong>auto_snapshot_save_count</strong> (<em>int</em>) – Filter by auto shapshots count</p></li>
+<li><p><strong>agent_type</strong> (<em>str</em>) – Filter by agent type</p></li>
+<li><p><strong>created_timestamp</strong> (<em>datetime</em>) – Filter by date created</p></li>
+<li><p><strong>state</strong> (<em>str</em>) – Filter by state</p></li>
+<li><p><strong>updates_pending</strong> (<em>str</em>) – Filter by updates pending</p></li>
+<li><p><strong>network_id</strong> (<em>str</em>) – Filter by network ID</p></li>
+<li><p><strong>private_ip_address</strong> (<em>str</em>) – Filter by private IP address</p></li>
+<li><p><strong>public_ip_address</strong> (<em>str</em>) – Filter by public IP address</p></li>
+<li><p><strong>region</strong> (<em>str</em>) – Filter by region. One of {CA, NY2, AMS1}</p></li>
+<li><p><strong>user_id</strong> (<em>str</em>) – Filter by user ID</p></li>
+<li><p><strong>team_id</strong> (<em>str</em>) – Filter by team ID</p></li>
+<li><p><strong>last_run_timestamp</strong> (<em>str</em>) – Filter by last run date</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of machines</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[models.Machine]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-gradient.api_sdk.clients.model_client">
 <span id="gradient-api-sdk-clients-model-client-module"></span><h2>gradient.api_sdk.clients.model_client module<a class="headerlink" href="#module-gradient.api_sdk.clients.model_client" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gradient.api_sdk.clients.model_client.ModelsClient">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.clients.model_client.</code><code class="sig-name descname">ModelsClient</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.model_client.ModelsClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.clients.base_client.BaseClient" title="gradient.api_sdk.clients.base_client.BaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.clients.base_client.BaseClient</span></code></a></p>
-<dl class="attribute">
-<dt id="gradient.api_sdk.clients.model_client.ModelsClient.HOST_URL">
-<code class="sig-name descname">HOST_URL</code><em class="property"> = 'https://api.paperspace.io'</em><a class="headerlink" href="#gradient.api_sdk.clients.model_client.ModelsClient.HOST_URL" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="gradient.api_sdk.clients.model_client.ModelsClient.list">
 <code class="sig-name descname">list</code><span class="sig-paren">(</span><em class="sig-param">experiment_id=None</em>, <em class="sig-param">project_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.model_client.ModelsClient.list" title="Permalink to this definition">¶</a></dt>
@@ -1280,17 +1517,85 @@ separated by comma <code class="docutils literal notranslate"><span class="pre">
 </dd></dl>
 
 </div>
+<div class="section" id="module-gradient.api_sdk.clients.notebook_client">
+<span id="gradient-api-sdk-clients-notebook-client-module"></span><h2>gradient.api_sdk.clients.notebook_client module<a class="headerlink" href="#module-gradient.api_sdk.clients.notebook_client" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gradient.api_sdk.clients.notebook_client.NotebooksClient">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.clients.notebook_client.</code><code class="sig-name descname">NotebooksClient</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.notebook_client.NotebooksClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.clients.base_client.BaseClient" title="gradient.api_sdk.clients.base_client.BaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.clients.base_client.BaseClient</span></code></a></p>
+<dl class="method">
+<dt id="gradient.api_sdk.clients.notebook_client.NotebooksClient.create">
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">vm_type_id</em>, <em class="sig-param">container_id</em>, <em class="sig-param">cluster_id</em>, <em class="sig-param">container_name=None</em>, <em class="sig-param">name=None</em>, <em class="sig-param">registry_username=None</em>, <em class="sig-param">registry_password=None</em>, <em class="sig-param">default_entrypoint=None</em>, <em class="sig-param">container_user=None</em>, <em class="sig-param">shutdown_timeout=None</em>, <em class="sig-param">is_preemptible=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.notebook_client.NotebooksClient.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new notebook</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vm_type_id</strong> (<em>int</em>) – </p></li>
+<li><p><strong>container_id</strong> (<em>int</em>) – </p></li>
+<li><p><strong>cluster_id</strong> (<em>int</em>) – </p></li>
+<li><p><strong>container_name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>registry_username</strong> (<em>str</em>) – </p></li>
+<li><p><strong>registry_password</strong> (<em>str</em>) – </p></li>
+<li><p><strong>default_entrypoint</strong> (<em>str</em>) – </p></li>
+<li><p><strong>container_user</strong> (<em>str</em>) – </p></li>
+<li><p><strong>shutdown_timeout</strong> (<em>int|float</em>) – </p></li>
+<li><p><strong>is_preemptible</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Notebook ID</p>
+</dd>
+<dt class="field-odd">Rtype str</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.notebook_client.NotebooksClient.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.notebook_client.NotebooksClient.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Notebook</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – Notebook ID</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>models.Notebook</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.notebook_client.NotebooksClient.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.notebook_client.NotebooksClient.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete existing notebook</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – Notebook ID</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.notebook_client.NotebooksClient.list">
+<code class="sig-name descname">list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.notebook_client.NotebooksClient.list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get list of Notebooks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[models.Notebook]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-gradient.api_sdk.clients.project_client">
 <span id="gradient-api-sdk-clients-project-client-module"></span><h2>gradient.api_sdk.clients.project_client module<a class="headerlink" href="#module-gradient.api_sdk.clients.project_client" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gradient.api_sdk.clients.project_client.ProjectsClient">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.clients.project_client.</code><code class="sig-name descname">ProjectsClient</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.project_client.ProjectsClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.clients.base_client.BaseClient" title="gradient.api_sdk.clients.base_client.BaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.clients.base_client.BaseClient</span></code></a></p>
-<dl class="attribute">
-<dt id="gradient.api_sdk.clients.project_client.ProjectsClient.HOST_URL">
-<code class="sig-name descname">HOST_URL</code><em class="property"> = 'https://api.paperspace.io'</em><a class="headerlink" href="#gradient.api_sdk.clients.project_client.ProjectsClient.HOST_URL" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="gradient.api_sdk.clients.project_client.ProjectsClient.create">
 <code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">repository_name=None</em>, <em class="sig-param">repository_url=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.project_client.ProjectsClient.create" title="Permalink to this definition">¶</a></dt>
@@ -1390,6 +1695,229 @@ separated by comma <code class="docutils literal notranslate"><span class="pre">
 <li><p><strong>api_key</strong> (<em>str</em>) – API key</p></li>
 <li><p><strong>logger</strong> (<em>sdk_logger.Logger</em>) – </p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.clients.tensorboards_client">
+<span id="gradient-api-sdk-clients-tensorboards-client-module"></span><h2>gradient.api_sdk.clients.tensorboards_client module<a class="headerlink" href="#module-gradient.api_sdk.clients.tensorboards_client" title="Permalink to this headline">¶</a></h2>
+<p>Tensorboard logic related client handler.</p>
+<p>Remember that in code snippets all highlighted lines are required other lines are optional.</p>
+<dl class="class">
+<dt id="gradient.api_sdk.clients.tensorboards_client.TensorboardClient">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.clients.tensorboards_client.</code><code class="sig-name descname">TensorboardClient</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.tensorboards_client.TensorboardClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.clients.base_client.BaseClient" title="gradient.api_sdk.clients.base_client.BaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.clients.base_client.BaseClient</span></code></a></p>
+<p>Client to handle tensorboard related actions.</p>
+<p>How to create instance of tensorboard client:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gradient</span> <span class="kn">import</span> <span class="n">TensorboardClient</span>
+
+<span class="n">tb_client</span> <span class="o">=</span> <span class="n">TensorboardClient</span><span class="p">(</span>
+<span class="hll">    <span class="n">api_key</span><span class="o">=</span><span class="s1">&#39;your_api_key_here&#39;</span>
+</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="method">
+<dt id="gradient.api_sdk.clients.tensorboards_client.TensorboardClient.create">
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">image=None</em>, <em class="sig-param">username=None</em>, <em class="sig-param">password=None</em>, <em class="sig-param">instance_type=None</em>, <em class="sig-param">instance_size=None</em>, <em class="sig-param">instances_count=None</em>, <em class="sig-param">experiments=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.tensorboards_client.TensorboardClient.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to create tensorboard in paperspace gradient.</p>
+<p>Example create tensorboard:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tb_id</span> <span class="o">=</span> <span class="n">tb_client</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+<span class="hll">    <span class="n">experiments</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;some_experiment_id&#39;</span><span class="p">],</span>
+</span>    <span class="n">image</span><span class="o">=</span><span class="s1">&#39;tensorflow/tensorflow:latest-py3&#39;</span><span class="p">,</span>
+    <span class="n">username</span><span class="o">=</span><span class="s1">&#39;your_username&#39;</span><span class="p">,</span>
+    <span class="n">password</span><span class="o">=</span><span class="s1">&#39;your_password&#39;</span><span class="p">,</span>
+    <span class="n">instance_type</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+    <span class="n">instance_size</span><span class="o">=</span><span class="s1">&#39;small&#39;</span><span class="p">,</span>
+    <span class="n">instance_count</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>str</em>) – your tensorboard will run with this image.
+By default it will be run with <code class="docutils literal notranslate"><span class="pre">tensorflow/tensorflow:latest-py3</span></code></p></li>
+<li><p><strong>username</strong> (<em>str</em>) – if you wish to limit access to your tensorboard with base auth then provide username</p></li>
+<li><p><strong>password</strong> (<em>str</em>) – if you wish to limit access to your tensorboard with base auth then provide password</p></li>
+<li><p><strong>instance_type</strong> (<em>str</em>) – <p>type of instance on which you want to run tensorboard.
+Available choices:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cpu</span>
+<span class="n">gpu</span>
+</pre></div>
+</div>
+<p>By default we use <code class="docutils literal notranslate"><span class="pre">cpu</span></code> instance type.</p>
+</p></li>
+<li><p><strong>instance_size</strong> (<em>str</em>) – <p>size of instance on which you want to run tensorboard.
+Available choices:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">small</span>
+<span class="n">medium</span>
+<span class="n">large</span>
+</pre></div>
+</div>
+<p>By default we use <code class="docutils literal notranslate"><span class="pre">small</span></code> instance size.</p>
+</p></li>
+<li><p><strong>instances_count</strong> (<em>int</em>) – on how many machines you want to run tensorboard. By default <code class="docutils literal notranslate"><span class="pre">1</span></code> is used.</p></li>
+<li><p><strong>experiments</strong> (<em>list</em>) – list of experiments that you wish to add to tensorboard.
+To create tensorboard you need to provide at least one experiment id. This field is <strong>required</strong>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return tensorboard id</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>ResourceFetchingError: When there is problem with response from API</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.tensorboards_client.TensorboardClient.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.tensorboards_client.TensorboardClient.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to get tensorboard details.</p>
+<p>Example get tensorboard details:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tb</span> <span class="o">=</span> <span class="n">tb_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<span class="hll">    <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;your_tb_id&#39;</span>
+</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – Tensorboard id of which you want to get details</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tensorbord object if found</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None|Tensorboard</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>ResourceFetchingError: When there is problem with response from API</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.tensorboards_client.TensorboardClient.list">
+<code class="sig-name descname">list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.tensorboards_client.TensorboardClient.list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to list your active tensorboards.</p>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tb_list</span> <span class="o">=</span> <span class="n">tb_client</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of active tensorboards</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p>ResourceFetchingError: When there is problem with response from API</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.tensorboards_client.TensorboardClient.add_experiments">
+<code class="sig-name descname">add_experiments</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">added_experiments</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.tensorboards_client.TensorboardClient.add_experiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to add experiments to existing tensorboard.</p>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tb</span> <span class="o">=</span> <span class="n">tb_client</span><span class="o">.</span><span class="n">add_experiments</span><span class="p">(</span>
+<span class="hll">    <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;your_tb_id&#39;</span><span class="p">,</span>
+</span><span class="hll">    <span class="n">added_experiments</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;new_experiment_id&#39;</span><span class="p">,</span> <span class="s1">&#39;next_new_experiment_id&#39;</span><span class="p">]</span>
+</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – tensorboard id to which you want to add experiments</p></li>
+<li><p><strong>added_experiments</strong> (<em>list</em>) – list of experiment ids which you want to add to tensroboard</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>updated tensorboard</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.tensorboard.Tensorboard" title="gradient.api_sdk.models.tensorboard.Tensorboard">Tensorboard</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>ResourceFetchingError: When there is problem with response from API</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.tensorboards_client.TensorboardClient.remove_experiments">
+<code class="sig-name descname">remove_experiments</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">removed_experiments</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.tensorboards_client.TensorboardClient.remove_experiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to remove experiments from existing tensorboard.</p>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tb</span> <span class="o">=</span> <span class="n">tb_client</span><span class="o">.</span><span class="n">remove_experiments</span><span class="p">(</span>
+<span class="hll">    <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;your_tb_id&#39;</span><span class="p">,</span>
+</span><span class="hll">    <span class="n">removed_experiments</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;experiment_id&#39;</span><span class="p">,</span> <span class="s1">&#39;next_experiment_id&#39;</span><span class="p">]</span>
+</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – tensorboard id from which you want to remove experiments</p></li>
+<li><p><strong>removed_experiments</strong> (<em>list</em>) – list of experiment ids which you want to remove from tensroboard</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>updated tensorboard</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.tensorboard.Tensorboard" title="gradient.api_sdk.models.tensorboard.Tensorboard">Tensorboard</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>ResourceFetchingError: When there is problem with response from API</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gradient.api_sdk.clients.tensorboards_client.TensorboardClient.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.clients.tensorboards_client.TensorboardClient.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to delete tensorboard.</p>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tb_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+<span class="hll">    <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;your_tb_id&#39;</span>
+</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – Tensoboard id which you want to delete</p>
 </dd>
 </dl>
 </dd></dl>

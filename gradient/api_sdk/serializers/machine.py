@@ -1,7 +1,6 @@
 import marshmallow
 
-from gradient import constants
-from . import BaseSchema
+from .base import BaseSchema
 from .. import models
 
 

@@ -7,3 +7,4 @@ from .model_client import ModelsClient
 from .notebook_client import NotebooksClient
 from .project_client import ProjectsClient
 from .sdk_client import SdkClient
+from .tensorboards_client import TensorboardClient

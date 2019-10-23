@@ -1,3 +1,4 @@
+import gradient.api_sdk.config
 from gradient import config
 from .common import CreateResource, DeleteResource, ListResources, GetResource
 from .. import serializers
@@ -5,7 +6,7 @@ from .. import serializers
 
 class GetNotebookApiUrlMixin(object):
     def _get_api_url(self, use_vpc=False):
-        return config.config.CONFIG_HOST
+        return gradient.api_sdk.config.config.CONFIG_HOST
 
 
 class CreateNotebook(GetNotebookApiUrlMixin, CreateResource):
@@ -36,8 +37,7 @@ class DeleteNotebook(GetNotebookApiUrlMixin, DeleteResource):
 
 class GetNotebook(GetNotebookApiUrlMixin, GetResource):
     def get_request_url(self, **kwargs):
-        notebook_id = kwargs["id"]
-        url = "notebooks/{}/getNotebook".format(notebook_id)
+        url = "notebooks/getNotebook"
         return url
 
     def _parse_object(self, data, **kwargs):
@@ -48,6 +48,11 @@ class GetNotebook(GetNotebookApiUrlMixin, GetResource):
         serializer = serializers.NotebookSchema()
         notebooks = serializer.get_instance(data)
         return notebooks
+
+    def _get_request_json(self, kwargs):
+        notebook_id = kwargs["id"]
+        j = {"notebookId": notebook_id}
+        return j
 
 
 class ListNotebooks(GetNotebookApiUrlMixin, ListResources):

@@ -6,11 +6,12 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import api_sdk, exceptions, Job, config
+from gradient import api_sdk, exceptions, Job, JobArtifactsDownloader
+from gradient.api_sdk import config, sdk_exceptions
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.clients.base_client import BaseClient
 from gradient.api_sdk.repositories.jobs import RunJob
-from gradient.api_sdk.utils import print_dict_recursive
+from gradient.api_sdk.utils import print_dict_recursive, urljoin
 from gradient.commands.common import BaseCommand
 from gradient.utils import get_terminal_lines
 from gradient.workspace import MultipartEncoder
@@ -39,6 +40,12 @@ class BaseCreateJobCommandMixin(object):
             job_id = self._create(json_, data)
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(job_id))
+        self.logger.log(self.get_instance_url(job_id))
+
+    @staticmethod
+    def get_instance_url(instance_id):
+        url = urljoin(config.config.WEB_URL, "console/jobs/{}".format(instance_id))
+        return url
 
     def _handle_workspace(self, instance_dict):
         """
@@ -106,7 +113,7 @@ class ListJobsCommand(BaseJobCommand):
 
         try:
             instances = self.client.list(**kwargs)
-        except api_sdk.GradientSdkError as e:
+        except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
         return instances
@@ -227,7 +234,12 @@ class JobRunClient(BaseClient):
             cluster_id=None,
             node_attrs=None,
             workspace_file_name=None,
+            build_only=False,
     ):
+
+        if not build_only:
+            build_only = None
+
         job = Job(
             machine_type=machine_type,
             container=container,
@@ -253,6 +265,7 @@ class JobRunClient(BaseClient):
             cluster_id=cluster_id,
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
+            build_only=build_only,
         )
         handle = RunJob(self.api_key, self.logger, self.client).create(job, data=data)
         return handle
@@ -294,25 +307,29 @@ class ArtifactsListCommand(BaseJobCommand):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
             try:
                 instances = self.client.artifacts_list(**kwargs)
-            except api_sdk.GradientSdkError as e:
+            except sdk_exceptions.GradientSdkError as e:
                 raise exceptions.ReceivingDataFailedError(e)
 
         self._log_objects_list(instances, kwargs)
 
     def _get_table_data(self, artifacts, kwargs):
         columns = ['Files']
-        if kwargs.get('size'):
+
+        show_size = "size" in kwargs
+        show_url = "url" in kwargs
+
+        if show_size:
             columns.append('Size (in bytes)')
-        if kwargs.get('links'):
+        if show_url:
             columns.append('URL')
 
         data = [tuple(columns)]
         for artifact in artifacts:
-            row = [artifact.get('file')]
-            if 'size' in artifact.keys():
-                row.append(artifact['size'])
-            if 'url' in artifact.keys():
-                row.append(artifact['url'])
+            row = [artifact.file]
+            if show_size:
+                row.append(artifact.size)
+            if show_url:
+                row.append(artifact.url)
             data.append(tuple(row))
         return data
 
@@ -333,3 +350,15 @@ class ArtifactsListCommand(BaseJobCommand):
         ascii_table = terminaltables.AsciiTable(table_data)
         table_string = ascii_table.table
         return table_string
+
+
+class DownloadArtifactsCommand(BaseJobCommand):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
+
+    def execute(self, job_id, destination_directory):
+        artifact_downloader = JobArtifactsDownloader(self.api_key, logger=self.logger)
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            try:
+                artifact_downloader.download_artifacts(job_id, destination_directory)
+            except OSError as e:
+                raise sdk_exceptions.GradientSdkError(e)

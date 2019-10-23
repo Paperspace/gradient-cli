@@ -2,9 +2,8 @@ import abc
 
 import six
 
-from gradient import config
-from .common import ListResources, GetResource, CreateResource, StartResource, StopResource
-from .. import serializers
+from .common import ListResources, GetResource, CreateResource, StartResource, StopResource, DeleteResource
+from .. import config, serializers
 from ..serializers import utils
 
 
@@ -143,12 +142,21 @@ class CreateMultiNodeExperiment(BaseCreateExperiment):
     SERIALIZER_CLS = serializers.MultiNodeExperimentSchema
 
 
+class CreateMpiMultiNodeExperiment(BaseCreateExperiment):
+    SERIALIZER_CLS = serializers.MpiMultiNodeExperimentSchema
+
+
 class RunSingleNodeExperiment(CreateSingleNodeExperiment):
     def get_request_url(self, **_):
         return "/experiments/run/"
 
 
 class RunMultiNodeExperiment(CreateMultiNodeExperiment):
+    def get_request_url(self, **_):
+        return "/experiments/run/"
+
+
+class RunMpiMultiNodeExperiment(CreateMpiMultiNodeExperiment):
     def get_request_url(self, **_):
         return "/experiments/run/"
 
@@ -169,3 +177,9 @@ class StopExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, StopResource
         id_ = kwargs["id"]
         url = "/experiments/{}/stop/".format(id_)
         return url
+
+
+class DeleteExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, DeleteResource):
+    def get_request_url(self, **kwargs):
+        experiment_id = kwargs["id"]
+        return "/experiments/{}/".format(experiment_id)

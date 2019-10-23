@@ -44,6 +44,14 @@ gradient.api\_sdk.repositories.jobs module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.repositories.machines module
+----------------------------------------------
+
+.. automodule:: gradient.api_sdk.repositories.machines
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.repositories.models module
 --------------------------------------------
 
@@ -52,10 +60,26 @@ gradient.api\_sdk.repositories.models module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.repositories.notebooks module
+-----------------------------------------------
+
+.. automodule:: gradient.api_sdk.repositories.notebooks
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.repositories.projects module
 ----------------------------------------------
 
 .. automodule:: gradient.api_sdk.repositories.projects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.repositories.tensorboards module
+--------------------------------------------------
+
+.. automodule:: gradient.api_sdk.repositories.tensorboards
    :members:
    :undoc-members:
    :show-inheritance:

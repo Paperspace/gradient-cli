@@ -8,7 +8,7 @@ class BaseSchema(marshmallow.Schema):
     def remove_none_values(self, data):
         return {
             key: value for key, value in data.items()
-            if value is not None
+            if value not in (None, {})
         }
 
     def get_instance(self, obj_dict, many=False):

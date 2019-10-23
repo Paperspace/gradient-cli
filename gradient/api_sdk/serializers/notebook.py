@@ -1,6 +1,6 @@
 import marshmallow
 
-from . import BaseSchema
+from .base import BaseSchema
 from .. import models
 
 
@@ -23,3 +23,4 @@ class NotebookSchema(BaseSchema):
     state = marshmallow.fields.Str()
     vm_type = marshmallow.fields.Str(load_from="vmType", dump_to="vmType")
     fqdn = marshmallow.fields.Str()
+    namespace = marshmallow.fields.Str()

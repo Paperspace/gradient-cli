@@ -88,6 +88,8 @@ setup(
             'twine',
             'sphinx',
             'pathlib2;python_version<"3.4"',
+            'sphinx-click',
+            'recommonmark'
         ],
     },
     cmdclass={

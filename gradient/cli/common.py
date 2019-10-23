@@ -10,7 +10,7 @@ from click_didyoumean import DYMMixin
 from click_help_colors import HelpColorsGroup
 
 from gradient.cli import cli_types
-from gradient.config import config
+from gradient.api_sdk.config import config
 
 OPTIONS_FILE_OPTION_NAME = "optionsFile"
 OPTIONS_FILE_PARAMETER_NAME = "options_file"
@@ -78,7 +78,7 @@ class ReadValueFromConfigFile(click.Parameter):
                     opts[self.name] = value
 
         return super(ReadValueFromConfigFile, self).handle_parse_result(
-            ctx, opts, args)
+                ctx, opts, args)
 
 
 class ColorExtrasInCommandHelpMixin(object):

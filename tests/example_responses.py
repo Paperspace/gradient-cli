@@ -4548,7 +4548,7 @@ NOTEBOOK_GET_RESPONSE = {
     "fqdn": "ngw7piq9.dgradient.paperspace.com",
     "startedByUser": "first last",
     "startedByUserId": "ukgvw4i8",
-    "namespace": "username",
+    "namespace": "some_namespace",
     "parentJobId": None,
     "jobError": None,
     "dtCreated": "2019-09-03T11:06:18.154Z",
@@ -5329,4 +5329,234 @@ NOTEBOOKS_LIST_RESPONSE_JSON = {
   "total": 9,
   "runningTotal": 2,
   "displayTotal": 9
+}
+
+TENSORBOARD_CREATE_RESPONSE_JSON = {
+    "message": "success",
+    "data": {
+        "cluster_id": "some_cluster_id",
+        "url": None,
+        "id": "some_id",
+        "instance": None,
+        "dt_created": "2019-09-18T12:10:09.817102+00:00",
+        "image": "tensorflow/tensorflow:latest-py3",
+        "experiments": [
+            {
+                "project_id": "some_project_id",
+                "id": "some_experiment_id"
+            }, {
+                "project_id": "some_project_id",
+                "id": "some_other_experiment_id"
+            }
+        ],
+        "dt_deleted": None
+    }
+}
+
+TENSORBOARD_DETAIL_RESPONSE_JSON = {
+    "message": "success",
+    "data": {
+        "cluster_id": "some_cluster_id",
+        "url": "https://aws-testing.paperspace.io/tensorboard/some_id/",
+        "id": "some_id",
+        "instance": {
+            "type": "cpu",
+            "size": "large",
+            "count": 2
+        },
+        "dt_created": "2019-09-18T12:10:09.817102+00:00",
+        "image": "tensorflow/tensorflow:latest-py3",
+        "experiments": [
+            {
+                "project_id": "some_project_id",
+                "id": "some_experiment_id",
+                "state": "Some State"
+            }, {
+                "project_id": "some_project_id",
+                "id": "some_other_experiment_id",
+                "state": "Some State"
+            }
+        ],
+        "dt_deleted": None,
+        "state": "Some State"
+    }
+}
+
+TENSORBOARD_UPDATE_RESPONSE_JSON = {
+        "message": "success",
+        "data": {
+            "cluster_id": "some_cluster_id",
+            "url": "https://aws-testing.paperspace.io/tensorboard/some_id/",
+            "id": "some_id",
+            "instance": {
+                "type": "cpu",
+                "size": "large",
+                "count": 2
+            },
+            "dt_created": "2019-09-18T12:10:09.817102+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "some_project_id",
+                    "id": "some_experiment_id",
+                    "state": "Some State"
+                },
+                {
+                    "project_id": "some_project_id",
+                    "id": "some_other_experiment_id",
+                    "state": "Some State"
+                },
+                {
+                    "project_id": "some_project_id",
+                    "id": "some_third_experiment_id",
+                    "state": "Some State"
+                }
+            ],
+            "dt_deleted": None,
+            "state": "Some State"
+        }
+    }
+
+TENSORBOARD_UPDATE_REMOVE_RESPONSE_JSON = {
+        "message": "success",
+        "data": {
+            "cluster_id": "some_cluster_id",
+            "url": "https://aws-testing.paperspace.io/tensorboard/some_id/",
+            "id": "some_id",
+            "instance": {
+                "type": "cpu",
+                "size": "large",
+                "count": 2
+            },
+            "dt_created": "2019-09-18T12:10:09.817102+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "some_project_id",
+                    "id": "some_experiment_id",
+                    "state": "Some State"
+                }
+            ],
+            "dt_deleted": None,
+            "state": "Some State"
+        }
+    }
+
+TENSORBOARD_LIST_RESPONSE_JSON = {
+    "message": "success",
+    "data": [
+        {
+            "cluster_id": "clmtkpnm2",
+            "url": "https://aws-testing.paperspace.io/tensorboard/tbrs2kcjman4ly/",
+            "id": "tbrs2kcjman4ly",
+            "instance": None,
+            "dt_created": "2019-09-16T09:28:10.415478+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "prrdpg67x",
+                    "id": "ers2kcjman4ly",
+                    "state": "Some State"
+                }
+            ],
+            "dt_deleted": None,
+            "state": "Some State"
+        },
+        {
+            "cluster_id": "clmtkpnm2",
+            "url": "https://aws-testing.paperspace.io/tensorboard/tbskzep6d9po04d/",
+            "id": "tbskzep6d9po04d",
+            "instance": None,
+            "dt_created": "2019-09-16T09:28:56.908450+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "prrdpg67x",
+                    "id": "ers2kcjman4ly",
+                    "state": "Some State"
+                }
+            ],
+            "dt_deleted": None,
+            "state": "Some State"
+        },
+        {
+            "cluster_id": "clmtkpnm2",
+            "url": "https://aws-testing.paperspace.io/tensorboard/tbsaq6hggzxcnet/",
+            "id": "tbsaq6hggzxcnet",
+            "instance": None,
+            "dt_created": "2019-09-16T12:59:20.788663+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "prrdpg67x",
+                    "id": "ers2kcjman4ly",
+                    "state": "Some State"
+                }
+            ],
+            "dt_deleted": None,
+            "state": "Some State"
+        },
+        {
+            "cluster_id": "clmtkpnm2",
+            "url": "https://aws-testing.paperspace.io/tensorboard/tbwuzalec7ik58/",
+            "id": "tbwuzalec7ik58",
+            "instance": {
+                "size": "large",
+                "type": "cpu",
+                "count": 2
+            },
+            "dt_created": "2019-09-17T07:43:39.679876+00:00",
+            "image": "tensorflow/tensorflow:latest-py3",
+            "experiments": [
+                {
+                    "project_id": "prrdpg67x",
+                    "id": "ers2kcjman4ly",
+                    "state": "Some State"
+                }
+            ],
+            "dt_deleted": None,
+            "state": "Some State"
+        }
+    ]
+}
+
+TENSORBOARD_DELETE_RESPONSE_JSON = {
+    "message": "success"
+}
+
+LIST_JOB_FILES_RESPONSE_JSON = [
+    {
+        "file": "hello.txt",
+        "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/hello.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=7CT5k6buEmZe5k5E7g6BXMs2xV4%3D&response-content-disposition=attachment%3Bfilename%3D%22hello.txt%22&x-amz-security-token=some_amz_security_token"
+    },
+    {
+        "file": "hello2.txt",
+        "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/hello2.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=L1lI47cNyiROzdYkf%2FF3Cm3165E%3D&response-content-disposition=attachment%3Bfilename%3D%22hello2.txt%22&x-amz-security-token=some_amz_security_token"
+    },
+    {
+        "file": "keton/elo.txt",
+        "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/keton/elo.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=tHriojGx03S%2FKkVGQGVI5CQRFTo%3D&response-content-disposition=attachment%3Bfilename%3D%22elo.txt%22&x-amz-security-token=some_amz_security_token"
+    }
+]
+
+GET_PRESIGNED_URL_FOR_S3_BUCKET_RESPONSE_JSON = {
+    "data": {
+        "bucket_name": "ps-projects",
+        "fields": {
+            "AWSAccessKeyId": "SOME_AWS_ACCESS_KEY_ID",
+            "key": "some/path/to/file/demo.zip",
+            "policy": "base64policy=",
+            "signature": "base64signature="
+        },
+        "url": "https://ps-projects.s3.amazonaws.com/"
+    },
+    "message": "success"
+}
+
+DELETE_MODEL_404_RESPONSE_JSON = {
+    "error": {
+        "name": "Error",
+        "status": 404,
+        "message": "Unable to find model",
+    },
 }

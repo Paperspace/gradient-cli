@@ -1,14 +1,16 @@
 from functools import reduce
 
 import click
-from gradient.cli import common
 
 from gradient import utils, logger
-from gradient.workspace import WorkspaceHandler
+from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string
-from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts, deprecated
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts
+from gradient.cli.experiments import \
+    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used
 from gradient.commands import jobs as jobs_commands
+from gradient.workspace import WorkspaceHandler
 
 
 def get_workspace_handler():
@@ -230,12 +232,18 @@ def common_jobs_create_options(f):
             help="Cluster node details",
             cls=common.GradientOption,
         ),
+        click.option(
+            "--buildOnly",
+            "build_only",
+            type=bool,
+            is_flag=True,
+            help="Determines whether to only build and not run image (default false)",
+            cls=common.GradientOption,
+        ),
     ]
     return reduce(lambda x, opt: opt(x), reversed(options), f)
 
 
-@deprecated("DeprecatedWarning: \nWARNING: --workspaceUrl and --workspaceArchive "
-            "options will not be included in version 0.6.0")
 @jobs_group.command("create", help="Create job")
 @common_jobs_create_options
 @api_key_option
@@ -243,6 +251,8 @@ def common_jobs_create_options(f):
 @click.pass_context
 def create_job(ctx, api_key, options_file, **kwargs):
     utils.validate_workspace_input(kwargs)
+    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
 
@@ -345,3 +355,21 @@ def get_artifacts(job_id, options_file, api_key=None):
 def list_artifacts(job_id, size, links, files, options_file, api_key=None):
     command = jobs_commands.ArtifactsListCommand(api_key=api_key)
     command.execute(job_id=job_id, size=size, links=links, files=files)
+
+
+@artifacts.command("download", help="List job's artifacts")
+@click.option(
+    "--jobId",
+    "job_id",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--destinationDir",
+    "destination_directory",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def download_artifacts(job_id, destination_directory, options_file, api_key=None):
+    command = jobs_commands.DownloadArtifactsCommand(api_key=api_key)
+    command.execute(job_id=job_id, destination_directory=destination_directory)

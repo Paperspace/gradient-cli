@@ -1,6 +1,6 @@
 import attr
 
-from gradient import constants
+from .. import constants
 
 
 @attr.s
@@ -16,6 +16,8 @@ class BaseExperiment(object):
     :param str name: Name of new experiment
     :param str ports: Port to use in new experiment
     :param str workspace_url: Project git repository url
+    :param str workspace_username: Project git repository username
+    :param str workspace_password: Project git repository password
     :param str working_directory: Working directory for the experiment
     :param str artifact_directory: Artifacts directory
     :param str cluster_id: Cluster ID (handle)
@@ -44,6 +46,8 @@ class BaseExperiment(object):
     name = attr.ib(type=str, default=None)
     ports = attr.ib(type=str, default=None)
     workspace_url = attr.ib(type=str, default=None)
+    workspace_username = attr.ib(type=str, default=None)
+    workspace_password = attr.ib(type=str, default=None)
     working_directory = attr.ib(type=str, default=None)
     artifact_directory = attr.ib(type=str, default=None)
     cluster_id = attr.ib(type=str, default=None)
@@ -176,3 +180,24 @@ class MultiNodeExperiment(BaseExperiment):
             raise ValueError("Multi node experiment's type must equal {} or {}".
                              format(constants.ExperimentType.GRPC_MULTI_NODE,
                                     constants.ExperimentType.MPI_MULTI_NODE))
+
+
+@attr.s
+class MpiMultiNodeExperiment(BaseExperiment):
+    experiment_type_id = attr.ib(type=int, default=None)
+    worker_container = attr.ib(type=str, default=None)
+    worker_machine_type = attr.ib(type=str, default=None)
+    worker_command = attr.ib(type=str, default=None)
+    worker_count = attr.ib(type=int, default=None)
+    master_container = attr.ib(type=str, default=None)
+    master_machine_type = attr.ib(type=str, default=None)
+    master_command = attr.ib(type=str, default=None)
+    master_count = attr.ib(type=str, default=None)
+    worker_container_user = attr.ib(type=str, default=None)
+    worker_registry_username = attr.ib(type=str, default=None)
+    worker_registry_password = attr.ib(type=str, default=None)
+    worker_registry_url = attr.ib(type=str, default=None)
+    master_container_user = attr.ib(type=str, default=None)
+    master_registry_username = attr.ib(type=str, default=None)
+    master_registry_password = attr.ib(type=str, default=None)
+    master_registry_url = attr.ib(type=str, default=None)
