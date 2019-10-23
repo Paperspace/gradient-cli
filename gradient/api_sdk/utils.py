@@ -5,6 +5,11 @@ import six
 
 from . import constants, sdk_exceptions
 
+try:
+    from urlparse import urljoin as urljoin_original
+except ImportError:
+    from urllib.parse import urljoin as urljoin_original
+
 
 class MessageExtractor(object):
     def get_message_from_response_data(self, response_data, sep="\n"):
@@ -81,3 +86,8 @@ def base64_encode(s):
 def base64_encode_attribute(data, name):
     encoded_value = base64_encode(getattr(data, name))
     setattr(data, name, encoded_value)
+
+
+def urljoin(base, url):
+    url = urljoin_original(base, url)
+    return str(url)

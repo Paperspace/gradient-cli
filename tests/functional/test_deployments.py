@@ -75,7 +75,8 @@ class TestDeploymentsCreate(object):
         "cluster": "some_cluster_id",
     }
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
-    EXPECTED_STDOUT = "New deployment created with id: sadkfhlskdjh\n"
+    EXPECTED_STDOUT = "New deployment created with id: sadkfhlskdjh\n" \
+                      "https://www.paperspace.com/console/deployments/sadkfhlskdjh\n"
 
     RESPONSE_JSON_404_MODEL_NOT_FOUND = {"error": {"name": "Error", "status": 404, "message": "Unable to find model"}}
     RESPONSE_CONTENT_404_MODEL_NOT_FOUND = b'{"error":{"name":"Error","status":404,"message":"Unable to find model"}}\n'
