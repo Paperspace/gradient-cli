@@ -481,6 +481,7 @@ class TestJobsCreate(object):
         "--useDockerfile", "True",
         "--workingDirectory", "/some/path",
         "--workspaceUrl", "s3://some.workspace.url",
+        "--buildOnly",
     ]
     BASIC_OPTIONS_REQUEST = {
         "name": u"exp1",
@@ -513,6 +514,7 @@ class TestJobsCreate(object):
         "targetNodeAttrs": {"key": "val"},
         "command": "some command",
         "ports": "8080,9000:9900",
+        "buildOnly": True,
     }
     RESPONSE_JSON_200 = {"id": "sadkfhlskdjh", "message": "success"}
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'

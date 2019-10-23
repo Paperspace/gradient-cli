@@ -85,3 +85,4 @@ class JobSchema(BaseSchema):
     rel_dockerfile_path = marshmallow.fields.Str(dump_to="relDockerfilePath", load_from="relDockerfilePath")
     registry_username = marshmallow.fields.Str(dump_to="registryUsername", load_from="registryUsername")
     registry_password = marshmallow.fields.Str(dump_to="registryPassword", load_from="registryPassword")
+    build_only = marshmallow.fields.Bool(dump_to="buildOnly", load_from="buildOnly")
