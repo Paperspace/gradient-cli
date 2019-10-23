@@ -234,7 +234,12 @@ class JobRunClient(BaseClient):
             cluster_id=None,
             node_attrs=None,
             workspace_file_name=None,
+            build_only=False,
     ):
+
+        if not build_only:
+            build_only = None
+
         job = Job(
             machine_type=machine_type,
             container=container,
@@ -260,6 +265,7 @@ class JobRunClient(BaseClient):
             cluster_id=cluster_id,
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
+            build_only=build_only,
         )
         handle = RunJob(self.api_key, self.logger, self.client).create(job, data=data)
         return handle
