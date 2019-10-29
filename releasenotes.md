@@ -1,5 +1,17 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.0a0
+### New features
+* New `delete` commands for deployments and experiments
+* Printing url to instance web client's view to terminal after creating it
+## Fixes
+* Fix spinner not disappearing when some commands were executed
+* base64-encoded `command` value so it's not blocked by Cloudflare's filter anymore
+## Breaking changes
+* Moved hyperparameters group to experiments group
+* Dropped experiment_type_id parameter from create_mpi_multi_node() in ExperimentsClient
+* Moved constants and config modules into api_sdk module
+
 # Release Notes for 0.4.0
 ##### Note: this list includes all changes made in alpha releases since 0.3.2a
 ### New features
@@ -15,7 +27,6 @@
 * Fix how some error messages are printed
 * Fix formatting of datetime in `projects list` table
 * Fix sending some bash commands using `--*command` options caused Cloudflare's filter to stop request
-
 
 # Release Notes for 0.4.0a5
 ### Fixes
