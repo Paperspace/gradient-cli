@@ -62,7 +62,6 @@ setup(
         'requests[security]',
         'six',
         'click>=7.0',
-        'gradient-sdk',
         'terminaltables',
         'click-didyoumean',
         'click-help-colors',
