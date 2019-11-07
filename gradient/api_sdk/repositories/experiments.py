@@ -63,6 +63,8 @@ class ListExperiments(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, Li
 
         project_id = kwargs.get("project_id")
         if project_id:
+            if isinstance(project_id, six.string_types):
+                project_id = [project_id]
             for i, experiment_id in enumerate(project_id):
                 key = "projectHandle[{}]".format(i)
                 params[key] = experiment_id
