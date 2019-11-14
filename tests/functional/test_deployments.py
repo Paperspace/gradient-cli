@@ -61,7 +61,7 @@ class TestDeploymentsCreate(object):
         "machineType": u"G1",
         "name": u"some_name",
         "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
-        "deploymentType": "Tensorflow Serving on K8s",
+        "deploymentType": "TFServing",
         "instanceCount": 666,
         "modelId": u"some_model_id",
     }
@@ -69,7 +69,7 @@ class TestDeploymentsCreate(object):
         "machineType": u"G1",
         "name": u"some_name",
         "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
-        "deploymentType": "Tensorflow Serving on K8s",
+        "deploymentType": "TFServing",
         "instanceCount": 666,
         "modelId": u"some_model_id",
         "cluster": "some_cluster_id",
@@ -210,15 +210,15 @@ class TestDeploymentsList(object):
     }
     LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND = {"deploymentList": [], "total": 17, "displayTotal": 0,
                                                                 "runningTotal": 0}
-    DETAILS_STDOUT = """+-----------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+------------------+
-| Name      | ID              | Endpoint                                                                         | Api Type      | Deployment Type           | Deployment State |
-+-----------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+------------------+
-| some_name | dev61ity7lx232  | https://development-services.paperspace.io/model-serving/dev61ity7lx232:predict  | some_api_type | Tensorflow Serving on K8s | Stopped          |
-| some_name | desanw1jptk7woh | https://development-services.paperspace.io/model-serving/desanw1jptk7woh:predict | REST          | Tensorflow Serving on K8s | Stopped          |
-| some_name | desfnnrqt1v633v | https://development-services.paperspace.io/model-serving/desfnnrqt1v633v:predict | REST          | Tensorflow Serving on K8s | Stopped          |
-| some_name | desdyn55d2e02su | https://development-services.paperspace.io/model-serving/desdyn55d2e02su:predict | REST          | Tensorflow Serving on K8s | Stopped          |
-| some_name | des3tmqa3s627o9 | https://development-services.paperspace.io/model-serving/des3tmqa3s627o9:predict | REST          | Tensorflow Serving on K8s | Stopped          |
-+-----------+-----------------+----------------------------------------------------------------------------------+---------------+---------------------------+------------------+
+    DETAILS_STDOUT = """+-----------+-----------------+----------------------------------------------------------------------------------+---------------+-----------------+------------------+
+| Name      | ID              | Endpoint                                                                         | Api Type      | Deployment Type | Deployment State |
++-----------+-----------------+----------------------------------------------------------------------------------+---------------+-----------------+------------------+
+| some_name | dev61ity7lx232  | https://development-services.paperspace.io/model-serving/dev61ity7lx232:predict  | some_api_type | TFServing       | Stopped          |
+| some_name | desanw1jptk7woh | https://development-services.paperspace.io/model-serving/desanw1jptk7woh:predict | REST          | TFServing       | Stopped          |
+| some_name | desfnnrqt1v633v | https://development-services.paperspace.io/model-serving/desfnnrqt1v633v:predict | REST          | TFServing       | Stopped          |
+| some_name | desdyn55d2e02su | https://development-services.paperspace.io/model-serving/desdyn55d2e02su:predict | REST          | TFServing       | Stopped          |
+| some_name | des3tmqa3s627o9 | https://development-services.paperspace.io/model-serving/des3tmqa3s627o9:predict | REST          | TFServing       | Stopped          |
++-----------+-----------------+----------------------------------------------------------------------------------+---------------+-----------------+------------------+
 """
 
     @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
