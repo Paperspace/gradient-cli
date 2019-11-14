@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.4.1
+### Fixes
+* Fixed constant used to create deployment
+
 # Release Notes for 0.4.0
 ##### Note: this list includes all changes made in alpha releases since 0.3.2a
 ### New features
