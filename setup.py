@@ -61,9 +61,7 @@ setup(
     install_requires=[
         'requests[security]',
         'six',
-        'gradient-statsd',
         'click>=7.0',
-        'gradient-sdk',
         'terminaltables',
         'click-didyoumean',
         'click-help-colors',

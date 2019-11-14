@@ -1,5 +1,8 @@
 import attr
 
+from gradient.api_sdk.config import config
+from gradient.api_sdk.utils import urljoin
+
 
 @attr.s
 class Notebook(object):
@@ -19,3 +22,9 @@ class Notebook(object):
     state = attr.ib(type=bool, default=None)
     vm_type = attr.ib(type=bool, default=None)
     fqdn = attr.ib(type=bool, default=None)
+    namespace = attr.ib(type=str, default=None)
+
+    @property
+    def url(self):
+        url = urljoin(config.WEB_URL, "/console/{}/notebook/{}".format(self.namespace, self.project_id))
+        return url

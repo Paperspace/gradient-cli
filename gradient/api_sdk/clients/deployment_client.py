@@ -3,9 +3,8 @@ Deployment related client handler logic.
 
 Remember that in code snippets all highlighted lines are required other lines are optional.
 """
-from gradient import config
 from .base_client import BaseClient
-from .. import models, repositories
+from .. import config, models, repositories
 
 
 class DeploymentsClient(BaseClient):
@@ -126,3 +125,7 @@ class DeploymentsClient(BaseClient):
         repository = repositories.ListDeployments(api_key=self.api_key, logger=self.logger)
         deployments = repository.list(state=state, project_id=project_id, model_id=model_id, use_vpc=use_vpc)
         return deployments
+
+    def delete(self, deployment_id, use_vpc=False):
+        repository = repositories.DeleteDeployment(api_key=self.api_key, logger=self.logger)
+        repository.delete(deployment_id, use_vpc=use_vpc)

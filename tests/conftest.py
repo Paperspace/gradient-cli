@@ -79,6 +79,13 @@ def deployments_start_config_path():
 @pytest.fixture
 def deployments_stop_config_path():
     p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "deployments_delete.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def deployments_delete_config_path():
+    p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "deployments_stop.yaml"
     return str(fixture_dir.resolve())
 
@@ -238,6 +245,13 @@ def models_list_config_path():
 
 
 @pytest.fixture
+def models_delete_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "models_delete.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
 def projects_list_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "projects_list.yaml"
@@ -297,4 +311,11 @@ def tensorboards_create_config_path():
 def tensorboards_details_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "tensorboards_details.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def experiments_delete_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "experiments_delete.yaml"
     return str(fixture_dir.resolve())

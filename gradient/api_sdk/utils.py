@@ -3,6 +3,13 @@ from collections import OrderedDict
 
 import six
 
+from . import constants, sdk_exceptions
+
+try:
+    from urlparse import urljoin as urljoin_original
+except ImportError:
+    from urllib.parse import urljoin as urljoin_original
+
 
 class MessageExtractor(object):
     def get_message_from_response_data(self, response_data, sep="\n"):
@@ -51,6 +58,19 @@ def print_dict_recursive(input_dict, logger, indent=0, tabulator="  "):
             logger.log("%s%s" % (tabulator * (indent + 1), val))
 
 
+class ExperimentsClientHelpersMixin(object):
+    def _get_experiment_type_id(self, value):
+        if isinstance(value, int):
+            return value
+
+        try:
+            experiment_type_id = constants.MULTI_NODE_EXPERIMENT_TYPES_MAP[value]
+        except KeyError as e:
+            raise sdk_exceptions.GradientSdkError("Invalid experiment type: {}".format(e))
+
+        return experiment_type_id
+
+
 def base64_encode(s):
     if six.PY3:
         s = bytes(s, encoding="utf8")
@@ -66,3 +86,8 @@ def base64_encode(s):
 def base64_encode_attribute(data, name):
     encoded_value = base64_encode(getattr(data, name))
     setattr(data, name, encoded_value)
+
+
+def urljoin(base, url):
+    url = urljoin_original(base, url)
+    return str(url)

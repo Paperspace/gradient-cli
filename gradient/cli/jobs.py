@@ -232,6 +232,14 @@ def common_jobs_create_options(f):
             help="Cluster node details",
             cls=common.GradientOption,
         ),
+        click.option(
+            "--buildOnly",
+            "build_only",
+            type=bool,
+            is_flag=True,
+            help="Determines whether to only build and not run image (default false)",
+            cls=common.GradientOption,
+        ),
     ]
     return reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -347,3 +355,21 @@ def get_artifacts(job_id, options_file, api_key=None):
 def list_artifacts(job_id, size, links, files, options_file, api_key=None):
     command = jobs_commands.ArtifactsListCommand(api_key=api_key)
     command.execute(job_id=job_id, size=size, links=links, files=files)
+
+
+@artifacts.command("download", help="List job's artifacts")
+@click.option(
+    "--jobId",
+    "job_id",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--destinationDir",
+    "destination_directory",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def download_artifacts(job_id, destination_directory, options_file, api_key=None):
+    command = jobs_commands.DownloadArtifactsCommand(api_key=api_key)
+    command.execute(job_id=job_id, destination_directory=destination_directory)

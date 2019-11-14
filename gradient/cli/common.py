@@ -10,7 +10,7 @@ from click_didyoumean import DYMMixin
 from click_help_colors import HelpColorsGroup
 
 from gradient.cli import cli_types
-from gradient.config import config
+from gradient.api_sdk.config import config
 
 OPTIONS_FILE_OPTION_NAME = "optionsFile"
 OPTIONS_FILE_PARAMETER_NAME = "options_file"

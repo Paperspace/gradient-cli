@@ -1,3 +1,4 @@
+import gradient.api_sdk.config
 from gradient import config
 from gradient.api_sdk import serializers
 from gradient.api_sdk.clients import http_client
@@ -7,7 +8,7 @@ from ..serializers import JobSchema, LogRowSchema
 
 class GetBaseJobApiUrlMixin(object):
     def _get_api_url(self, **_):
-        return config.config.CONFIG_HOST
+        return gradient.api_sdk.config.config.CONFIG_HOST
 
 
 class ListJobs(GetBaseJobApiUrlMixin, ListResources):
@@ -45,7 +46,7 @@ class ListJobs(GetBaseJobApiUrlMixin, ListResources):
 
 class ListJobLogs(ListResources):
     def _get_api_url(self, **_):
-        return config.config.CONFIG_LOG_HOST
+        return gradient.api_sdk.config.config.CONFIG_LOG_HOST
 
     def get_request_url(self, **kwargs):
         return "/jobs/logs"
@@ -129,7 +130,9 @@ class StopJob(GetBaseJobApiUrlMixin, StopResource):
 
 class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
     def _parse_objects(self, data, **kwargs):
-        return data
+        serializer = serializers.ArtifactSchema()
+        files = serializer.get_instance(data, many=True)
+        return files
 
     def get_request_url(self, **kwargs):
         return "/jobs/artifactsList"

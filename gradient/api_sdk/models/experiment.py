@@ -1,6 +1,6 @@
 import attr
 
-from gradient import constants
+from .. import constants
 
 
 @attr.s

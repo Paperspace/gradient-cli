@@ -166,7 +166,8 @@ class TestCreateProject(object):
     EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-    EXPECTED_STDOUT = "Project created with ID: pru5a4dnu\n"
+    EXPECTED_STDOUT = "Project created with ID: pru5a4dnu\n" \
+                      "https://www.paperspace.com/console/projects/pru5a4dnu/machines\n"
 
     EXPECTED_RESPONSE_JSON_WITH_ERROR = {
         "error": {

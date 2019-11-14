@@ -81,4 +81,4 @@ class Job(object):
     rel_dockerfile_path = attr.ib(type=str, default=None)
     registry_username = attr.ib(type=str, default=None)
     registry_password = attr.ib(type=str, default=None)
-
+    build_only = attr.ib(type=bool, default=None)

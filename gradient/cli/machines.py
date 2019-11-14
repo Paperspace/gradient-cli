@@ -2,7 +2,8 @@ import collections
 
 import click
 
-from gradient import constants, logger
+from gradient import logger
+from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string

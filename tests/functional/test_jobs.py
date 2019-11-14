@@ -1,3 +1,7 @@
+import os
+import shutil
+import tempfile
+
 import mock
 import pytest
 from click.testing import CliRunner
@@ -5,6 +9,7 @@ from click.testing import CliRunner
 from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import example_responses, MockResponse
+from tests.example_responses import LIST_JOB_FILES_RESPONSE_JSON
 
 
 class TestJobs(object):
@@ -476,6 +481,7 @@ class TestJobsCreate(object):
         "--useDockerfile", "True",
         "--workingDirectory", "/some/path",
         "--workspaceUrl", "s3://some.workspace.url",
+        "--buildOnly",
     ]
     BASIC_OPTIONS_REQUEST = {
         "name": u"exp1",
@@ -508,6 +514,7 @@ class TestJobsCreate(object):
         "targetNodeAttrs": {"key": "val"},
         "command": "some command",
         "ports": "8080,9000:9900",
+        "buildOnly": True,
     }
     RESPONSE_JSON_200 = {"id": "sadkfhlskdjh", "message": "success"}
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
@@ -564,4 +571,79 @@ class TestJobsCreate(object):
                                              params=self.FULL_OPTIONS_REQUEST,
                                              files=None,
                                              data=None)
+        assert result.exit_code == 0
+
+
+class TestDownloadJobArtifacts(TestJobs):
+    runner = CliRunner()
+    LIST_FILES_URL = "https://api.paperspace.io/jobs/artifactsList"
+    DESTINATION_DIR_NAME = "dest"
+    DESTINATION_DIR_PATH = os.path.join(tempfile.gettempdir(), "dest")
+
+    COMMAND = ["jobs", "artifacts", "download", "--jobId", "some_job_id", "--destinationDir", DESTINATION_DIR_PATH]
+
+    @classmethod
+    def teardown_method(cls):
+        shutil.rmtree(cls.DESTINATION_DIR_PATH)
+
+    @mock.patch("gradient.api_sdk.s3_downloader.requests.get")
+    def test_should_get_a_list_of_files_and_download_them_to_defined_directory_when_download_command_was_executed(
+            self, get_patched,
+    ):
+        file_response_mock = mock.MagicMock()
+        file_response_mock.content = "\"Hello Paperspace!\n\""
+        file_response_mock_2 = mock.MagicMock()
+        file_response_mock_2.content = "\"Hello Paperspace 2\n\""
+        file_response_mock_3 = mock.MagicMock()
+        file_response_mock_3.content = "\"Elo\n\""
+        get_patched.side_effect = [
+            MockResponse(LIST_JOB_FILES_RESPONSE_JSON),
+            file_response_mock,
+            file_response_mock_2,
+            file_response_mock_3,
+        ]
+
+        result = self.runner.invoke(cli.cli, self.COMMAND)
+
+        get_patched.assert_has_calls([
+            mock.call(self.LIST_FILES_URL,
+                      headers=self.EXPECTED_HEADERS,
+                      json=None,
+                      params={"links": True, "jobId": "some_job_id"}),
+            mock.call("https://ps-projects.s3.amazonaws.com/some/path/artifacts/hello.txt?AWSAccessKeyId="
+                      "some_aws_access_key_id&Expires=713274132&Signature=7CT5k6buEmZe5k5E7g6BXMs2xV4%3D&"
+                      "response-content-disposition=attachment%3Bfilename%3D%22hello.txt%22&x-amz-security-token="
+                      "some_amz_security_token"),
+            mock.call("https://ps-projects.s3.amazonaws.com/some/path/artifacts/hello2.txt?AWSAccessKeyId="
+                      "some_aws_access_key_id&Expires=713274132&Signature=L1lI47cNyiROzdYkf%2FF3Cm3165E%3D&"
+                      "response-content-disposition=attachment%3Bfilename%3D%22hello2.txt%22&x-amz-security-token="
+                      "some_amz_security_token"),
+            mock.call("https://ps-projects.s3.amazonaws.com/some/path/artifacts/keton/elo.txt?AWSAccessKeyId="
+                      "some_aws_access_key_id&Expires=713274132&Signature=tHriojGx03S%2FKkVGQGVI5CQRFTo%3D&"
+                      "response-content-disposition=attachment%3Bfilename%3D%22elo.txt%22&x-amz-security-token="
+                      "some_amz_security_token"),
+        ])
+        assert os.path.exists(self.DESTINATION_DIR_PATH)
+        assert os.path.isdir(self.DESTINATION_DIR_PATH)
+        assert os.path.exists(os.path.join(self.DESTINATION_DIR_PATH, "keton"))
+        assert os.path.isdir(os.path.join(self.DESTINATION_DIR_PATH, "keton"))
+
+        hello_txt_path = os.path.join(self.DESTINATION_DIR_PATH, "hello.txt")
+        assert os.path.exists(hello_txt_path)
+        assert not os.path.isdir(hello_txt_path)
+        with open(hello_txt_path) as h:
+            assert h.read() == "\"Hello Paperspace!\n\""
+
+        hello2_txt_path = os.path.join(self.DESTINATION_DIR_PATH, "hello2.txt")
+        assert os.path.exists(hello2_txt_path)
+        assert not os.path.isdir(hello2_txt_path)
+        with open(hello2_txt_path) as h:
+            assert h.read() == "\"Hello Paperspace 2\n\""
+
+        elo_txt_path = os.path.join(self.DESTINATION_DIR_PATH, "keton", "elo.txt")
+        assert os.path.exists(elo_txt_path)
+        assert not os.path.isdir(elo_txt_path)
+        with open(elo_txt_path) as h:
+            assert h.read() == "\"Elo\n\""
+
         assert result.exit_code == 0

@@ -4548,7 +4548,7 @@ NOTEBOOK_GET_RESPONSE = {
     "fqdn": "ngw7piq9.dgradient.paperspace.com",
     "startedByUser": "first last",
     "startedByUserId": "ukgvw4i8",
-    "namespace": "username",
+    "namespace": "some_namespace",
     "parentJobId": None,
     "jobError": None,
     "dtCreated": "2019-09-03T11:06:18.154Z",
@@ -5522,4 +5522,41 @@ TENSORBOARD_LIST_RESPONSE_JSON = {
 
 TENSORBOARD_DELETE_RESPONSE_JSON = {
     "message": "success"
+}
+
+LIST_JOB_FILES_RESPONSE_JSON = [
+    {
+        "file": "hello.txt",
+        "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/hello.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=7CT5k6buEmZe5k5E7g6BXMs2xV4%3D&response-content-disposition=attachment%3Bfilename%3D%22hello.txt%22&x-amz-security-token=some_amz_security_token"
+    },
+    {
+        "file": "hello2.txt",
+        "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/hello2.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=L1lI47cNyiROzdYkf%2FF3Cm3165E%3D&response-content-disposition=attachment%3Bfilename%3D%22hello2.txt%22&x-amz-security-token=some_amz_security_token"
+    },
+    {
+        "file": "keton/elo.txt",
+        "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/keton/elo.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=tHriojGx03S%2FKkVGQGVI5CQRFTo%3D&response-content-disposition=attachment%3Bfilename%3D%22elo.txt%22&x-amz-security-token=some_amz_security_token"
+    }
+]
+
+GET_PRESIGNED_URL_FOR_S3_BUCKET_RESPONSE_JSON = {
+    "data": {
+        "bucket_name": "ps-projects",
+        "fields": {
+            "AWSAccessKeyId": "SOME_AWS_ACCESS_KEY_ID",
+            "key": "some/path/to/file/demo.zip",
+            "policy": "base64policy=",
+            "signature": "base64signature="
+        },
+        "url": "https://ps-projects.s3.amazonaws.com/"
+    },
+    "message": "success"
+}
+
+DELETE_MODEL_404_RESPONSE_JSON = {
+    "error": {
+        "name": "Error",
+        "status": 404,
+        "message": "Unable to find model",
+    },
 }

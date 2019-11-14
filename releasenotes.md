@@ -4,6 +4,18 @@
 ### Fixes
 * Fixed constant used to create deployment
 
+# Release Notes for 0.5.0a0
+### New features
+* New `delete` commands for deployments and experiments
+* Printing url to instance web client's view to terminal after creating it
+## Fixes
+* Fix spinner not disappearing when some commands were executed
+* base64-encoded `command` value so it's not blocked by Cloudflare's filter anymore
+## Breaking changes
+* Moved hyperparameters group to experiments group
+* Dropped experiment_type_id parameter from create_mpi_multi_node() in ExperimentsClient
+* Moved constants and config modules into api_sdk module
+
 # Release Notes for 0.4.0
 ##### Note: this list includes all changes made in alpha releases since 0.3.2a
 ### New features
@@ -20,7 +32,6 @@
 * Fix formatting of datetime in `projects list` table
 * Fix sending some bash commands using `--*command` options caused Cloudflare's filter to stop request
 
-
 # Release Notes for 0.4.0a5
 ### Fixes
 * Fix formatting of datetime in `projects list` table
@@ -28,6 +39,20 @@
 
 # Release Notes for 0.4.0a4
 ### Fixes
+* Fix how some error messages are printed
+
+# Release Notes for 0.3.7
+### Fixes
+* Fix formatting of datetime in `projects list` table
+* Fix sending some bash commands using `--*command` options caused Cloudflare's filter to stop request
+
+# Release Notes for 0.4.0a4
+### Fixes
+* Fix how some error messages are printed
+
+# Release Notes for 0.3.6
+### Fixes
+* Fix `job delete` and `job stop` commands
 * Fix how some error messages are printed
 
 # Release Notes for 0.4.0a3
@@ -42,6 +67,18 @@
 * Fix StopIteration exception in Python 3.7
 * Fix `job delete` and `job stop` commands
 
+# Release Notes for 0.3.5
+### Fixes
+* Fix StopIteration exception in Python 3.7
+
+# Release Notes for 0.3.4
+### Fixes
+* Fixed bug causing exception be raised when `--help` option was used with some commands (like `gradient run`)
+
+# Release Notes for 0.3.3
+### Fixes
+* ~~Fixed bug causing exception be raised when `--help` option was used with some commands (like `gradient run`)~~
+
 # Release Notes for 0.3.2a
 ### New features
 * Support for tensorboard
@@ -51,6 +88,10 @@
     * Add experiments to existing tensorboard
     * Remove experiments from existing tensorboard
 * Add support for experiments workspace credentials
+
+# Release Notes for 0.3.2
+### Fixes
+* Fixed bug raising exception when `experiment create's` `--ignoreFiles` option was used
 
 # Release Notes for 0.3.1
 ### Fixes
