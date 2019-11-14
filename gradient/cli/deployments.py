@@ -18,7 +18,7 @@ def deployments():
 
 DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
     (
-        ("TFSERVING", "Tensorflow Serving on K8s"),
+        ("TFSERVING", "TFServing"),
         # ("GRADIENT", "Gradient Jobs"),
     )
 )
