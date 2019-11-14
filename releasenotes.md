@@ -1,5 +1,16 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.0a1
+### Fixes
+* Fixed constant used to create deployment
+* Fix listing experiments when filtering by project ID
+### Breaking changes
+* Dropped dependencies: gradient-statsd and gradient-sdk
+
+# Release Notes for 0.4.1
+### Fixes
+* Fixed constant used to create deployment
+
 # Release Notes for 0.5.0a0
 ### New features
 * New `delete` commands for deployments and experiments
@@ -75,6 +86,10 @@
 ### Fixes
 * ~~Fixed bug causing exception be raised when `--help` option was used with some commands (like `gradient run`)~~
 
+# Release Notes for 0.3.2
+### Fixes
+* Fixed bug raising exception when `experiment create's` `--ignoreFiles` option was used
+
 # Release Notes for 0.3.2a
 ### New features
 * Support for tensorboard
@@ -84,10 +99,6 @@
     * Add experiments to existing tensorboard
     * Remove experiments from existing tensorboard
 * Add support for experiments workspace credentials
-
-# Release Notes for 0.3.2
-### Fixes
-* Fixed bug raising exception when `experiment create's` `--ignoreFiles` option was used
 
 # Release Notes for 0.3.1
 ### Fixes
