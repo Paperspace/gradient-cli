@@ -1,5 +1,12 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.0a1
+### Fixes
+* Fixed constant used to create deployment
+* Fix listing experiments when filtering by project ID
+### Breaking changes
+* Dropped dependencies: gradient-statsd and gradient-sdk
+
 # Release Notes for 0.4.1
 ### Fixes
 * Fixed constant used to create deployment
