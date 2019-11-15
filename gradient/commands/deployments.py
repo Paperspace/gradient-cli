@@ -64,7 +64,7 @@ class ListDeploymentsCommand(_DeploymentCommand):
         data = [("Name", "ID", "Endpoint", "Api Type", "Deployment Type", "Deployment State")]
         for deployment in deployments:
             name = deployment.name
-            id_ = deployment.id_
+            id_ = deployment.id
             endpoint = deployment.endpoint
             api_type = deployment.api_type
             deployment_type = deployment.deployment_type
