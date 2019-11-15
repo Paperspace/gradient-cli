@@ -3,7 +3,7 @@ import attr
 
 @attr.s
 class Job(object):
-    id_ = attr.ib(type=str, default=None)
+    id = attr.ib(type=str, default=None)
     name = attr.ib(type=str, default=None)
     state = attr.ib(type=str, default=None)
     workspace_url = attr.ib(type=str, default=None)

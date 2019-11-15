@@ -122,7 +122,7 @@ class ListJobsCommand(BaseJobCommand):
     def _get_table_data(jobs):
         data = [("ID", "Name", "Project", "Cluster", "Machine Type", "Created")]
         for job in jobs:
-            id_ = job.id_
+            id_ = job.id
             name = job.name
             project = job.project
             cluster = job.cluster

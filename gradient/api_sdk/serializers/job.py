@@ -7,7 +7,7 @@ from .base import BaseSchema
 class JobSchema(BaseSchema):
     MODEL = models.Job
 
-    id_ = marshmallow.fields.Str(dump_to="id", load_from="id")
+    id = marshmallow.fields.Str(dump_to="id", load_from="id")
     name = marshmallow.fields.Str(required=True)
     state = marshmallow.fields.Str()
     workspace_url = marshmallow.fields.Str(dump_to="workspaceUrl", load_from="workspaceUrl")
