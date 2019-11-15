@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.0a2
+### Breaking changes
+* Changed ID attribute in Job and Deployment models from `id_` to `id`
+
 # Release Notes for 0.5.0a1
 ### Fixes
 * Fixed constant used to create deployment
