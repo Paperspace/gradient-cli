@@ -9,5 +9,5 @@ from .machines import CheckMachineAvailability, CreateMachine, CreateResource, S
     RestartMachine, GetMachine, UpdateMachine, GetMachineUtilization
 from .models import DeleteModel, ListModels
 from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks
-from .projects import CreateProject, ListProjects
+from .projects import CreateProject, ListProjects, DeleteProject
 from .tensorboards import CreateTensorboard, GetTensorboard, ListTensorboards, UpdateTensorboard, DeleteTensorboard
