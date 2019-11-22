@@ -80,3 +80,7 @@ class ProjectsClient(BaseClient):
 
         projects = repositories.ListProjects(api_key=self.api_key, logger=self.logger).list()
         return projects
+
+    def delete(self, project_id):
+        repository = repositories.DeleteProject(api_key=self.api_key, logger=self.logger)
+        repository.delete(project_id)

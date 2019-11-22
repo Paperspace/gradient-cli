@@ -312,3 +312,134 @@ class TestCreateProject(object):
 
         assert result.output == "Failed to create resource\n"
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+
+class TestDeleteProjects(object):
+    URL = "https://api.paperspace.io/projects/some_project_id/deleteProject"
+    EXPECTED_HEADERS = default_headers.copy()
+    BASIC_COMMAND = ["projects", "delete", "--id", "some_project_id"]
+    EXPECTED_STDOUT = "Project deleted\n"
+
+    BASIC_COMMAND_WITH_API_KEY = ["projects", "delete", "--id", "some_project_id", "--apiKey", "some_key"]
+    COMMAND_WITH_OPTIONS_FILE = ["projects", "delete",
+                                 "--id", "some_project_id",
+                                 "--optionsFile", ]  # path added in test
+
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to delete resource: Invalid API token\n"
+
+    RESPONSE_JSON_WHEN_PROJECT_IS_ALREADY_DELETED = {
+        "error": {
+            "name": "Error",
+            "status": 400,
+            "message": "Project \"some_project_id\" is already deleted.",
+        },
+    }
+    EXPECTED_STDOUT_WHEN_PROJECT_IS_ALREADY_DELETED = \
+        """Failed to delete resource: Project "some_project_id" is already deleted.\n"""
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_valid_post_request_and_print_valid_message_when_delete_command_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(status_code=204)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS,
+                                        json=None,
+                                        params=None,
+                                        data=None,
+                                        files=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_valid_post_request_when_delete_was_used_with_api_key_option(self, post_patched):
+        post_patched.return_value = MockResponse(status_code=204)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
+
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=None,
+                                        params=None,
+                                        data=None,
+                                        files=None)
+        assert result.output == self.EXPECTED_STDOUT
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_options_from_yaml_file(self, post_patched, projects_delete_config_path):
+        post_patched.return_value = MockResponse(status_code=204)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [projects_delete_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=None,
+                                        params=None,
+                                        data=None,
+                                        files=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_valid_post_request_when_delete_was_used_with_wrong_api_key(self, post_patched):
+        post_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
+
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=None,
+                                        params=None,
+                                        data=None,
+                                        files=None)
+        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_valid_post_request_when_the_project_is_already_deleted(self, post_patched):
+        post_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WHEN_PROJECT_IS_ALREADY_DELETED,
+                                                 status_code=400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
+
+        post_patched.assert_called_with(self.URL,
+                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        json=None,
+                                        params=None,
+                                        data=None,
+                                        files=None)
+        assert result.output == self.EXPECTED_STDOUT_WHEN_PROJECT_IS_ALREADY_DELETED
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_error_message_when_project_was_not_found(self, post_patched):
+        # TODO: add test later when the API is fixed - it responds with invalid message
+        pass
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_error_message_when_error_status_code_received_but_no_content_was_provided(self, get_patched):
+        get_patched.return_value = MockResponse(status_code=400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS,
+                                       json=None,
+                                       params=None,
+                                       data=None,
+                                       files=None)
+        assert result.output == "Failed to delete resource\n"
+        assert result.exit_code == 0

@@ -1,7 +1,6 @@
 import gradient.api_sdk.config
-from gradient import config
 from .. import serializers
-from ..repositories.common import CreateResource, ListResources
+from ..repositories.common import CreateResource, ListResources, DeleteResource
 
 
 class GetBaseProjectsApiUrlMixin(object):
@@ -28,3 +27,12 @@ class ListProjects(GetBaseProjectsApiUrlMixin, ListResources):
             projects.append(project)
 
         return projects
+
+
+class DeleteProject(GetBaseProjectsApiUrlMixin, DeleteResource):
+    def get_request_url(self, **kwargs):
+        return "/projects/{}/deleteProject".format(kwargs.get("id"))
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response

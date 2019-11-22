@@ -49,3 +49,9 @@ class ListProjectsCommand(ListCommandMixin, BaseProjectCommand):
             data.append((obj.id, obj.name, obj.repository_url, created_str))
 
         return data
+
+
+class DeleteProjectCommand(BaseProjectCommand):
+    def execute(self, project_id):
+        self.client.delete(project_id)
+        self.logger.log("Project deleted")
