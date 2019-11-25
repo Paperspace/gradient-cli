@@ -10,6 +10,9 @@ from tests import example_responses, MockResponse
 class TestListProjects(object):
     URL = "https://api.paperspace.io/projects/"
     EXPECTED_HEADERS = default_headers.copy()
+    EXPECTED_PARAMS = {
+        "filter": """{"offset":0,"where":{"dtDeleted":null},"order":"dtCreated desc"}"""
+    }
     BASIC_COMMAND = ["projects", "list"]
     # TODO: change to `REQUEST_JSON = None` or whatever works when PS_API is fixed
     EXPECTED_RESPONSE_JSON = example_responses.LIST_PROJECTS_RESPONSE
@@ -45,7 +48,7 @@ class TestListProjects(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS)
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -58,7 +61,7 @@ class TestListProjects(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -74,7 +77,7 @@ class TestListProjects(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS)
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -87,7 +90,7 @@ class TestListProjects(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
@@ -102,7 +105,7 @@ class TestListProjects(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS)
         assert result.output == self.EXPECTED_STDOUT_WHEN_NO_PROJECTS_WERE_FOUND
         assert result.exit_code == 0
 
@@ -116,7 +119,7 @@ class TestListProjects(object):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS)
         assert result.output == "Failed to fetch data\n"
         assert result.exit_code == 0
 

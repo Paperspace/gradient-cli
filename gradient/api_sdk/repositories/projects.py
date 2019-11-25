@@ -28,6 +28,12 @@ class ListProjects(GetBaseProjectsApiUrlMixin, ListResources):
 
         return projects
 
+    def _get_request_params(self, kwargs):
+        filters = {
+            "filter": """{"offset":0,"where":{"dtDeleted":null},"order":"dtCreated desc"}"""
+        }
+        return filters
+
 
 class DeleteProject(GetBaseProjectsApiUrlMixin, DeleteResource):
     def get_request_url(self, **kwargs):
