@@ -81,3 +81,18 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
         ("MPI", ExperimentType.MPI_MULTI_NODE),
     )
 )
+
+
+class ModelTypes:
+    ONNX = "ONNX"
+    TENSORFLOW = "Tensorflow"
+    GENERIC = "Unknown"
+
+
+MODEL_TYPES_MAP = collections.OrderedDict(
+    (
+        ("ONNX", ModelTypes.ONNX),
+        ("TENSORFLOW", ModelTypes.TENSORFLOW),
+        ("GENERIC", ModelTypes.ONNX),
+    )
+)

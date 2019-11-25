@@ -19,6 +19,7 @@ colorama = "*"
 click-completion = "*"
 halo = "*"
 pyyaml = "*"
+gradient = {path = "./dist/gradient-0.5.0a1.tar.gz"}
 
 [dev-packages]
 twine = "*"

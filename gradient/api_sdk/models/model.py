@@ -29,3 +29,4 @@ class Model(object):
     deployment_state = attr.ib(type=str, default=None)
     summary = attr.ib(type=dict, default=None)
     detail = attr.ib(type=dict, default=None)
+    notes = attr.ib(type=str, default=None)

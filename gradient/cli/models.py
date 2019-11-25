@@ -1,7 +1,9 @@
 import click
 
+from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
+from gradient.cli.cli_types import ChoiceType, json_string
 from gradient.commands import models as models_commands
 
 
@@ -42,3 +44,44 @@ def list_models(api_key, experiment_id, project_id, options_file):
 def list_models(api_key, model_id, options_file):
     command = models_commands.DeleteModelCommand(api_key=api_key)
     command.execute(model_id=model_id)
+
+
+@models_group.command("upload", help="Upload model")
+@click.argument(
+    "FILE",
+    # "file_path",
+    type=click.File(),
+    # help="Model file",
+    cls=common.GradientArgument,
+)
+@click.option(
+    "--name",
+    "name",
+    required=True,
+    help="Model name",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--modelType",
+    "model_type",
+    required=True,
+    type=ChoiceType(constants.MODEL_TYPES_MAP, case_sensitive=False),
+    help="Model type",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--modelSummary",
+    "model_summary",
+    type=json_string,
+    help="Model summary",
+)
+@click.option(
+    "--notes",
+    "notes",
+    help="Additional notes",
+)
+@common.api_key_option
+@common.options_file
+def upload_model(file, name, model_type, model_summary, notes, api_key, options_file):
+    command = models_commands.UploadModel(api_key=api_key)
+    command.execute(file, name, model_type, model_summary, notes)
