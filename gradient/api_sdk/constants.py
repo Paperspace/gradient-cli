@@ -81,3 +81,13 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
         ("MPI", ExperimentType.MPI_MULTI_NODE),
     )
 )
+
+DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
+    (
+        ("TFServing", "TFServing"),
+        ("ONNX", "ONNX"),
+        ("Custom", "Custom"),
+        ("Flask", "Flask"),
+        ("TensorRT", "TensorRT"),
+    )
+)
