@@ -12,8 +12,13 @@ class ChoiceType(click.Choice):
 
     def convert(self, value, param, ctx):
         value = super(ChoiceType, self).convert(value, param, ctx).upper()
-        return self.type_map[value]
 
+        for key, val in self.type_map.items():
+            if key.upper() == value:
+                return val
+
+        raise KeyError()
+        
 
 def json_string(val):
     """Wraps json.loads so the cli help shows proper option's type name instead of 'LOADS'"""
