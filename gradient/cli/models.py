@@ -49,9 +49,7 @@ def list_models(api_key, model_id, options_file):
 @models_group.command("upload", help="Upload model")
 @click.argument(
     "FILE",
-    # "file_path",
     type=click.File(),
-    # help="Model file",
     cls=common.GradientArgument,
 )
 @click.option(
@@ -74,11 +72,13 @@ def list_models(api_key, model_id, options_file):
     "model_summary",
     type=json_string,
     help="Model summary",
+    cls=common.GradientOption,
 )
 @click.option(
     "--notes",
     "notes",
     help="Additional notes",
+    cls=common.GradientOption,
 )
 @common.api_key_option
 @common.options_file

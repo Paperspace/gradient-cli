@@ -71,12 +71,15 @@ class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
     def _get_request_params(self, kwargs):
         return kwargs
 
-    def _get_request_files(self, file_handler):
-        """
-        :param str file_handler:
-        """
-        if isinstance(file_handler, file):
-            file_name = os.path.basename(file_handler.name)
-            return [(file_name, file_handler)]
+    def _get_request_json(self, instance_dict):
+        return None
 
-        raise NotImplemented()
+    def _get_request_files(self, file_handle):
+        """
+        :param file file_handle:
+        """
+        if not file_handle:
+            return None
+
+        file_name = os.path.basename(file_handle.name)
+        return [(file_name, file_handle)]

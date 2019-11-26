@@ -326,3 +326,10 @@ def experiments_delete_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "experiments_delete.yaml"
     return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def models_upload_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "models_upload.yaml"
+    return str(fixture_dir.resolve())
