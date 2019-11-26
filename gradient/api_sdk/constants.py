@@ -82,6 +82,16 @@ MULTI_NODE_EXPERIMENT_TYPES_MAP = collections.OrderedDict(
     )
 )
 
+DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
+    (
+        ("TFServing", "TFServing"),
+        ("ONNX", "ONNX"),
+        ("Custom", "Custom"),
+        ("Flask", "Flask"),
+        ("TensorRT", "TensorRT"),
+    )
+)
+
 
 class ModelTypes:
     ONNX = "ONNX"

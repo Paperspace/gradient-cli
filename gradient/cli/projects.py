@@ -49,3 +49,18 @@ def create_project(api_key, options_file, **project):
 @projects_group.command("wizard", help="Run create project wizard")
 def create_project_wizard():
     run_create_project_wizard()
+
+
+@projects_group.command("delete", help="Delete project and all its experiments")
+@click.option(
+    "--id",
+    "project_id",
+    required=True,
+    help="ID of project",
+    cls=common.GradientOption,
+)
+@common.api_key_option
+@common.options_file
+def delete_project(project_id, options_file, api_key):
+    command = projects_commands.DeleteProjectCommand(api_key)
+    command.execute(project_id)
