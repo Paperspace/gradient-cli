@@ -91,3 +91,18 @@ DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
         ("TensorRT", "TensorRT"),
     )
 )
+
+
+class ModelTypes:
+    ONNX = "ONNX"
+    TENSORFLOW = "Tensorflow"
+    GENERIC = "Unknown"
+
+
+MODEL_TYPES_MAP = collections.OrderedDict(
+    (
+        ("Tensorflow", ModelTypes.TENSORFLOW),
+        ("ONNX", ModelTypes.ONNX),
+        ("Generic", ModelTypes.ONNX),
+    )
+)

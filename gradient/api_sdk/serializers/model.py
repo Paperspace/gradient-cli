@@ -18,3 +18,4 @@ class Model(BaseSchema):
     deployment_state = marshmallow.fields.Str(dump_to="deploymentState", load_from="deploymentState")
     summary = marshmallow.fields.Dict()
     detail = marshmallow.fields.Dict()
+    notes = marshmallow.fields.Str()

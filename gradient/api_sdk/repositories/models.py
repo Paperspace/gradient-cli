@@ -1,7 +1,8 @@
+import os
+
 import gradient.api_sdk.config
-from gradient import config
 from .. import serializers
-from ..repositories.common import ListResources, DeleteResource
+from ..repositories.common import ListResources, DeleteResource, CreateResource
 
 
 class ParseModelDictMixin(object):
@@ -58,3 +59,27 @@ class DeleteModel(GetBaseModelsApiUrlMixin, DeleteResource):
 
     def _get_request_json(self, kwargs):
         return kwargs
+
+
+class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
+    SERIALIZER_CLS = serializers.Model
+    HANDLE_FIELD = "id"
+
+    def get_request_url(self, **kwargs):
+        return "/mlModels/createModel"
+
+    def _get_request_params(self, kwargs):
+        return kwargs
+
+    def _get_request_json(self, instance_dict):
+        return None
+
+    def _get_request_files(self, file_handle):
+        """
+        :param file file_handle:
+        """
+        if not file_handle:
+            return None
+
+        file_name = os.path.basename(file_handle.name)
+        return [(file_name, file_handle)]

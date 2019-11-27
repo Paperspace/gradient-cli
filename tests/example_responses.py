@@ -5560,3 +5560,26 @@ DELETE_MODEL_404_RESPONSE_JSON = {
         "message": "Unable to find model",
     },
 }
+
+MODEL_UPLOAD_RESPONSE_JSON = {
+    "id": "some_model_id",
+    "projectId": None,
+    "experimentId": None,
+    "updatedByUserId": "ukgvw4i8",
+    "updatedByUserEmail": "some_email@paperspace.com",
+    "modelType": "Tensorflow",
+    "name": "some_name",
+    "tag": None,
+    "summary": {"key": "value"},
+    "detail": None,
+    "params": None,
+    "url": "s3://ps-projects-development/teo6raui0/models/some_model_id/saved_model.pb",
+    "notes": "some notes",
+    "isDeleted": False,
+    "isPublic": False,
+    "dtCreated": "2019-11-26T13:33:11.001Z", "dtModified": "2019-11-26T13:33:11.001Z",
+    "dtUploaded": None,
+    "dtDeleted": None,
+    "modelPath": None,
+    "deploymentState": None,
+}
