@@ -64,6 +64,12 @@ def common_experiments_create_options(f):
             cls=common.GradientOption,
         ),
         click.option(
+            "--workspaceRef",
+            "workspace_ref",
+            help="Git commit hash, branch name or tag",
+            cls=common.GradientOption,
+        ),
+        click.option(
             "--workspaceArchive",
             "workspace_archive",
             help="Path to workspace .zip archive",

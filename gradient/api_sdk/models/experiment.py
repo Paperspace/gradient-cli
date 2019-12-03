@@ -16,6 +16,7 @@ class BaseExperiment(object):
     :param str name: Name of new experiment
     :param str ports: Port to use in new experiment
     :param str workspace_url: Project git repository url
+    :param str workspace_ref: Git commit hash, branch name or tag
     :param str workspace_username: Project git repository username
     :param str workspace_password: Project git repository password
     :param str working_directory: Working directory for the experiment
@@ -46,6 +47,7 @@ class BaseExperiment(object):
     name = attr.ib(type=str, default=None)
     ports = attr.ib(type=str, default=None)
     workspace_url = attr.ib(type=str, default=None)
+    workspace_ref = attr.ib(type=str, default=None)
     workspace_username = attr.ib(type=str, default=None)
     workspace_password = attr.ib(type=str, default=None)
     working_directory = attr.ib(type=str, default=None)
