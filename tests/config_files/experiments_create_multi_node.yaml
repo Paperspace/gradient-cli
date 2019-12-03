@@ -33,4 +33,5 @@ workspace: null
 workspaceUsername: username
 workspacePassword: password
 workspaceArchive: null
+workspaceRef: some_branch_name
 workspaceUrl: wurl
