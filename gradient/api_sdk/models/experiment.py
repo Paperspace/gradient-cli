@@ -1,6 +1,7 @@
 import attr
+import typing
 
-from .. import constants
+from .. import constants, Dataset
 
 
 @attr.s
@@ -19,6 +20,7 @@ class BaseExperiment(object):
     :param str workspace_ref: Git commit hash, branch name or tag
     :param str workspace_username: Project git repository username
     :param str workspace_password: Project git repository password
+    :param Dataset dataset
     :param str working_directory: Working directory for the experiment
     :param str artifact_directory: Artifacts directory
     :param str cluster_id: Cluster ID (handle)
@@ -50,6 +52,7 @@ class BaseExperiment(object):
     workspace_ref = attr.ib(type=str, default=None)
     workspace_username = attr.ib(type=str, default=None)
     workspace_password = attr.ib(type=str, default=None)
+    datasets = attr.ib(type=typing.List[Dataset], default=None)
     working_directory = attr.ib(type=str, default=None)
     artifact_directory = attr.ib(type=str, default=None)
     cluster_id = attr.ib(type=str, default=None)

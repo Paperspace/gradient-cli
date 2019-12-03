@@ -1,4 +1,5 @@
 import abc
+import itertools
 import pydoc
 
 import six
@@ -13,7 +14,7 @@ from gradient.api_sdk.utils import urljoin
 from gradient.commands import tensorboards as tensorboards_commands
 from gradient.commands.common import BaseCommand, ListCommandMixin
 from gradient.logger import Logger
-from gradient.utils import get_terminal_lines
+from gradient.utils import get_terminal_lines, none_strings_to_none_objects
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -82,6 +83,7 @@ class BaseCreateExperimentCommandMixin(object):
 
     def execute(self, json_, add_to_tensorboard=False, use_vpc=False):
         self._handle_workspace(json_)
+        self._handle_dataset_data(json_)
 
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
             experiment_id = self._create(json_, use_vpc=use_vpc)
@@ -114,6 +116,21 @@ class BaseCreateExperimentCommandMixin(object):
         if tensorboard_id is not False:
             tensorboard_handler = TensorboardHandler(api_key)
             tensorboard_handler.maybe_add_to_tensorboard(tensorboard_id, experiment_id)
+
+    def _handle_dataset_data(self, json_):
+        dataset_list = json_.pop("dataset_list", ())
+        dataset_tag_list = json_.pop("dataset_tag_list", ())
+        dataset_auth_list = json_.pop("dataset_auth_list", ())
+
+        dataset_list = none_strings_to_none_objects(dataset_list)
+        dataset_tag_list = none_strings_to_none_objects(dataset_tag_list)
+        dataset_auth_list = none_strings_to_none_objects(dataset_auth_list)
+
+        datasets = itertools.izip_longest(dataset_list, dataset_tag_list, dataset_auth_list, fillvalue=None)
+        datasets = [{"dataset_url": dataset[0],
+                     "dataset_tag": dataset[1],
+                     "dataset_auth": dataset[2]} for dataset in datasets]
+        json_["dataset"] = datasets
 
     @abc.abstractmethod
     def _create(self, json_, use_vpc):

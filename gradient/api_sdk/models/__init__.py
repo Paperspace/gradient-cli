@@ -1,4 +1,5 @@
 from .artifact import Artifact
+from .dataset import Dataset
 from .deployment import Deployment
 from .experiment import BaseExperiment, MultiNodeExperiment, SingleNodeExperiment, MpiMultiNodeExperiment
 from .hyperparameter import Hyperparameter

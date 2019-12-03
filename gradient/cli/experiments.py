@@ -94,6 +94,27 @@ def common_experiments_create_options(f):
             cls=common.GradientOption,
         ),
         click.option(
+            "--dataset",
+            "dataset_list",
+            multiple=True,
+            help="Url to S3 dataset",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--datasetTag",
+            "dataset_tag_list",
+            multiple=True,
+            help="S3 dataset's tag",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--datasetAuth",
+            "dataset_auth_list",
+            multiple=True,
+            help="S3 dataset's tag",
+            cls=common.GradientOption,
+        ),
+        click.option(
             "--ignoreFiles",
             "ignore_files",
             help="Ignore certain files from uploading",
