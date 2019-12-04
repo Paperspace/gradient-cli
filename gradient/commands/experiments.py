@@ -8,6 +8,8 @@ from halo import halo
 
 from gradient import api_sdk, exceptions, TensorboardClient
 from gradient.api_sdk import constants, sdk_exceptions
+from gradient.api_sdk.config import config
+from gradient.api_sdk.utils import urljoin
 from gradient.commands import tensorboards as tensorboards_commands
 from gradient.commands.common import BaseCommand, ListCommandMixin
 from gradient.logger import Logger
@@ -85,8 +87,14 @@ class BaseCreateExperimentCommandMixin(object):
             experiment_id = self._create(json_, use_vpc=use_vpc)
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(experiment_id))
+        self.logger.log(self.get_instance_url(experiment_id, json_["project_id"]))
+
         self._maybe_add_to_tensorboard(add_to_tensorboard, experiment_id, self.api_key)
         return experiment_id
+
+    def get_instance_url(self, instance_id, project_id):
+        url = urljoin(config.WEB_URL, "console/projects/{}/experiments/{}".format(project_id, instance_id))
+        return url
 
     def _handle_workspace(self, instance_dict):
         handler = self.workspace_handler.handle(instance_dict)
@@ -340,3 +348,9 @@ class ExperimentLogsCommand(BaseExperimentCommand):
         return (style(fg="blue", text=experiment_id),
                 style(fg="red", text=str(log_row.line)),
                 log_row.message)
+
+
+class DeleteExperimentCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, *args, **kwargs):
+        self.client.delete(experiment_id)
+        self.logger.log("Experiment deleted")

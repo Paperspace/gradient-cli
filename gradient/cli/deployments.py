@@ -2,7 +2,7 @@ import collections
 
 import click
 
-from gradient import exceptions, logger
+from gradient import exceptions, logger, DEPLOYMENT_TYPES_MAP
 from gradient.api_sdk import DeploymentsClient
 from gradient.cli import common
 from gradient.cli.cli import cli
@@ -16,13 +16,6 @@ from gradient import utils
 def deployments():
     pass
 
-
-DEPLOYMENT_TYPES_MAP = collections.OrderedDict(
-    (
-        ("TFSERVING", "Tensorflow Serving on K8s"),
-        # ("GRADIENT", "Gradient Jobs"),
-    )
-)
 
 DEPLOYMENT_MACHINE_TYPES = (
     "G1", "G6", "G12",
@@ -44,7 +37,7 @@ def get_deployment_client(api_key):
     "deployment_type",
     type=ChoiceType(DEPLOYMENT_TYPES_MAP, case_sensitive=False),
     required=True,
-    help="Model deployment type. Only TensorFlow models can currently be deployed",
+    help="Model deployment type",
     cls=common.GradientOption,
 )
 @click.option(

@@ -5,6 +5,8 @@ import six
 
 from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
+from gradient.api_sdk.config import config
+from gradient.api_sdk.utils import urljoin
 from .common import BaseCommand, ListCommandMixin
 
 
@@ -24,6 +26,11 @@ class CreateProjectCommand(BaseProjectCommand):
             project_id = self.client.create(**project_dict)
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(project_id))
+        self.logger.log(self.get_instance_url(project_id))
+
+    def get_instance_url(self, project_id):
+        url = urljoin(config.WEB_URL, "console/projects/{}/machines".format(project_id))
+        return url
 
 
 class ListProjectsCommand(ListCommandMixin, BaseProjectCommand):
@@ -42,3 +49,9 @@ class ListProjectsCommand(ListCommandMixin, BaseProjectCommand):
             data.append((obj.id, obj.name, obj.repository_url, created_str))
 
         return data
+
+
+class DeleteProjectCommand(BaseProjectCommand):
+    def execute(self, project_id):
+        self.client.delete(project_id)
+        self.logger.log("Project deleted")

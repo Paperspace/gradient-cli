@@ -232,6 +232,14 @@ def common_jobs_create_options(f):
             help="Cluster node details",
             cls=common.GradientOption,
         ),
+        click.option(
+            "--buildOnly",
+            "build_only",
+            type=bool,
+            is_flag=True,
+            help="Determines whether to only build and not run image (default false)",
+            cls=common.GradientOption,
+        ),
     ]
     return reduce(lambda x, opt: opt(x), reversed(options), f)
 

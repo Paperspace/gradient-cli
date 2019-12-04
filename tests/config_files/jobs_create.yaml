@@ -1,4 +1,5 @@
 apiKey: some_key
+buildOnly: true
 cluster: some_cluster_name
 clusterId: some_cluster_id
 command: some command

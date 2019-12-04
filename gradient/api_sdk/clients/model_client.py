@@ -1,5 +1,7 @@
+import json
+
 from .base_client import BaseClient
-from .. import repositories
+from .. import repositories, models
 
 
 class ModelsClient(BaseClient):
@@ -22,3 +24,27 @@ class ModelsClient(BaseClient):
         """
         repository = repositories.DeleteModel(api_key=self.api_key, logger=self.logger)
         repository.delete(model_id)
+
+    def upload(self, file_handle, name, model_type, model_summary=None, notes=None):
+        """Upload model
+
+        :param file file_handle: Model file handle
+        :param str name: Model name
+        :param str model_type: Model Type
+        :param dict|None model_summary: Dictionary describing model parameters like loss, accuracy, etc.
+        :param str|None notes: Optional model description
+
+        :return: ID of new model
+        :rtype: str
+        """
+
+        model = models.Model(
+            name=name,
+            model_type=model_type,
+            summary=json.dumps(model_summary) if model_summary else None,
+            notes=notes,
+        )
+
+        repository = repositories.UploadModel(api_key=self.api_key, logger=self.logger)
+        model_id = repository.create(model, file_handle=file_handle)
+        return model_id

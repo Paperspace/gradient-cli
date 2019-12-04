@@ -192,7 +192,8 @@ class TestCreateMachine(object):
 
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-    EXPECTED_STDOUT = "New machine created with id: psclbvqpc\n"
+    EXPECTED_STDOUT = "New machine created with id: psclbvqpc\n" \
+                      "https://www.paperspace.com/console/machines/psclbvqpc\n"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to create resource: Invalid API token\n"

@@ -46,7 +46,7 @@ class Deployment(object):
     :param int instance_count: Number of machine instances
 
     """
-    id_ = attr.ib(type=str, default=None)
+    id = attr.ib(type=str, default=None)
     name = attr.ib(type=str, default=None)
     endpoint = attr.ib(type=str, default=None)
     api_type = attr.ib(type=str, default=None)

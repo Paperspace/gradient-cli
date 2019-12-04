@@ -54,6 +54,7 @@ class JobsClient(BaseClient):
             cluster_id=None,
             node_attrs=None,
             workspace_file_name=None,
+            build_only=False,
     ):
         """
         Method to create and start job in paperspace gradient.
@@ -131,10 +132,15 @@ class JobsClient(BaseClient):
             cluster will be chosen so you do not need to provide it.
         :param dict node_attrs:
         :param str workspace_file_name:
+        :param bool build_only: determines whether to only build and not run image
 
         :returns: Job handle
         :rtype: str
         """
+
+        if not build_only:
+            build_only = None
+
         job = Job(
             machine_type=machine_type,
             container=container,
@@ -160,6 +166,7 @@ class JobsClient(BaseClient):
             cluster_id=cluster_id,
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
+            build_only=build_only,
         )
         handle = CreateJob(self.api_key, self.logger).create(job, data=data)
         return handle

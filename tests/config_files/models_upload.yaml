@@ -1,0 +1,7 @@
+FILE: saved_model.pb
+apiKey: some_key
+modelSummary:
+  key: value
+modelType: Tensorflow
+name: some_name
+notes: some notes

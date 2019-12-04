@@ -2,7 +2,7 @@ import abc
 
 import six
 
-from .common import ListResources, GetResource, CreateResource, StartResource, StopResource
+from .common import ListResources, GetResource, CreateResource, StartResource, StopResource, DeleteResource
 from .. import config, serializers
 from ..serializers import utils
 
@@ -63,6 +63,8 @@ class ListExperiments(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, Li
 
         project_id = kwargs.get("project_id")
         if project_id:
+            if isinstance(project_id, six.string_types):
+                project_id = [project_id]
             for i, experiment_id in enumerate(project_id):
                 key = "projectHandle[{}]".format(i)
                 params[key] = experiment_id
@@ -177,3 +179,9 @@ class StopExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, StopResource
         id_ = kwargs["id"]
         url = "/experiments/{}/stop/".format(id_)
         return url
+
+
+class DeleteExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, DeleteResource):
+    def get_request_url(self, **kwargs):
+        experiment_id = kwargs["id"]
+        return "/experiments/{}/".format(experiment_id)

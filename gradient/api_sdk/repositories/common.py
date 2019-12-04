@@ -2,8 +2,8 @@ import abc
 
 import six
 
-from ..sdk_exceptions import ResourceFetchingError, ResourceCreatingDataError, ResourceCreatingError
 from ..clients import http_client
+from ..sdk_exceptions import ResourceFetchingError, ResourceCreatingDataError, ResourceCreatingError
 from ..utils import MessageExtractor
 
 
@@ -136,9 +136,9 @@ class CreateResource(BaseRepository):
     VALIDATION_ERROR_MESSAGE = "Failed to create resource"
     HANDLE_FIELD = "handle"
 
-    def create(self, instance, use_vpc=False, data=None):
+    def create(self, instance, use_vpc=False, data=None, file_handle=None):
         instance_dict = self._get_instance_dict(instance)
-        response = self._send_create_request(instance_dict, use_vpc=use_vpc, data=data)
+        response = self._send_create_request(instance_dict, use_vpc=use_vpc, data=data, file_handle=file_handle)
         self._validate_response(response)
         handle = self._process_response(response)
         return handle
@@ -157,12 +157,13 @@ class CreateResource(BaseRepository):
         serializer = self.SERIALIZER_CLS()
         return serializer
 
-    def _send_create_request(self, instance_dict, use_vpc, data=None):
+    def _send_create_request(self, instance_dict, use_vpc, data=None, file_handle=None):
         url = self.get_request_url(use_vpc=use_vpc)
         client = self._get_client(use_vpc=use_vpc)
         json_ = self._get_request_json(instance_dict)
         params = self._get_request_params(instance_dict)
-        response = client.post(url, params=params, json=json_, data=data)
+        files = self._get_request_files(file_handle)
+        response = client.post(url, params=params, json=json_, data=data, files=files)
         gradient_response = http_client.GradientResponse.interpret_response(response)
         return gradient_response
 
@@ -181,6 +182,9 @@ class CreateResource(BaseRepository):
 
     def _get_request_json(self, instance_dict):
         return instance_dict
+
+    def _get_request_files(self, file_handle):
+        return None
 
 
 @six.add_metaclass(abc.ABCMeta)

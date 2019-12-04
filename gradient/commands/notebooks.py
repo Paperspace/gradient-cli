@@ -25,6 +25,11 @@ class CreateNotebookCommand(BaseNotebookCommand):
             notebook_id = self.client.create(**kwargs)
 
         self.logger.log("Created new notebook with id: {}".format(notebook_id))
+        self.logger.log(self.get_instance_url(notebook_id))
+
+    def get_instance_url(self, notebook_id):
+        notebook = self.client.get(notebook_id)
+        return notebook.url
 
 
 class DeleteNotebookCommand(BaseNotebookCommand):

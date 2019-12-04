@@ -11,6 +11,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             command,
             ports=None,
             workspace_url=None,
+            workspace_ref=None,
             workspace_username=None,
             workspace_password=None,
             working_directory=None,
@@ -36,6 +37,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str command: Container entrypoint command  [required]
         :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
+        :param str workspace_ref: Git commit hash, branch name or tag
         :param str workspace_username: Project git repository username
         :param str workspace_password: Project git repository password
         :param str working_directory: Working directory for the experiment
@@ -66,6 +68,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             machine_type=machine_type,
             ports=ports,
             workspace_url=workspace_url,
+            workspace_ref=workspace_ref,
             workspace_username=workspace_username,
             workspace_password=workspace_password,
             working_directory=working_directory,
@@ -102,6 +105,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             experiment_type_id=constants.ExperimentType.GRPC_MULTI_NODE,
             ports=None,
             workspace_url=None,
+            workspace_ref=None,
             workspace_username=None,
             workspace_password=None,
             working_directory=None,
@@ -137,6 +141,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param int|str experiment_type_id: Experiment Type ID
         :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
+        :param str workspace_ref: Git commit hash, branch name or tag
         :param str workspace_username: Project git repository username
         :param str workspace_password: Project git repository password
         :param str working_directory: Working directory for the experiment
@@ -179,6 +184,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_count=parameter_server_count,
             ports=ports,
             workspace_url=workspace_url,
+            workspace_ref=workspace_ref,
             workspace_username=workspace_username,
             workspace_password=workspace_password,
             working_directory=working_directory,
@@ -216,6 +222,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_count=None,
             ports=None,
             workspace_url=None,
+            workspace_ref=None,
             workspace_username=None,
             workspace_password=None,
             working_directory=None,
@@ -250,6 +257,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param int master_count: Master count  [required]
         :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
+        :param str workspace_ref: Git commit hash, branch name or tag
         :param str workspace_username: Project git repository username
         :param str workspace_password: Project git repository password
         :param str working_directory: Working directory for the experiment
@@ -278,36 +286,37 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         experiment_type_id = constants.ExperimentType.MPI_MULTI_NODE
 
         experiment = models.MpiMultiNodeExperiment(
-                name=name,
-                project_id=project_id,
-                experiment_type_id=experiment_type_id,
-                worker_container=worker_container,
-                worker_machine_type=worker_machine_type,
-                worker_command=worker_command,
-                worker_count=worker_count,
-                master_container=master_container,
-                master_machine_type=master_machine_type,
-                master_command=master_command,
-                master_count=master_count,
-                ports=ports,
-                workspace_url=workspace_url,
-                workspace_username=workspace_username,
-                workspace_password=workspace_password,
-                working_directory=working_directory,
-                artifact_directory=artifact_directory,
-                cluster_id=cluster_id,
-                experiment_env=experiment_env,
-                model_type=model_type,
-                model_path=model_path,
-                is_preemptible=is_preemptible,
-                worker_container_user=worker_container_user,
-                worker_registry_username=worker_registry_username,
-                worker_registry_password=worker_registry_password,
-                worker_registry_url=worker_registry_url,
-                master_container_user=master_container_user,
-                master_registry_username=master_registry_username,
-                master_registry_password=master_registry_password,
-                master_registry_url=master_registry_url,
+            name=name,
+            project_id=project_id,
+            experiment_type_id=experiment_type_id,
+            worker_container=worker_container,
+            worker_machine_type=worker_machine_type,
+            worker_command=worker_command,
+            worker_count=worker_count,
+            master_container=master_container,
+            master_machine_type=master_machine_type,
+            master_command=master_command,
+            master_count=master_count,
+            ports=ports,
+            workspace_url=workspace_url,
+            workspace_ref=workspace_ref,
+            workspace_username=workspace_username,
+            workspace_password=workspace_password,
+            working_directory=working_directory,
+            artifact_directory=artifact_directory,
+            cluster_id=cluster_id,
+            experiment_env=experiment_env,
+            model_type=model_type,
+            model_path=model_path,
+            is_preemptible=is_preemptible,
+            worker_container_user=worker_container_user,
+            worker_registry_username=worker_registry_username,
+            worker_registry_password=worker_registry_password,
+            worker_registry_url=worker_registry_url,
+            master_container_user=master_container_user,
+            master_registry_username=master_registry_username,
+            master_registry_password=master_registry_password,
+            master_registry_url=master_registry_url,
         )
 
         repository = repositories.CreateMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
@@ -322,6 +331,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             command,
             ports=None,
             workspace_url=None,
+            workspace_ref=None,
             workspace_username=None,
             workspace_password=None,
             working_directory=None,
@@ -346,6 +356,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str command: Container entrypoint command  [required]
         :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
+        :param str workspace_ref: Git commit hash, branch name or tag
         :param str workspace_username: Project git repository username
         :param str workspace_password: Project git repository password
         :param str working_directory: Working directory for the experiment
@@ -376,6 +387,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             machine_type=machine_type,
             ports=ports,
             workspace_url=workspace_url,
+            workspace_ref=workspace_ref,
             workspace_username=workspace_username,
             workspace_password=workspace_password,
             working_directory=working_directory,
@@ -412,6 +424,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             experiment_type_id=constants.ExperimentType.GRPC_MULTI_NODE,
             ports=None,
             workspace_url=None,
+            workspace_ref=None,
             workspace_username=None,
             workspace_password=None,
             working_directory=None,
@@ -446,6 +459,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param int|str experiment_type_id: Experiment Type ID [required]
         :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
+        :param str workspace_ref: Git commit hash, branch name or tag
         :param str workspace_username: Project git repository username
         :param str workspace_password: Project git repository password
         :param str working_directory: Working directory for the experiment
@@ -488,6 +502,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_count=parameter_server_count,
             ports=ports,
             workspace_url=workspace_url,
+            workspace_ref=workspace_ref,
             workspace_username=workspace_username,
             workspace_password=workspace_password,
             working_directory=working_directory,
@@ -525,6 +540,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_count,
             ports=None,
             workspace_url=None,
+            workspace_ref=None,
             workspace_username=None,
             workspace_password=None,
             working_directory=None,
@@ -558,6 +574,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param int master_count: Master count  [required]
         :param str ports: Port to use in new experiment
         :param str workspace_url: Project git repository url
+        :param str workspace_ref: Git commit hash, branch name or tag
         :param str workspace_username: Project git repository username
         :param str workspace_password: Project git repository password
         :param str working_directory: Working directory for the experiment
@@ -586,36 +603,37 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         experiment_type_id = constants.ExperimentType.MPI_MULTI_NODE
 
         experiment = models.MpiMultiNodeExperiment(
-                name=name,
-                project_id=project_id,
-                experiment_type_id=experiment_type_id,
-                worker_container=worker_container,
-                worker_machine_type=worker_machine_type,
-                worker_command=worker_command,
-                worker_count=worker_count,
-                master_container=master_container,
-                master_machine_type=master_machine_type,
-                master_command=master_command,
-                master_count=master_count,
-                ports=ports,
-                workspace_url=workspace_url,
-                workspace_username=workspace_username,
-                workspace_password=workspace_password,
-                working_directory=working_directory,
-                artifact_directory=artifact_directory,
-                cluster_id=cluster_id,
-                experiment_env=experiment_env,
-                model_type=model_type,
-                model_path=model_path,
-                is_preemptible=is_preemptible,
-                worker_container_user=worker_container_user,
-                worker_registry_username=worker_registry_username,
-                worker_registry_password=worker_registry_password,
-                worker_registry_url=worker_registry_url,
-                master_container_user=master_container_user,
-                master_registry_username=master_registry_username,
-                master_registry_password=master_registry_password,
-                master_registry_url=master_registry_url,
+            name=name,
+            project_id=project_id,
+            experiment_type_id=experiment_type_id,
+            worker_container=worker_container,
+            worker_machine_type=worker_machine_type,
+            worker_command=worker_command,
+            worker_count=worker_count,
+            master_container=master_container,
+            master_machine_type=master_machine_type,
+            master_command=master_command,
+            master_count=master_count,
+            ports=ports,
+            workspace_url=workspace_url,
+            workspace_ref=workspace_ref,
+            workspace_username=workspace_username,
+            workspace_password=workspace_password,
+            working_directory=working_directory,
+            artifact_directory=artifact_directory,
+            cluster_id=cluster_id,
+            experiment_env=experiment_env,
+            model_type=model_type,
+            model_path=model_path,
+            is_preemptible=is_preemptible,
+            worker_container_user=worker_container_user,
+            worker_registry_username=worker_registry_username,
+            worker_registry_password=worker_registry_password,
+            worker_registry_url=worker_registry_url,
+            master_container_user=master_container_user,
+            master_registry_username=master_registry_username,
+            master_registry_password=master_registry_password,
+            master_registry_url=master_registry_url,
         )
 
         repository = repositories.RunMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
@@ -697,3 +715,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         repository = repositories.ListExperimentLogs(api_key=self.api_key, logger=self.logger)
         logs_generator = repository.yield_logs(experiment_id, line, limit)
         return logs_generator
+
+    def delete(self, experiment_id):
+        repository = repositories.DeleteExperiment(api_key=self.api_key, logger=self.logger)
+        repository.delete(experiment_id)

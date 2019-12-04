@@ -3,7 +3,7 @@ import attr
 
 @attr.s
 class Job(object):
-    id_ = attr.ib(type=str, default=None)
+    id = attr.ib(type=str, default=None)
     name = attr.ib(type=str, default=None)
     state = attr.ib(type=str, default=None)
     workspace_url = attr.ib(type=str, default=None)
@@ -81,4 +81,4 @@ class Job(object):
     rel_dockerfile_path = attr.ib(type=str, default=None)
     registry_username = attr.ib(type=str, default=None)
     registry_password = attr.ib(type=str, default=None)
-
+    build_only = attr.ib(type=bool, default=None)

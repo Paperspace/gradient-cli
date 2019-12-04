@@ -21,6 +21,7 @@ vpc: true
 workingDirectory: /work/dir/
 workspace: null
 workspaceArchive: null
+workspaceRef: some_branch_name
 workspaceUrl: wsp.url
 workspaceUsername: username
 workspacePassword: password

@@ -1,5 +1,6 @@
 import abc
 
+import halo
 import six
 
 from gradient import api_sdk, exceptions
@@ -40,3 +41,13 @@ class DeleteModelCommand(GetModelsClientMixin, BaseCommand):
     def execute(self, model_id, *args, **kwargs):
         self.client.delete(model_id)
         self.logger.log("Model deleted")
+
+
+class UploadModel(GetModelsClientMixin, BaseCommand):
+    SPINNER_MESSAGE = "Uploading model"
+
+    def execute(self, file_handle, name, model_type, model_summary, notes):
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
+            model_id = self.client.upload(file_handle, name, model_type, model_summary, notes)
+
+        self.logger.log("Model uploaded with ID: {}".format(model_id))
