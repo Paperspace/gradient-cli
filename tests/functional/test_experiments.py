@@ -421,6 +421,18 @@ class TestExperimentsCreateMultiNode(object):
         "--modelType", "some-model-type",
         "--ignoreFiles", "file1,file2",
         "--isPreemptible",
+        "--datasetUri", "s3://some.dataset/uri",
+        "--datasetName", "some dataset name",
+        "--datasetAwsAccessKeyId", "none",
+        "--datasetAwsSecretAccessKey", "none",
+        "--datasetVersionId", "none",
+        "--datasetEtag", "some etag",
+        "--datasetUri", "s3://some.other.dataset/uri",
+        "--datasetName", "none",
+        "--datasetAwsAccessKeyId", "some_other_key_id",
+        "--datasetAwsSecretAccessKey", "some_other_secret",
+        "--datasetVersionId", "none",
+        "--datasetEtag", "some other etag",
     ]
     FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
         "experiments", "create", "multinode",
@@ -473,6 +485,24 @@ class TestExperimentsCreateMultiNode(object):
         "isPreemptible": True,
         "modelPath": "some-model-path",
         "modelType": "some-model-type",
+        "datasets": [
+            {
+                "uri": "s3://some.dataset/uri",
+                "name": "some dataset name",
+                "awsAccessKeyId": None,
+                "awsSecretAccessKey": None,
+                "versionId": None,
+                "etag": "some etag",
+            },
+            {
+                "uri": "s3://some.other.dataset/uri",
+                "name": None,
+                "awsAccessKeyId": "some_other_key_id",
+                "awsSecretAccessKey": "some_other_secret",
+                "versionId": None,
+                "etag": "some other etag",
+            },
+        ]
     }
     RESPONSE_JSON_200 = {"handle": "sadkfhlskdjh", "message": "success"}
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
@@ -766,6 +796,18 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--modelType", "some-model-type",
         "--ignoreFiles", "file1,file2",
         "--isPreemptible",
+        "--datasetUri", "s3://some.dataset/uri",
+        "--datasetName", "some dataset name",
+        "--datasetAwsAccessKeyId", "none",
+        "--datasetAwsSecretAccessKey", "none",
+        "--datasetVersionId", "none",
+        "--datasetEtag", "some etag",
+        "--datasetUri", "s3://some.other.dataset/uri",
+        "--datasetName", "none",
+        "--datasetAwsAccessKeyId", "some_other_key_id",
+        "--datasetAwsSecretAccessKey", "some_other_secret",
+        "--datasetVersionId", "none",
+        "--datasetEtag", "some other etag",
     ]
     FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
         "experiments", "run", "multinode",

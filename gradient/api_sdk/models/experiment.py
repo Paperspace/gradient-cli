@@ -1,7 +1,6 @@
 import attr
-import typing
 
-from .. import constants, Dataset
+from .. import constants
 
 
 @attr.s
@@ -52,7 +51,7 @@ class BaseExperiment(object):
     workspace_ref = attr.ib(type=str, default=None)
     workspace_username = attr.ib(type=str, default=None)
     workspace_password = attr.ib(type=str, default=None)
-    datasets = attr.ib(type=typing.List[Dataset], default=None)
+    datasets = attr.ib(type=list, default=None)
     working_directory = attr.ib(type=str, default=None)
     artifact_directory = attr.ib(type=str, default=None)
     cluster_id = attr.ib(type=str, default=None)

@@ -1,6 +1,22 @@
 apiKey: some_key
 artifactDirectory: /artdir
 clusterId: 2a
+datasetUri:
+  - "s3://some.dataset/uri"
+  - "s3://some.other.dataset/uri"
+datasetName:
+  - "some dataset name"
+  - null
+datasetAwsAccessKeyId:
+  - none
+  - some_other_key_id
+datasetAwsSecretAccessKey:
+  -
+  - some_other_secret
+datasetVersionId:
+datasetEtag:
+  - "some etag"
+  - "some other etag"
 experimentEnv:
   key: val
 experimentType: MPI
