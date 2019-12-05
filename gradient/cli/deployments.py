@@ -135,7 +135,6 @@ def get_deployment_client(api_key):
 @click.option(
     "--apiType",
     "api_type",
-    default=constants.ApiTypes.REST,
     help="Type of API",
     cls=common.GradientOption,
 )
