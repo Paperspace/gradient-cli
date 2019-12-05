@@ -155,6 +155,54 @@ def common_experiments_create_options(f):
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
 
+def dataset_options(f):
+    options = [
+        click.option(
+            "--datasetUri",
+            "dataset_uri_list",
+            multiple=True,
+            help="Url to S3 bucket with dataset",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--datasetName",
+            "dataset_name_list",
+            multiple=True,
+            help="Name of dataset",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--datasetAwsAccessKeyId",
+            "dataset_access_key_id_list",
+            multiple=True,
+            help="S3 bucket's Access Key ID",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--datasetAwsSecretAccessKey",
+            "dataset_secret_access_key_list",
+            multiple=True,
+            help="S3 bucket's Secret Access Key",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--datasetVersionId",
+            "dataset_version_id_list",
+            multiple=True,
+            help="S3 dataset's version ID",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--datasetEtag",
+            "dataset_etag_list",
+            multiple=True,
+            help="S3 dataset's ETag",
+            cls=common.GradientOption,
+        ),
+    ]
+    return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
+
+
 def common_experiment_create_multi_node_options(f):
     options = [
         click.option(
@@ -430,6 +478,7 @@ def parse_tensorboard_options(tensorboard, tensorboard_set):
 @create_experiment.command(name="multinode", help="Create multi node experiment", cls=GradientRegisterWriterCommand)
 @common_experiments_create_options
 @common_experiment_create_multi_node_options
+@dataset_options
 @tensorboard_option
 @api_key_option
 @common.options_file
@@ -452,6 +501,7 @@ def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_fi
 @create_experiment.command(name="singlenode", help="Create single node experiment", cls=GradientRegisterWriterCommand)
 @common_experiments_create_options
 @common_experiments_create_single_node_options
+@dataset_options
 @tensorboard_option
 @api_key_option
 @common.options_file
@@ -481,6 +531,7 @@ def create_single_node(api_key, use_vpc, tensorboard, tensorboard_set, options_f
     default=True,
     help="Don't show logs. Only create, start and exit",
 )
+@dataset_options
 @tensorboard_option
 @api_key_option
 @common.options_file
@@ -517,6 +568,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, t
     default=True,
     help="Don't show logs. Only create, start and exit",
 )
+@dataset_options
 @tensorboard_option
 @api_key_option
 @common.options_file

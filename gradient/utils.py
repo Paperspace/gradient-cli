@@ -92,3 +92,7 @@ class PathParser(object):
     @staticmethod
     def is_s3_url(path):
         return not os.path.exists(path) and path.lower().startswith("s3:")
+
+
+def none_strings_to_none_objects(lst):
+    return [elem if elem != "none" else None for elem in lst]
