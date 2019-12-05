@@ -32,6 +32,17 @@ class DeploymentsClient(BaseClient):
             machine_type,
             image_url,
             instance_count,
+            container_model_path=None,
+            image_username=None,
+            image_password=None,
+            image_server=None,
+            container_url_path=None,
+            endpoint_url_path=None,
+            method=None,
+            docker_args=None,
+            env=None,
+            api_type=None,
+            ports=None,
             cluster_id=None,
             auth_username=None,
             auth_password=None,
@@ -64,6 +75,17 @@ class DeploymentsClient(BaseClient):
         :param str machine_type: [G1|G6|G12|K80|P100|GV100] Type of machine for new deployment [required]
         :param str image_url: Docker image for model deployment  [required]
         :param int instance_count: Number of machine instances  [required]
+        :param str container_model_path: Container model path
+        :param str image_username: Username used to access docker image
+        :param str image_password: Password used to access docker image
+        :param str image_server: Docker image server
+        :param str container_url_path: Container URL path
+        :param str endpoint_url_path: Endpoint URL path
+        :param str method: Method
+        :param list[str]|tuple[str] docker_args: List of docker args
+        :param dict[str,str] env: Environmental variables
+        :param str api_type: Type of API (REST/GRPC)
+        :param str ports: Ports
         :param str cluster_id: cluster ID
         :param str auth_username: Username
         :param str auth_password: Password
@@ -79,9 +101,20 @@ class DeploymentsClient(BaseClient):
             machine_type=machine_type,
             image_url=image_url,
             instance_count=instance_count,
+            container_model_path=container_model_path,
+            image_username=image_username,
+            image_password=image_password,
+            image_server=image_server,
+            container_url_path=container_url_path,
+            endpoint_url_path=endpoint_url_path,
+            method=method,
+            docker_args=docker_args,
+            env=env,
+            api_type=api_type,
+            ports=ports,
+            cluster_id=cluster_id,
             auth_username=auth_username,
             auth_password=auth_password,
-            cluster_id=cluster_id,
         )
 
         repository = repositories.CreateDeployment(api_key=self.api_key, logger=self.logger)

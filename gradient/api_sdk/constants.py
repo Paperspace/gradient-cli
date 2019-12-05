@@ -106,3 +106,8 @@ MODEL_TYPES_MAP = collections.OrderedDict(
         ("Generic", ModelTypes.ONNX),
     )
 )
+
+
+class ApiTypes:
+    REST = "REST"
+    GRPC = "GRPC"

@@ -3,13 +3,13 @@ import collections
 import click
 
 from gradient import exceptions, logger, DEPLOYMENT_TYPES_MAP
-from gradient.api_sdk import DeploymentsClient
+from gradient import utils
+from gradient.api_sdk import DeploymentsClient, constants
 from gradient.cli import common
 from gradient.cli.cli import cli
-from gradient.cli.cli_types import ChoiceType
+from gradient.cli.cli_types import ChoiceType, json_string
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
 from gradient.commands import deployments as deployments_commands
-from gradient import utils
 
 
 @cli.group("deployments", help="Manage deployments", cls=ClickGroup)
@@ -74,6 +74,75 @@ def get_deployment_client(api_key):
     type=int,
     required=True,
     help="Number of machine instances",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--containerModelPath",
+    "container_model_path",
+    help="Container model path",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--imageUsername",
+    "image_username",
+    help="Username used to access docker image",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--imagePassword",
+    "image_password",
+    help="Password used to access docker image",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--imageServer",
+    "image_server",
+    help="Docker image server",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--containerUrlPath",
+    "container_url_path",
+    help="Container URL path",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--endpointUrlPath",
+    "endpoint_url_path",
+    help="Endpoint URL path",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--method",
+    "method",
+    help="Method",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--dockerArgs",
+    "docker_args",
+    type=json_string,
+    help="JSON-style list of docker args",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--env",
+    "env",
+    type=json_string,
+    help="JSON-style environmental variables map",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--apiType",
+    "api_type",
+    default=constants.ApiTypes.REST,
+    help="Type of API",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--ports",
+    "ports",
+    help="Ports",
     cls=common.GradientOption,
 )
 @click.option(
