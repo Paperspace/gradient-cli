@@ -13,7 +13,14 @@ from gradient.api_sdk.utils import urljoin
 from gradient.commands import tensorboards as tensorboards_commands
 from gradient.commands.common import BaseCommand, ListCommandMixin
 from gradient.logger import Logger
-from gradient.utils import get_terminal_lines
+from gradient.utils import get_terminal_lines, none_strings_to_none_objects
+
+try:
+    # Python 3
+    from itertools import zip_longest
+except ImportError:
+    # Python 2
+    from itertools import izip_longest as zip_longest
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -82,6 +89,7 @@ class BaseCreateExperimentCommandMixin(object):
 
     def execute(self, json_, add_to_tensorboard=False, use_vpc=False):
         self._handle_workspace(json_)
+        self._handle_dataset_data(json_)
 
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
             experiment_id = self._create(json_, use_vpc=use_vpc)
@@ -114,6 +122,33 @@ class BaseCreateExperimentCommandMixin(object):
         if tensorboard_id is not False:
             tensorboard_handler = TensorboardHandler(api_key)
             tensorboard_handler.maybe_add_to_tensorboard(tensorboard_id, experiment_id)
+
+    def _handle_dataset_data(self, json_):
+        """Make list of dataset dicts"""
+        if not json_.get("dataset_uri_list"):
+            return
+
+        datasets = [
+            json_.pop("dataset_uri_list", ()),
+            json_.pop("dataset_name_list", ()),
+            json_.pop("dataset_access_key_id_list", ()),
+            json_.pop("dataset_secret_access_key_list", ()),
+            json_.pop("dataset_version_id_list", ()),
+            json_.pop("dataset_etag_list", ()),
+        ]
+
+        datasets = [none_strings_to_none_objects(d) for d in datasets]
+
+        datasets = zip_longest(*datasets, fillvalue=None)
+        datasets = [{"uri": dataset[0],
+                     "name": dataset[1],
+                     "aws_access_key_id": dataset[2],
+                     "aws_secret_access_key": dataset[3],
+                     "version_id": dataset[4],
+                     "etag": dataset[5],
+                     } for dataset in datasets]
+
+        json_["datasets"] = datasets
 
     @abc.abstractmethod
     def _create(self, json_, use_vpc):

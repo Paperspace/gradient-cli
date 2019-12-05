@@ -102,3 +102,7 @@ def validate_auth_options(kwargs):
     # checking if both or none auth options were used
     if len([val for val in (kwargs["auth_username"], kwargs["auth_password"]) if val is not None]) == 1:
         raise exceptions.ApplicationError("--authUsername and --authPassword have to be used together")
+
+
+def none_strings_to_none_objects(lst):
+    return [elem if elem != "none" else None for elem in lst]
