@@ -1,9 +1,26 @@
+authUsername: some_username
+authPassword: some_password
 apiKey: some_key
+apiType: REST
 clusterId: some_cluster_id
+containerModelPath: some/container/model/path
+containerUrlPath: some/container/url/path
 deploymentType: TFSERVING
+dockerArgs:
+  - some
+  - docker
+  - args
+endpointUrlPath: some/endpoint/url/path
+env:
+  key: value
 imageUrl: https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation
+imageUsername: some_image_username
+imagePassword: some_image_password
+imageServer: some.image/server
 instanceCount: 666
 machineType: G1
+method: some_method
 modelId: some_model_id
 name: some_name
+ports: 5000,6000:7000
 vpc: true

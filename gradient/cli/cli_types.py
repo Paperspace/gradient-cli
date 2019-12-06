@@ -22,4 +22,6 @@ class ChoiceType(click.Choice):
 
 def json_string(val):
     """Wraps json.loads so the cli help shows proper option's type name instead of 'LOADS'"""
-    return json.loads(val)
+    if not isinstance(val, (dict, list)):
+        val = json.loads(val)
+    return val
