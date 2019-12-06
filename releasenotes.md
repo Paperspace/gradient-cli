@@ -1,5 +1,15 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.0a3
+### Breaking changes
+* Added `projects delete` command
+* Added `models upload` command for uploading model file from local machine
+* Added `--workspaceRef` option to `experiments create/run` for specifying branch, commit hash or tag
+* Added new options to `experiments create/run` for creating experiments with datasets
+* Added several new options to `deployments create`
+### Fixes
+* Added filtering deleted projects in `projects list`
+
 # Release Notes for 0.5.0a2
 ### Breaking changes
 * Changed ID attribute in Job and Deployment models from `id_` to `id`
