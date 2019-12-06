@@ -4,6 +4,7 @@ import mock
 import pytest
 
 import gradient.api_sdk.utils
+from gradient import utils, exceptions
 from gradient.exceptions import WrongPathError
 from gradient.utils import PathParser
 
@@ -108,3 +109,21 @@ class TestPathParser(object):
 
         with pytest.raises(WrongPathError):
             PathParser.parse_path(path_str)
+
+
+class TestValidateAuthOptions(object):
+    def test_should_not_raise_exception_when_only_generate_auth_was_set(self):
+        kwargs = {"auth_username": None, "auth_password": None, "generate_auth": True}
+        utils.validate_auth_options(kwargs)
+
+    def test_should_not_raise_exception_when_username_and_password_was_set(self):
+        kwargs = {"auth_username": "username", "auth_password": "password", "generate_auth": False}
+        utils.validate_auth_options(kwargs)
+
+    def test_should_not_raise_exception_when_username_was_set_but_no_password(self):
+        kwargs = {"auth_username": "username", "auth_password": None, "generate_auth": False}
+        pytest.raises(exceptions.ApplicationError, utils.validate_auth_options, kwargs)
+
+    def test_should_not_raise_exception_when_all_values_were_set(self):
+        kwargs = {"auth_username": "username", "auth_password": "password", "generate_auth": True}
+        pytest.raises(exceptions.ApplicationError, utils.validate_auth_options, kwargs)

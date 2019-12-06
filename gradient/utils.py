@@ -6,6 +6,7 @@ import click
 import requests
 import six
 
+from gradient import exceptions
 from gradient.exceptions import WrongPathError
 
 
@@ -92,6 +93,15 @@ class PathParser(object):
     @staticmethod
     def is_s3_url(path):
         return not os.path.exists(path) and path.lower().startswith("s3:")
+
+
+def validate_auth_options(kwargs):
+    if kwargs["generate_auth"] and any((kwargs["auth_username"], kwargs["auth_password"])):
+        raise exceptions.ApplicationError("Use either --authUsername and --authPassword options or --auth flag")
+
+    # checking if both or none auth options were used
+    if len([val for val in (kwargs["auth_username"], kwargs["auth_password"]) if val is not None]) == 1:
+        raise exceptions.ApplicationError("--authUsername and --authPassword have to be used together")
 
 
 def none_strings_to_none_objects(lst):

@@ -6,7 +6,7 @@ import terminaltables
 from halo import halo
 
 from gradient import version, logger as gradient_logger, exceptions
-from gradient.api_sdk import sdk_exceptions
+from gradient.api_sdk import sdk_exceptions, utils
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import urljoin
@@ -31,6 +31,8 @@ class _DeploymentCommand(object):
 
 class CreateDeploymentCommand(_DeploymentCommand):
     def execute(self, use_vpc=False, **kwargs):
+        self._handle_auth(kwargs)
+
         with halo.Halo(text="Creating new deployment", spinner="dots"):
             deployment_id = self.deployment_client.create(use_vpc=use_vpc, **kwargs)
 
@@ -40,6 +42,13 @@ class CreateDeploymentCommand(_DeploymentCommand):
     def get_instance_url(self, instance_id):
         url = urljoin(config.WEB_URL, "/console/deployments/{}".format(instance_id))
         return url
+
+    def _handle_auth(self, kwargs):
+        if kwargs.pop("generate_auth", False):
+            auth_username, auth_password = utils.generate_credentials_pair(12)
+            kwargs["auth_username"] = auth_username
+            kwargs["auth_password"] = auth_password
+            self.logger.log("Generated credentials: \nusername:{}\npassword:{}".format(auth_password, auth_username))
 
 
 class ListDeploymentsCommand(_DeploymentCommand):
