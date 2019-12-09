@@ -1,6 +1,7 @@
 import abc
 import pydoc
 
+import click
 import six
 import terminaltables
 from click import style
@@ -123,11 +124,9 @@ class BaseCreateExperimentCommandMixin(object):
             tensorboard_handler = TensorboardHandler(api_key)
             tensorboard_handler.maybe_add_to_tensorboard(tensorboard_id, experiment_id)
 
-    def _handle_dataset_data(self, json_):
+    @staticmethod
+    def _handle_dataset_data(json_):
         """Make list of dataset dicts"""
-        if not json_.get("dataset_uri_list"):
-            return
-
         datasets = [
             json_.pop("dataset_uri_list", ()),
             json_.pop("dataset_name_list", ()),
@@ -136,6 +135,17 @@ class BaseCreateExperimentCommandMixin(object):
             json_.pop("dataset_version_id_list", ()),
             json_.pop("dataset_etag_list", ()),
         ]
+
+        if not any(datasets):
+            return
+        else:
+            dataset_uri_len = len(datasets[0])
+            other_dataset_param_max_len = max(len(elem) for elem in datasets[1:])
+            if dataset_uri_len < other_dataset_param_max_len:
+                # there no point in defining n+1 dataset parameters of one type for n datasets
+                raise click.BadParameter(
+                    "Too many dataset parameter sets ({}) for {} dataset URIs. Forgot to add one more dataset URI?"
+                        .format(other_dataset_param_max_len, dataset_uri_len))
 
         datasets = [none_strings_to_none_objects(d) for d in datasets]
 
