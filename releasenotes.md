@@ -1,7 +1,11 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.0a4
+### Fixes
+* Fixed KeyError when setting dataset options without setting --datasetUri
+
 # Release Notes for 0.5.0a3
-### Breaking changes
+### New features
 * Added `projects delete` command
 * Added `models upload` command for uploading model file from local machine
 * Added `--workspaceRef` option to `experiments create/run` for specifying branch, commit hash or tag
