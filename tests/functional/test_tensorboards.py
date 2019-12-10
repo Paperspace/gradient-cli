@@ -303,7 +303,7 @@ class TestTensorboardsAddExperiment(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"title": "Invalid credentials provided"}
-    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid credentials provided\n"
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to update resource: Invalid credentials provided\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_valid_request_when_command_was_executed_with_required_options(self, put_patched):
@@ -367,7 +367,7 @@ class TestTensorboardsRemoveExperiment(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"title": "Invalid credentials provided"}
-    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid credentials provided\n"
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to update resource: Invalid credentials provided\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_valid_request_when_command_was_executed_with_required_options(self, put_patched):

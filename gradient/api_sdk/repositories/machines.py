@@ -134,20 +134,13 @@ class GetMachine(MachinesApiUrlMixin, GetResource):
 
 
 class UpdateMachine(MachinesApiUrlMixin, AlterResource):
-    def update(self, id, instance):
-        instance_dict = self._get_instance_dict(instance)
-        self._run(id=id, **instance_dict)
+    SERIALIZER_CLS = serializers.MachineSchema
+    VALIDATION_ERROR_MESSAGE = "Failed to update resource"
 
     def get_request_url(self, **kwargs):
         machine_id = kwargs["id"]
         url = "/machines/{}/updateMachinePublic/".format(machine_id)
         return url
-
-    def _get_instance_dict(self, instance):
-        serializer = serializers.MachineSchema()
-        serialization_result = serializer.dump(instance)
-        instance_dict = serialization_result.data
-        return instance_dict
 
     def _get_request_json(self, kwargs):
         kwargs.pop("id", None)

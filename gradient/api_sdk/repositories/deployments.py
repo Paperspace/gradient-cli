@@ -1,4 +1,4 @@
-from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource
+from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource, AlterResource
 from .. import serializers, config
 
 
@@ -112,3 +112,32 @@ class DeleteDeployment(GetBaseDeploymentApiUrlMixin, DeleteResource):
     def _send_request(self, client, url, json_data=None):
         response = client.post(url, json=json_data)
         return response
+
+
+class UpdateDeployment(GetBaseDeploymentApiUrlMixin, AlterResource):
+    SERIALIZER_CLS = serializers.DeploymentSchema
+    VALIDATION_ERROR_MESSAGE = "Failed to update resource"
+
+    def update(self, id, instance, use_vpc=False):
+        instance_dict = self._get_instance_dict(instance)
+        instance_dict["use_vpc"] = use_vpc
+        self._run(id=id, **instance_dict)
+
+    def get_request_url(self, **kwargs):
+        if kwargs.get("use_vpc") or config.config.USE_VPC:
+            return "/deployments/v2/updateDeployment"
+
+        return "/deployments/updateDeployment"
+
+    def _get_request_json(self, kwargs):
+        # this awful hack is here "temporarily" because create and update
+        # endpoints have different names for docker args field
+        args = kwargs.pop("dockerArgs", None)
+        if args:
+            kwargs["args"] = args
+
+        j = {
+            "id": kwargs.pop("id"),
+            "upd": kwargs,
+        }
+        return j

@@ -1316,7 +1316,7 @@ class TestUpdateMachine(object):
     EXPECTED_STDOUT = "Machine updated\n"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
-    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to update resource: Invalid API token\n"
 
     RESPONSE_JSON_WITH_WRONG_MACHINE_ID = {"error": {"name": "Error", "status": 404, "message": "Not found"}}
 
@@ -1414,7 +1414,7 @@ class TestUpdateMachine(object):
                                        params=None,
                                        files=None,
                                        data=None)
-        assert result.output == "Failed to fetch data: Not found\n"
+        assert result.output == "Failed to update resource: Not found\n"
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -1430,7 +1430,7 @@ class TestUpdateMachine(object):
                                        params=None,
                                        files=None,
                                        data=None)
-        assert result.output == "Failed to fetch data\n"
+        assert result.output == "Failed to update resource\n"
         assert result.exit_code == 0
 
 
