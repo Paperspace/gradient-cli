@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.0a5
+### New features
+* Added `deployments update` command
+
 # Release Notes for 0.5.0a4
 ### Fixes
 * Fixed KeyError when setting dataset options without setting --datasetUri
