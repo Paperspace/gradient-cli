@@ -1,5 +1,3 @@
-from gradient.api_sdk.serializers import TensorboardSchema
-
 from gradient.api_sdk.config import config
 from . import common
 from .. import serializers, models
@@ -59,6 +57,8 @@ class ListTensorboards(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common.
 
 
 class UpdateTensorboard(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common.AlterResource):
+    VALIDATION_ERROR_MESSAGE = "Failed to update resource"
+
     def update(self, id, **kwargs):
         resp = self._run(id=id, **kwargs)
         tensorboard = self._parse_object(resp.data)
@@ -95,5 +95,7 @@ class UpdateTensorboard(ParseTensorboardMixin, GetTensorboardApiUrlMixin, common
 
 
 class DeleteTensorboard(GetTensorboardApiUrlMixin, common.DeleteResource):
+    VALIDATION_ERROR_MESSAGE = "Failed to delete resource"
+
     def get_request_url(self, **kwargs):
         return "/tensorboards/v1/{}".format(kwargs["id"])

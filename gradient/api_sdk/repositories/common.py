@@ -189,6 +189,22 @@ class CreateResource(BaseRepository):
 
 @six.add_metaclass(abc.ABCMeta)
 class AlterResource(BaseRepository):
+    SERIALIZER_CLS = None
+
+    def update(self, id, instance):
+        instance_dict = self._get_instance_dict(instance)
+        self._run(id=id, **instance_dict)
+
+    def _get_instance_dict(self, instance):
+        serializer = self._get_serializer()
+        serialization_result = serializer.dump(instance)
+        instance_dict = serialization_result.data
+        return instance_dict
+
+    def _get_serializer(self):
+        serializer = self.SERIALIZER_CLS()
+        return serializer
+
     def _run(self, use_vpc=False, **kwargs):
         url = self.get_request_url(use_vpc=use_vpc, **kwargs)
         response = self._send(url, use_vpc=use_vpc, **kwargs)

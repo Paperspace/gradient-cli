@@ -299,3 +299,151 @@ def delete_deployment(id_, use_vpc, options_file, api_key):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.DeleteDeploymentCommand(deployment_client=deployment_client)
     command.execute(deployment_id=id_, use_vpc=use_vpc)
+
+
+@deployments.command("update", help="Modify existing deployment")
+@click.option(
+    "--id",
+    "deployment_id",
+    required=True,
+    help="ID of existing deployment",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--deploymentType",
+    "deployment_type",
+    type=ChoiceType(DEPLOYMENT_TYPES_MAP, case_sensitive=False),
+    help="Model deployment type",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--modelId",
+    "model_id",
+    help="ID of a trained model",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--name",
+    "name",
+    help="Human-friendly name for new model deployment",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--machineType",
+    "machine_type",
+    help="Type of machine for new deployment",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--imageUrl",
+    "image_url",
+    help="Docker image for model serving",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--instanceCount",
+    "instance_count",
+    type=int,
+    help="Number of machine instances",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--containerModelPath",
+    "container_model_path",
+    help="Container model path",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--imageUsername",
+    "image_username",
+    help="Username used to access docker image",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--imagePassword",
+    "image_password",
+    help="Password used to access docker image",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--imageServer",
+    "image_server",
+    help="Docker image server",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--containerUrlPath",
+    "container_url_path",
+    help="Container URL path",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--endpointUrlPath",
+    "endpoint_url_path",
+    help="Endpoint URL path",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--method",
+    "method",
+    help="Method",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--dockerArgs",
+    "docker_args",
+    type=json_string,
+    help="JSON-style list of docker args",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--env",
+    "env",
+    type=json_string,
+    help="JSON-style environmental variables map",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--apiType",
+    "api_type",
+    help="Type of API",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--ports",
+    "ports",
+    help="Ports",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--authUsername",
+    "auth_username",
+    help="Username",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--authPassword",
+    "auth_password",
+    help="Password",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--clusterId",
+    "cluster_id",
+    help="Cluster ID",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--vpc",
+    "use_vpc",
+    type=bool,
+    is_flag=True,
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def update_deployment(deployment_id, api_key, use_vpc, options_file, **kwargs):
+    del_if_value_is_none(kwargs)
+    deployment_client = get_deployment_client(api_key)
+    command = deployments_commands.UpdateDeploymentCommand(deployment_client=deployment_client)
+    command.execute(deployment_id, use_vpc=use_vpc, **kwargs)

@@ -63,6 +63,13 @@ def deployments_create_config_path():
 
 
 @pytest.fixture
+def deployments_update_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "deployments_update.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
 def deployments_list_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "deployments_list.yaml"

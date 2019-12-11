@@ -117,3 +117,11 @@ class DeleteDeploymentCommand(_DeploymentCommand):
     def execute(self, **kwargs):
         self.deployment_client.delete(**kwargs)
         self.logger.log("Deployment deleted")
+
+
+class UpdateDeploymentCommand(_DeploymentCommand):
+    def execute(self, deployment_id, use_vpc=False, **kwargs):
+        with halo.Halo(text="Updating deployment data", spinner="dots"):
+            self.deployment_client.update(deployment_id, use_vpc=use_vpc, **kwargs)
+
+        self.logger.log("Deployment data updated")

@@ -168,3 +168,54 @@ class DeploymentsClient(BaseClient):
     def delete(self, deployment_id, use_vpc=False):
         repository = repositories.DeleteDeployment(api_key=self.api_key, logger=self.logger)
         repository.delete(deployment_id, use_vpc=use_vpc)
+
+    def update(
+            self,
+            deployment_id,
+            deployment_type=None,
+            model_id=None,
+            name=None,
+            machine_type=None,
+            image_url=None,
+            instance_count=None,
+            container_model_path=None,
+            image_username=None,
+            image_password=None,
+            image_server=None,
+            container_url_path=None,
+            endpoint_url_path=None,
+            method=None,
+            docker_args=None,
+            env=None,
+            api_type=None,
+            ports=None,
+            cluster_id=None,
+            auth_username=None,
+            auth_password=None,
+            use_vpc=False,
+    ):
+        deployment = models.Deployment(
+            deployment_type=deployment_type,
+            model_id=model_id,
+            name=name,
+            machine_type=machine_type,
+            image_url=image_url,
+            instance_count=instance_count,
+            container_model_path=container_model_path,
+            image_username=image_username,
+            image_password=image_password,
+            image_server=image_server,
+            container_url_path=container_url_path,
+            endpoint_url_path=endpoint_url_path,
+            method=method,
+            docker_args=docker_args,
+            env=env,
+            api_type=api_type,
+            ports=ports,
+            cluster_id=cluster_id,
+            auth_username=auth_username,
+            auth_password=auth_password,
+        )
+
+        repository = repositories.UpdateDeployment(api_key=self.api_key, logger=self.logger)
+        repository.update(deployment_id, deployment, use_vpc=use_vpc)
