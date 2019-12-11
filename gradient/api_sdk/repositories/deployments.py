@@ -130,7 +130,7 @@ class UpdateDeployment(GetBaseDeploymentApiUrlMixin, AlterResource):
         return "/deployments/updateDeployment"
 
     def _get_request_json(self, kwargs):
-        # this awful hack is here "temporarily" because create and update
+        # this temporary workaround is here because create and update
         # endpoints have different names for docker args field
         args = kwargs.pop("dockerArgs", None)
         if args:
