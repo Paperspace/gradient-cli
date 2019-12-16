@@ -722,7 +722,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         """Get experiment instance
 
         :param str experiment_id: Experiment ID
-        :rtype: models.SingleNodeExperiment|models.MultiNodeExperiment
+        :rtype: models.SingleNodeExperiment|models.MultiNodeExperiment|MpiMultiNodeExperiment
         """
         repository = repositories.GetExperiment(api_key=self.api_key, logger=self.logger)
         experiment = repository.get(experiment_id=experiment_id)
