@@ -1,13 +1,9 @@
 import abc
-import pydoc
 
 import halo
 import six
-import terminaltables
-
 from gradient import api_sdk
-from gradient.commands.common import BaseCommand, ListCommandMixin
-from gradient.utils import get_terminal_lines
+from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -56,41 +52,8 @@ class ListNotebooksCommand(ListCommandMixin, BaseNotebookCommand):
         return data
 
 
-class ShowNotebookDetailsCommand(BaseNotebookCommand):
-    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data"
-
-    def execute(self, id_):
-        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            instance = self._get_instance(id_)
-
-        self._log_object(instance)
-
-    def _get_instance(self, id_):
-        """
-        :rtype: api_sdk.Notebook
-        """
-        instance = self.client.get(id_)
-        return instance
-
-    def _log_object(self, instance):
-
-        table_str = self._make_table(instance)
-        if len(table_str.splitlines()) > get_terminal_lines():
-            pydoc.pager(table_str)
-        else:
-            self.logger.log(table_str)
-
-    def _make_table(self, instance):
-        """
-        :param api_sdk.Notebook:
-        """
-        data = self._get_table_data(instance)
-        ascii_table = terminaltables.AsciiTable(data)
-        table_string = ascii_table.table
-        return table_string
-
-    @staticmethod
-    def _get_table_data(instance):
+class ShowNotebookDetailsCommand(DetailsCommandMixin, BaseNotebookCommand):
+    def _get_table_data(self, instance):
         """
         :param api_sdk.Notebook instance:
         """

@@ -844,30 +844,30 @@ class TestExperimentDetail(object):
     COMMAND_WITH_API_KEY = ["experiments", "details", "experiment-id", "--apiKey", "some_key"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "details", "--optionsFile", ]  # path added in test
 
-    MULTI_NODE_DETAILS_STDOUT = """+-------------------------------+----------------+
-| Name                          | multinode_mpi  |
-+-------------------------------+----------------+
-| ID                            | ew69ls0vy3eto  |
-| State                         | created        |
-| Artifact directory            | /artdir        |
-| Cluster ID                    | 2a             |
-| Experiment Env                | {'key': 'val'} |
-| Experiment Type               | MPI multi node |
-| Model Type                    | None           |
-| Model Path                    | None           |
-| Parameter Server Command      | ls             |
-| Parameter Server Container    | pscon          |
-| Parameter Server Count        | 2              |
-| Parameter Server Machine Type | psmtype        |
-| Ports                         | 3456           |
-| Project ID                    | prq70zy79      |
-| Worker Command                | wcom           |
-| Worker Container              | wcon           |
-| Worker Count                  | 2              |
-| Worker Machine Type           | mty            |
-| Working Directory             | /dir           |
-| Workspace URL                 | wurl           |
-+-------------------------------+----------------+
+    MULTI_NODE_DETAILS_STDOUT = """+---------------------+--------------------------+
+| Name                | some_name                |
++---------------------+--------------------------+
+| ID                  | emarbao6t6tsn            |
+| State               | pending                  |
+| Artifact directory  | /some/artifact/directory |
+| Cluster ID          | clqr4b0ox                |
+| Experiment Env      | {'key': 'value'}         |
+| Experiment Type     | MPI multi node           |
+| Model Type          | some_type                |
+| Model Path          | /some/model/path         |
+| Master Command      | None                     |
+| Master Container    | None                     |
+| Master Count        | None                     |
+| Master Machine Type | None                     |
+| Ports               | 5000                     |
+| Project ID          | pr85u3sfa                |
+| Worker Command      | None                     |
+| Worker Container    | None                     |
+| Worker Count        | None                     |
+| Worker Machine Type | None                     |
+| Working Directory   | /some/working/directory  |
+| Workspace URL       | some.url                 |
++---------------------+--------------------------+
 """
     SINGLE_NODE_DETAILS_STDOUT = """+---------------------+----------------+
 | Name                | dsfads         |
@@ -944,8 +944,7 @@ class TestExperimentDetail(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_multi_node_experiment_details_in_a_table(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_MULTI_NODE_EXPERIMENT_RESPONSE_JSON,
-                                                200, "fake content")
+        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_MULTI_NODE_EXPERIMENT_RESPONSE_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -955,7 +954,7 @@ class TestExperimentDetail(object):
                                             json=None,
                                             params=None)
 
-        assert result.output == self.MULTI_NODE_DETAILS_STDOUT, result.exc_info[1]
+        assert result.output.strip() == self.MULTI_NODE_DETAILS_STDOUT.strip(), result.exc_info[1]
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")

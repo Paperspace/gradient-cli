@@ -3,10 +3,11 @@ import pydoc
 
 import six
 import terminaltables
-from halo import halo
-
+from gradient import exceptions
+from gradient.api_sdk import sdk_exceptions
 from gradient.logger import Logger
 from gradient.utils import get_terminal_lines
+from halo import halo
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -60,3 +61,37 @@ class ListCommandMixin(object):
         ascii_table = terminaltables.AsciiTable(table_data)
         table_string = ascii_table.table
         return table_string
+
+
+@six.add_metaclass(abc.ABCMeta)
+class DetailsCommandMixin(object):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
+
+    def execute(self, id_):
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            instance = self._get_instance(id_)
+
+        self._log_object(instance)
+
+    def _get_instance(self, id_):
+        instance = self.client.get(id_)
+
+        return instance
+
+    def _log_object(self, instance):
+
+        table_str = self._make_table(instance)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
+
+    def _make_table(self, instance):
+        data = self._get_table_data(instance)
+        ascii_table = terminaltables.AsciiTable(data)
+        table_string = ascii_table.table
+        return table_string
+
+    @abc.abstractmethod
+    def _get_table_data(self, instance):
+        pass

@@ -5,16 +5,15 @@ import click
 import six
 import terminaltables
 from click import style
-from halo import halo
-
 from gradient import api_sdk, exceptions, TensorboardClient
 from gradient.api_sdk import constants, sdk_exceptions
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import urljoin
 from gradient.commands import tensorboards as tensorboards_commands
-from gradient.commands.common import BaseCommand, ListCommandMixin
+from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 from gradient.logger import Logger
 from gradient.utils import get_terminal_lines, none_strings_to_none_objects
+from halo import halo
 
 try:
     # Python 3
@@ -253,50 +252,19 @@ class ListExperimentsCommand(ListCommandMixin, BaseExperimentCommand):
         return data
 
 
-class GetExperimentCommand(BaseExperimentCommand):
-    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
-
-    def execute(self, id_):
-        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            instance = self._get_instance(id_)
-
-        self._log_object(instance)
-
-    def _get_instance(self, id_):
+class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
+    def _get_table_data(self, experiment):
         """
-        :rtype: api_sdk.SingleNodeExperiment|api_sdk.MultiNodeExperiment
+        :param api_sdk.SingleNodeExperiment|api_sdk.MultiNodeExperiment|api_sdk.MpiMultiNodeExperiment experiment:
         """
-        try:
-            instance = self.client.get(id_)
-        except sdk_exceptions.GradientSdkError as e:
-            raise exceptions.ReceivingDataFailedError(e)
-
-        return instance
-
-    def _log_object(self, instance):
-
-        table_str = self._make_table(instance)
-        if len(table_str.splitlines()) > get_terminal_lines():
-            pydoc.pager(table_str)
-        else:
-            self.logger.log(table_str)
-
-    def _make_table(self, experiment):
-        """
-        :param api_sdk.BaseExperiment:
-        """
-        data = self._get_experiment_table_data(experiment)
-        ascii_table = terminaltables.AsciiTable(data)
-        table_string = ascii_table.table
-        return table_string
-
-    def _get_experiment_table_data(self, experiment):
         if experiment.experiment_type_id == constants.ExperimentType.SINGLE_NODE:
             return self._get_single_node_data(experiment)
 
-        if experiment.experiment_type_id in (constants.ExperimentType.GRPC_MULTI_NODE,
-                                             constants.ExperimentType.MPI_MULTI_NODE):
-            return self._get_multi_node_data(experiment)
+        if experiment.experiment_type_id == constants.ExperimentType.GRPC_MULTI_NODE:
+            return self._get_multi_node_grpc_data(experiment)
+
+        if experiment.experiment_type_id == constants.ExperimentType.MPI_MULTI_NODE:
+            return self._get_multi_node_mpi_data(experiment)
 
         raise ValueError("Wrong experiment type: {}".format(experiment.experiment_type_id))
 
@@ -322,7 +290,7 @@ class GetExperimentCommand(BaseExperimentCommand):
         return data
 
     @staticmethod
-    def _get_multi_node_data(experiment):
+    def _get_multi_node_grpc_data(experiment):
         """
         :param api_sdk.MultiNodeExperiment experiment:
         """
@@ -340,6 +308,36 @@ class GetExperimentCommand(BaseExperimentCommand):
             ("Parameter Server Container", experiment.parameter_server_container),
             ("Parameter Server Count", experiment.parameter_server_count),
             ("Parameter Server Machine Type", experiment.parameter_server_machine_type),
+            ("Ports", experiment.ports),
+            ("Project ID", experiment.project_id),
+            ("Worker Command", experiment.worker_command),
+            ("Worker Container", experiment.worker_container),
+            ("Worker Count", experiment.worker_count),
+            ("Worker Machine Type", experiment.worker_machine_type),
+            ("Working Directory", experiment.working_directory),
+            ("Workspace URL", experiment.workspace_url),
+        )
+        return data
+
+    @staticmethod
+    def _get_multi_node_mpi_data(experiment):
+        """
+        :param api_sdk.MpiMultiNodeExperiment experiment:
+        """
+        data = (
+            ("Name", experiment.name),
+            ("ID", experiment.id),
+            ("State", constants.ExperimentState.get_state_str(experiment.state)),
+            ("Artifact directory", experiment.artifact_directory),
+            ("Cluster ID", experiment.cluster_id),
+            ("Experiment Env", experiment.experiment_env),
+            ("Experiment Type", constants.ExperimentType.get_type_str(experiment.experiment_type_id)),
+            ("Model Type", experiment.model_type),
+            ("Model Path", experiment.model_path),
+            ("Master Command", experiment.master_command),
+            ("Master Container", experiment.master_container),
+            ("Master Count", experiment.master_count),
+            ("Master Machine Type", experiment.master_machine_type),
             ("Ports", experiment.ports),
             ("Project ID", experiment.project_id),
             ("Worker Command", experiment.worker_command),

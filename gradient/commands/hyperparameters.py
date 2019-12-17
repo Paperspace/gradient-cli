@@ -1,15 +1,11 @@
 import abc
-import pydoc
 
-import halo
 import six
 import terminaltables
-
 from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
-from gradient.commands.common import BaseCommand, ListCommandMixin
+from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 from gradient.commands.experiments import BaseCreateExperimentCommandMixin
-from gradient.utils import get_terminal_lines
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -53,55 +49,27 @@ class ListHyperparametersCommand(ListCommandMixin, BaseHyperparameterCommand):
         return data
 
 
-class HyperparameterDetailsCommand(BaseHyperparameterCommand):
+class HyperparameterDetailsCommand(DetailsCommandMixin, BaseHyperparameterCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
-    def execute(self, id_):
-        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            instance = self._get_instance(id_)
-
-        self._log_object(instance)
-
-    def _get_instance(self, id_):
+    def _get_table_data(self, instance):
         """
-        :rtype: api_sdk.Hyperparameter
-        """
-        try:
-            instance = self.client.get(id_)
-        except sdk_exceptions.GradientSdkError as e:
-            raise exceptions.ReceivingDataFailedError(e)
-
-        return instance
-
-    @staticmethod
-    def _make_table(obj):
-        """
-        :param api_sdk.Hyperparameter obj:
+        :param api_sdk.Hyperparameter instance:
         """
         data = (
-            ("ID", obj.id),
-            ("Name", obj.name),
-            ("Ports", obj.ports),
-            ("Project ID", obj.project_id),
-            ("Tuning command", obj.tuning_command),
-            ("Worker command", obj.worker_command),
-            ("Worker container", obj.worker_container),
-            ("Worker count", obj.worker_count),
-            ("Worker machine type", obj.worker_machine_type),
-            ("Worker use dockerfile", obj.use_dockerfile or False),
-            ("Workspace URL", obj.workspace_url),
+            ("ID", instance.id),
+            ("Name", instance.name),
+            ("Ports", instance.ports),
+            ("Project ID", instance.project_id),
+            ("Tuning command", instance.tuning_command),
+            ("Worker command", instance.worker_command),
+            ("Worker container", instance.worker_container),
+            ("Worker count", instance.worker_count),
+            ("Worker machine type", instance.worker_machine_type),
+            ("Worker use dockerfile", instance.use_dockerfile or False),
+            ("Workspace URL", instance.workspace_url),
         )
-        ascii_table = terminaltables.AsciiTable(data)
-        table_string = ascii_table.table
-        return table_string
-
-    def _log_object(self, instance):
-
-        table_str = self._make_table(instance)
-        if len(table_str.splitlines()) > get_terminal_lines():
-            pydoc.pager(table_str)
-        else:
-            self.logger.log(table_str)
+        return data
 
 
 class HyperparameterStartCommand(BaseHyperparameterCommand):

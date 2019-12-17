@@ -4448,86 +4448,53 @@ DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON = {
 }
 
 DETAILS_OF_MULTI_NODE_EXPERIMENT_RESPONSE_JSON = {
-    "data": {
-        "dtCreated": "2019-03-20T19:56:50.154853+00:00",
-        "dtDeleted": None,
-        "dtFinished": None,
-        "dtModified": "2019-03-20T19:56:50.154853+00:00",
-        "dtProvisioningFinished": None,
-        "dtProvisioningStarted": None,
-        "dtStarted": None,
-        "dtTeardownFinished": None,
-        "dtTeardownStarted": None,
-        "experimentError": None,
-        "experimentTemplateHistoryId": 6297,
-        "experimentTemplateId": 60,
-        "experimentTypeId": 3,
-        "handle": "ew69ls0vy3eto",
-        "id": 6286,
-        "projectHandle": "prq70zy79",
-        "projectId": 612,
-        "started_by_user_id": 1,
-        "state": 1,
-        "templateHistory": {
-            "dtCreated": "2019-03-20T19:56:49.427354+00:00",
-            "dtDeleted": None,
-            "experimentTemplateId": 60,
-            "id": 6297,
-            "params": {
-                "artifactDirectory": "/artdir",
-                "clusterId": '2a',
-                "experimentEnv": {
-                    "key": "val"
-                },
-                "experimentTypeId": 3,
-                "name": "multinode_mpi",
-                "parameter_server_command": "ls",
-                "parameter_server_container": "pscon",
-                "parameter_server_container_user": "pscuser",
-                "parameter_server_count": 2,
-                "parameter_server_machine_type": "psmtype",
-                "parameter_server_registry_password": "psrpass",
-                "parameter_server_registry_username": "psrcus",
-                "parameter_server_registry_url": "psrurl",
-                "ports": 3456,
-                "project_handle": "prq70zy79",
-                "project_id": 34,
-                "trigger_event_id": 12,
-                "worker_command": "wcom",
-                "worker_container": "wcon",
-                "worker_container_user": "usr",
-                "worker_count": 2,
-                "worker_machine_type": "mty",
-                "worker_registry_password": "rpass",
-                "worker_registry_username": "rusr",
-                "worker_registry_url": "rurl",
-                "workingDirectory": "/dir",
-                "workspaceUrl": "wurl"
-            },
-            "triggerEvent": {
-                "dtCreated": "2019-03-11T14:47:57+00:00",
-                "eventData": {
-                    "author": {
-                        "email": "bluckey@paperspace.com",
-                        "login": "ultrabluewolf",
-                        "name": "Britney Luckey"
-                    },
-                    "branch": "feature/test-1",
-                    "message": "Update readme #2",
-                    "repo_node_id": "MDEwOlJlcG9zaXRvcnkxNzQ3MjI3NDc=",
-                    "sender": {
-                        "id": 4633049,
-                        "login": "ultrabluewolf"
-                    },
-                    "sha": "daa117a00cd1e0e9b1b55695031e698a560cca29",
-                    "timestamp": "2019-03-11T10:47:57-04:00"
-                },
-                "id": 12,
-                "type": "github"
-            },
-        }
-    },
-    "message": "success"
+  "data": {
+    "dtCreated": "2019-12-16T16:18:47.881765+00:00",
+    "dtDeleted": None,
+    "dtFinished": None,
+    "dtModified": "2019-12-16T16:18:47.881765+00:00",
+    "dtProvisioningFinished": None,
+    "dtProvisioningStarted": None,
+    "dtStarted": None,
+    "dtTeardownFinished": None,
+    "dtTeardownStarted": None,
+    "experimentError": None,
+    "experimentTemplateHistoryId": 34335,
+    "experimentTemplateId": 439,
+    "experimentTypeId": 3,
+    "handle": "emarbao6t6tsn",
+    "id": 34272,
+    "projectHandle": "pr85u3sfa",
+    "projectId": 1824,
+    "started_by_user_id": 1655,
+    "state": 10,
+    "templateHistory": {
+      "cliCommand": "gradient experiments create multinode --name some_name --projectId pr85u3sfa --experimentType MPI --workerContainer python --workerMachineType c5.xlarge --workerCommand \"echo worker\" --workerCount 2 --masterContainer python --masterMachineType c5.xlarge --masterCommand \"echo master\" --masterCount 1 --workspaceUrl some.url --workingDirectory /some/working/directory --clusterId clqr4b0ox --experimentEnv '{\"key\": \"value\"}' --ports 5000 --modelType some_type --modelPath /some/model/path",
+      "dtCreated": "2019-12-16T16:18:46.577973+00:00",
+      "dtDeleted": None,
+      "experimentTemplateId": 439,
+      "id": 34335,
+      "params": {
+        "artifact_directory": "/some/artifact/directory",
+        "cluster_id": "clqr4b0ox",
+        "experiment_env": {
+          "key": "value"
+        },
+        "is_preemptible": False,
+        "model_path": "/some/model/path",
+        "model_type": "some_type",
+        "name": "some_name",
+        "ports": "5000",
+        "project_handle": "pr85u3sfa",
+        "version": "v2",
+        "working_directory": "/some/working/directory",
+        "workspace_url": "some.url"
+      },
+      "triggerEvent": None,
+      "triggerEventId": None
+    }
+  },
+  "message": "success"
 }
 
 NOTEBOOK_GET_RESPONSE = {
@@ -5582,4 +5549,34 @@ MODEL_UPLOAD_RESPONSE_JSON = {
     "dtDeleted": None,
     "modelPath": None,
     "deploymentState": None,
+}
+
+MODEL_DETAILS_RESPONSE_JSON = {
+    "modelList": [
+        {
+            "id": "some_id",
+            "projectId": "some_project_id",
+            "experimentId": "some_experiment_id",
+            "updatedByUserId": "some_user_id",
+            "updatedByUserEmail": "paperspace@paperspace.com",
+            "modelType": "Tensorflow",
+            "name": "some_name",
+            "tag": None,
+            "summary": None,
+            "detail": None,
+            "params": None,
+            "url": "s3://ps-projects-development/asdf/some_project_id/some_experiment_id/model",
+            "notes": None,
+            "isDeleted": False,
+            "isPublic": False,
+            "dtCreated": "2019-12-13T23:00:26.077Z",
+            "dtModified": "2019-12-13T23:00:26.077Z",
+            "dtUploaded": None,
+            "dtDeleted": None,
+            "modelPath": None,
+            "deploymentState": "Stopped"
+        }
+    ],
+    "total": 96,
+    "displayTotal": 1
 }

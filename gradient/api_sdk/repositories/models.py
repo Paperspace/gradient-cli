@@ -2,7 +2,8 @@ import os
 
 import gradient.api_sdk.config
 from .. import serializers
-from ..repositories.common import ListResources, DeleteResource, CreateResource
+from ..repositories.common import ListResources, DeleteResource, CreateResource, GetResource
+from ..sdk_exceptions import ResourceFetchingError
 
 
 class ParseModelDictMixin(object):
@@ -83,3 +84,24 @@ class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
 
         file_name = os.path.basename(file_handle.name)
         return [(file_name, file_handle)]
+
+
+class GetModel(GetBaseModelsApiUrlMixin, GetResource):
+    SERIALIZER_CLS = serializers.Model
+
+    def get_request_url(self, **kwargs):
+        return "/mlModels/getModelList/"
+
+    def _get_request_json(self, kwargs):
+        model_id = kwargs["model_id"]
+        json_ = {"filter": {"where": {"and": [{"id": model_id}]}}}
+        return json_
+
+    def _parse_object(self, instance_dict, **kwargs):
+        try:
+            model_dict = instance_dict["modelList"][0]
+        except (IndexError, TypeError):
+            raise ResourceFetchingError("Model not found")
+
+        instance = self.SERIALIZER_CLS().get_instance(model_dict)
+        return instance

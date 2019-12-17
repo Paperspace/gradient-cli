@@ -3,7 +3,7 @@ import abc
 import six
 
 from ..clients import http_client
-from ..sdk_exceptions import ResourceFetchingError, ResourceCreatingDataError, ResourceCreatingError
+from ..sdk_exceptions import ResourceFetchingError, ResourceCreatingDataError, ResourceCreatingError, GradientSdkError
 from ..utils import MessageExtractor
 
 
@@ -123,6 +123,8 @@ class GetResource(BaseRepository):
     def _get_instance(self, response, **kwargs):
         try:
             objects = self._parse_object(response.data, **kwargs)
+        except GradientSdkError:
+            raise
         except Exception:
             msg = "Error parsing response data: {}".format(str(response.body))
             raise ResourceFetchingError(msg)

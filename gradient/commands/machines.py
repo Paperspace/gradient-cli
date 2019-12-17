@@ -5,6 +5,7 @@ from gradient import api_sdk
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import urljoin
 from gradient.commands import common, BaseCommand
+from gradient.commands.common import DetailsCommandMixin
 
 
 class GetMachinesClientMixin(object):
@@ -54,34 +55,8 @@ class RestartMachineCommand(GetMachinesClientMixin, BaseCommand):
         self.logger.log("Machine restarted")
 
 
-class ShowMachineCommand(GetMachinesClientMixin, common.BaseCommand):
-    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
-
-    def execute(self, id_):
-        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            instance = self._get_instance(id_)
-
-        table_str = self._make_table(instance)
-        self.logger.log(table_str)
-
-    def _get_instance(self, id_):
-        """
-        :rtype: api_sdk.Machine
-        """
-        instance = self.client.get(id_)
-        return instance
-
-    def _make_table(self, machine):
-        """
-        :param api_sdk.Machine machine:
-        """
-        data = self._get_machine_table_data(machine)
-        ascii_table = terminaltables.AsciiTable(data)
-        table_string = ascii_table.table
-        return table_string
-
-    @staticmethod
-    def _get_machine_table_data(machine):
+class ShowMachineCommand(DetailsCommandMixin, GetMachinesClientMixin, common.BaseCommand):
+    def _get_table_data(self, machine):
         """
         :param api_sdk.Machine machine:
         """

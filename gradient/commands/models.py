@@ -5,7 +5,7 @@ import six
 
 from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
-from gradient.commands.common import BaseCommand, ListCommandMixin
+from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -51,3 +51,20 @@ class UploadModel(GetModelsClientMixin, BaseCommand):
             model_id = self.client.upload(file_handle, name, model_type, model_summary, notes)
 
         self.logger.log("Model uploaded with ID: {}".format(model_id))
+
+
+class GetModelCommand(DetailsCommandMixin, GetModelsClientMixin, BaseCommand):
+    def _get_table_data(self, instance):
+        """
+        :param api_sdk.Model instance:
+        """
+        data = (
+            ("ID", instance.id),
+            ("Name", instance.name),
+            ("Project ID", instance.project_id),
+            ("Experiment ID", instance.experiment_id),
+            ("Model Type", instance.model_type),
+            ("URL", instance.url),
+            ("Deployment State", instance.deployment_state),
+        )
+        return data
