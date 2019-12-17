@@ -252,6 +252,13 @@ def models_list_config_path():
 
 
 @pytest.fixture
+def models_details_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "models_details.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
 def models_delete_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "models_delete.yaml"

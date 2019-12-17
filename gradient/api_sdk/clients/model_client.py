@@ -48,3 +48,14 @@ class ModelsClient(BaseClient):
         repository = repositories.UploadModel(api_key=self.api_key, logger=self.logger)
         model_id = repository.create(model, file_handle=file_handle)
         return model_id
+
+    def get(self, model_id):
+        """Get model instance
+
+        :param str model_id:
+        :return: Model instance
+        :rtype: models.Model
+        """
+        repository = repositories.GetModel(api_key=self.api_key, logger=self.logger)
+        model = repository.get(model_id=model_id)
+        return model

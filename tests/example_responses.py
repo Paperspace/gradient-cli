@@ -5550,3 +5550,33 @@ MODEL_UPLOAD_RESPONSE_JSON = {
     "modelPath": None,
     "deploymentState": None,
 }
+
+MODEL_DETAILS_RESPONSE_JSON = {
+    "modelList": [
+        {
+            "id": "some_id",
+            "projectId": "some_project_id",
+            "experimentId": "some_experiment_id",
+            "updatedByUserId": "some_user_id",
+            "updatedByUserEmail": "paperspace@paperspace.com",
+            "modelType": "Tensorflow",
+            "name": "some_name",
+            "tag": None,
+            "summary": None,
+            "detail": None,
+            "params": None,
+            "url": "s3://ps-projects-development/asdf/some_project_id/some_experiment_id/model",
+            "notes": None,
+            "isDeleted": False,
+            "isPublic": False,
+            "dtCreated": "2019-12-13T23:00:26.077Z",
+            "dtModified": "2019-12-13T23:00:26.077Z",
+            "dtUploaded": None,
+            "dtDeleted": None,
+            "modelPath": None,
+            "deploymentState": "Stopped"
+        }
+    ],
+    "total": 96,
+    "displayTotal": 1
+}

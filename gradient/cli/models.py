@@ -85,3 +85,17 @@ def list_models(api_key, model_id, options_file):
 def upload_model(file, name, model_type, model_summary, notes, api_key, options_file):
     command = models_commands.UploadModel(api_key=api_key)
     command.execute(file, name, model_type, model_summary, notes)
+
+
+@models_group.command("details", help="Model details")
+@click.option(
+    "--id",
+    "model_id",
+    help="Show model details",
+    cls=common.GradientOption,
+)
+@common.api_key_option
+@common.options_file
+def model_details(model_id, api_key, options_file):
+    command = models_commands.GetModelCommand(api_key=api_key)
+    command.execute(model_id)

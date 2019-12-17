@@ -74,10 +74,7 @@ class DetailsCommandMixin(object):
         self._log_object(instance)
 
     def _get_instance(self, id_):
-        try:
-            instance = self.client.get(id_)
-        except sdk_exceptions.GradientSdkError as e:
-            raise exceptions.ReceivingDataFailedError(e)
+        instance = self.client.get(id_)
 
         return instance
 
