@@ -634,11 +634,13 @@ def stop_experiment(id, api_key, options_file, use_vpc):
 
 @experiments_group.command("list", help="List experiments")
 @click.option("--projectId", "-p", "project_ids", multiple=True, cls=common.GradientOption)
+@click.option("--limit", "-l", "exp_limit", default=20)
+@click.option("--offset", "-o", "exp_offset", default=0)
 @api_key_option
 @common.options_file
-def list_experiments(project_ids, api_key, options_file):
+def list_experiments(project_ids, api_key, exp_limit, exp_offset, options_file):
     command = experiments_commands.ListExperimentsCommand(api_key=api_key)
-    command.execute(project_id=project_ids)
+    command.execute(project_id=project_ids, exp_limit=exp_limit, exp_offset=exp_offset)
 
 
 @experiments_group.command("details", help="Show detail of an experiment")

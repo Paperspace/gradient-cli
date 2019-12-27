@@ -80,6 +80,10 @@ class ListResources(BaseRepository):
     def _get_instance_dicts(self, data, **kwargs):
         return data
 
+    @abc.abstractmethod
+    def _get_meta_data(self, resp, **kwargs):
+        pass
+
     def _parse_object(self, instance_dict):
         """
         :param dict instance_dict:
@@ -92,6 +96,10 @@ class ListResources(BaseRepository):
         response = self._get(kwargs, use_vpc=use_vpc)
         self._validate_response(response)
         instances = self._get_instances(response, **kwargs)
+        if kwargs.get("get_meta"):
+            # Added for now to prevent unnecessary action to update all list commands
+            meta_data = self._get_meta_data(response)
+            return instances, meta_data
         return instances
 
     def _get_instances(self, response, **kwargs):

@@ -35,6 +35,9 @@ class ListExperiments(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, Li
     def get_request_url(self, **kwargs):
         return "/experiments/"
 
+    def _get_meta_data(self, resp, **kwargs):
+        return resp.data.get("meta")
+
     def _parse_objects(self, data, **kwargs):
         experiments_dicts = self._get_experiments_dicts_from_json_data(data, kwargs)
         experiments = []
@@ -59,7 +62,10 @@ class ListExperiments(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, Li
         return experiments
 
     def _get_request_params(self, kwargs):
-        params = {"limit": -1}  # so the API sends back full list without pagination
+        params = {
+            "limit": kwargs.get("limit"),
+            "offset": kwargs.get("offset")
+        }
 
         project_id = kwargs.get("project_id")
         if project_id:
