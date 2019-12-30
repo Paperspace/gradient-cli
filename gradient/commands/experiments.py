@@ -233,22 +233,13 @@ class StopExperimentCommand(BaseExperimentCommand):
 
 
 class ListExperimentsCommand(ListCommandMixin, BaseExperimentCommand):
-    def _get_exp_data(self, kwargs):
-        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            instances = self._get_instances(kwargs)
-        return instances
-
     def _get_instances(self, **kwargs):
         project_id = kwargs.get("project_id")
         limit = kwargs.get("limit")
         offset = kwargs.get("offset")
-        get_meta = kwargs.get("get_meta")
+        get_meta = True
         try:
-            if get_meta:
-                instances, meta_data = self.client.list(project_id, get_meta=get_meta, limit=limit, offset=offset)
-            else:
-                instances = self.client.list(project_id, get_meta=get_meta, limit=limit, offset=offset)
-                meta_data = None
+            instances, meta_data = self.client.list(project_id, get_meta=get_meta, limit=limit, offset=offset)
         except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
@@ -261,43 +252,31 @@ class ListExperimentsCommand(ListCommandMixin, BaseExperimentCommand):
             handle = experiment.id
             status = constants.ExperimentState.get_state_str(experiment.state)
             data.append((name, handle, status))
-
         return data
 
     def _generate_exp_table(self, **kwargs):
-        # TODO: how to check if we need to iterate further with updated offset?
-        # TODO: How to check that there are further experiments to download?
-
-        # Initial plan:
-        # 1. Get first response with limit and offset
-        # 2. Serialize exp data and return them with additional info about position (max number, current position)
-        # 3. Start loop with check for further requests
-        # 4. Yield current results as ascii table
-        # 5. If needed get next data with updated offset
-
+        print("\n{}\n".format(self.WAITING_FOR_RESPONSE_MESSAGE))
         limit = kwargs.get("exp_limit")
         offset = kwargs.get("exp_offset")
-        get_meta = True
         meta_data = dict()
+
         while "totalItems" not in meta_data or offset < meta_data.get("totalItems"):
-            if meta_data and get_meta:
-                get_meta = False
-            instances, meta_data = self._get_instances(
-                limit=limit,
-                offset=offset,
-                get_meta=get_meta,
-                **kwargs
-            )
-            table_data = self._get_table_data(instances)
-            table_str = self._make_list_table(table_data)
-            yield table_str
-            offset += limit
+            with click.confirm("Do you want to continue?", abort=True):
+
+                instances, meta_data = self._get_instances(
+                    limit=limit,
+                    offset=offset,
+                    get_meta=True,
+                    **kwargs
+                )
+                table_data = self._get_table_data(instances)
+                table_str = self._make_list_table(table_data)
+                yield table_str + "\n"
+                offset += limit
 
     def execute(self, **kwargs):
-        try:
-            click.echo_via_pager(self._generate_exp_table(**kwargs))
-        except Exception as e:
-            print("Exception for list pager: ", e)
+        # TODO resign from using less and go to shell with prompt
+        click.echo_via_pager(self._generate_exp_table(**kwargs))
 
 
 class GetExperimentCommand(BaseExperimentCommand):
