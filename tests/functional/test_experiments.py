@@ -990,6 +990,9 @@ class TestExperimentList(object):
 | dsfads        | em6btk2vtb7it | created |
 | multinode_mpi | ew69ls0vy3eto | created |
 +---------------+---------------+---------+
+
+Do you want to continue? [y/N]: 
+Aborted!
 """
     RESPONSE_JSON_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
     EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Failed to fetch data: Incorrect API Key provided\nForbidden\n"
@@ -1001,11 +1004,11 @@ class TestExperimentList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        assert result.output == self.DETAILS_STDOUT, result.exc_info
+        assert result.output == self.DETAILS_STDOUT
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
-                                            params={"limit": -1})
+                                            params={"limit": 20, "offset": 0})
 
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
@@ -1022,10 +1025,9 @@ class TestExperimentList(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
-                                            params={"limit": -1})
+                                            params={"limit": 20, "offset": 0})
 
-        pydoc_patched.pager.assert_called_once()
-        assert result.exit_code == 0
+        assert result.exit_code == 1
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments_filtered_with_two_projects(self, get_patched):
@@ -1038,7 +1040,8 @@ class TestExperimentList(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
-                                            params={"limit": -1,
+                                            params={"limit": 20,
+                                                    "offset": 0,
                                                     "projectHandle[0]": u"handle1",
                                                     "projectHandle[1]": u"handle2"})
 
@@ -1056,7 +1059,8 @@ class TestExperimentList(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
-                                            params={"limit": -1,
+                                            params={"limit": 20,
+                                                    "offset": 0,
                                                     "projectHandle[0]": u"handle1",
                                                     "projectHandle[1]": u"handle2"})
 
@@ -1073,7 +1077,7 @@ class TestExperimentList(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
-                                            params={"limit": -1})
+                                            params={"limit": 20, "offset": 0})
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -1090,7 +1094,8 @@ class TestExperimentList(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
-                                            params={"limit": -1,
+                                            params={"limit": 20,
+                                                    "offset": 0,
                                                     "projectHandle[0]": "some_id",
                                                     "projectHandle[1]": "some_id_2"})
 
