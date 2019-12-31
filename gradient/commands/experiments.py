@@ -255,28 +255,25 @@ class ListExperimentsCommand(ListCommandMixin, BaseExperimentCommand):
         return data
 
     def _generate_exp_table(self, **kwargs):
-        print("\n{}\n".format(self.WAITING_FOR_RESPONSE_MESSAGE))
         limit = kwargs.get("exp_limit")
         offset = kwargs.get("exp_offset")
         meta_data = dict()
 
         while "totalItems" not in meta_data or offset < meta_data.get("totalItems"):
-            with click.confirm("Do you want to continue?", abort=True):
-
+            with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
                 instances, meta_data = self._get_instances(
                     limit=limit,
                     offset=offset,
                     get_meta=True,
                     **kwargs
                 )
-                table_data = self._get_table_data(instances)
-                table_str = self._make_list_table(table_data)
-                yield table_str + "\n"
-                offset += limit
+            table_data = self._get_table_data(instances)
+            table_str = self._make_list_table(table_data)
+            yield table_str + "\n"
+            offset += limit
 
     def execute(self, **kwargs):
-        # TODO resign from using less and go to shell with prompt
-        click.echo_via_pager(self._generate_exp_table(**kwargs))
+        return self._generate_exp_table(**kwargs)
 
 
 class GetExperimentCommand(BaseExperimentCommand):
