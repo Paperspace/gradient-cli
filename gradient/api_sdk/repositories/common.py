@@ -80,7 +80,6 @@ class ListResources(BaseRepository):
     def _get_instance_dicts(self, data, **kwargs):
         return data
 
-    @abc.abstractmethod
     def _get_meta_data(self, resp, **kwargs):
         pass
 
