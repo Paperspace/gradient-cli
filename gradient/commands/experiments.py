@@ -267,9 +267,16 @@ class ListExperimentsCommand(ListCommandMixin, BaseExperimentCommand):
                     get_meta=True,
                     **kwargs
                 )
-            table_data = self._get_table_data(instances)
-            table_str = self._make_list_table(table_data)
-            yield table_str + "\n"
+            next_iteration = False
+            if instances:
+                table_data = self._get_table_data(instances)
+                table_str = self._make_list_table(table_data) + "\n"
+                if offset + limit < meta_data.get("totalItems"):
+                    next_iteration = True
+            else:
+                table_str = "No data found"
+
+            yield table_str, next_iteration
             offset += limit
 
     def execute(self, **kwargs):

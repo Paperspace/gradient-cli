@@ -931,8 +931,6 @@ LIST_OF_EXPERIMENTS_FILTERED_WITH_TWO_PROJECTS_STDOUT = """+--------+-----------
 | job 1  | esml2ioetny5o6 | stopped |
 +--------+----------------+---------+
 
-Do you want to continue? [y/N]: 
-Aborted!
 """
 
 LIST_OF_EXPERIMENTS_FILTERED_BUT_NONE_FOUND = {
