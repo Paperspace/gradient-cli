@@ -480,7 +480,7 @@ def tensorboard_option(f):
             "--tensorboard",
             is_flag=True,
             # default=experiments_commands.NoTensorboardId,
-            help="Add to existing tensorboard. If no or many tensorboards exists a new one will be created",
+            help="Creates new tensorboard for this experiment",
             cls=GradientRegisterReaderOption,
         ),
         click.option(
