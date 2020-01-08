@@ -49,6 +49,7 @@ def common_experiments_create_options(f):
         click.option(
             "--name",
             required=True,
+            metavar="<name>",
             help="Name of new experiment",
             cls=common.GradientOption,
         ),
@@ -78,12 +79,14 @@ def common_experiments_create_options(f):
         click.option(
             "--workspaceUrl",
             "workspace_url",
+            metavar="<workspace URL>",
             help="Project git repository url",
             cls=common.GradientOption,
         ),
         click.option(
             "--workspaceUsername",
             "workspace_username",
+            metavar="<username>",
             help="Workspace username",
             cls=common.GradientOption,
         ),
@@ -114,6 +117,7 @@ def common_experiments_create_options(f):
         click.option(
             "--clusterId",
             "cluster_id",
+            metavar="<cluster ID>",
             help="Cluster ID",
             cls=common.GradientOption,
         ),
@@ -127,6 +131,7 @@ def common_experiments_create_options(f):
         click.option(
             "--projectId",
             "project_id",
+            metavar="<project ID>",
             required=True,
             help="Project ID",
             cls=common.GradientOption,
@@ -134,12 +139,14 @@ def common_experiments_create_options(f):
         click.option(
             "--modelType",
             "model_type",
+            metavar="<model type>",
             help="Model type",
             cls=common.GradientOption,
         ),
         click.option(
             "--modelPath",
             "model_path",
+            metavar="<path>",
             help="Model path",
             cls=common.GradientOption,
         ),
@@ -160,6 +167,7 @@ def dataset_options(f):
         click.option(
             "--datasetUri",
             "dataset_uri_list",
+            metavar="<dateset uri>",
             multiple=True,
             help="Url to S3 bucket with dataset",
             cls=common.GradientOption,
@@ -168,6 +176,7 @@ def dataset_options(f):
             "--datasetName",
             "dataset_name_list",
             multiple=True,
+            metavar="<dateset name>",
             help="Name of dataset",
             cls=common.GradientOption,
         ),
@@ -175,6 +184,7 @@ def dataset_options(f):
             "--datasetAwsAccessKeyId",
             "dataset_access_key_id_list",
             multiple=True,
+            metavar="<AWS access key>",
             help="S3 bucket's Access Key ID",
             cls=common.GradientOption,
         ),
@@ -188,6 +198,7 @@ def dataset_options(f):
         click.option(
             "--datasetVersionId",
             "dataset_version_id_list",
+            metavar="<version ID>",
             multiple=True,
             help="S3 dataset's version ID",
             cls=common.GradientOption,
@@ -195,6 +206,7 @@ def dataset_options(f):
         click.option(
             "--datasetEtag",
             "dataset_etag_list",
+            metavar="<etag>",
             multiple=True,
             help="S3 dataset's ETag",
             cls=common.GradientOption,
@@ -216,6 +228,7 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--workerContainer",
             "worker_container",
+            metavar="<container>",
             required=True,
             help="Worker container",
             cls=common.GradientOption,
@@ -223,6 +236,7 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--workerMachineType",
             "worker_machine_type",
+            metavar="<machine type>",
             required=True,
             help="Worker machine type",
             cls=common.GradientOption,
@@ -230,6 +244,7 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--workerCommand",
             "worker_command",
+            metavar="<command>",
             required=True,
             help="Worker command",
             cls=common.GradientOption,
@@ -245,18 +260,21 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--parameterServerContainer",
             "parameter_server_container",
+            metavar="<container>",
             help="Parameter server container (GRPC only)",
             cls=common.GradientOption,
         ),
         click.option(
             "--parameterServerMachineType",
             "parameter_server_machine_type",
+            metavar="<machine type>",
             help="Parameter server machine type (GRPC only)",
             cls=common.GradientOption,
         ),
         click.option(
             "--parameterServerCommand",
             "parameter_server_command",
+            metavar="<command>",
             help="Parameter server command (GRPC only)",
             cls=common.GradientOption,
         ),
@@ -270,12 +288,14 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--masterContainer",
             "master_container",
+            metavar="<container>",
             help="Master container (MPI only)",
             cls=common.GradientOption,
         ),
         click.option(
             "--masterMachineType",
             "master_machine_type",
+            metavar="<machine type>",
             help="Master machine type (MPI only)",
             cls=common.GradientOption,
         ),
@@ -288,6 +308,7 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--masterCommand",
             "master_command",
+            metavar="<command>",
             help="Master command (MPI only)",
             cls=common.GradientOption,
         ),
@@ -306,12 +327,14 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--workerRegistryPassword",
             "worker_registry_password",
+            metavar="<password>",
             help="Worker registry password",
             cls=common.GradientOption,
         ),
         click.option(
             "--workerRegistryUrl",
             "worker_registry_url",
+            metavar="<registry url>",
             help="Worker registry URL",
             cls=common.GradientOption,
         ),
@@ -330,12 +353,14 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--parameterServerRegistryPassword",
             "parameter_server_registry_password",
+            metavar="<password>",
             help="Parameter server registry password",
             cls=common.GradientOption,
         ),
         click.option(
             "--parameterServerRegistryUrl",
             "parameter_server_registry_url",
+            metavar="<registry url>",
             help="Parameter server registry URL",
             cls=common.GradientOption,
         ),
@@ -348,18 +373,21 @@ def common_experiment_create_multi_node_options(f):
         click.option(
             "--masterRegistryUsername",
             "master_registry_username",
+            metavar="<username>",
             help="Master registry username (MPI only)",
             cls=common.GradientOption,
         ),
         click.option(
             "--masterRegistryPassword",
             "master_registry_password",
+            metavar="<password>",
             help="Master registry password (MPI only)",
             cls=common.GradientOption,
         ),
         click.option(
             "--masterRegistryUrl",
             "master_registry_url",
+            metavar="<registry url>",
             help="Master registry URL (MPI only)",
             cls=common.GradientOption
         ),
@@ -386,12 +414,14 @@ def common_experiments_create_single_node_options(f):
             "--machineType",
             "machine_type",
             required=True,
+            metavar="<machine type>",
             help="Machine type",
             cls=common.GradientOption,
         ),
         click.option(
             "--command",
             required=True,
+            metavar="<command>",
             help="Container entrypoint command",
             cls=common.GradientOption,
         ),
@@ -410,12 +440,14 @@ def common_experiments_create_single_node_options(f):
         click.option(
             "--registryPassword",
             "registry_password",
+            metavar="<password>",
             help="Registry password",
             cls=common.GradientOption,
         ),
         click.option(
             "--registryUrl",
             "registry_url",
+            metavar="<registry url>",
             help="Registry URL",
             cls=common.GradientOption,
         ),
@@ -448,13 +480,14 @@ def tensorboard_option(f):
             "--tensorboard",
             is_flag=True,
             # default=experiments_commands.NoTensorboardId,
-            help="Add to existing tensorboard. If no or many tensorboards exists a new one will be created",
+            help="Creates new tensorboard for this experiment",
             cls=GradientRegisterReaderOption,
         ),
         click.option(
             "--tensorboard_set",
             help="Add to existing tensorboard",
             cls=GradientRegisterWriterOption,
+            metavar='<tensorboard ID>'
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
@@ -633,7 +666,7 @@ def stop_experiment(id, api_key, options_file, use_vpc):
 
 
 @experiments_group.command("list", help="List experiments")
-@click.option("--projectId", "-p", "project_ids", multiple=True, cls=common.GradientOption)
+@click.option("--projectId", "-p", "project_ids", multiple=True, metavar='<project ID>', cls=common.GradientOption)
 @api_key_option
 @common.options_file
 def list_experiments(project_ids, api_key, options_file):
