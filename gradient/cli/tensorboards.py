@@ -102,7 +102,7 @@ def list_tensorboards(api_key, options_file):
     multiple=True,
     required=True,
     metavar="[<experiment ID>,]",
-    help="IDs of experiments",
+    help="Coma delimted list of experiments IDs, example: --experiment=abcde123,zxcvb1234 or by --experiment=test1 --experiment=test2",
     cls=common.GradientOption,
 )
 @common.api_key_option
@@ -127,7 +127,7 @@ def add_experiments_to_tensorboard(tensorboard_id, experiments, api_key, options
     multiple=True,
     required=True,
     metavar="[<experiment ID>,]",
-    help="IDs of experiments",
+    help="Coma delimted list of experiments IDs, example: --experiment=abcde123,zxcvb1234 or by --experiment=test1 --experiment=test2",
     cls=common.GradientOption,
 )
 @common.api_key_option
