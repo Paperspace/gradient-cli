@@ -8,7 +8,7 @@ from .hyperparameter import CreateHyperparameterJob, CreateAndStartHyperparamete
 from .jobs import ListJobs, ListResources, ListJobArtifacts, ListJobLogs
 from .machines import CheckMachineAvailability, CreateMachine, CreateResource, StartMachine, StopMachine, \
     RestartMachine, GetMachine, UpdateMachine, GetMachineUtilization
-from .models import DeleteModel, ListModels, UploadModel
+from .models import DeleteModel, ListModels, UploadModel, GetModel
 from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks
 from .projects import CreateProject, ListProjects, DeleteProject
 from .tensorboards import CreateTensorboard, GetTensorboard, ListTensorboards, UpdateTensorboard, DeleteTensorboard

@@ -16,25 +16,25 @@ def tensorboards_group():
     "experiments",
     multiple=True,
     required=True,
-    help="IDs of experiments",
+    help="Comma delimited list of experiments IDs, example: --experiment=test1,test2 or by --experiment=test1 --experiment=test2",
     cls=common.GradientOption,
 )
 @click.option(
     "--image",
     "image",
-    help="Image",
+    help="Tensorboard Container Image, by default its set to tensorflow/tensorflow:latest",
     cls=common.GradientOption,
 )
 @click.option(
     "--username",
     "username",
-    help="Username",
+    help="Basic Auth Username",
     cls=common.GradientOption,
 )
 @click.option(
     "--password",
     "password",
-    help="Password",
+    help="Basic Auth Password",
     cls=common.GradientOption,
 )
 # @click.option(
@@ -67,6 +67,7 @@ def create_tensorboard(api_key, options_file, **kwargs):
 @click.option(
     "--id",
     "id",
+    metavar="<tensorboard ID>",
     required=True,
     help="Tensorboard ID",
     cls=common.GradientOption,
@@ -90,6 +91,7 @@ def list_tensorboards(api_key, options_file):
 @click.option(
     "--id",
     "tensorboard_id",
+    metavar="<tensorboard ID>",
     required=True,
     help="Tensorboard ID",
     cls=common.GradientOption,
@@ -99,7 +101,8 @@ def list_tensorboards(api_key, options_file):
     "experiments",
     multiple=True,
     required=True,
-    help="IDs of experiments",
+    metavar="[<experiment ID>,]",
+    help="Comma delimited list of experiments IDs, example: --experiment=test1,test2 or by --experiment=test1 --experiment=test2",
     cls=common.GradientOption,
 )
 @common.api_key_option
@@ -114,6 +117,7 @@ def add_experiments_to_tensorboard(tensorboard_id, experiments, api_key, options
     "--id",
     "id",
     required=True,
+    metavar="<tensorboard ID>",
     help="Tensorboard ID",
     cls=common.GradientOption,
 )
@@ -122,7 +126,8 @@ def add_experiments_to_tensorboard(tensorboard_id, experiments, api_key, options
     "experiments",
     multiple=True,
     required=True,
-    help="IDs of experiments",
+    metavar="[<experiment ID>,]",
+    help="Comma delimited list of experiments IDs, example: --experiment=test1,test2 or by --experiment=test1 --experiment=test2",
     cls=common.GradientOption,
 )
 @common.api_key_option
@@ -136,6 +141,7 @@ def remove_experiments_to_tensorboard(api_key, options_file, **kwargs):
 @click.option(
     "--id",
     "id",
+    metavar="<tensorboard ID>",
     required=True,
     help="Tensorboard ID",
     cls=common.GradientOption,

@@ -931,7 +931,7 @@ class TestShowMachine(object):
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
-        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        assert result.output.strip() == self.EXPECTED_STDOUT.strip(), result.exc_info
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=None,
@@ -949,7 +949,7 @@ class TestShowMachine(object):
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
-        assert result.output == self.EXPECTED_STDOUT
+        assert result.output.strip() == self.EXPECTED_STDOUT.strip()
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -960,7 +960,7 @@ class TestShowMachine(object):
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, command)
 
-        assert result.output == self.EXPECTED_STDOUT,result.exc_info
+        assert result.output.strip() == self.EXPECTED_STDOUT.strip(), result.exc_info
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,

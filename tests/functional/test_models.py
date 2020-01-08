@@ -378,3 +378,107 @@ class TestModelUpload(object):
                                                  params=self.BASE_PARAMS)
 
             assert result.output == "Failed to create resource: Invalid API token\n"
+
+
+class TestModelDetails(object):
+    URL = "https://api.paperspace.io/mlModels/getModelList/"
+    COMMAND = ["models", "details", "--id", "some_id"]
+    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+    EXPECTED_REQUEST_JSON = {"filter": {"where": {"and": [{"id": "some_id"}]}}}
+
+    COMMAND_WITH_API_KEY_PARAMETER_USED = ["models", "details", "--id", "some_id", "--apiKey", "some_key"]
+    COMMAND_WITH_OPTIONS_FILE = ["models", "details", "--optionsFile", ]  # path added in test
+
+    EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND = {"modelList": [], "total": 1, "displayTotal": 0}
+
+    EXPECTED_STDOUT = """+------------------+----------------------------------------------------------------------------+
+| ID               | some_id                                                                    |
++------------------+----------------------------------------------------------------------------+
+| Name             | some_name                                                                  |
+| Project ID       | some_project_id                                                            |
+| Experiment ID    | some_experiment_id                                                         |
+| Model Type       | Tensorflow                                                                 |
+| URL              | s3://ps-projects-development/asdf/some_project_id/some_experiment_id/model |
+| Deployment State | Stopped                                                                    |
++------------------+----------------------------------------------------------------------------+
+"""
+
+    EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 400, "message": "Invalid API token"}
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_get_request_and_print_details_of_experiment(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.MODEL_DETAILS_RESPONSE_JSON)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=self.EXPECTED_REQUEST_JSON,
+                                            params=None)
+
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.MODEL_DETAILS_RESPONSE_JSON)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=self.EXPECTED_REQUEST_JSON,
+                                            params=None)
+
+        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, models_details_config_path):
+        get_patched.return_value = MockResponse(example_responses.MODEL_DETAILS_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [models_details_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=self.EXPECTED_REQUEST_JSON,
+                                            params=None)
+
+        assert result.output == self.EXPECTED_STDOUT
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_get_request_and_print_proper_message_when_no_models_were_found(
+            self, get_patched):
+        get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND, 200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=self.EXPECTED_REQUEST_JSON,
+                                            params=None)
+
+        assert result.output == "Model not found\n"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
+        get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=self.EXPECTED_REQUEST_JSON,
+                                            params=None)
+
+        assert result.output == "Failed to fetch data: Invalid API token\n"
