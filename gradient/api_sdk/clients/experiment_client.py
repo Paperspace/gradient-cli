@@ -706,7 +706,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         repository = repositories.StopExperiment(api_key=self.api_key, logger=self.logger)
         repository.stop(experiment_id, use_vpc=use_vpc)
 
-    def list(self, project_id=None):
+    def list(self, project_id=None, **kwargs):
         """Get a list of experiments. Optionally filter by project ID
 
         :param str|list|None project_id:
@@ -715,7 +715,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         """
 
         repository = repositories.ListExperiments(api_key=self.api_key, logger=self.logger)
-        experiments = repository.list(project_id=project_id)
+        experiments = repository.list(project_id=project_id, **kwargs)
         return experiments
 
     def get(self, experiment_id):
