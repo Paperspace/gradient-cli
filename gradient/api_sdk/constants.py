@@ -103,7 +103,7 @@ MODEL_TYPES_MAP = collections.OrderedDict(
     (
         ("Tensorflow", ModelTypes.TENSORFLOW),
         ("ONNX", ModelTypes.ONNX),
-        ("Generic", ModelTypes.ONNX),
+        ("Custom", ModelTypes.GENERIC),
     )
 )
 
