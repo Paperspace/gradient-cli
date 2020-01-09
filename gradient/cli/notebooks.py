@@ -10,15 +10,15 @@ def notebooks_group():
     pass
 
 
-@notebooks_group.command("create", help="Create new notebook")
-@click.option(
-    "--vmTypeId",
-    "vm_type_id",
-    type=int,
-    required=True,
-    help="Type of Virtual Machine",
-    cls=common.GradientOption,
-)
+# @notebooks_group.command("create", help="Create new notebook")
+# @click.option(
+#     "--vmTypeId",
+#     "vm_type_id",
+#     type=int,
+#     required=True,
+#     help="Type of Virtual Machine",
+#     cls=common.GradientOption,
+# )
 @click.option(
     "--containerId",
     "container_id",
