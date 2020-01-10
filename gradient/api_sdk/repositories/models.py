@@ -92,10 +92,11 @@ class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
             file_name = os.path.basename(path)
             files.append((file_name, open(path, "rb")))
         elif os.path.isdir(path):
-            files_path = glob.glob(path + "/*", recursive=True)
+            files_path = glob.glob(path + "/**", recursive=True)
             for file_path in files_path:
-                file_name = os.path.relpath(file_path, path)
-                files.append((file_name, open(file_path, "rb")))
+                if os.path.isfile(file_path):
+                    file_name = os.path.relpath(file_path, path)
+                    files.append((file_name, open(file_path, "rb")))
         return files
 
 
