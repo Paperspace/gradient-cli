@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.1a1
+### New features
+* Added `model upload` command with directory upload command
+
 # Release Notes for 0.5.0a7
 ### Fixes
 * Fixed error occurring when not all dataset values were set
