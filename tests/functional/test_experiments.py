@@ -489,17 +489,12 @@ class TestExperimentsCreateMultiNode(object):
             {
                 "uri": "s3://some.dataset/uri",
                 "name": "some dataset name",
-                "awsAccessKeyId": None,
-                "awsSecretAccessKey": None,
-                "versionId": None,
                 "etag": "some etag",
             },
             {
                 "uri": "s3://some.other.dataset/uri",
-                "name": None,
                 "awsAccessKeyId": "some_other_key_id",
                 "awsSecretAccessKey": "some_other_secret",
-                "versionId": None,
                 "etag": "some other etag",
             },
         ]
