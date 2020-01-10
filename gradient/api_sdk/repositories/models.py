@@ -1,3 +1,4 @@
+import glob
 import os
 
 import gradient.api_sdk.config
@@ -77,13 +78,26 @@ class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
 
     def _get_request_files(self, file_handle):
         """
-        :param file file_handle:
+        :param str file_handle: path to Model that will be uploaded
         """
         if not file_handle:
             return None
 
-        file_name = os.path.basename(file_handle.name)
-        return [(file_name, file_handle)]
+        return self._prepare_files(file_handle)
+
+    @staticmethod
+    def _prepare_files(path):
+        files = list()
+        if os.path.isfile(path):
+            file_name = os.path.basename(path)
+            files.append((file_name, open(path, "rb")))
+        elif os.path.isdir(path):
+            files_path = glob.glob(path + "/**", recursive=True)
+            for file_path in files_path:
+                if os.path.isfile(file_path):
+                    file_name = os.path.relpath(file_path, path)
+                    files.append((file_name, open(file_path, "rb")))
+        return files
 
 
 class GetModel(GetBaseModelsApiUrlMixin, GetResource):

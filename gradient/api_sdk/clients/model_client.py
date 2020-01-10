@@ -25,10 +25,10 @@ class ModelsClient(BaseClient):
         repository = repositories.DeleteModel(api_key=self.api_key, logger=self.logger)
         repository.delete(model_id)
 
-    def upload(self, file_handle, name, model_type, model_summary=None, notes=None):
+    def upload(self, path, name, model_type, model_summary=None, notes=None):
         """Upload model
 
-        :param file file_handle: Model file handle
+        :param file path: path to Model
         :param str name: Model name
         :param str model_type: Model Type
         :param dict|None model_summary: Dictionary describing model parameters like loss, accuracy, etc.
@@ -46,7 +46,7 @@ class ModelsClient(BaseClient):
         )
 
         repository = repositories.UploadModel(api_key=self.api_key, logger=self.logger)
-        model_id = repository.create(model, file_handle=file_handle)
+        model_id = repository.create(model, file_handle=path)
         return model_id
 
     def get(self, model_id):

@@ -46,10 +46,10 @@ def list_models(api_key, model_id, options_file):
     command.execute(model_id=model_id)
 
 
-@models_group.command("upload", help="Upload model")
+@models_group.command("upload", help="Upload a model file or directory")
 @click.argument(
-    "FILE",
-    type=click.File(),
+    "PATH",
+    type=click.Path(exists=True),
     cls=common.GradientArgument,
 )
 @click.option(
@@ -82,9 +82,9 @@ def list_models(api_key, model_id, options_file):
 )
 @common.api_key_option
 @common.options_file
-def upload_model(file, name, model_type, model_summary, notes, api_key, options_file):
+def upload_model(path, name, model_type, model_summary, notes, api_key, options_file):
     command = models_commands.UploadModel(api_key=api_key)
-    command.execute(file, name, model_type, model_summary, notes)
+    command.execute(path, name, model_type, model_summary, notes)
 
 
 @models_group.command("details", help="Model details")
