@@ -76,14 +76,14 @@ class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
     def _get_request_json(self, instance_dict):
         return None
 
-    def _get_request_files(self, file_handle):
+    def _get_request_files(self, path):
         """
-        :param str file_handle: path to Model that will be uploaded
+        :param str path: path to Model that will be uploaded
         """
-        if not file_handle:
+        if not path:
             return None
 
-        return self._prepare_files(file_handle)
+        return self._prepare_files(path)
 
     @staticmethod
     def _prepare_files(path):

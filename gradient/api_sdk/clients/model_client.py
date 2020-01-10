@@ -46,7 +46,7 @@ class ModelsClient(BaseClient):
         )
 
         repository = repositories.UploadModel(api_key=self.api_key, logger=self.logger)
-        model_id = repository.create(model, file_handle=path)
+        model_id = repository.create(model, path=path)
         return model_id
 
     def get(self, model_id):
