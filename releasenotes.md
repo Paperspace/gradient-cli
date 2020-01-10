@@ -1,5 +1,14 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.0a7
+### Fixes
+* Fixed error occurring when not all dataset values were set
+
+# Release Notes for 0.5.0a6
+### New features
+* Added `models details` command
+* Added pagination for `experiments list`
+
 # Release Notes for 0.5.0a5
 ### New features
 * Added `deployments update` command
