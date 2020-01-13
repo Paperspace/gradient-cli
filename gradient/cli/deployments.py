@@ -169,22 +169,15 @@ def get_deployment_client(api_key):
     help="Generate username and password. Mutually exclusive with --authUsername and --authPassword",
     cls=common.GradientOption,
 )
-@click.option(
-    "--vpc",
-    "use_vpc",
-    type=bool,
-    is_flag=True,
-    cls=common.GradientOption,
-)
 @api_key_option
 @common.options_file
-def create_deployment(api_key, use_vpc, options_file, **kwargs):
+def create_deployment(api_key, options_file, **kwargs):
     utils.validate_auth_options(kwargs)
 
     del_if_value_is_none(kwargs)
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.CreateDeploymentCommand(deployment_client=deployment_client)
-    command.execute(use_vpc=use_vpc, **kwargs)
+    command.execute(**kwargs)
 
 
 DEPLOYMENT_STATES_MAP = collections.OrderedDict(
