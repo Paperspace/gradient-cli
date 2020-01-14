@@ -7,7 +7,7 @@ from .. import serializers, models
 
 
 class MachinesApiUrlMixin(object):
-    def _get_api_url(self, use_vpc=False):
+    def _get_api_url(self):
         return config.CONFIG_HOST
 
 
@@ -77,8 +77,8 @@ class ListMachines(MachinesApiUrlMixin, ListResources):
 class RestartMachine(MachinesApiUrlMixin, StartResource):
     VALIDATION_ERROR_MESSAGE = "Unable to restart instance"
 
-    def restart(self, id_, use_vpc=False):
-        self._run(id=id_, use_vpc=use_vpc)
+    def restart(self, id_):
+        self._run(id=id_)
 
     def get_request_url(self, **kwargs):
         machine_id = kwargs["id"]
@@ -91,8 +91,8 @@ class RestartMachine(MachinesApiUrlMixin, StartResource):
 
 
 class StartMachine(MachinesApiUrlMixin, StartResource):
-    def restart(self, id_, use_vpc=False):
-        self._run(id=id_, use_vpc=use_vpc)
+    def restart(self, id_):
+        self._run(id=id_)
 
     def get_request_url(self, **kwargs):
         machine_id = kwargs["id"]
@@ -105,8 +105,8 @@ class StartMachine(MachinesApiUrlMixin, StartResource):
 
 
 class StopMachine(MachinesApiUrlMixin, StopResource):
-    def restart(self, id_, use_vpc=False):
-        self._run(id=id_, use_vpc=use_vpc)
+    def restart(self, id_):
+        self._run(id=id_)
 
     def get_request_url(self, **kwargs):
         machine_id = kwargs["id"]

@@ -14,10 +14,7 @@ class GetBaseExperimentApiUrlMixin(object):
 
 class GetBaseExperimentApiUrlBasedOnVpcSettingMixin(object):
     def _get_api_url(self, **kwargs):
-        if kwargs.get("use_vpc") or config.config.USE_VPC:
-            return config.config.CONFIG_EXPERIMENTS_HOST_V2
-
-        return config.config.CONFIG_EXPERIMENTS_HOST
+        return config.config.CONFIG_EXPERIMENTS_HOST_V2
 
 
 class ParseExperimentDictMixin(object):
@@ -91,7 +88,7 @@ class GetExperiment(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, GetR
 
 
 class ListExperimentLogs(ListResources):
-    def _get_api_url(self, use_vpc=False):
+    def _get_api_url(self):
         return config.config.CONFIG_LOG_HOST
 
     def get_request_url(self, **kwargs):

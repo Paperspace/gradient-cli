@@ -48,5 +48,3 @@ class config(object):
     USE_CONSOLE_COLORS = os.environ.get("PAPERSPACE_USE_CONSOLE_COLORS",
                                         _DEFAULT_USE_CONSOLE_COLORS) in (True, "true", "1")
     HELP_COLORS_DICT = get_help_colors_dict(USE_CONSOLE_COLORS, HELP_HEADERS_COLOR, HELP_OPTIONS_COLOR)
-
-    USE_VPC = os.environ.get("PAPERSPACE_USE_VPC", False) in (True, "true", "1")

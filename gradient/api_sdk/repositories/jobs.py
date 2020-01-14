@@ -104,7 +104,7 @@ class RunJob(CreateJob):
         super(RunJob, self).__init__(api_key, logger)
         self.http_client = client
 
-    def _get_client(self, use_vpc=False):
+    def _get_client(self):
         return self.http_client
 
 
@@ -160,8 +160,8 @@ class DeleteJobArtifacts(GetBaseJobApiUrlMixin, DeleteResource):
     def get_request_url(self, **kwargs):
         return "/jobs/{}/artifactsDestroy".format(kwargs.get("id"))
 
-    def _send(self, url, use_vpc=False, **kwargs):
-        client = self._get_client(use_vpc=use_vpc)
+    def _send(self, url, **kwargs):
+        client = self._get_client()
         params_data = self._get_request_params(kwargs)
         response = self._send_request(client, url, params_data=params_data)
         gradient_response = http_client.GradientResponse.interpret_response(response)

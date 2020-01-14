@@ -19,7 +19,7 @@ class CreateHyperparameterCommand(BaseCreateExperimentCommandMixin, BaseHyperpar
     SPINNER_MESSAGE = "Creating hyperparameter tuning job"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "Hyperparameter tuning job created with ID: {}"
 
-    def _create(self, hyperparameter, use_vpc=False):
+    def _create(self, hyperparameter):
         handle = self.client.create(**hyperparameter)
         return handle
 
@@ -28,7 +28,7 @@ class CreateAndStartHyperparameterCommand(BaseCreateExperimentCommandMixin, Base
     SPINNER_MESSAGE = "Creating and starting hyperparameter tuning job"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "Hyperparameter tuning job created and started with ID: {}"
 
-    def _create(self, hyperparameter, use_vpc=False):
+    def _create(self, hyperparameter):
         handle = self.client.run(**hyperparameter)
         return handle
 
