@@ -21,9 +21,9 @@ class S3FilesDownloader(object):
         :param str destination_dir:
         """
         for source in sources:
-            self.download_file(source, destination_dir)
+            self.download_file(source, destination_dir, max_retries=self.file_download_retries)
 
-    def download_file(self, source, destination_dir):
+    def download_file(self, source, destination_dir, max_retries=1):
         self._create_directory(destination_dir)
 
         file_path, file_url = source
@@ -31,14 +31,15 @@ class S3FilesDownloader(object):
 
         # Trying to download several times in case of connection error with S3.
         # The error seems to occur randomly
-        for i in range(self.file_download_retries):
+        for _ in range(max_retries):
             try:
                 response = requests.get(file_url)
                 break
             except requests.exceptions.ConnectionError:
                 self.logger.debug("Downloading {} resulted in error. Trying again...".format(file_path))
-        else:  # break statement not executed
+        else:  # break statement not executed - ConnectionError `max_retries` times
             raise sdk_exceptions.ResourceFetchingError("Downloading {} resulted in error".format(file_path))
+
         self._create_subdirectories(file_path, destination_dir)
         self._save_file(response, file_path, destination_dir)
 
@@ -55,7 +56,7 @@ class S3FilesDownloader(object):
 
     def _save_file(self, response, file_path, destination_dir):
         destination_path = os.path.join(destination_dir, file_path)
-        with open(destination_path, "w") as h:
+        with open(destination_path, "wb") as h:
             h.write(response.content)
 
 
