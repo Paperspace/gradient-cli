@@ -21,6 +21,7 @@ class TestDeploymentsCreate(object):
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
+        "--clusterId", "cluster"
     ]
     BASIC_OPTIONS_COMMAND_WITH_API_KEY = [
         "deployments", "create",
@@ -31,6 +32,7 @@ class TestDeploymentsCreate(object):
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
         "--apiKey", "some_key",
+        "--clusterId", "cluster",
     ]
     COMMAND_WITH_ALL_OPTIONS = [
         "deployments", "create",
@@ -65,6 +67,7 @@ class TestDeploymentsCreate(object):
         "deploymentType": "TFServing",
         "instanceCount": 666,
         "modelId": u"some_model_id",
+        "cluster": "cluster"
     }
     ALL_OPTIONS_REQUEST = {
         "machineType": u"G1",
@@ -548,12 +551,19 @@ class TestDeploymentsUpdate(object):
         "deployments", "update",
         "--id", "some_id",
         "--deploymentType", "tfserving",
+        "--clusterId", "cluster",
+    ]
+    BASIC_OPTIONS_UPDATE_COMMAND = [
+        "deployments", "update",
+        "--id", "some_id",
+        "--deploymentType", "tfserving",
     ]
     BASIC_OPTIONS_COMMAND_WITH_API_KEY = [
         "deployments", "update",
         "--id", "some_id",
         "--deploymentType", "tfserving",
         "--apiKey", "some_key",
+        "--clusterId", "cluster",
     ]
     COMMAND_WITH_ALL_OPTIONS = [
         "deployments", "update",
@@ -625,7 +635,7 @@ class TestDeploymentsUpdate(object):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_UPDATE_COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,

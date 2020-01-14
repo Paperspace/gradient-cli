@@ -147,6 +147,7 @@ def get_deployment_client(api_key):
 @click.option(
     "--clusterId",
     "cluster_id",
+    required=True,
     help="Cluster ID",
     cls=common.GradientOption,
 )
@@ -402,6 +403,7 @@ def delete_deployment(id_, options_file, api_key):
 @click.option(
     "--clusterId",
     "cluster_id",
+    required=True,
     help="Cluster ID",
     cls=common.GradientOption,
 )

@@ -117,6 +117,7 @@ def common_experiments_create_options(f):
         click.option(
             "--clusterId",
             "cluster_id",
+            required=True,
             metavar="<cluster ID>",
             help="Cluster ID",
             cls=common.GradientOption,
