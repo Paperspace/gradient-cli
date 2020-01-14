@@ -30,3 +30,17 @@ class Model(object):
     summary = attr.ib(type=dict, default=None)
     detail = attr.ib(type=dict, default=None)
     notes = attr.ib(type=str, default=None)
+
+
+@attr.s
+class ModelFile(object):
+    """
+    Model file
+
+    :param str file: file path
+    :param str url: Url with AWS key
+    :param int size: File size in bytes
+    """
+    file = attr.ib(type=str, default=None)
+    url = attr.ib(type=str, default=None)
+    size = attr.ib(type=int, default=None)

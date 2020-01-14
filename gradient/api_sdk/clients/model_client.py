@@ -59,3 +59,16 @@ class ModelsClient(BaseClient):
         repository = repositories.GetModel(api_key=self.api_key, logger=self.logger)
         model = repository.get(model_id=model_id)
         return model
+
+    def get_model_files(self, model_id, links=False, size=False):
+        """Get list of models
+
+        :param str model_id: Model ID
+        :param bool links: Get links to model files
+        :param bool size: Get sizes of each file in bytes
+
+        :rtype: list[models.ModelFile]
+        """
+        repository = repositories.ListModelFiles(api_key=self.api_key, logger=self.logger)
+        models_list = repository.list(model_id=model_id, links=links, size=size)
+        return models_list

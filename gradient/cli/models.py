@@ -87,11 +87,11 @@ def upload_model(path, name, model_type, model_summary, notes, api_key, options_
     command.execute(path, name, model_type, model_summary, notes)
 
 
-@models_group.command("details", help="Model details")
+@models_group.command("details", help="Show model details")
 @click.option(
     "--id",
     "model_id",
-    help="Show model details",
+    help="Model ID",
     cls=common.GradientOption,
 )
 @common.api_key_option
@@ -99,3 +99,23 @@ def upload_model(path, name, model_type, model_summary, notes, api_key, options_
 def model_details(model_id, api_key, options_file):
     command = models_commands.GetModelCommand(api_key=api_key)
     command.execute(model_id)
+
+
+@models_group.command("download", help="Download model files")
+@click.option(
+    "--id",
+    "model_id",
+    help="Model ID",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--destinationDir",
+    "destination_directory",
+    help="Destination directory",
+    cls=common.GradientOption,
+)
+@common.api_key_option
+@common.options_file
+def download_model_files(model_id, destination_directory, api_key, options_file):
+    command = models_commands.DownloadModelFiles(api_key=api_key)
+    command.execute(model_id, destination_directory)

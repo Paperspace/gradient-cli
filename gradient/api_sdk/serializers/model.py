@@ -19,3 +19,11 @@ class Model(BaseSchema):
     summary = marshmallow.fields.Dict()
     detail = marshmallow.fields.Dict()
     notes = marshmallow.fields.Str()
+
+
+class ModelFileSchema(BaseSchema):
+    MODEL = models.ModelFile
+
+    file = marshmallow.fields.Str()
+    url = marshmallow.fields.Str()
+    size = marshmallow.fields.Int()

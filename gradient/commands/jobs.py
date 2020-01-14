@@ -359,6 +359,6 @@ class DownloadArtifactsCommand(BaseJobCommand):
         artifact_downloader = JobArtifactsDownloader(self.api_key, logger=self.logger)
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
             try:
-                artifact_downloader.download_artifacts(job_id, destination_directory)
+                artifact_downloader.download(job_id, destination_directory)
             except OSError as e:
                 raise sdk_exceptions.GradientSdkError(e)

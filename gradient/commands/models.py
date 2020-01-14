@@ -5,7 +5,9 @@ import six
 
 from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
+from gradient.api_sdk.s3_downloader import ModelFilesDownloader
 from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
+from gradient.exceptions import ApplicationError
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -68,3 +70,14 @@ class GetModelCommand(DetailsCommandMixin, GetModelsClientMixin, BaseCommand):
             ("Deployment State", instance.deployment_state),
         )
         return data
+
+
+class DownloadModelFiles(GetModelsClientMixin, BaseCommand):
+    WAITING_FOR_RESPONSE_MESSAGE = "Downloading files..."
+
+    def execute(self, model_id, destination_directory):
+        model_files_downloader = ModelFilesDownloader(self.api_key, logger=self.logger)
+        try:
+            model_files_downloader.download(model_id, destination_directory)
+        except OSError as e:
+            raise ApplicationError(e)

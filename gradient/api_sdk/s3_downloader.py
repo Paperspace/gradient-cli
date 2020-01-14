@@ -1,18 +1,24 @@
+import abc
 import os
 
 import requests
+import six
 
-from .clients.job_client import JobsClient
+from gradient.api_sdk import sdk_exceptions
+from .clients import JobsClient, ModelsClient
 from .logger import MuteLogger
 
 
 class S3FilesDownloader(object):
+    def __init__(self, logger=MuteLogger()):
+        self.logger = logger
+        self.file_download_retries = 4
+
     def download_list(self, sources, destination_dir):
         """
 
-        :param list[Artifact]|tuple[Artifact] sources:
+        :param tuple[tuple[str,str]] sources: tuple/list of (file_path, file_url) pairs
         :param str destination_dir:
-        :return:
         """
         for source in sources:
             self.download_file(source, destination_dir)
@@ -20,10 +26,21 @@ class S3FilesDownloader(object):
     def download_file(self, source, destination_dir):
         self._create_directory(destination_dir)
 
-        response = requests.get(source.url)
+        file_path, file_url = source
+        self.logger.log("Downloading: {}".format(file_path))
 
-        self._create_subdirectories(source, destination_dir)
-        self._save_file(response, source, destination_dir)
+        # Trying to download several times in case of connection error with S3.
+        # The error seems to occur randomly
+        for i in range(self.file_download_retries):
+            try:
+                response = requests.get(file_url)
+                break
+            except requests.exceptions.ConnectionError:
+                self.logger.debug("Downloading {} resulted in error. Trying again...".format(file_path))
+        else:  # break statement not executed
+            raise sdk_exceptions.ResourceFetchingError("Downloading {} resulted in error".format(file_path))
+        self._create_subdirectories(file_path, destination_dir)
+        self._save_file(response, file_path, destination_dir)
 
     def _create_directory(self, destination_dir):
         if os.path.exists(destination_dir) and os.path.isdir(destination_dir):
@@ -31,28 +48,55 @@ class S3FilesDownloader(object):
 
         os.makedirs(destination_dir)
 
-    def _create_subdirectories(self, source, destination_dir):
-        file_dirname = os.path.dirname(source.file)
+    def _create_subdirectories(self, file_path, destination_dir):
+        file_dirname = os.path.dirname(file_path)
         file_dir_path = os.path.join(destination_dir, file_dirname)
         self._create_directory(file_dir_path)
 
-    def _save_file(self, response, source, destination_dir):
-        destination_path = os.path.join(destination_dir, source.file)
+    def _save_file(self, response, file_path, destination_dir):
+        destination_path = os.path.join(destination_dir, file_path)
         with open(destination_path, "w") as h:
             h.write(response.content)
 
 
-class JobArtifactsDownloader(object):
+@six.add_metaclass(abc.ABCMeta)
+class ResourceDownloader(object):
     def __init__(self, api_key, logger=MuteLogger()):
         self.api_key = api_key
         self.logger = logger
-        self.jobs_client = JobsClient(api_key, logger=logger)
 
-    def download_artifacts(self, job_id, destination):
+    def download(self, job_id, destination):
         files = self._get_files_list(job_id)
-        s3_downloader = S3FilesDownloader()
+        s3_downloader = S3FilesDownloader(logger=self.logger)
         s3_downloader.download_list(files, destination)
+
+    @abc.abstractmethod
+    def _get_files_list(self, job_id):
+        """
+        :param str job_id:
+        :returns: Tuple of (file path, url) pairs
+        :rtype: tuple[tuple[str,str]]
+        """
+        pass
+
+
+class JobArtifactsDownloader(ResourceDownloader):
+    def __init__(self, api_key, logger=MuteLogger()):
+        super(JobArtifactsDownloader, self).__init__(api_key, logger=logger)
+        self.jobs_client = JobsClient(api_key, logger=logger)
 
     def _get_files_list(self, job_id):
         files = self.jobs_client.artifacts_list(job_id)
+        files = tuple((f.file, f.url) for f in files)
+        return files
+
+
+class ModelFilesDownloader(ResourceDownloader):
+    def __init__(self, api_key, logger=MuteLogger()):
+        super(ModelFilesDownloader, self).__init__(api_key, logger=logger)
+        self.models_client = ModelsClient(api_key, logger=logger)
+
+    def _get_files_list(self, model_id):
+        files = self.models_client.get_model_files(model_id=model_id, links=True)
+        files = tuple((f.file, f.url) for f in files)
         return files
