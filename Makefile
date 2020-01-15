@@ -10,7 +10,7 @@ run-tests: clean-tests
 
 pip-update:
 	$(PIP) install --upgrade pip
-	$(PIP) install --upgrade setuptools
+	$(PIP) install --upgrade --user setuptools
 
 pip-install-dev: pip-update
 	$(PIP) install --upgrade -e .[dev] --user
