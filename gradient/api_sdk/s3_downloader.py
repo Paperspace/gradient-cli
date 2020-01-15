@@ -1,5 +1,6 @@
 import abc
 import os
+import time
 
 import requests
 import six
@@ -12,7 +13,7 @@ from .logger import MuteLogger
 class S3FilesDownloader(object):
     def __init__(self, logger=MuteLogger()):
         self.logger = logger
-        self.file_download_retries = 4
+        self.file_download_retries = 8
 
     def download_list(self, sources, destination_dir):
         """
@@ -23,20 +24,21 @@ class S3FilesDownloader(object):
         for source in sources:
             self.download_file(source, destination_dir, max_retries=self.file_download_retries)
 
-    def download_file(self, source, destination_dir, max_retries=1):
+    def download_file(self, source, destination_dir, max_retries=0):
         self._create_directory(destination_dir)
 
         file_path, file_url = source
         self.logger.log("Downloading: {}".format(file_path))
 
         # Trying to download several times in case of connection error with S3.
-        # The error seems to occur randomly
-        for _ in range(max_retries):
+        # The error seems to occur randomly but adding short sleep between retries helps a bit
+        for _ in range(max_retries + 1):
             try:
                 response = requests.get(file_url)
                 break
             except requests.exceptions.ConnectionError:
                 self.logger.debug("Downloading {} resulted in error. Trying again...".format(file_path))
+                time.sleep(0.1)
         else:  # break statement not executed - ConnectionError `max_retries` times
             raise sdk_exceptions.ResourceFetchingError("Downloading {} resulted in error".format(file_path))
 
@@ -56,8 +58,12 @@ class S3FilesDownloader(object):
 
     def _save_file(self, response, file_path, destination_dir):
         destination_path = os.path.join(destination_dir, file_path)
-        with open(destination_path, "wb") as h:
-            h.write(response.content)
+        try:
+            with open(destination_path, "wb") as h:
+                h.write(response.content)
+        except TypeError:  # in py3 TypeError is raised when trying to write str in bytes mode so trying in txt mode
+            with open(destination_path, "w") as h:
+                h.write(response.content)
 
 
 @six.add_metaclass(abc.ABCMeta)
