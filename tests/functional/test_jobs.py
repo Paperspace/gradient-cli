@@ -454,7 +454,6 @@ class TestJobsCreate(object):
         "--machineType", "testType",
         "--command", "testCommand",
         "--workspace", "https://github.com/Paperspace/gradient-cli.git",
-        "--clusterId", "cluster",
     ]
     FULL_OPTIONS_COMMAND = [
         "jobs", "create",
@@ -492,7 +491,6 @@ class TestJobsCreate(object):
         "command": u"testCommand",
         "workspace": u"https://github.com/Paperspace/gradient-cli.git",
         "workspaceFileName": u"https://github.com/Paperspace/gradient-cli.git",
-        "clusterId": "cluster",
     }
     FULL_OPTIONS_REQUEST = {
         "clusterId": "some_cluster_id",

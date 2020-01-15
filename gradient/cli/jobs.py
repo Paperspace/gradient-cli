@@ -222,7 +222,6 @@ def common_jobs_create_options(f):
         click.option(
             "--clusterId",
             "cluster_id",
-            required=True,
             help="Cluster id",
             cls=common.GradientOption,
         ),

@@ -12,7 +12,6 @@ class TestRunCommand(object):
     command_name = 'run'
     common_commands = [
         "--name", "test", "--projectId", "projectId", "--apiKey", "some_key", "--machineType", "G1",
-        "--clusterId", "cluster"
     ]
     COMMAND_WITH_OPTIONS_FILE = ["run", "--optionsFile", ]  # path added in test
 
@@ -58,7 +57,6 @@ class TestRunCommand(object):
                                             'command': 'python{} myscript.py a b'.format(str(sys.version_info[0])),
                                             'container': u'paperspace/tensorflow-python',
                                             'machineType': 'G1',
-                                            'clusterId': 'cluster',
                                         })
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -83,7 +81,6 @@ class TestRunCommand(object):
                                             'command': 'python{} -c print(foo)'.format(str(sys.version_info[0])),
                                             'container': u'paperspace/tensorflow-python',
                                             'machineType': 'G1',
-                                            'clusterId': 'cluster',
                                         })
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -111,7 +108,6 @@ class TestRunCommand(object):
                                             'command': 'echo foo',
                                             'container': u'paperspace/tensorflow-python',
                                             'machineType': 'G1',
-                                            'clusterId': 'cluster',
                                         })
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
