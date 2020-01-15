@@ -25,6 +25,7 @@ class TestExperimentsCreateSingleNode(object):
         "--machineType", "testType",
         "--command", "testCommand",
         "--workspaceUrl", "some-workspace",
+        "--clusterId", "cluster",
     ]
     BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE = [
         "experiments", "create", "singlenode",
@@ -33,6 +34,7 @@ class TestExperimentsCreateSingleNode(object):
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
+        "--clusterId", "cluster",
         "--workspace",  # local path added in test
     ]
     FULL_OPTIONS_COMMAND = [
@@ -73,6 +75,7 @@ class TestExperimentsCreateSingleNode(object):
         "command": u"dGVzdENvbW1hbmQ=",
         "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
         "workspaceUrl": u"some-workspace",
+        "clusterId": "cluster",
     }
     FULL_OPTIONS_REQUEST = {
         "name": u"exp1",
@@ -356,6 +359,7 @@ class TestExperimentsCreateMultiNode(object):
         "--parameterServerCount", 2,
         "--workerContainerUser", "usr",
         "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+        "--clusterId", "cluster",
     ]
     FULL_OPTIONS_COMMAND = [
         "experiments", "create", "multinode",
@@ -423,6 +427,7 @@ class TestExperimentsCreateMultiNode(object):
         u"parameterServerCount": 2,
         u"workerContainerUser": u"usr",
         u"workspaceUrl": u"https://github.com/Paperspace/gradient-cli.git",
+        "clusterId": "cluster",
     }
     FULL_OPTIONS_REQUEST = {
         "name": u"multinode_mpi",
@@ -612,6 +617,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--machineType", "testType",
         "--command", "testCommand",
         "--workspaceUrl", "some-workspace",
+        "--clusterId", "cluster",
         "--no-logs",
     ]
     BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE = [
@@ -621,6 +627,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
+        "--clusterId", "cluster",
         "--workspace",  # local path added in test
     ]
     FULL_OPTIONS_COMMAND = [
@@ -675,6 +682,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--parameterServerCount", 2,
         "--workerContainerUser", "usr",
         "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+        "--clusterId", "cluster",
         "--no-logs",
     ]
     FULL_OPTIONS_COMMAND = [
@@ -735,7 +743,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
 
 
 class TestExperimentDetail(object):
-    URL = "https://services.paperspace.io/experiments/v1/experiments/experiment-id/"
+    URL = "https://services.paperspace.io/experiments/v2/experiments/experiment-id/"
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -875,7 +883,7 @@ class TestExperimentDetail(object):
 
 
 class TestExperimentList(object):
-    URL = "https://services.paperspace.io/experiments/v1/experiments/"
+    URL = "https://services.paperspace.io/experiments/v2/experiments/"
     COMMAND = ["experiments", "list"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "list", "--optionsFile", ]  # path added in test
     EXPECTED_HEADERS = http_client.default_headers.copy()

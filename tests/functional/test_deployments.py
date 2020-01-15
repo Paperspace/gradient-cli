@@ -551,7 +551,6 @@ class TestDeploymentsUpdate(object):
         "deployments", "update",
         "--id", "some_id",
         "--deploymentType", "tfserving",
-        "--clusterId", "cluster",
     ]
     BASIC_OPTIONS_UPDATE_COMMAND = [
         "deployments", "update",
@@ -563,7 +562,6 @@ class TestDeploymentsUpdate(object):
         "--id", "some_id",
         "--deploymentType", "tfserving",
         "--apiKey", "some_key",
-        "--clusterId", "cluster",
     ]
     COMMAND_WITH_ALL_OPTIONS = [
         "deployments", "update",
