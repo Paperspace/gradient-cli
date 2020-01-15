@@ -1,5 +1,12 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.1a2
+### Fixes
+* Update model upload to accept path to file or directory
+### Breaking changes
+* Change `--clusterId` to required parameter for creation and start of deployments and experiments
+* Remove `--vpc` flag for creation and start of deployments and experiments
+
 # Release Notes for 0.5.1a1
 ### New features
 * Added `model upload` command with directory upload command
