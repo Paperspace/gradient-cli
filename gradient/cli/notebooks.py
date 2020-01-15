@@ -121,6 +121,7 @@ def list_notebooks(api_key, options_file):
     "id",
     help="Notebook ID",
     cls=common.GradientOption,
+    required=True,
 )
 @common.api_key_option
 @common.options_file
