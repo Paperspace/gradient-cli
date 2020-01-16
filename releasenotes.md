@@ -20,6 +20,10 @@
 * Dropped dependencies: gradient-statsd and gradient-sdk
 * Changed ID attribute in Job and Deployment models from `id_` to `id`
 
+# Release Notes for 0.5.1a3
+### Fixes
+* Reverted changes to `--clusterId` and `--vpc` from 0.5.1a2
+
 # Release Notes for 0.5.1a2
 ### Fixes
 * Update model upload to accept path to file or directory
