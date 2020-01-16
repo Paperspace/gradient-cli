@@ -128,12 +128,13 @@ class S3WorkspaceHandler(WorkspaceHandler):
 
         archive_path = workspace
         project_handle = input_data.get('projectHandle') or input_data["project_id"]
-        workspace = self._upload(archive_path, project_handle)
+        cluster_id = input_data.get('clusterId') or input_data["cluster_id"]
+        workspace = self._upload(archive_path, project_handle, cluster_id=cluster_id)
         return workspace
 
-    def _upload(self, archive_path, project_id):
+    def _upload(self, archive_path, project_id, cluster_id=None):
         uploader = self._get_workspace_uploader(self.api_key)
-        workspace = uploader.upload(archive_path, project_id)
+        workspace = uploader.upload(archive_path, project_id, cluster_id=cluster_id)
         return workspace
 
     def _get_workspace_uploader(self, api_key):
