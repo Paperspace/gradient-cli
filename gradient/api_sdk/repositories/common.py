@@ -91,7 +91,7 @@ class ListResources(BaseRepository):
         instance = self.SERIALIZER_CLS().get_instance(instance_dict)
         return instance
 
-    def list(self, **kwargs):
+    def list(self, use_vpc=False, **kwargs):
         response = self._get(kwargs)
         self._validate_response(response)
         instances = self._get_instances(response, **kwargs)

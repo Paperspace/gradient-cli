@@ -4,7 +4,7 @@ from .. import serializers, models
 
 
 class GetTensorboardApiUrlMixin(object):
-    def _get_api_url(self):
+    def _get_api_url(self, use_vpc=False):
         return config.CONFIG_SERVICE_HOST
 
 
