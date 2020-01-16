@@ -1,5 +1,25 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.0
+##### Note: this list includes all changes made in 0.5.a* alpha releases
+### New features
+* Added `projects delete` command
+* Added `models upload` command for uploading model file from local machine
+* Added `--workspaceRef` option to `experiments create/run` for specifying branch, commit hash or tag
+* Added new options to `experiments create/run` for creating experiments with datasets
+* Added several new options to `deployments create`
+* Added `deployments update` command
+* Added `models details` command
+* Added pagination for `experiments list`
+### Fixes
+* Fixed constant used to create deployment
+* Fix listing experiments when filtering by project ID
+* Fixed KeyError when setting dataset options without setting --datasetUri
+* Fixed error occurring when not all dataset values were set
+### Breaking changes
+* Dropped dependencies: gradient-statsd and gradient-sdk
+* Changed ID attribute in Job and Deployment models from `id_` to `id`
+
 # Release Notes for 0.5.0a7
 ### Fixes
 * Fixed error occurring when not all dataset values were set
