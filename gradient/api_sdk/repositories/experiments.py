@@ -9,15 +9,7 @@ from ..serializers import utils
 
 class GetBaseExperimentApiUrlMixin(object):
     def _get_api_url(self, **_):
-        return config.config.CONFIG_EXPERIMENTS_HOST
-
-
-class GetBaseExperimentApiUrlBasedOnVpcSettingMixin(object):
-    def _get_api_url(self, **kwargs):
-        if kwargs.get("use_vpc") or config.config.USE_VPC:
-            return config.config.CONFIG_EXPERIMENTS_HOST_V2
-
-        return config.config.CONFIG_EXPERIMENTS_HOST
+        return config.config.CONFIG_EXPERIMENTS_HOST_V2
 
 
 class ParseExperimentDictMixin(object):
@@ -91,7 +83,7 @@ class GetExperiment(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, GetR
 
 
 class ListExperimentLogs(ListResources):
-    def _get_api_url(self, use_vpc=False):
+    def _get_api_url(self):
         return config.config.CONFIG_LOG_HOST
 
     def get_request_url(self, **kwargs):
@@ -137,7 +129,7 @@ class ListExperimentLogs(ListResources):
 
 
 @six.add_metaclass(abc.ABCMeta)
-class BaseCreateExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, CreateResource):
+class BaseCreateExperiment(GetBaseExperimentApiUrlMixin, CreateResource):
     def get_request_url(self, **_):
         return "/experiments/"
 
@@ -169,7 +161,7 @@ class RunMpiMultiNodeExperiment(CreateMpiMultiNodeExperiment):
         return "/experiments/run/"
 
 
-class StartExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, StartResource):
+class StartExperiment(GetBaseExperimentApiUrlMixin, StartResource):
     VALIDATION_ERROR_MESSAGE = "Failed to start experiment"
 
     def get_request_url(self, **kwargs):
@@ -178,7 +170,7 @@ class StartExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, StartResour
         return url
 
 
-class StopExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, StopResource):
+class StopExperiment(GetBaseExperimentApiUrlMixin, StopResource):
     VALIDATION_ERROR_MESSAGE = "Failed to stop experiment"
 
     def get_request_url(self, **kwargs):
@@ -187,7 +179,7 @@ class StopExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, StopResource
         return url
 
 
-class DeleteExperiment(GetBaseExperimentApiUrlBasedOnVpcSettingMixin, DeleteResource):
+class DeleteExperiment(GetBaseExperimentApiUrlMixin, DeleteResource):
     def get_request_url(self, **kwargs):
         experiment_id = kwargs["id"]
         return "/experiments/{}/".format(experiment_id)

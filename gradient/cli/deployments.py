@@ -147,6 +147,7 @@ def get_deployment_client(api_key):
 @click.option(
     "--clusterId",
     "cluster_id",
+    required=True,
     help="Cluster ID",
     cls=common.GradientOption,
 )
@@ -169,22 +170,15 @@ def get_deployment_client(api_key):
     help="Generate username and password. Mutually exclusive with --authUsername and --authPassword",
     cls=common.GradientOption,
 )
-@click.option(
-    "--vpc",
-    "use_vpc",
-    type=bool,
-    is_flag=True,
-    cls=common.GradientOption,
-)
 @api_key_option
 @common.options_file
-def create_deployment(api_key, use_vpc, options_file, **kwargs):
+def create_deployment(api_key, options_file, **kwargs):
     utils.validate_auth_options(kwargs)
 
     del_if_value_is_none(kwargs)
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.CreateDeploymentCommand(deployment_client=deployment_client)
-    command.execute(use_vpc=use_vpc, **kwargs)
+    command.execute(**kwargs)
 
 
 DEPLOYMENT_STATES_MAP = collections.OrderedDict(
@@ -240,19 +234,12 @@ def get_deployments_list(api_key, options_file, **filters):
     help="Deployment ID",
     cls=common.GradientOption,
 )
-@click.option(
-    "--vpc",
-    "use_vpc",
-    type=bool,
-    is_flag=True,
-    cls=common.GradientOption,
-)
 @api_key_option
 @common.options_file
-def start_deployment(id_, use_vpc, options_file, api_key=None):
+def start_deployment(id_, options_file, api_key=None):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.StartDeploymentCommand(deployment_client=deployment_client)
-    command.execute(deployment_id=id_, use_vpc=use_vpc)
+    command.execute(deployment_id=id_)
 
 
 @deployments.command("stop", help="Stop deployment")
@@ -263,19 +250,12 @@ def start_deployment(id_, use_vpc, options_file, api_key=None):
     help="Deployment ID",
     cls=common.GradientOption,
 )
-@click.option(
-    "--vpc",
-    "use_vpc",
-    type=bool,
-    is_flag=True,
-    cls=common.GradientOption,
-)
 @api_key_option
 @common.options_file
-def stop_deployment(id_, use_vpc, options_file, api_key=None):
+def stop_deployment(id_, options_file, api_key=None):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.StopDeploymentCommand(deployment_client=deployment_client)
-    command.execute(deployment_id=id_, use_vpc=use_vpc)
+    command.execute(deployment_id=id_)
 
 
 @deployments.command("delete", help="Delete deployment")
@@ -286,19 +266,12 @@ def stop_deployment(id_, use_vpc, options_file, api_key=None):
     help="Deployment ID",
     cls=common.GradientOption,
 )
-@click.option(
-    "--vpc",
-    "use_vpc",
-    type=bool,
-    is_flag=True,
-    cls=common.GradientOption,
-)
 @api_key_option
 @common.options_file
-def delete_deployment(id_, use_vpc, options_file, api_key):
+def delete_deployment(id_, options_file, api_key):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.DeleteDeploymentCommand(deployment_client=deployment_client)
-    command.execute(deployment_id=id_, use_vpc=use_vpc)
+    command.execute(deployment_id=id_)
 
 
 @deployments.command("update", help="Modify existing deployment")
@@ -433,17 +406,10 @@ def delete_deployment(id_, use_vpc, options_file, api_key):
     help="Cluster ID",
     cls=common.GradientOption,
 )
-@click.option(
-    "--vpc",
-    "use_vpc",
-    type=bool,
-    is_flag=True,
-    cls=common.GradientOption,
-)
 @api_key_option
 @common.options_file
-def update_deployment(deployment_id, api_key, use_vpc, options_file, **kwargs):
+def update_deployment(deployment_id, api_key, options_file, **kwargs):
     del_if_value_is_none(kwargs)
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.UpdateDeploymentCommand(deployment_client=deployment_client)
-    command.execute(deployment_id, use_vpc=use_vpc, **kwargs)
+    command.execute(deployment_id, **kwargs)

@@ -1,4 +1,4 @@
-FILE: saved_model.pb
+PATH: saved_model.pb
 apiKey: some_key
 modelSummary:
   key: value

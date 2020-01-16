@@ -1,7 +1,7 @@
 # Gradient CLI Release Notes
 
 # Release Notes for 0.5.0
-##### Note: this list includes all changes made in 0.5.a* alpha releases
+##### Note: this list includes all changes made in 0.5.0a* alpha releases
 ### New features
 * Added `projects delete` command
 * Added `models upload` command for uploading model file from local machine
@@ -19,6 +19,17 @@
 ### Breaking changes
 * Dropped dependencies: gradient-statsd and gradient-sdk
 * Changed ID attribute in Job and Deployment models from `id_` to `id`
+
+# Release Notes for 0.5.1a2
+### Fixes
+* Update model upload to accept path to file or directory
+### Breaking changes
+* Change `--clusterId` to required parameter for creation and start of deployments and experiments
+* Remove `--vpc` flag for creation and start of deployments and experiments
+
+# Release Notes for 0.5.1a1
+### New features
+* Added `model upload` command with directory upload command
 
 # Release Notes for 0.5.0a7
 ### Fixes

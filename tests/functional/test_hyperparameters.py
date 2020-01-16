@@ -8,7 +8,7 @@ from tests import MockResponse, example_responses
 
 
 class TestCreateHyperparameters(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/"
+    URL = "https://services.paperspace.io/experiments/v2/hyperopt/"
     COMMAND = [
         "experiments", "hyperparameters", "create",
         "--name", "some_name",
@@ -18,6 +18,7 @@ class TestCreateHyperparameters(object):
         "--workerCommand", "some worker command",
         "--workerCount", "1",
         "--projectId", "some_project_id",
+        "--clusterId", "cluster",
         "--workspace", "none",
     ]
     EXPECTED_REQUEST_JSON = {
@@ -29,6 +30,7 @@ class TestCreateHyperparameters(object):
         "workerCommand": "c29tZSB3b3JrZXIgY29tbWFuZA==",
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
         "projectHandle": "some_project_id",
+        "clusterId": "cluster",
     }
 
     COMMAND_WHEN_ALL_PARAMETERS_WERE_USED = [
@@ -120,6 +122,7 @@ class TestCreateHyperparameters(object):
         "--projectId", "some_project_id",
         "--workspace", "none",
         "--apiKey", "some_key",
+        "--clusterId", "cluster"
     ]
     EXPECTED_REQUEST_JSON_WHEN_API_KEY_PARAMETERS_WAS_USED = {
         "workerContainer": "some_container",
@@ -129,6 +132,7 @@ class TestCreateHyperparameters(object):
         "workerCount": 1,
         "workerCommand": "some worker command",
         "projectHandle": "pr4yxj956",
+        "clusterId": "cluster",
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
     }
 
@@ -257,7 +261,7 @@ class TestCreateHyperparameters(object):
 
 
 class TestCreateAndStartHyperparameters(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/create_and_start/"
+    URL = "https://services.paperspace.io/experiments/v2/hyperopt/create_and_start/"
     COMMAND = [
         "experiments", "hyperparameters", "run",
         "--name", "some_name",
@@ -268,6 +272,7 @@ class TestCreateAndStartHyperparameters(object):
         "--workerCount", "1",
         "--projectId", "some_project_id",
         "--workspace", "none",
+        "--clusterId", "cluster",
     ]
     EXPECTED_REQUEST_JSON = {
         "workerContainer": "some_container",
@@ -278,6 +283,7 @@ class TestCreateAndStartHyperparameters(object):
         "workerCommand": "c29tZSB3b3JrZXIgY29tbWFuZA==",
         "projectHandle": "some_project_id",
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
+        "clusterId": "cluster",
     }
 
     COMMAND_WHEN_ALL_PARAMETERS_WERE_USED = [
@@ -369,6 +375,7 @@ class TestCreateAndStartHyperparameters(object):
         "--projectId", "some_project_id",
         "--apiKey", "some_key",
         "--workspace", "none",
+        "--clusterId", "cluster",
     ]
     EXPECTED_REQUEST_JSON_WHEN_API_KEY_PARAMETERS_WAS_USED = {
         "workerContainer": "some_container",
@@ -379,6 +386,7 @@ class TestCreateAndStartHyperparameters(object):
         "workerCommand": "some worker command",
         "projectHandle": "pr4yxj956",
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
+        "clusterId": "cluster",
     }
 
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"details": "Incorrect API Key provided", "error": "Forbidden"}
@@ -506,7 +514,7 @@ class TestCreateAndStartHyperparameters(object):
 
 
 class TestStartHyperparameters(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/some_id/start/"
+    URL = "https://services.paperspace.io/experiments/v2/hyperopt/some_id/start/"
     COMMAND = [
         "experiments", "hyperparameters", "start",
         "--id", "some_id",
@@ -622,7 +630,7 @@ class TestStartHyperparameters(object):
 
 
 class TestHyperparametersList(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/"
+    URL = "https://services.paperspace.io/experiments/v2/hyperopt/"
     COMMAND = ["experiments", "hyperparameters", "list"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "list", "--optionsFile", ]  # path added in test
     EXPECTED_HEADERS = http_client.default_headers.copy()
@@ -731,7 +739,7 @@ class TestHyperparametersList(object):
 
 
 class TestHyperparametersDetails(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/some_id/"
+    URL = "https://services.paperspace.io/experiments/v2/hyperopt/some_id/"
     COMMAND = ["experiments", "hyperparameters", "details", "--id", "some_id"]
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
