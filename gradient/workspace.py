@@ -128,7 +128,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
 
         archive_path = workspace
         project_handle = input_data.get('projectHandle') or input_data["project_id"]
-        cluster_id = input_data.get('clusterId') or input_data["cluster_id"]
+        cluster_id = input_data.get('clusterId') or input_data.get(["cluster_id"])
         workspace = self._upload(archive_path, project_handle, cluster_id=cluster_id)
         return workspace
 
