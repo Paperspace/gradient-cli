@@ -5,7 +5,7 @@ from .. import serializers
 
 
 class GetNotebookApiUrlMixin(object):
-    def _get_api_url(self):
+    def _get_api_url(self, use_vpc=False):
         return gradient.api_sdk.config.config.CONFIG_HOST
 
 

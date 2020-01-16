@@ -47,7 +47,10 @@ class CreateDeployment(GetBaseDeploymentApiUrlMixin, CreateResource):
     SERIALIZER_CLS = serializers.DeploymentSchema
 
     def get_request_url(self, **kwargs):
-        return "/deployments/v2/createDeployment/"
+        if kwargs.get("use_vpc") or config.config.USE_VPC:
+            return "/deployments/v2/createDeployment/"
+
+        return "/deployments/createDeployment/"
 
     def _get_id_from_response(self, response):
         handle = response.data["deployment"]["id"]
@@ -56,7 +59,10 @@ class CreateDeployment(GetBaseDeploymentApiUrlMixin, CreateResource):
 
 class StartDeployment(GetBaseDeploymentApiUrlMixin, StartResource):
     def get_request_url(self, **kwargs):
-        return "/deployments/v2/updateDeployment/"
+        if kwargs.get("use_vpc") or config.config.USE_VPC:
+            return "/deployments/v2/updateDeployment/"
+
+        return "/deployments/updateDeployment/"
 
     def _get_request_json(self, kwargs):
         data = {
@@ -72,7 +78,10 @@ class StartDeployment(GetBaseDeploymentApiUrlMixin, StartResource):
 
 class StopDeployment(GetBaseDeploymentApiUrlMixin, StopResource):
     def get_request_url(self, **kwargs):
-        return "/deployments/v2/updateDeployment/"
+        if kwargs.get("use_vpc") or config.config.USE_VPC:
+            return "/deployments/v2/updateDeployment/"
+
+        return "/deployments/updateDeployment/"
 
     def _get_request_json(self, kwargs):
         data = {
@@ -88,7 +97,10 @@ class StopDeployment(GetBaseDeploymentApiUrlMixin, StopResource):
 
 class DeleteDeployment(GetBaseDeploymentApiUrlMixin, DeleteResource):
     def get_request_url(self, **kwargs):
-        return "/deployments/v2/deleteDeployment"
+        if kwargs.get("use_vpc") or config.config.USE_VPC:
+            return "/deployments/v2/deleteDeployment"
+
+        return "/deployments/deleteDeployment"
 
     def _get_request_json(self, kwargs):
         data = {
@@ -106,12 +118,16 @@ class UpdateDeployment(GetBaseDeploymentApiUrlMixin, AlterResource):
     SERIALIZER_CLS = serializers.DeploymentSchema
     VALIDATION_ERROR_MESSAGE = "Failed to update resource"
 
-    def update(self, id, instance):
+    def update(self, id, instance, use_vpc=False):
         instance_dict = self._get_instance_dict(instance)
+        instance_dict["use_vpc"] = use_vpc
         self._run(id=id, **instance_dict)
 
     def get_request_url(self, **kwargs):
-        return "/deployments/v2/updateDeployment"
+        if kwargs.get("use_vpc") or config.config.USE_VPC:
+            return "/deployments/v2/updateDeployment"
+
+        return "/deployments/updateDeployment"
 
     def _get_request_json(self, kwargs):
         # this temporary workaround is here because create and update
