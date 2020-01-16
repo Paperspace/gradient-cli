@@ -230,6 +230,7 @@ class StopExperimentCommand(BaseExperimentCommand):
 
 
 class ListExperimentsCommand(ListCommandMixin, BaseExperimentCommand):
+    TOTAL_ITEMS_KEY = "totalItems"
     def _get_instances(self, **kwargs):
         project_id = kwargs.get("project_id")
         limit = kwargs.get("limit")
@@ -251,33 +252,8 @@ class ListExperimentsCommand(ListCommandMixin, BaseExperimentCommand):
             data.append((name, handle, status))
         return data
 
-    def _generate_exp_table(self, **kwargs):
-        limit = kwargs.get("exp_limit")
-        offset = kwargs.get("exp_offset")
-        meta_data = dict()
-
-        while "totalItems" not in meta_data or offset < meta_data.get("totalItems"):
-            with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-                instances, meta_data = self._get_instances(
-                    limit=limit,
-                    offset=offset,
-                    get_meta=True,
-                    **kwargs
-                )
-            next_iteration = False
-            if instances:
-                table_data = self._get_table_data(instances)
-                table_str = self._make_list_table(table_data) + "\n"
-                if offset + limit < meta_data.get("totalItems"):
-                    next_iteration = True
-            else:
-                table_str = "No data found"
-
-            yield table_str, next_iteration
-            offset += limit
-
     def execute(self, **kwargs):
-        return self._generate_exp_table(**kwargs)
+        return self._generate_data_table(**kwargs)
 
 
 class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
