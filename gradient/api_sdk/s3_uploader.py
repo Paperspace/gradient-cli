@@ -253,7 +253,7 @@ class S3ProjectFileUploader(object):
         :return: URL to which send the file, name of the bucket and a dictionary required by S3 service
         """
         file_name = os.path.basename(file_path)
-        params={'workspaceName': file_name, 'projectHandle': project_handle}
+        params = {"workspaceName": file_name, "projectHandle": project_handle}
         if cluster_id:
             params['clusterHandle'] = cluster_id
 
