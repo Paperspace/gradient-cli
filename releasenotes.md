@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.2a1
+### Fixes
+* Update `notebooks list` command so it accept `--list` and `--offset` arguments and show more noebooks
+
 # Release Notes for 0.5.0
 ##### Note: this list includes all changes made in 0.5.0a* alpha releases
 ### New features
