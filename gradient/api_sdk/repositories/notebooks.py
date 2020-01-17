@@ -59,6 +59,15 @@ class ListNotebooks(GetNotebookApiUrlMixin, ListResources):
     def get_request_url(self, **kwargs):
         return "notebooks/getNotebooks"
 
+    def _get_meta_data(self, resp, **kwargs):
+        metadata = {
+            "total": resp.data.get("total"),
+            "runningTotal": resp.data.get("runningTotal"),
+            "freeTierRunningTotal": resp.data.get("freeTierRunningTotal"),
+            "displayTotal": resp.data.get("displayTotal"),
+        }
+        return metadata
+
     def _parse_objects(self, data, **kwargs):
         notebook_dicts = data["notebookList"]
         # this ugly hack is here because marshmallow disallows reading value into `id` field
@@ -74,8 +83,8 @@ class ListNotebooks(GetNotebookApiUrlMixin, ListResources):
         json_ = {
             "filter": {
                 "filter": {
-                    "limit": 11,
-                    "offset": 0,
+                    "limit": kwargs.get("limit"),
+                    "offset": kwargs.get("offset"),
                     "where": {
                         "dtDeleted": None,
                     },

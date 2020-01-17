@@ -674,7 +674,7 @@ def stop_experiment(id, api_key, options_file, use_vpc):
 def list_experiments(project_ids, api_key, exp_limit, exp_offset, options_file):
     command = experiments_commands.ListExperimentsCommand(api_key=api_key)
 
-    for experiments_str, next_iteration in command.execute(project_id=project_ids, exp_limit=exp_limit, exp_offset=exp_offset):
+    for experiments_str, next_iteration in command.execute(project_id=project_ids, limit=exp_limit, offset=exp_offset):
         click.echo(experiments_str)
         if next_iteration:
             click.confirm("Do you want to continue?", abort=True)
