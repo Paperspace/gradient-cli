@@ -398,6 +398,7 @@ class TestNotebooksList(object):
 | some_notebook_name | njmq1zju |
 | some_notebook_name | nfcuwqu5 |
 +--------------------+----------+
+
 """
     RESPONSE_JSON = example_responses.NOTEBOOKS_LIST_RESPONSE_JSON
 
@@ -411,7 +412,7 @@ class TestNotebooksList(object):
                 "where": {
                     "dtDeleted": None,
                 },
-                "limit": 11,
+                "limit": 20,
                 "order": "jobId desc",
                 "offset": 0,
             },
