@@ -64,14 +64,13 @@ class ListCommandMixin(object):
         return table_string
 
     def _generate_data_table(self, **kwargs):
-        limit = kwargs.get("exp_limit")
-        offset = kwargs.get("exp_offset")
+        limit = kwargs.get("limit")
+        offset = kwargs.get("offset")
         meta_data = dict()
         while self.TOTAL_ITEMS_KEY not in meta_data or offset < meta_data.get(self.TOTAL_ITEMS_KEY):
             with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+                kwargs["offset"] = offset
                 instances, meta_data = self._get_instances(
-                    limit=limit,
-                    offset=offset,
                     **kwargs
                 )
             next_iteration = False

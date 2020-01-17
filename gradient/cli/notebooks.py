@@ -108,11 +108,16 @@ def delete_notebook(id_, api_key, options_file):
 
 
 @notebooks_group.command("list", help="List notebooks")
+@click.option("--limit", "-l", "n_limit", default=20)
+@click.option("--offset", "-o", "n_offset", default=0)
 @common.api_key_option
 @common.options_file
-def list_notebooks(api_key, options_file):
+def list_notebooks(n_limit, n_offset, api_key, options_file):
     command = notebooks.ListNotebooksCommand(api_key=api_key)
-    command.execute()
+    for notebook_str, next_iteration in command.execute(limit=n_limit, offset=n_offset):
+        click.echo(notebook_str)
+        if next_iteration:
+            click.confirm("Do you want to continue?", abort=True)
 
 
 @notebooks_group.command("show", help="Show notebook details")

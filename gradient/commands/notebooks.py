@@ -2,7 +2,8 @@ import abc
 
 import halo
 import six
-from gradient import api_sdk
+from gradient import api_sdk, exceptions
+from gradient.api_sdk import sdk_exceptions
 from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 
 
@@ -41,15 +42,24 @@ class DeleteNotebookCommand(BaseNotebookCommand):
 class ListNotebooksCommand(ListCommandMixin, BaseNotebookCommand):
     SPINNER_MESSAGE = "Waiting for data"
 
-    def _get_instances(self, kwargs):
-        notebooks = self.client.list()
-        return notebooks
+    def _get_instances(self, **kwargs):
+        limit = kwargs.get("limit")
+        offset = kwargs.get("offset")
+        get_meta = True
+        try:
+            instances, meta_data = self.client.list(get_meta=get_meta, limit=limit, offset=offset)
+        except sdk_exceptions.GradientSdkError as e:
+            raise exceptions.ReceivingDataFailedError(e)
+        return instances, meta_data
 
     def _get_table_data(self, notebooks):
         data = [("Name", "ID")]
         for obj in notebooks:
             data.append((obj.name, obj.id))
         return data
+
+    def execute(self, **kwargs):
+        return self._generate_data_table(**kwargs)
 
 
 class ShowNotebookDetailsCommand(DetailsCommandMixin, BaseNotebookCommand):
