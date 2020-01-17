@@ -1,6 +1,6 @@
 # Gradient CLI Release Notes
 
-# Release Notes for 0.5.2a1
+# Release Notes for 0.5.2a2
 ### Fixes
 * Update `notebooks list` command so it accepts `--list` and `--offset` arguments and show more notebooks
 
