@@ -134,6 +134,7 @@ def generate_options_template(ctx, param, value):
         return value
 
     params = {}
+    datasetParams = {}
     for param in ctx.command.params:
         option_name = get_option_name(param.opts)
         if option_name in (OPTIONS_FILE_OPTION_NAME, OPTIONS_DUMP_FILE_OPTION_NAME):
@@ -141,12 +142,50 @@ def generate_options_template(ctx, param, value):
 
         option_value = ctx.params.get(param.name) or param.default
 
+        if option_name.startswith("dataset"):
+            datasetParams[option_name] = option_value
+            continue
+
         if isinstance(param.type, cli_types.ChoiceType):
             for key, val in param.type.type_map.items():
                 if val == option_value:
                     option_value = key
 
         params[option_name] = option_value
+
+    # Transform dataset list params into dataset objects
+    if "dataset_uri_list" in datasetParams:
+        # Map of option name to object key
+        ds_option_key_map = {
+            "dataset_uri_list": "uri",
+            "dataset_name_list": "name",
+            "dataset_access_key_id_list": "aws_access_key_id",
+            "dataset_secret_access_key_list": "aws_secret_access_key",
+            "dataset_version_id_list": "version_id",
+            "dataset_etag_list": "etag"
+        }
+
+        # Arrange the param value lists by dataset object key with
+        # empty lists where no values were specified for the option
+        value_lists = {}
+        for option, object_key in ds_option_key_map:
+            value_lists[object_key] = datasetParams.get(option, [])
+
+        # For each URI, add another dataset object to the list
+        # using values across all option value lists
+        datasets = []
+        for i in range(len(value_lists["uri"])):
+            dataset = {}
+            for _, object_key in ds_option_key_map:
+                values = value_lists[object_key]
+                if i < len(values):
+                    dataset[object_key] = values[i]
+
+            # Add dataset object to list
+            datasets.append(dataset)
+
+        # Add dataset object array to params
+        params["datasets"] = datasets
 
     with open(value, "w") as f:
         yaml.safe_dump(params, f, default_flow_style=False)
