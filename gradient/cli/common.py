@@ -78,12 +78,13 @@ class ReadValueFromConfigFile(click.Parameter):
                     opts[self.name] = value
 
         return super(ReadValueFromConfigFile, self).handle_parse_result(
-                ctx, opts, args)
+            ctx, opts, args)
 
 
 class ColorExtrasInCommandHelpMixin(object):
     def get_help_record(self, *args, **kwargs):
-        rv = super(ColorExtrasInCommandHelpMixin, self).get_help_record(*args, **kwargs)
+        rv = super(ColorExtrasInCommandHelpMixin,
+                   self).get_help_record(*args, **kwargs)
 
         if not config.USE_CONSOLE_COLORS:
             return rv
@@ -134,6 +135,7 @@ def generate_options_template(ctx, param, value):
         return value
 
     params = {}
+    dataset_value_lists = {}  # Value lists by dataset object key
     for param in ctx.command.params:
         option_name = get_option_name(param.opts)
         if option_name in (OPTIONS_FILE_OPTION_NAME, OPTIONS_DUMP_FILE_OPTION_NAME):
@@ -141,12 +143,42 @@ def generate_options_template(ctx, param, value):
 
         option_value = ctx.params.get(param.name) or param.default
 
+        # Add any value lists for dataset options to a separate dict
+        paramVars = vars(param)
+        if option_name.startswith("dataset"):
+            # Drop the "dataset" prefix from the *option name*
+            # and use the rest as the dataset object key.
+            object_key = option_name[len("dataset"):]
+            # list_suffix = "_list"
+            # if object_key.endswith(list_suffix):
+            #    object_key = object_key[:len(object_key)-len(list_suffix)]
+            object_key = object_key[0].lower() + object_key[1:]
+            dataset_value_lists[object_key] = option_value
+            continue
+
         if isinstance(param.type, cli_types.ChoiceType):
             for key, val in param.type.type_map.items():
                 if val == option_value:
                     option_value = key
 
         params[option_name] = option_value
+
+    # Transform dataset value lists into dataset objects
+    if "uri" in dataset_value_lists:
+        # For each URI, add another dataset object to the list
+        # using values across all option value lists
+        datasets = []
+        for i in range(len(dataset_value_lists["uri"])):
+            dataset = {}
+            for object_key, value_list in dataset_value_lists.items():
+                if i < len(value_list):
+                    dataset[object_key] = value_list[i]
+
+            # Add dataset object to list
+            datasets.append(dataset)
+
+        # Add dataset object array to params
+        params["datasets"] = datasets
 
     with open(value, "w") as f:
         yaml.safe_dump(params, f, default_flow_style=False)
