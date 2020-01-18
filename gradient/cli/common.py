@@ -176,7 +176,7 @@ def generate_options_template(ctx, param, value):
         datasets = []
         for i in range(len(value_lists["uri"])):
             dataset = {}
-            for _, object_key in ds_option_key_map:
+            for object_key in ds_option_key_map.values():
                 values = value_lists[object_key]
                 if i < len(values):
                     dataset[object_key] = values[i]
