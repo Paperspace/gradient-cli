@@ -119,3 +119,19 @@ class GetModel(GetBaseModelsApiUrlMixin, GetResource):
 
         instance = self.SERIALIZER_CLS().get_instance(model_dict)
         return instance
+
+
+class ListModelFiles(GetBaseModelsApiUrlMixin, ListResources):
+    SERIALIZER_CLS = serializers.ModelFileSchema
+
+    def get_request_url(self, **kwargs):
+        return "/mlModels/listFiles/"
+
+    def _get_request_json(self, kwargs):
+        json_ = {"id": kwargs["model_id"]}
+        if kwargs.get("links"):
+            json_["links"] = True
+        if kwargs.get("size"):
+            json_["size"] = True
+
+        return json_
