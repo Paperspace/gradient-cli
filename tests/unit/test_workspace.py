@@ -60,7 +60,7 @@ class TestWorkspace(object):
 
         workspace_handler._zip_workspace.assert_called_once()
         workspace_handler._upload.assert_called_once()
-        workspace_handler._upload.assert_called_with(archive_name, "some_project_id")
+        workspace_handler._upload.assert_called_with(archive_name, "some_project_id", cluster_id=None)
         assert response_url == 's3://{}/{}'.format(MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
 
     @mock.patch("gradient.utils.PathParser.parse_path",
@@ -75,7 +75,7 @@ class TestWorkspace(object):
 
         workspace_handler._zip_workspace.assert_called_once()
         workspace_handler._upload.assert_called_once()
-        workspace_handler._upload.assert_called_with(archive_name, "some_project_id")
+        workspace_handler._upload.assert_called_with(archive_name, "some_project_id", cluster_id=None)
         assert response_url == 's3://{}/{}'.format(MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
 
     @mock.patch("gradient.utils.PathParser.parse_path",
@@ -87,7 +87,7 @@ class TestWorkspace(object):
 
         workspace_handler._zip_workspace.assert_not_called()
         workspace_handler._upload.assert_called_once()
-        workspace_handler._upload.assert_called_with(os.path.abspath('foo.zip'), "some_project_id")
+        workspace_handler._upload.assert_called_with(os.path.abspath('foo.zip'), "some_project_id", cluster_id=None)
         assert response_url == 's3://{}/{}'.format(MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
 
     @mock.patch("gradient.utils.PathParser.parse_path",
@@ -113,5 +113,5 @@ class TestWorkspace(object):
 
         workspace_handler._zip_workspace.assert_not_called()
         workspace_handler._upload.assert_called_once()
-        workspace_handler._upload.assert_called_with(os.path.abspath('foo.zip'), "some_project_id")
+        workspace_handler._upload.assert_called_with(os.path.abspath('foo.zip'), "some_project_id", cluster_id=None)
         assert response_url == 's3://{}/{}'.format(MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
