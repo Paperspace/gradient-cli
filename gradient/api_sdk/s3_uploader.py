@@ -228,36 +228,31 @@ class S3ProjectFileUploader(object):
         self.experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key, logger=self.logger)
         self.s3uploader = s3uploader or S3FileUploader(logger=self.logger)
 
-    def upload(self, file_path, project_id, cluster_id=None):
+    def upload(self, file_path, project_id):
         """Upload file to S3 bucket for a project
 
         :param str file_path:
         :param str project_id:
-        :param str cluster_id:
 
         :rtype: str
         :return: S3 bucket's URL
         """
-        url, bucket_name, s3_fields = self._get_upload_data(file_path, project_id, cluster_id=cluster_id)
+        url, bucket_name, s3_fields = self._get_upload_data(file_path, project_id)
         bucket_url = self.s3uploader.upload(file_path, url, bucket_name, s3_fields)
         return bucket_url
 
-    def _get_upload_data(self, file_path, project_handle, cluster_id=None):
+    def _get_upload_data(self, file_path, project_handle):
         """Ask API for data required to upload a file to S3
 
         :param str file_path:
         :param str project_handle:
-        :param str cluster_id:
 
         :rtype: tuple[str,str,dict]
         :return: URL to which send the file, name of the bucket and a dictionary required by S3 service
         """
         file_name = os.path.basename(file_path)
-        params = {"workspaceName": file_name, "projectHandle": project_handle}
-        if cluster_id:
-            params['clusterHandle'] = cluster_id
-
-        response = self.experiments_api.get("/workspace/get_presigned_url", params=params)
+        response = self.experiments_api.get("/workspace/get_presigned_url",
+                                            params={'workspaceName': file_name, 'projectHandle': project_handle})
         if response.status_code == 401:
             raise sdk_exceptions.ProjectAccessDeniedError("Access to project denied")
         if response.status_code == 403:

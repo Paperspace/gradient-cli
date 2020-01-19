@@ -337,7 +337,7 @@ class TestExperimentsCreateSingleNode(object):
             "https://services.paperspace.io/experiments/v1/workspace/get_presigned_url",
             headers=self.EXPECTED_HEADERS,
             json=None,
-            params={"projectHandle": "testHandle", "workspaceName": zip_file_name, "clusterHandle": 'cluster'},
+            params={"projectHandle": "testHandle", "workspaceName": zip_file_name},
         )
 
         post_patched.assert_has_calls(
