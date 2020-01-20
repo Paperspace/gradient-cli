@@ -121,6 +121,18 @@ class DeploymentsClient(BaseClient):
         deployment_id = repository.create(deployment, use_vpc=use_vpc)
         return deployment_id
 
+    def get(self, deployment_id):
+        """Get deployment instance
+
+        :param str deployment_id: Deployment ID
+
+        :return: Deployment instance
+        :rtype: models.Deployment
+        """
+        repository = repositories.GetDeployment(self.api_key, logger=self.logger)
+        deployment = repository.get(deployment_id=deployment_id)
+        return deployment
+
     def start(self, deployment_id, use_vpc=False):
         """
         Start deployment

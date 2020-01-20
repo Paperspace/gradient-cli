@@ -813,3 +813,136 @@ class TestDeploymentsUpdate(object):
                                              data=None)
         assert result.output == self.EXPECTED_STDOUT_MODEL_NOT_FOUND
         assert result.exit_code == 0
+
+
+class TestDeploymentDetails(object):
+    URL = "https://api.paperspace.io/deployments/getDeploymentList/"
+
+    COMMAND = ["deployments", "details", "--id", "some_id"]
+    COMMAND_WITH_OPTIONS_FILE = ["deployments", "details", "--optionsFile", ]  # path added in test
+    LIST_JSON = example_responses.GET_DEPLOYMENT_DETAILS_JSON_RESPONSE
+
+    COMMAND_WITH_API_KEY = ["deployments", "details", "--id", "some_id", "--apiKey", "some_key"]
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+    LIST_WITH_FILTER_REQUEST_JSON = {"filter": {"where": {"and": [{"id": "some_id"}]}}}
+    LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND = {"deploymentList": [], "total": 17, "displayTotal": 0,
+                                                                "runningTotal": 0}
+
+    RESPONSE_WITH_ERROR_MESSAGE = {"error": {
+        "name": "Error",
+        "status": 404,
+        "message": "Some error message",
+        "statusCode": 404,
+    }}
+
+    DETAILS_STDOUT = """+-----------------+-----------------------------------------------------+
+| ID              | some_id                                             |
++-----------------+-----------------------------------------------------+
+| Name            | some_name                                           |
+| State           | Stopped                                             |
+| Machine type    | p3.2xlarge                                          |
+| Instance count  | 1                                                   |
+| Deployment type | TFServing                                           |
+| Model ID        | some_model_id                                       |
+| Project ID      | some_project_id                                     |
+| Endpoint        | https://paperspace.io/model-serving/some_id:predict |
+| API type        | REST                                                |
+| Cluster ID      | KPS Jobs                                            |
++-----------------+-----------------------------------------------------+
+"""
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_send_get_request_and_print_details_of_deployment(self, get_patched):
+        get_patched.return_value = MockResponse(self.LIST_JSON)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.DETAILS_STDOUT, result.exc_info
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=self.LIST_WITH_FILTER_REQUEST_JSON,
+                                            params=None)
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_send_get_request_with_custom_api_key_when_api_key_parameter_was_provided(self, get_patched):
+        get_patched.return_value = MockResponse(self.LIST_JSON)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=self.LIST_WITH_FILTER_REQUEST_JSON,
+                                            params=None)
+        assert result.output == self.DETAILS_STDOUT
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_send_get_request_and_print_details_of_deployment_when_using_config_file(
+            self, get_patched, deployments_details_config_path):
+
+        get_patched.return_value = MockResponse(self.LIST_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [deployments_details_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=self.LIST_WITH_FILTER_REQUEST_JSON,
+                                            params=None)
+        assert result.output == self.DETAILS_STDOUT
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
+        get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"}, 400)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=self.LIST_WITH_FILTER_REQUEST_JSON,
+                                            params=None)
+        assert result.output == "Failed to fetch data: Invalid API token\n", result.exc_info
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_print_proper_message_when_wrong_deployment_id_was_used(self, get_patched):
+        get_patched.return_value = MockResponse(self.LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=self.LIST_WITH_FILTER_REQUEST_JSON,
+                                            params=None)
+        assert result.output == "Deployment not found\n", result.exc_info
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_print_proper_message_when_error_status_was_returned_by_api_without_message(self, get_patched):
+        get_patched.return_value = MockResponse(status_code=400)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=self.LIST_WITH_FILTER_REQUEST_JSON,
+                                            params=None)
+        assert result.output == "Failed to fetch data\n", result.exc_info
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_print_proper_message_when_error_message_was_returned_by_api(self, get_patched):
+        get_patched.return_value = MockResponse(self.RESPONSE_WITH_ERROR_MESSAGE, status_code=404)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=self.LIST_WITH_FILTER_REQUEST_JSON,
+                                            params=None)
+        assert result.output == "Failed to fetch data: Some error message\n", result.exc_info

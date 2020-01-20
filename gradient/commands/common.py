@@ -3,11 +3,10 @@ import pydoc
 
 import six
 import terminaltables
-from gradient import exceptions
-from gradient.api_sdk import sdk_exceptions
+from halo import halo
+
 from gradient.logger import Logger
 from gradient.utils import get_terminal_lines
-from halo import halo
 
 
 @six.add_metaclass(abc.ABCMeta)

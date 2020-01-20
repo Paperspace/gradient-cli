@@ -1,5 +1,5 @@
 from .deployments import ListDeployments, CreateDeployment, StartDeployment, StopDeployment, DeleteDeployment, \
-    UpdateDeployment
+    UpdateDeployment, GetDeployment
 from .experiments import ListExperiments, GetExperiment, ListExperimentLogs, StartExperiment, StopExperiment, \
     CreateSingleNodeExperiment, CreateMultiNodeExperiment, RunSingleNodeExperiment, RunMultiNodeExperiment, \
     CreateMpiMultiNodeExperiment, RunMpiMultiNodeExperiment, DeleteExperiment

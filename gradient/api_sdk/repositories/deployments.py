@@ -1,5 +1,7 @@
-from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource, AlterResource
+from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource, AlterResource, \
+    GetResource
 from .. import serializers, config
+from ..sdk_exceptions import ResourceFetchingError, MalformedResponseError
 
 
 class GetBaseDeploymentApiUrlMixin(object):
@@ -141,3 +143,26 @@ class UpdateDeployment(GetBaseDeploymentApiUrlMixin, AlterResource):
             "upd": kwargs,
         }
         return j
+
+
+class GetDeployment(GetBaseDeploymentApiUrlMixin, GetResource):
+    SERIALIZER_CLS = serializers.DeploymentSchema
+
+    def get_request_url(self, **kwargs):
+        return "/deployments/getDeploymentList/"
+
+    def _get_request_json(self, kwargs):
+        deployment_id = kwargs["deployment_id"]
+        filter_ = {"where": {"and": [{"id": deployment_id}]}}
+        json_ = {"filter": filter_}
+        return json_
+
+    def _parse_object(self, instance_dict, **kwargs):
+        try:
+            instance_dict = instance_dict["deploymentList"][0]
+        except KeyError:
+            raise MalformedResponseError("Malformed response from API")
+        except IndexError:
+            raise ResourceFetchingError("Deployment not found")
+
+        return super(GetDeployment, self)._parse_object(instance_dict, **kwargs)

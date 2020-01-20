@@ -6,10 +6,11 @@ import terminaltables
 from halo import halo
 
 from gradient import version, logger as gradient_logger, exceptions
-from gradient.api_sdk import sdk_exceptions, utils
+from gradient.api_sdk import sdk_exceptions, utils, models
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import urljoin
+from gradient.commands.common import DetailsCommandMixin
 from gradient.utils import get_terminal_lines
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
@@ -21,7 +22,7 @@ deployments_api = http_client.API(config.CONFIG_HOST, headers=default_headers)
 @six.add_metaclass(abc.ABCMeta)
 class _DeploymentCommand(object):
     def __init__(self, deployment_client, logger_=gradient_logger.Logger()):
-        self.deployment_client = deployment_client
+        self.client = deployment_client
         self.logger = logger_
 
     @abc.abstractmethod
@@ -34,7 +35,7 @@ class CreateDeploymentCommand(_DeploymentCommand):
         self._handle_auth(kwargs)
 
         with halo.Halo(text="Creating new deployment", spinner="dots"):
-            deployment_id = self.deployment_client.create(use_vpc=use_vpc, **kwargs)
+            deployment_id = self.client.create(use_vpc=use_vpc, **kwargs)
 
         self.logger.log("New deployment created with id: {}".format(deployment_id))
         self.logger.log(self.get_instance_url(deployment_id))
@@ -62,7 +63,7 @@ class ListDeploymentsCommand(_DeploymentCommand):
 
     def _get_instances(self, use_vpc=False, **kwargs):
         try:
-            instances = self.deployment_client.list(use_vpc=use_vpc, **kwargs)
+            instances = self.client.list(use_vpc=use_vpc, **kwargs)
         except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
@@ -103,25 +104,46 @@ class ListDeploymentsCommand(_DeploymentCommand):
 
 class StartDeploymentCommand(_DeploymentCommand):
     def execute(self, use_vpc=False, **kwargs):
-        self.deployment_client.start(use_vpc=use_vpc, **kwargs)
+        self.client.start(use_vpc=use_vpc, **kwargs)
         self.logger.log("Deployment started")
 
 
 class StopDeploymentCommand(_DeploymentCommand):
     def execute(self, use_vpc=False, **kwargs):
-        self.deployment_client.stop(use_vpc=use_vpc, **kwargs)
+        self.client.stop(use_vpc=use_vpc, **kwargs)
         self.logger.log("Deployment stopped")
 
 
 class DeleteDeploymentCommand(_DeploymentCommand):
     def execute(self, **kwargs):
-        self.deployment_client.delete(**kwargs)
+        self.client.delete(**kwargs)
         self.logger.log("Deployment deleted")
 
 
 class UpdateDeploymentCommand(_DeploymentCommand):
     def execute(self, deployment_id, use_vpc=False, **kwargs):
         with halo.Halo(text="Updating deployment data", spinner="dots"):
-            self.deployment_client.update(deployment_id, use_vpc=use_vpc, **kwargs)
+            self.client.update(deployment_id, use_vpc=use_vpc, **kwargs)
 
         self.logger.log("Deployment data updated")
+
+
+class GetDeploymentDetails(DetailsCommandMixin, _DeploymentCommand):
+    def _get_table_data(self, instance):
+        """
+        :param models.Deployment instance:
+        """
+        data = (
+            ("ID", instance.id),
+            ("Name", instance.name),
+            ("State", instance.state),
+            ("Machine type", instance.machine_type),
+            ("Instance count", instance.instance_count),
+            ("Deployment type", instance.deployment_type),
+            ("Model ID", instance.model_id),
+            ("Project ID", instance.project_id),
+            ("Endpoint", instance.endpoint),
+            ("API type", instance.api_type),
+            ("Cluster ID", instance.cluster_id),
+        )
+        return data
