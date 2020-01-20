@@ -28,7 +28,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             registry_username=None,
             registry_password=None,
             registry_url=None,
-            use_vpc=False,
     ):
         """
         Create single node experiment
@@ -57,7 +56,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str registry_username: Registry username for accessing private docker registry container if necessary
         :param str registry_password: Registry password for accessing private docker registry container if necessary
         :param str registry_url: Registry server URL for accessing private docker registry container if necessary
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
         :rtype: str
@@ -95,7 +93,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         )
 
         repository = repositories.CreateSingleNodeExperiment(api_key=self.api_key, logger=self.logger)
-        handle = repository.create(experiment, use_vpc=use_vpc)
+        handle = repository.create(experiment)
         return handle
 
     def create_multi_node(
@@ -132,7 +130,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_registry_username=None,
             parameter_server_registry_password=None,
             parameter_server_registry_url=None,
-            use_vpc=False,
     ):
         """
         Create multinode experiment
@@ -171,7 +168,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str parameter_server_registry_username: Registry username for accessing private docker registry container if necessary
         :param str parameter_server_registry_password: Registry password for accessing private docker registry container if necessary
         :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if necessary
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
         :rtype: str
@@ -220,7 +216,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         )
 
         repository = repositories.CreateMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
-        handle = repository.create(experiment, use_vpc=use_vpc)
+        handle = repository.create(experiment)
         return handle
 
     def create_mpi_multi_node(
@@ -256,7 +252,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_registry_username=None,
             master_registry_password=None,
             master_registry_url=None,
-            use_vpc=False,
     ):
         """
         Create multinode experiment using MPI
@@ -294,7 +289,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str master_registry_username: Registry username for accessing private docker registry container if necessary
         :param str master_registry_password: Registry password for accessing private docker registry container if necessary
         :param str master_registry_url: Registry server URL for accessing private docker registry container if necessary
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
         :rtype: str
@@ -341,7 +335,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         )
 
         repository = repositories.CreateMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
-        handle = repository.create(experiment, use_vpc=use_vpc)
+        handle = repository.create(experiment)
         return handle
 
     def run_single_node(
@@ -368,7 +362,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             registry_username=None,
             registry_password=None,
             registry_url=None,
-            use_vpc=False,
     ):
         """Create and start single node experiment
 
@@ -396,7 +389,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str registry_username: Registry username for accessing private docker registry container if necessary
         :param str registry_password: Registry password for accessing private docker registry container if necessary
         :param str registry_url: Registry server URL for accessing private docker registry container if necessary
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
         :rtype: str
@@ -434,7 +426,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         )
 
         repository = repositories.RunSingleNodeExperiment(api_key=self.api_key, logger=self.logger)
-        handle = repository.create(experiment, use_vpc=use_vpc)
+        handle = repository.create(experiment)
         return handle
 
     def run_multi_node(
@@ -471,7 +463,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_registry_username=None,
             parameter_server_registry_password=None,
             parameter_server_registry_url=None,
-            use_vpc=False,
     ):
         """Create and start multinode experiment
 
@@ -509,7 +500,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str parameter_server_registry_username: Registry username for accessing private docker registry container if necessary
         :param str parameter_server_registry_password: Registry password for accessing private docker registry container if necessary
         :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if necessary
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
         :rtype: str
@@ -558,7 +548,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         )
 
         repository = repositories.RunMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
-        handle = repository.create(experiment, use_vpc=use_vpc)
+        handle = repository.create(experiment)
         return handle
 
     def run_mpi_multi_node(
@@ -594,7 +584,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_registry_username=None,
             master_registry_password=None,
             master_registry_url=None,
-            use_vpc=False,
     ):
         """Create and start multinode experiment using MPI
 
@@ -631,7 +620,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str master_registry_username: Registry username for accessing private docker registry container if necessary
         :param str master_registry_password: Registry password for accessing private docker registry container if necessary
         :param str master_registry_url: Registry server URL for accessing private docker registry container if necessary
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
         :rtype: str
@@ -679,32 +667,30 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         )
 
         repository = repositories.RunMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
-        handle = repository.create(experiment, use_vpc=use_vpc)
+        handle = repository.create(experiment)
         return handle
 
-    def start(self, experiment_id, use_vpc=False):
+    def start(self, experiment_id):
         """Start existing experiment that has not run
 
         :param str experiment_id: Experiment ID
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :raises: exceptions.GradientSdkError
         """
 
         repository = repositories.StartExperiment(api_key=self.api_key, logger=self.logger)
-        repository.start(experiment_id, use_vpc=use_vpc)
+        repository.start(experiment_id)
 
-    def stop(self, experiment_id, use_vpc=False):
+    def stop(self, experiment_id):
         """Stop running experiment
 
         :param str experiment_id: Experiment ID
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :raises: exceptions.GradientSdkError
         """
 
         repository = repositories.StopExperiment(api_key=self.api_key, logger=self.logger)
-        repository.stop(experiment_id, use_vpc=use_vpc)
+        repository.stop(experiment_id)
 
     def list(self, project_id=None, **kwargs):
         """Get a list of experiments. Optionally filter by project ID

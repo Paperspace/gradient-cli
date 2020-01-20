@@ -8,7 +8,7 @@ from tests import MockResponse, example_responses
 
 
 class TestCreateHyperparameters(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/hyperopt/"
     COMMAND = [
         "experiments", "hyperparameters", "create",
         "--name", "some_name",
@@ -143,7 +143,7 @@ class TestCreateHyperparameters(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
@@ -160,7 +160,7 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WHEN_ALL_PARAMETERS_WERE_USED)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
                                              params=None,
@@ -178,7 +178,7 @@ class TestCreateHyperparameters(object):
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
         assert result.output == self.EXPECTED_STDOUT
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
@@ -193,7 +193,7 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
@@ -209,7 +209,7 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
@@ -227,7 +227,7 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
                                              params=None,
@@ -245,7 +245,7 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
@@ -257,7 +257,7 @@ class TestCreateHyperparameters(object):
 
 
 class TestCreateAndStartHyperparameters(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/create_and_start/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/hyperopt/create_and_start/"
     COMMAND = [
         "experiments", "hyperparameters", "run",
         "--name", "some_name",
@@ -392,7 +392,7 @@ class TestCreateAndStartHyperparameters(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
@@ -409,7 +409,7 @@ class TestCreateAndStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WHEN_ALL_PARAMETERS_WERE_USED)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
                                              params=None,
@@ -426,7 +426,7 @@ class TestCreateAndStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
@@ -443,7 +443,7 @@ class TestCreateAndStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
@@ -459,7 +459,7 @@ class TestCreateAndStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
@@ -477,7 +477,7 @@ class TestCreateAndStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
@@ -496,7 +496,7 @@ class TestCreateAndStartHyperparameters(object):
         result = runner.invoke(cli.cli, command)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
                                              params=None,
@@ -506,7 +506,7 @@ class TestCreateAndStartHyperparameters(object):
 
 
 class TestStartHyperparameters(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/some_id/start/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/hyperopt/some_id/start/"
     COMMAND = [
         "experiments", "hyperparameters", "start",
         "--id", "some_id",
@@ -539,7 +539,7 @@ class TestStartHyperparameters(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS,
                                              json=None,
                                              params=None)
@@ -552,7 +552,7 @@ class TestStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=None,
                                              params=None)
@@ -569,7 +569,7 @@ class TestStartHyperparameters(object):
         result = runner.invoke(cli.cli, command)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=None,
                                              params=None)
@@ -583,7 +583,7 @@ class TestStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        put_patched.assert_called_once_with(self.URL,
+        put_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
@@ -597,7 +597,7 @@ class TestStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        put_patched.assert_called_once_with(self.URL,
+        put_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
@@ -612,7 +612,7 @@ class TestStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        put_patched.assert_called_once_with(self.URL,
+        put_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
@@ -622,7 +622,7 @@ class TestStartHyperparameters(object):
 
 
 class TestHyperparametersList(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/hyperopt/"
     COMMAND = ["experiments", "hyperparameters", "list"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "list", "--optionsFile", ]  # path added in test
     EXPECTED_HEADERS = http_client.default_headers.copy()
@@ -663,7 +663,7 @@ class TestHyperparametersList(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=self.EXPECTED_REQUEST_PARAMS)
@@ -676,7 +676,7 @@ class TestHyperparametersList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=self.EXPECTED_REQUEST_PARAMS)
@@ -692,7 +692,7 @@ class TestHyperparametersList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=self.EXPECTED_REQUEST_PARAMS)
@@ -708,7 +708,7 @@ class TestHyperparametersList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=self.EXPECTED_REQUEST_PARAMS)
@@ -722,7 +722,7 @@ class TestHyperparametersList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=self.EXPECTED_REQUEST_PARAMS)
@@ -731,7 +731,7 @@ class TestHyperparametersList(object):
 
 
 class TestHyperparametersDetails(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/some_id/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/hyperopt/some_id/"
     COMMAND = ["experiments", "hyperparameters", "details", "--id", "some_id"]
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
@@ -772,7 +772,7 @@ class TestHyperparametersDetails(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
@@ -786,7 +786,7 @@ class TestHyperparametersDetails(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=None)
@@ -804,7 +804,7 @@ class TestHyperparametersDetails(object):
         result = runner.invoke(cli.cli, command)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=None)
@@ -817,7 +817,7 @@ class TestHyperparametersDetails(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
@@ -831,7 +831,7 @@ class TestHyperparametersDetails(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
@@ -845,7 +845,7 @@ class TestHyperparametersDetails(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=None)

@@ -31,11 +31,11 @@ class _DeploymentCommand(object):
 
 
 class CreateDeploymentCommand(_DeploymentCommand):
-    def execute(self, use_vpc=False, **kwargs):
+    def execute(self, **kwargs):
         self._handle_auth(kwargs)
 
         with halo.Halo(text="Creating new deployment", spinner="dots"):
-            deployment_id = self.client.create(use_vpc=use_vpc, **kwargs)
+            deployment_id = self.client.create(**kwargs)
 
         self.logger.log("New deployment created with id: {}".format(deployment_id))
         self.logger.log(self.get_instance_url(deployment_id))
@@ -55,15 +55,15 @@ class CreateDeploymentCommand(_DeploymentCommand):
 class ListDeploymentsCommand(_DeploymentCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
-    def execute(self, use_vpc=False, **kwargs):
+    def execute(self, **kwargs):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            instances = self._get_instances(use_vpc=use_vpc, **kwargs)
+            instances = self._get_instances(**kwargs)
 
         self._log_objects_list(instances)
 
-    def _get_instances(self, use_vpc=False, **kwargs):
+    def _get_instances(self, **kwargs):
         try:
-            instances = self.client.list(use_vpc=use_vpc, **kwargs)
+            instances = self.client.list(**kwargs)
         except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
@@ -103,14 +103,14 @@ class ListDeploymentsCommand(_DeploymentCommand):
 
 
 class StartDeploymentCommand(_DeploymentCommand):
-    def execute(self, use_vpc=False, **kwargs):
-        self.client.start(use_vpc=use_vpc, **kwargs)
+    def execute(self, **kwargs):
+        self.client.start(**kwargs)
         self.logger.log("Deployment started")
 
 
 class StopDeploymentCommand(_DeploymentCommand):
-    def execute(self, use_vpc=False, **kwargs):
-        self.client.stop(use_vpc=use_vpc, **kwargs)
+    def execute(self, **kwargs):
+        self.client.stop(**kwargs)
         self.logger.log("Deployment stopped")
 
 
@@ -121,9 +121,9 @@ class DeleteDeploymentCommand(_DeploymentCommand):
 
 
 class UpdateDeploymentCommand(_DeploymentCommand):
-    def execute(self, deployment_id, use_vpc=False, **kwargs):
+    def execute(self, deployment_id, **kwargs):
         with halo.Halo(text="Updating deployment data", spinner="dots"):
-            self.client.update(deployment_id, use_vpc=use_vpc, **kwargs)
+            self.client.update(deployment_id, **kwargs)
 
         self.logger.log("Deployment data updated")
 
