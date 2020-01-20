@@ -98,6 +98,13 @@ def deployments_delete_config_path():
 
 
 @pytest.fixture
+def deployments_details_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "deployments_details.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
 def hyperparameters_create_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "hyperparameters_create.yaml"

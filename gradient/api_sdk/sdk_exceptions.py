@@ -10,6 +10,10 @@ class ResourceCreatingError(GradientSdkError):
     pass
 
 
+class MalformedResponseError(GradientSdkError):
+    pass
+
+
 class ResourceCreatingDataError(ResourceCreatingError):
     pass
 

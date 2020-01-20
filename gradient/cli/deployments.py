@@ -4,7 +4,7 @@ import click
 
 from gradient import exceptions, logger, DEPLOYMENT_TYPES_MAP
 from gradient import utils
-from gradient.api_sdk import DeploymentsClient, constants
+from gradient.api_sdk import DeploymentsClient
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
@@ -15,15 +15,6 @@ from gradient.commands import deployments as deployments_commands
 @cli.group("deployments", help="Manage deployments", cls=ClickGroup)
 def deployments():
     pass
-
-
-DEPLOYMENT_MACHINE_TYPES = (
-    "G1", "G6", "G12",
-    "K80", "P100", "GV100",
-    # VPC machine types
-    "c5.xlarge", "c5.4xlarge", "c5.12xlarge",
-    "p2.xlarge", "p3.2xlarge", "p3.16xlarge",
-)
 
 
 def get_deployment_client(api_key):
@@ -447,3 +438,19 @@ def update_deployment(deployment_id, api_key, use_vpc, options_file, **kwargs):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.UpdateDeploymentCommand(deployment_client=deployment_client)
     command.execute(deployment_id, use_vpc=use_vpc, **kwargs)
+
+
+@deployments.command("details", help="Get details of model deployment")
+@click.option(
+    "--id",
+    "deployment_id",
+    required=True,
+    help="Deployment ID",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def get_deployment(deployment_id, api_key, options_file):
+    deployment_client = get_deployment_client(api_key)
+    command = deployments_commands.GetDeploymentDetails(deployment_client=deployment_client)
+    command.execute(deployment_id)
