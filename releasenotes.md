@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.2a3
+### New features
+* Add `deployments details` command
+
 # Release Notes for 0.5.2a2
 ### Fixes
 * Update `notebooks list` command so it accepts `--list` and `--offset` arguments and show more notebooks
