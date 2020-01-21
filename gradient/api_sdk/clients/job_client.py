@@ -48,6 +48,7 @@ class JobsClient(BaseClient):
             project=None,
             started_by_user_id=None,
             rel_dockerfile_path=None,
+            registry_target=None,
             registry_username=None,
             registry_password=None,
             cluster=None,
@@ -125,6 +126,7 @@ class JobsClient(BaseClient):
         :param str started_by_user_id: id of user that started job. By default it take user id from access token
             or api key.
         :param str rel_dockerfile_path: relative location to your dockerfile. Default set to ``./Dockerfile``
+        :param str registry_target: custom docker registry
         :param str registry_username: username for custom docker registry
         :param str registry_password: password for custom docker registry
         :param str cluster: name of cluster that job should be run on.
@@ -160,6 +162,7 @@ class JobsClient(BaseClient):
             project=project,
             started_by_user_id=started_by_user_id,
             rel_dockerfile_path=rel_dockerfile_path,
+            registry_target=registry_target,
             registry_username=registry_username,
             registry_password=registry_password,
             cluster=cluster,
