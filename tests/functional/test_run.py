@@ -133,7 +133,7 @@ class TestRunCommand(object):
                                                 'relDockerfilePath': '/some/dockerfile/path',
                                                 'isPreemptible': True,
                                                 'projectId': 'some_project_id',
-                                                'registryPassword': 'some_registry_password',
+                                                'registryTargetPassword': 'some_registry_password',
                                                 'isPublic': True,
                                                 'clusterId': 'some_cluster_id',
                                                 'command': 'some_script.py some_other_script.py',
@@ -142,7 +142,8 @@ class TestRunCommand(object):
                                                 'targetNodeAttrs': {'key': 'val2'},
                                                 'container': 'some_container',
                                                 'jobEnv': {'key': 'val'},
-                                                'registryUsername': 'some_registry_username',
+                                                'registryTargetUsername': 'some_registry_username',
+                                                'registryTarget': 'some_registry_target',
                                                 'startedByUserId': 'some_user_id',
                                                 'ports': '8080,9000:9900',
                                                 'workspaceUrl': 'some.url'})

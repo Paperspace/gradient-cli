@@ -20,6 +20,7 @@ projectId: some_project_id
 python-command: 3
 registryPassword: some_registry_password
 registryUsername: some_registry_username
+registryTarget: some_registry_target
 relDockerfilePath: /some/dockerfile/path
 script:
   - some_script.py

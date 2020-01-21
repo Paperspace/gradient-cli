@@ -202,6 +202,12 @@ def common_jobs_create_options(f):
             cls=common.GradientOption,
         ),
         click.option(
+            "--registryTarget",
+            "registry_target",
+            help="Docker registry target",
+            cls=common.GradientOption,
+        ),
+        click.option(
             "--registryUsername",
             "registry_username",
             help="Docker registry username",
