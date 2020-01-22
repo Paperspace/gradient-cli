@@ -77,14 +77,13 @@ class ReadValueFromConfigFile(click.Parameter):
 
                 # Collect all dataset object keys across all
                 # datasets into a list.
-                if option_name.startswith("dataset"):
+                if ("datasets" in config_data and
+                    option_name.startswith("dataset")):
                     object_key = get_object_key("dataset", option_name)
-                    print("processing " + option_name + " => " + object_key)
                     value_list = []
                     for dataset in config_data["datasets"]:
                         value_list.append(dataset[object_key])
 
-                    print(option_name + self.name + ": ".join(value_list))
                     opts[self.name] = value_list
 
                 else:
