@@ -1346,8 +1346,10 @@ class TestExperimentLogs(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        assert "Downloading https://storage.googleapis.com/cvdf-datasets/mnist/t10k-labels" \
-               "-idx1-ubyte.gz to /tmp/tmpbrss4txl.gz" in result.output
+        assert "I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA" in result.output
+        # This one checks if trailing \n was removed from log line.
+        # There were empty lines printed if log line had a new line character at the end so we rstrip lines now
+        assert "|\n|    " not in result.output
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_should_read_options_from_config_file(self, get_patched, experiments_logs_config_path):
