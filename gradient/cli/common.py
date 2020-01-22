@@ -62,6 +62,10 @@ def get_option_name(options_strings):
         if opt.startswith("--"):
             return opt[2:]
 
+def get_object_key(prefix, option_name):
+    object_key = option_name[len(prefix):]
+    object_key = object_key[0].lower() + object_key[1:]
+    return object_key
 
 class ReadValueFromConfigFile(click.Parameter):
     def handle_parse_result(self, ctx, opts, args):
@@ -70,12 +74,26 @@ class ReadValueFromConfigFile(click.Parameter):
             with open(config_file) as f:
                 config_data = yaml.load(f, Loader=yaml.FullLoader)
                 option_name = get_option_name(self.opts)
-                value = config_data.get(option_name)
-                if value is not None:
-                    if isinstance(value, dict):
-                        value = json.dumps(value)
 
-                    opts[self.name] = value
+                # Collect all dataset object keys across all
+                # datasets into a list.
+                if option_name.startswith("dataset"):
+                    object_key = get_object_key("dataset", option_name)
+                    print("processing " + option_name + " => " + object_key)
+                    value_list = []
+                    for dataset in config_data["datasets"]:
+                        value_list.append(dataset[object_key])
+
+                    print(option_name + self.name + ": ".join(value_list))
+                    opts[self.name] = value_list
+
+                else:
+                    value = config_data.get(option_name)
+                    if value is not None:
+                        if isinstance(value, dict):
+                            value = json.dumps(value)
+
+                        opts[self.name] = value
 
         return super(ReadValueFromConfigFile, self).handle_parse_result(
             ctx, opts, args)
@@ -148,11 +166,7 @@ def generate_options_template(ctx, param, value):
         if option_name.startswith("dataset"):
             # Drop the "dataset" prefix from the *option name*
             # and use the rest as the dataset object key.
-            object_key = option_name[len("dataset"):]
-            # list_suffix = "_list"
-            # if object_key.endswith(list_suffix):
-            #    object_key = object_key[:len(object_key)-len(list_suffix)]
-            object_key = object_key[0].lower() + object_key[1:]
+            object_key = get_object_key("dataset", option_name)
             dataset_value_lists[object_key] = option_value
             continue
 
