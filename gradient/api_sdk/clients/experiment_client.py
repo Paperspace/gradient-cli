@@ -6,11 +6,11 @@ from ..sdk_exceptions import ResourceCreatingDataError
 class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
     def create_single_node(
             self,
-            name,
             project_id,
             machine_type,
             command,
             ports=None,
+            name=None,
             workspace_url=None,
             workspace_ref=None,
             workspace_username=None,
@@ -100,7 +100,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
     def create_multi_node(
             self,
-            name,
             project_id,
             worker_container,
             worker_machine_type,
@@ -110,6 +109,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_machine_type,
             parameter_server_command,
             parameter_server_count,
+            name=None,
             experiment_type_id=constants.ExperimentType.GRPC_MULTI_NODE,
             ports=None,
             workspace_url=None,
@@ -225,12 +225,12 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
     def create_mpi_multi_node(
             self,
-            name,
             project_id,
             worker_container,
             worker_machine_type,
             worker_command,
             worker_count,
+            name=None,
             master_container=None,
             master_machine_type=None,
             master_command=None,
@@ -346,10 +346,10 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
     def run_single_node(
             self,
-            name,
             project_id,
             machine_type,
             command,
+            name=None,
             ports=None,
             workspace_url=None,
             workspace_ref=None,
@@ -439,7 +439,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
     def run_multi_node(
             self,
-            name,
             project_id,
             worker_container,
             worker_machine_type,
@@ -449,6 +448,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_machine_type,
             parameter_server_command,
             parameter_server_count,
+            name=None,
             experiment_type_id=constants.ExperimentType.GRPC_MULTI_NODE,
             ports=None,
             workspace_url=None,
@@ -563,7 +563,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
     def run_mpi_multi_node(
             self,
-            name,
             project_id,
             worker_container,
             worker_machine_type,
@@ -573,6 +572,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_machine_type,
             master_command,
             master_count,
+            name=None,
             ports=None,
             workspace_url=None,
             workspace_ref=None,

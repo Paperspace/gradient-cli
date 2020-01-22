@@ -48,7 +48,6 @@ def common_experiments_create_options(f):
     options = [
         click.option(
             "--name",
-            required=True,
             metavar="<name>",
             help="Name of new experiment",
             cls=common.GradientOption,
