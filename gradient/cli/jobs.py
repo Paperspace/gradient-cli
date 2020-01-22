@@ -202,12 +202,6 @@ def common_jobs_create_options(f):
             cls=common.GradientOption,
         ),
         click.option(
-            "--registryTarget",
-            "registry_target",
-            help="Docker registry target",
-            cls=common.GradientOption,
-        ),
-        click.option(
             "--registryUsername",
             "registry_username",
             help="Docker registry username",
@@ -236,6 +230,24 @@ def common_jobs_create_options(f):
             "node_attrs",
             type=json_string,
             help="Cluster node details",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--registryTarget",
+            "registry_target",
+            help="Docker registry target",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--registryTargetUsername",
+            "registry_target_username",
+            help="Docker registry username",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--registryTargetPassword",
+            "registry_target_password",
+            help="Docker registry password",
             cls=common.GradientOption,
         ),
         click.option(
