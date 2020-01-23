@@ -159,7 +159,8 @@ def generate_options_template(ctx, param, value):
 
         # If this is an object list type option, add its value list to
         # the specific object list set of value lists.
-        if isinstance(param, GradientObjectListOption):
+        if (isinstance(param, GradientObjectListOption) and
+            option_value is not None):
             object_list_name = param.get_object_list_name()
             if object_list_name not in objects_value_lists:
                 objects_value_lists[object_list_name] = {}
