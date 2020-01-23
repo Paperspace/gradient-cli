@@ -62,11 +62,6 @@ def get_option_name(options_strings):
         if opt.startswith("--"):
             return opt[2:]
 
-def get_object_key(prefix, option_name):
-    object_key = option_name[len(prefix):]
-    object_key = object_key[0].lower() + object_key[1:]
-    return object_key
-
 class ReadValueFromConfigFile(click.Parameter):
     def handle_parse_result(self, ctx, opts, args):
         config_file = ctx.params.get(OPTIONS_FILE_PARAMETER_NAME)
@@ -160,12 +155,12 @@ def generate_options_template(ctx, param, value):
         # If this is an object list type option, add its value list to
         # the specific object list set of value lists.
         if isinstance(param, GradientObjectListOption):
-            if option_value is not None:
-                object_list_name = param.get_object_list_name()
-                if object_list_name not in objects_value_lists:
-                    objects_value_lists[object_list_name] = {}
-                value_lists = objects_value_lists[object_list_name]
-                value_lists[param.get_object_key()] = option_value
+            new_value_list = option_value if option_value is not None else []
+            object_list_name = param.get_object_list_name()
+            if object_list_name not in objects_value_lists:
+                objects_value_lists[object_list_name] = {}
+            value_lists = objects_value_lists[object_list_name]
+            value_lists[param.get_object_key()] = new_value_list
             continue
 
         if isinstance(param.type, cli_types.ChoiceType):
@@ -194,6 +189,8 @@ def generate_options_template(ctx, param, value):
             for object_key, value_list in value_lists.items():
                 if i < len(value_list):
                     new_object[object_key] = value_list[i]
+                else:
+                    new_object[object_key] = None
 
             object_list.append(new_object)
 
