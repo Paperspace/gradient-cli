@@ -69,22 +69,18 @@ class ReadValueFromConfigFile(click.Parameter):
             with open(config_file) as f:
                 config_data = yaml.load(f, Loader=yaml.FullLoader)
                 option_name = get_option_name(self.opts)
-
-                # Collect all values from objects in the matching object list
-                if isinstance(self, GradientObjectListOption):
+                if (isinstance(self, GradientObjectListOption) and
+                    self.get_object_list_name() in config_data):
                     value_list = []
-                    if self.get_object_list_name() in config_data:
-                        for object_list_item in config_data[self.get_object_list_name()]:
-                            value_list.append(object_list_item.get(self.get_object_key(), None))
-
-                    opts[self.name] = value_list
-
+                    for object_list_item in config_data[self.get_object_list_name()]:
+                        value_list.append(object_list_item.get(self.get_object_key(), None))
+                    if len(value_list) > 0:
+                        opts[self.name] = value_list
                 else:
                     value = config_data.get(option_name)
                     if value is not None:
                         if isinstance(value, dict):
                             value = json.dumps(value)
-
                         opts[self.name] = value
 
         return super(ReadValueFromConfigFile, self).handle_parse_result(
@@ -175,11 +171,11 @@ def generate_options_template(ctx, param, value):
     for object_list_name, value_lists in objects_value_lists.items():
         # Find maximum length value list and assume it lines up
         # with other object list options
-        num_items = 0
         if object_list_name not in object_lists:
             object_lists[object_list_name] = []
         object_list = object_lists[object_list_name]
 
+        num_items = 0
         for object_key, value_list in value_lists.items():
             if len(value_list) > num_items:
                 num_items = len(value_list)
@@ -195,8 +191,10 @@ def generate_options_template(ctx, param, value):
             object_list.append(new_object)
 
     # Add all object lists to overall params
+    # for all non-empty object lists
     for object_list_name, object_list in object_lists.items():
-        params[object_list_name] = object_list
+        if len(object_list) > 0:
+            params[object_list_name] = object_list
 
     with open(value, "w") as f:
         yaml.safe_dump(params, f, default_flow_style=False)
@@ -224,15 +222,17 @@ def options_file(f):
 
 class GradientObjectListOption(GradientOption):
     def __init__(self, object_name, param_decls, **kwargs):
-        self.object_name = object_name
         super(GradientObjectListOption, self).__init__(param_decls, **kwargs)
+        self.object_name = object_name
+        self.object_list_name = self.object_name + "s"
+        self.object_key = self._compose_object_key()
 
     # Get name of overall object list for this type of option
     def get_object_list_name(self):
-        return self.object_name + "s"
+        return self.object_list_name
 
     # Get this option's object key for the objects in the object list
-    def get_object_key(self):
+    def _compose_object_key(self):
         option_name = get_option_name(self.opts)
         if not option_name.startswith(self.object_name):
             return option_name
@@ -240,6 +240,9 @@ class GradientObjectListOption(GradientOption):
         object_key = option_name[len(self.object_name):]
         object_key = object_key[0].lower() + object_key[1:]
         return object_key
+
+    def get_object_key(self):
+        return self.object_key
 
 class GradientDatasetOption(GradientObjectListOption):
     def __init__(self, param_decls, **kwargs):
