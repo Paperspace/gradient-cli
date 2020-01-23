@@ -75,14 +75,12 @@ class ReadValueFromConfigFile(click.Parameter):
                 config_data = yaml.load(f, Loader=yaml.FullLoader)
                 option_name = get_option_name(self.opts)
 
-                # Collect all dataset object keys across all
-                # datasets into a list.
-                if ("datasets" in config_data and
-                    option_name.startswith("dataset")):
-                    object_key = get_object_key("dataset", option_name)
+                # Collect all values from objects in the matching object list
+                if (isinstance(self, GradientObjectListOption) and
+                    self.get_object_list_name() in config_data):
                     value_list = []
-                    for dataset in config_data["datasets"]:
-                        value_list.append(dataset[object_key])
+                    for objects in config_data[self.get_object_list_name()]:
+                        value_list.append(objects[self.get_object_key()])
 
                     opts[self.name] = value_list
 
@@ -138,7 +136,6 @@ class GradientArgument(ColorExtrasInCommandHelpMixin, ReadValueFromConfigFile, c
 class GradientOption(ColorExtrasInCommandHelpMixin, ReadValueFromConfigFile, click.Option):
     pass
 
-
 api_key_option = click.option(
     "--apiKey",
     "api_key",
@@ -152,7 +149,7 @@ def generate_options_template(ctx, param, value):
         return value
 
     params = {}
-    dataset_value_lists = {}  # Value lists by dataset object key
+    objects_value_lists = {} # Object list name -> object key -> list of values
     for param in ctx.command.params:
         option_name = get_option_name(param.opts)
         if option_name in (OPTIONS_FILE_OPTION_NAME, OPTIONS_DUMP_FILE_OPTION_NAME):
@@ -160,13 +157,14 @@ def generate_options_template(ctx, param, value):
 
         option_value = ctx.params.get(param.name) or param.default
 
-        # Add any value lists for dataset options to a separate dict
-        paramVars = vars(param)
-        if option_name.startswith("dataset"):
-            # Drop the "dataset" prefix from the *option name*
-            # and use the rest as the dataset object key.
-            object_key = get_object_key("dataset", option_name)
-            dataset_value_lists[object_key] = option_value
+        # If this is an object list type option, add its value list to
+        # the specific object list set of value lists.
+        if isinstance(param, GradientObjectListOption):
+            object_list_name = param.get_object_list_name()
+            if object_list_name not in objects_value_lists:
+                objects_value_lists[object_list_name] = {}
+            value_lists = objects_value_lists[object_list_name]
+            value_lists[param.get_object_key()] = option_value
             continue
 
         if isinstance(param.type, cli_types.ChoiceType):
@@ -176,22 +174,31 @@ def generate_options_template(ctx, param, value):
 
         params[option_name] = option_value
 
-    # Transform dataset value lists into dataset objects
-    if "uri" in dataset_value_lists:
-        # For each URI, add another dataset object to the list
-        # using values across all option value lists
-        datasets = []
-        for i in range(len(dataset_value_lists["uri"])):
-            dataset = {}
-            for object_key, value_list in dataset_value_lists.items():
+    # Transform value lists into objects
+    object_lists = {}
+    for object_list_name, value_lists in objects_value_lists.items():
+        # Find maximum length value list and assume it lines up
+        # with other object list options
+        num_items = 0
+        if object_list_name not in object_lists:
+            object_lists[object_list_name] = []
+        object_list = object_lists[object_list_name]
+
+        for object_key, value_list in value_lists.items():
+            if len(value_list) > num_items:
+                num_items = len(value_list)
+        
+        for i in range(0, num_items):
+            new_object = {}
+            for object_key, value_list in value_lists.items():
                 if i < len(value_list):
-                    dataset[object_key] = value_list[i]
+                    new_object[object_key] = value_list[i]
 
-            # Add dataset object to list
-            datasets.append(dataset)
+            object_list.append(new_object)
 
-        # Add dataset object array to params
-        params["datasets"] = datasets
+    # Add all object lists to overall params
+    for object_list_name, object_list in object_lists.items():
+        params[object_list_name] = object_list
 
     with open(value, "w") as f:
         yaml.safe_dump(params, f, default_flow_style=False)
@@ -216,3 +223,26 @@ def options_file(f):
         )
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
+
+class GradientObjectListOption(GradientOption):
+    def __init__(self, object_name, param_decls, **kwargs):
+        self.object_name = object_name
+        super(GradientObjectListOption, self).__init__(param_decls, **kwargs)
+
+    # Get name of overall object list for this type of option
+    def get_object_list_name(self):
+        return self.object_name + "s"
+
+    # Get this option's object key for the objects in the object list
+    def get_object_key(self):
+        option_name = get_option_name(self.opts)
+        if not option_name.startswith(self.object_name):
+            return option_name
+
+        object_key = option_name[len(self.object_name):]
+        object_key = object_key[0].lower() + object_key[1:]
+        return object_key
+
+class GradientDatasetOption(GradientObjectListOption):
+    def __init__(self, param_decls, **kwargs):
+        super(GradientDatasetOption, self).__init__("dataset", param_decls, **kwargs)
