@@ -1,8 +1,7 @@
 import gradient.api_sdk.config
-from gradient import config
 from gradient.api_sdk import serializers
 from gradient.api_sdk.clients import http_client
-from .common import ListResources, CreateResource, BaseRepository, GetResource, DeleteResource, StopResource
+from .common import ListResources, CreateResource, GetResource, DeleteResource, StopResource
 from ..serializers import JobSchema, LogRowSchema
 
 
