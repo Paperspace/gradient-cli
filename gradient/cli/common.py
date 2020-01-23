@@ -76,11 +76,11 @@ class ReadValueFromConfigFile(click.Parameter):
                 option_name = get_option_name(self.opts)
 
                 # Collect all values from objects in the matching object list
-                if (isinstance(self, GradientObjectListOption) and
-                    self.get_object_list_name() in config_data):
+                if isinstance(self, GradientObjectListOption):
                     value_list = []
-                    for objects in config_data[self.get_object_list_name()]:
-                        value_list.append(objects[self.get_object_key()])
+                    if self.get_object_list_name() in config_data:
+                        for object_list_item in config_data[self.get_object_list_name()]:
+                            value_list.append(object_list_item.get(self.get_object_key(), None))
 
                     opts[self.name] = value_list
 
