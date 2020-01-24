@@ -62,6 +62,7 @@ def common_experiments_create_options(f):
             "--workspace",
             "workspace",
             help="Path to workspace directory, archive, S3 or git repository",
+            default="none",
             cls=common.GradientOption,
         ),
         click.option(
