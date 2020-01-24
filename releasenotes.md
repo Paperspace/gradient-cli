@@ -6,7 +6,7 @@
 * Update `notebooks list` command accepts `--list` and `--offset` arguments and show more notebooks
 * Add `deployments details` command
 * registry target options to `run` and `jobs create` commands
-* `--workspace` option in `experiments` commands does not default to current working directory anymore and is required for MPI experiments
+* `--workspace` option in `experiments` commands does not default to current working directory anymore and is required for VPC experiments
 
 # Release Notes for 0.5.2a3
 ### New features
