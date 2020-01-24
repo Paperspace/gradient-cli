@@ -1,12 +1,20 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.5.2
+##### Note: this list includes all changes made in 0.5.2a* alpha releases
+### New features
+* Update `notebooks list` command accepts `--list` and `--offset` arguments and show more notebooks
+* Add `deployments details` command
+* registry target options to `run` and `jobs create` commands
+* `--workspace` option in `experiments` commands does not default to current working directory anymore and is required for MPI experiments
+
 # Release Notes for 0.5.2a3
 ### New features
 * Add `deployments details` command
 
 # Release Notes for 0.5.2a2
 ### Fixes
-* Update `notebooks list` command so it accepts `--list` and `--offset` arguments and show more notebooks
+* Update `notebooks list` command accepts `--list` and `--offset` arguments and show more notebooks
 
 # Release Notes for 0.5.0
 ##### Note: this list includes all changes made in 0.5.0a* alpha releases
