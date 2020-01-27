@@ -70,11 +70,11 @@ class ReadValueFromConfigFile(click.Parameter):
                 config_data = yaml.load(f, Loader=yaml.FullLoader)
                 option_name = get_option_name(self.opts)
                 if (isinstance(self, GradientObjectListOption) and
-                    self.get_object_list_name() in config_data):
+                    self.object_list_name in config_data):
                     value_list = []
-                    for object_list_item in config_data[self.get_object_list_name()]:
-                        value_list.append(object_list_item.get(self.get_object_key(), None))
-                    if len(value_list) > 0:
+                    for object_list_item in config_data[self.object_list_name]:
+                        value_list.append(object_list_item.get(self.object_key)
+                    if value_list:
                         opts[self.name] = value_list
                 else:
                     value = config_data.get(option_name)
@@ -152,11 +152,10 @@ def generate_options_template(ctx, param, value):
         # the specific object list set of value lists.
         if isinstance(param, GradientObjectListOption):
             new_value_list = option_value if option_value is not None else []
-            object_list_name = param.get_object_list_name()
-            if object_list_name not in objects_value_lists:
-                objects_value_lists[object_list_name] = {}
-            value_lists = objects_value_lists[object_list_name]
-            value_lists[param.get_object_key()] = new_value_list
+            if param.object_list_name not in objects_value_lists:
+                objects_value_lists[param.object_list_name] = {}
+            value_lists = objects_value_lists[param.object_list_name]
+            value_lists[param.object_key] = new_value_list
             continue
 
         if isinstance(param.type, cli_types.ChoiceType):
@@ -171,16 +170,11 @@ def generate_options_template(ctx, param, value):
     for object_list_name, value_lists in objects_value_lists.items():
         # Find maximum length value list and assume it lines up
         # with other object list options
-        if object_list_name not in object_lists:
-            object_lists[object_list_name] = []
-        object_list = object_lists[object_list_name]
+        object_list = object_lists.setdefault(object_list_name, [])
 
-        num_items = 0
-        for object_key, value_list in value_lists.items():
-            if len(value_list) > num_items:
-                num_items = len(value_list)
+        num_items = max(len(value_list) for value_list in value_lists.values())
         
-        for i in range(0, num_items):
+        for i in range(num_items):
             new_object = {}
             for object_key, value_list in value_lists.items():
                 if i < len(value_list):
@@ -193,7 +187,7 @@ def generate_options_template(ctx, param, value):
     # Add all object lists to overall params
     # for all non-empty object lists
     for object_list_name, object_list in object_lists.items():
-        if len(object_list) > 0:
+        if object_list:
             params[object_list_name] = object_list
 
     with open(value, "w") as f:
@@ -220,6 +214,7 @@ def options_file(f):
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
+
 class GradientObjectListOption(GradientOption):
     def __init__(self, object_name, param_decls, **kwargs):
         super(GradientObjectListOption, self).__init__(param_decls, **kwargs)
@@ -227,9 +222,6 @@ class GradientObjectListOption(GradientOption):
         self.object_list_name = self.object_name + "s"
         self.object_key = self._compose_object_key()
 
-    # Get name of overall object list for this type of option
-    def get_object_list_name(self):
-        return self.object_list_name
 
     # Get this option's object key for the objects in the object list
     def _compose_object_key(self):
@@ -241,8 +233,6 @@ class GradientObjectListOption(GradientOption):
         object_key = object_key[0].lower() + object_key[1:]
         return object_key
 
-    def get_object_key(self):
-        return self.object_key
 
 class GradientDatasetOption(GradientObjectListOption):
     def __init__(self, param_decls, **kwargs):
