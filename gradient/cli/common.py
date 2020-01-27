@@ -73,7 +73,8 @@ class ReadValueFromConfigFile(click.Parameter):
                     self.object_list_name in config_data):
                     value_list = []
                     for object_list_item in config_data[self.object_list_name]:
-                        value_list.append(object_list_item.get(self.object_key)
+                        value_list.append(object_list_item.get(self.object_key))
+
                     if value_list:
                         opts[self.name] = value_list
                 else:
