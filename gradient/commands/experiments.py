@@ -5,6 +5,8 @@ import click
 import six
 import terminaltables
 from click import style
+from halo import halo
+
 from gradient import api_sdk, exceptions, TensorboardClient
 from gradient.api_sdk import constants, sdk_exceptions
 from gradient.api_sdk.config import config
@@ -13,7 +15,6 @@ from gradient.commands import tensorboards as tensorboards_commands
 from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 from gradient.logger import Logger
 from gradient.utils import get_terminal_lines, none_strings_to_none_objects
-from halo import halo
 
 try:
     # Python 3
@@ -106,6 +107,10 @@ class BaseCreateExperimentCommandMixin(object):
 
     def _handle_workspace(self, instance_dict):
         handler = self.workspace_handler.handle(instance_dict)
+
+        if (instance_dict.get("cluster_id") or instance_dict.get("use_vpc")) and handler.lower() == "none":
+            raise click.UsageError('Missing option "--workspace" is required for VPC experiments')
+
         instance_dict.pop("ignore_files", None)
         instance_dict.pop("workspace", None)
         instance_dict.pop("workspace_archive", None)
@@ -396,7 +401,7 @@ class ExperimentLogsCommand(BaseExperimentCommand):
     def _format_row(experiment_id, log_row):
         return (style(fg="blue", text=experiment_id),
                 style(fg="red", text=str(log_row.line)),
-                log_row.message)
+                str(log_row.message).rstrip())
 
 
 class DeleteExperimentCommand(BaseExperimentCommand):

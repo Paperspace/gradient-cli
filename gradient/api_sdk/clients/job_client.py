@@ -48,13 +48,15 @@ class JobsClient(BaseClient):
             project=None,
             started_by_user_id=None,
             rel_dockerfile_path=None,
-            registry_target=None,
             registry_username=None,
             registry_password=None,
             cluster=None,
             cluster_id=None,
             node_attrs=None,
             workspace_file_name=None,
+            registry_target=None,
+            registry_target_username=None,
+            registry_target_password=None,
             build_only=False,
     ):
         """
@@ -126,7 +128,6 @@ class JobsClient(BaseClient):
         :param str started_by_user_id: id of user that started job. By default it take user id from access token
             or api key.
         :param str rel_dockerfile_path: relative location to your dockerfile. Default set to ``./Dockerfile``
-        :param str registry_target: custom docker registry
         :param str registry_username: username for custom docker registry
         :param str registry_password: password for custom docker registry
         :param str cluster: name of cluster that job should be run on.
@@ -134,6 +135,9 @@ class JobsClient(BaseClient):
             cluster will be chosen so you do not need to provide it.
         :param dict node_attrs:
         :param str workspace_file_name:
+        :param str registry_target: custom docker registry
+        :param str registry_target_username: username for custom docker registry
+        :param str registry_target_password: password for custom docker registry
         :param bool build_only: determines whether to only build and not run image
 
         :returns: Job handle
@@ -162,13 +166,15 @@ class JobsClient(BaseClient):
             project=project,
             started_by_user_id=started_by_user_id,
             rel_dockerfile_path=rel_dockerfile_path,
-            registry_target=registry_target,
             registry_username=registry_username,
             registry_password=registry_password,
             cluster=cluster,
             cluster_id=cluster_id,
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
+            registry_target=registry_target,
+            registry_target_username=registry_target_username,
+            registry_target_password=registry_target_password,
             build_only=build_only,
         )
         handle = CreateJob(self.api_key, self.logger).create(job, data=data)
