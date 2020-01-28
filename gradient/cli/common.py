@@ -62,6 +62,7 @@ def get_option_name(options_strings):
         if opt.startswith("--"):
             return opt[2:]
 
+
 class ReadValueFromConfigFile(click.Parameter):
     def handle_parse_result(self, ctx, opts, args):
         config_file = ctx.params.get(OPTIONS_FILE_PARAMETER_NAME)
@@ -128,6 +129,7 @@ class GradientArgument(ColorExtrasInCommandHelpMixin, ReadValueFromConfigFile, c
 class GradientOption(ColorExtrasInCommandHelpMixin, ReadValueFromConfigFile, click.Option):
     pass
 
+
 api_key_option = click.option(
     "--apiKey",
     "api_key",
@@ -153,9 +155,8 @@ def generate_options_template(ctx, param, value):
         # the specific object list set of value lists.
         if isinstance(param, GradientObjectListOption):
             new_value_list = option_value if option_value is not None else []
-            if param.object_list_name not in objects_value_lists:
-                objects_value_lists[param.object_list_name] = {}
-            value_lists = objects_value_lists[param.object_list_name]
+            object_list_name = param.object_list_name
+            value_lists = objects_value_lists.setdefault(object_list_name, {})
             value_lists[param.object_key] = new_value_list
             continue
 
@@ -174,7 +175,7 @@ def generate_options_template(ctx, param, value):
         object_list = object_lists.setdefault(object_list_name, [])
 
         num_items = max(len(value_list) for value_list in value_lists.values())
-        
+
         for i in range(num_items):
             new_object = {}
             for object_key, value_list in value_lists.items():
@@ -222,7 +223,6 @@ class GradientObjectListOption(GradientOption):
         self.object_name = object_name
         self.object_list_name = self.object_name + "s"
         self.object_key = self._compose_object_key()
-
 
     # Get this option's object key for the objects in the object list
     def _compose_object_key(self):
