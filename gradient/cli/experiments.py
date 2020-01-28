@@ -171,7 +171,7 @@ def dataset_options(f):
             metavar="<dateset uri>",
             multiple=True,
             help="Url to S3 bucket with dataset",
-            cls=common.GradientOption,
+            cls=common.GradientDatasetOption,
         ),
         click.option(
             "--datasetName",
@@ -179,7 +179,7 @@ def dataset_options(f):
             multiple=True,
             metavar="<dateset name>",
             help="Name of dataset",
-            cls=common.GradientOption,
+            cls=common.GradientDatasetOption,
         ),
         click.option(
             "--datasetAwsAccessKeyId",
@@ -187,14 +187,14 @@ def dataset_options(f):
             multiple=True,
             metavar="<AWS access key>",
             help="S3 bucket's Access Key ID",
-            cls=common.GradientOption,
+            cls=common.GradientDatasetOption,
         ),
         click.option(
             "--datasetAwsSecretAccessKey",
             "dataset_secret_access_key_list",
             multiple=True,
             help="S3 bucket's Secret Access Key",
-            cls=common.GradientOption,
+            cls=common.GradientDatasetOption,
         ),
         click.option(
             "--datasetVersionId",
@@ -202,7 +202,7 @@ def dataset_options(f):
             metavar="<version ID>",
             multiple=True,
             help="S3 dataset's version ID",
-            cls=common.GradientOption,
+            cls=common.GradientDatasetOption,
         ),
         click.option(
             "--datasetEtag",
@@ -210,7 +210,7 @@ def dataset_options(f):
             metavar="<etag>",
             multiple=True,
             help="S3 dataset's ETag",
-            cls=common.GradientOption,
+            cls=common.GradientDatasetOption,
         ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
