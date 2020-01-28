@@ -212,6 +212,20 @@ def dataset_options(f):
             help="S3 dataset's ETag",
             cls=common.GradientDatasetOption,
         ),
+        click.option(
+            "--datasetVolumeKind",
+            "dataset_volume_kind_list",
+            multiple=True,
+            help="S3 dataset's volume kind. If used, --datasetVolumeSize has to be set as well",
+            cls=common.GradientDatasetOption,
+        ),
+        click.option(
+            "--datasetVolumeSize",
+            "dataset_volume_size_list",
+            multiple=True,
+            help="S3 dataset's volume size",
+            cls=common.GradientDatasetOption,
+        ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 

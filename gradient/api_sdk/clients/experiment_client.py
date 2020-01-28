@@ -778,5 +778,10 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
                 raise ResourceCreatingDataError("Error while creating experiment with dataset: "
                                                 "\"uri\" key is required and it's value must be a valid S3 URI")
 
+        for ds in datasets:
+            volume_options = ds.setdefault("volume_options", {})
+            volume_options.setdefault("kind", ds.pop("volume_kind", None))
+            volume_options.setdefault("size", ds.pop("volume_size", None))
+
         datasets = [models.Dataset(**ds) for ds in datasets]
         return datasets

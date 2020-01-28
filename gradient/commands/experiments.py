@@ -138,6 +138,8 @@ class BaseCreateExperimentCommandMixin(object):
             json_.pop("dataset_secret_access_key_list", ()),
             json_.pop("dataset_version_id_list", ()),
             json_.pop("dataset_etag_list", ()),
+            json_.pop("dataset_volume_kind_list", ()),
+            json_.pop("dataset_volume_size_list", ()),
         ]
 
         if not any(datasets):
@@ -160,6 +162,8 @@ class BaseCreateExperimentCommandMixin(object):
                      "aws_secret_access_key": dataset[3],
                      "version_id": dataset[4],
                      "etag": dataset[5],
+                     "volume_kind": dataset[6],
+                     "volume_size": dataset[7],
                      } for dataset in datasets]
 
         json_["datasets"] = datasets

@@ -6,13 +6,13 @@ datasets:
   name: "some dataset name"
   awsAccessKeyId: none
   awsSecretAccessKey: none
-  versionId: version1
   etag: "some etag"
+  volumeKind: "dynamic"
+  volumeSize: "10Gi"
 - uri: "s3://some.other.dataset/uri"
   name: null
   awsAccessKeyId: some_other_key_id
   awsSecretAccessKey: some_other_secret
-  versionId: version2
   etag: "some other etag"
 experimentEnv:
   key: val
