@@ -849,7 +849,7 @@ class TestDeploymentDetails(object):
 | Project ID      | some_project_id                                     |
 | Endpoint        | https://paperspace.io/model-serving/some_id:predict |
 | API type        | REST                                                |
-| Cluster ID      | KPS Jobs                                            |
+| Cluster ID      | some_cluster_id                                     |
 +-----------------+-----------------------------------------------------+
 """
 

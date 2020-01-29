@@ -33,4 +33,4 @@ class DeploymentSchema(BaseSchema):
     ports = ma.fields.Str(dump_to="ports", load_from="ports")
     auth_username = ma.fields.Str(dump_to="oauthKey", load_from="oauthKey")
     auth_password = ma.fields.Str(dump_to="oauthSecret", load_from="oauthSecret")
-    cluster_id = ma.fields.Str(dump_to="cluster", load_from="cluster")
+    cluster_id = ma.fields.Str(dump_to="cluster", load_from="clusterId")
