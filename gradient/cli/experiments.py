@@ -7,7 +7,7 @@ from gradient.api_sdk import constants
 from gradient.cli import common, validators
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
-from gradient.cli.common import api_key_option, ClickGroup
+from gradient.cli.common import api_key_option, ClickGroup, validate_comma_split_option
 from gradient.cli.utils.flag_with_value import GradientRegisterReaderOption, GradientRegisterWriterOption, \
     GradientRegisterWriterCommand
 from gradient.commands import experiments as experiments_commands
@@ -532,6 +532,7 @@ def parse_tensorboard_options(tensorboard, tensorboard_set):
 @api_key_option
 @common.options_file
 def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
@@ -555,6 +556,7 @@ def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_fi
 @api_key_option
 @common.options_file
 def create_single_node(api_key, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
@@ -586,6 +588,7 @@ def create_single_node(api_key, use_vpc, tensorboard, tensorboard_set, options_f
 @common.options_file
 @click.pass_context
 def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
@@ -624,6 +627,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, t
 @click.pass_context
 def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, tensorboard, tensorboard_set, options_file,
                                  **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 

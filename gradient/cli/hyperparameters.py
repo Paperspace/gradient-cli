@@ -4,7 +4,7 @@ import click
 
 from gradient import utils
 from gradient.cli import common
-from gradient.cli.common import ClickGroup
+from gradient.cli.common import ClickGroup, validate_comma_split_option
 from gradient.cli.experiments import common_experiments_create_options, get_workspace_handler, experiments_group
 from gradient.commands import hyperparameters as hyperparameters_commands
 
@@ -127,6 +127,7 @@ def common_hyperparameter_create_options(f):
 @common.api_key_option
 @common.options_file
 def create_hyperparameter(api_key, options_file, **hyperparameter):
+    hyperparameter["tags"] = validate_comma_split_option(hyperparameter.pop("tags_comma"), hyperparameter.pop("tags"))
     utils.validate_workspace_input(hyperparameter)
     common.del_if_value_is_none(hyperparameter, del_all_falsy=True)
 
@@ -143,6 +144,7 @@ def create_hyperparameter(api_key, options_file, **hyperparameter):
 @common.api_key_option
 @common.options_file
 def create_and_start_hyperparameter(api_key, options_file, **hyperparameter):
+    hyperparameter["tags"] = validate_comma_split_option(hyperparameter.pop("tags_comma"), hyperparameter.pop("tags"))
     utils.validate_workspace_input(hyperparameter)
     common.del_if_value_is_none(hyperparameter, del_all_falsy=True)
 

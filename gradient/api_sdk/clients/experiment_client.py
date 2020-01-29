@@ -32,7 +32,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             registry_password=None,
             registry_url=None,
             tags=None,
-            tags_comma=None,
             use_vpc=False,
     ):
         """
@@ -63,7 +62,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str registry_password: Registry password for accessing private docker registry container if necessary
         :param str registry_url: Registry server URL for accessing private docker registry container if necessary
         :param list[str] tags: List of tags
-        :param str tags_comma: Tags passed as comma separated string
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -104,8 +102,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         repository = repositories.CreateSingleNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
 
-        if tags or tags_comma:
-            tags = self._validate_tags(tags, tags_comma)
+        if tags:
             self.add_tags(handle, tags)
 
         return handle
@@ -145,7 +142,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_registry_password=None,
             parameter_server_registry_url=None,
             tags=None,
-            tags_comma=None,
             use_vpc=False,
     ):
         """
@@ -186,7 +182,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str parameter_server_registry_password: Registry password for accessing private docker registry container if necessary
         :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if necessary
         :param list[str] tags: List of tags
-        :param str tags_comma: Tags passed as comma separated string
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -238,8 +233,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         repository = repositories.CreateMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
 
-        if tags or tags_comma:
-            tags = self._validate_tags(tags, tags_comma)
+        if tags:
             self.add_tags(handle, tags)
 
         return handle
@@ -278,7 +272,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_registry_password=None,
             master_registry_url=None,
             tags=None,
-            tags_comma=None,
             use_vpc=False,
     ):
         """
@@ -318,7 +311,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str master_registry_password: Registry password for accessing private docker registry container if necessary
         :param str master_registry_url: Registry server URL for accessing private docker registry container if necessary
         :param list[str] tags: List of tags
-        :param str tags_comma: Tags passed as comma separated string
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -368,8 +360,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         repository = repositories.CreateMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
 
-        if tags or tags_comma:
-            tags = self._validate_tags(tags, tags_comma)
+        if tags:
             self.add_tags(handle, tags)
 
         return handle
@@ -399,7 +390,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             registry_password=None,
             registry_url=None,
             tags=None,
-            tags_comma=None,
             use_vpc=False,
     ):
         """Create and start single node experiment
@@ -429,7 +419,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str registry_password: Registry password for accessing private docker registry container if necessary
         :param str registry_url: Registry server URL for accessing private docker registry container if necessary
         :param list[str] tags: List of tags
-        :param str tags_comma: Tags passed as comma separated string
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -470,8 +459,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         repository = repositories.RunSingleNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
 
-        if tags or tags_comma:
-            tags = self._validate_tags(tags, tags_comma)
+        if tags:
             self.add_tags(handle, tags)
 
         return handle
@@ -511,7 +499,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_registry_password=None,
             parameter_server_registry_url=None,
             tags=None,
-            tags_comma=None,
             use_vpc=False,
     ):
         """Create and start multinode experiment
@@ -551,7 +538,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str parameter_server_registry_password: Registry password for accessing private docker registry container if necessary
         :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if necessary
         :param list[str] tags: List of tags
-        :param str tags_comma: Tags passed as comma separated string
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -603,8 +589,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         repository = repositories.RunMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
 
-        if tags or tags_comma:
-            tags = self._validate_tags(tags, tags_comma)
+        if tags:
             self.add_tags(handle, tags)
         return handle
 
@@ -642,7 +627,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_registry_password=None,
             master_registry_url=None,
             tags=None,
-            tags_comma=None,
             use_vpc=False,
     ):
         """Create and start multinode experiment using MPI
@@ -681,7 +665,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str master_registry_password: Registry password for accessing private docker registry container if necessary
         :param str master_registry_url: Registry server URL for accessing private docker registry container if necessary
         :param list[str] tags: List of tags
-        :param str tags_comma: Tags passed as comma separated string
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -732,8 +715,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         repository = repositories.RunMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
 
-        if tags or tags_comma:
-            tags = self._validate_tags(tags, tags_comma)
+        if tags:
             self.add_tags(handle, tags)
 
         return handle
@@ -836,11 +818,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
         datasets = [models.Dataset(**ds) for ds in datasets]
         return datasets
-
-    @staticmethod
-    def _validate_tags(tags, tags_comma):
-        tags_comma = tags_comma.replace(" , ", ",").replace(", ", ",").split(",")
-        return list(set(tags + tags_comma))
 
     def add_tags(self, entity_id, tags):
         tag_client = TagClient(api_key=self.api_key)
