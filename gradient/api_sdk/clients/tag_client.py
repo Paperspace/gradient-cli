@@ -1,4 +1,4 @@
-from gradient import ReceivingDataFailedError
+from gradient.exceptions import ReceivingDataFailedError
 from gradient.api_sdk.clients.base_client import BaseClient
 from gradient.api_sdk.repositories.tags import ListTagRepository, UpdateTagRepository
 

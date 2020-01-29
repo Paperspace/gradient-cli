@@ -159,6 +159,21 @@ def common_experiments_create_options(f):
             help="Flag: is preemptible",
             cls=common.GradientOption,
         ),
+        click.option(
+            "--tag",
+            "tags",
+            type=str,
+            multiple=True,
+            help="One or many tags that you want to add to experiment",
+            cls=common.GradientOption
+        ),
+        click.option(
+            "--tags",
+            "tags_comma",
+            type=str,
+            help="Separated by comma tags that you want add to experiment",
+            cls=common.GradientOption
+        )
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 

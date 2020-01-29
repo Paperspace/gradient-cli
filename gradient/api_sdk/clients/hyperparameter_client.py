@@ -1,8 +1,11 @@
 from . import base_client
+from .tag_client import TagClient
 from .. import models, repositories
 
 
 class HyperparameterJobsClient(base_client.BaseClient):
+    entity = "experiment"
+
     def create(
             self,
             name,
@@ -31,7 +34,9 @@ class HyperparameterJobsClient(base_client.BaseClient):
             hyperparameter_server_container_user=None,
             hyperparameter_server_machine_type=None,
             working_directory=None,
-            use_dockerfile=False
+            use_dockerfile=False,
+            tags=None,
+            tags_comma=None,
     ):
         """Create hyperparameter tuning job
         :param str name: Name of new experiment [required]
@@ -61,6 +66,8 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str hyperparameter_server_machine_type: Hyperparameter server machine type
         :param str working_directory: Working directory for the experiment
         :param bool use_dockerfile: Flag: use dockerfile
+        :param list[str] tags: List of tags
+        :param str tags_comma: Tags passed as comma separated string
 
         :returns: ID of a new job
         :rtype: str
@@ -104,6 +111,11 @@ class HyperparameterJobsClient(base_client.BaseClient):
 
         repository = repositories.CreateHyperparameterJob(api_key=self.api_key, logger=self.logger)
         handle = repository.create(hyperparameter)
+
+        if tags or tags_comma:
+            tags = self._validate_tags(tags, tags_comma)
+            self.add_tags(handle, tags)
+
         return handle
 
     def run(
@@ -135,6 +147,8 @@ class HyperparameterJobsClient(base_client.BaseClient):
             hyperparameter_server_machine_type=None,
             working_directory=None,
             use_dockerfile=False,
+            tags=None,
+            tags_comma=None,
     ):
         """Create and start hyperparameter tuning job
 
@@ -177,6 +191,8 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str hyperparameter_server_machine_type: hps machine type
         :param str working_directory: Working directory for the experiment
         :param bool use_dockerfile: Flag: use dockerfile
+        :param list[str] tags: List of tags
+        :param str tags_comma: Tags passed as comma separated string
 
         :returns: ID of a new job
         :rtype: str
@@ -220,6 +236,11 @@ class HyperparameterJobsClient(base_client.BaseClient):
 
         repository = repositories.CreateAndStartHyperparameterJob(api_key=self.api_key, logger=self.logger)
         handle = repository.create(hyperparameter)
+
+        if tags or tags_comma:
+            tags = self._validate_tags(tags, tags_comma)
+            self.add_tags(handle, tags)
+
         return handle
 
     def get(self, id):
@@ -270,3 +291,12 @@ class HyperparameterJobsClient(base_client.BaseClient):
         repository = repositories.ListHyperparameterJobs(api_key=self.api_key, logger=self.logger)
         experiments = repository.list()
         return experiments
+
+    @staticmethod
+    def _validate_tags(tags, tags_comma):
+        tags_comma = tags_comma.replace(" , ", ",").replace(", ", ",").split(",")
+        return list(set(tags + tags_comma))
+
+    def add_tags(self, entity_id, tags):
+        tag_client = TagClient(api_key=self.api_key)
+        tag_client.add_tags(entity_id=entity_id, entity=self.entity, tags=tags)
