@@ -19,6 +19,9 @@ project: null
 projectId: some_project_id
 registryPassword: some_registry_password
 registryUsername: some_registry_username
+registryTarget: some_registry_target
+registryTargetPassword: some_registry_target_password
+registryTargetUsername: some_registry_target_username
 relDockerfilePath: some dockerfile path
 startedByUserId: some_user_id
 useDockerfile: 'True'

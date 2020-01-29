@@ -3346,7 +3346,7 @@ LIST_OF_LOGS_FOR_EXPERIMENT = [
     "jobId": "jsy2ibsz1l026y",
     "line": 1,
     "timestamp": "2019-07-08T12:40:59.139Z",
-    "message": "2019-07-08 12:40:59.139494: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA"
+    "message": "2019-07-08 12:40:59.139494: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA\n"
   },
   {
     "jobId": "jsy2ibsz1l026y",

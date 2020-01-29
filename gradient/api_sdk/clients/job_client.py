@@ -54,6 +54,9 @@ class JobsClient(BaseClient):
             cluster_id=None,
             node_attrs=None,
             workspace_file_name=None,
+            registry_target=None,
+            registry_target_username=None,
+            registry_target_password=None,
             build_only=False,
     ):
         """
@@ -132,6 +135,9 @@ class JobsClient(BaseClient):
             cluster will be chosen so you do not need to provide it.
         :param dict node_attrs:
         :param str workspace_file_name:
+        :param str registry_target: custom docker registry
+        :param str registry_target_username: username for custom docker registry
+        :param str registry_target_password: password for custom docker registry
         :param bool build_only: determines whether to only build and not run image
 
         :returns: Job handle
@@ -166,6 +172,9 @@ class JobsClient(BaseClient):
             cluster_id=cluster_id,
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
+            registry_target=registry_target,
+            registry_target_username=registry_target_username,
+            registry_target_password=registry_target_password,
             build_only=build_only,
         )
         handle = CreateJob(self.api_key, self.logger).create(job, data=data)

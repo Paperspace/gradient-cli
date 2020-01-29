@@ -692,16 +692,20 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         repository = repositories.StopExperiment(api_key=self.api_key, logger=self.logger)
         repository.stop(experiment_id)
 
-    def list(self, project_id=None, **kwargs):
+    def list(self, project_id=None, offset=None, limit=None, get_meta=False):
         """Get a list of experiments. Optionally filter by project ID
 
         :param str|list|None project_id:
+        :param int offset:
+        :param int limit:
+        :param bool get_meta: get dict of metadata like number of total items, etc. Setting to True changes rtype
+
         :return: experiments
-        :rtype: list[models.SingleNodeExperiment|models.MultiNodeExperiment]
+        :rtype: list[models.SingleNodeExperiment|models.MultiNodeExperiment]|tuple[list[models.SingleNodeExperiment|models.MultiNodeExperiment],dict]
         """
 
         repository = repositories.ListExperiments(api_key=self.api_key, logger=self.logger)
-        experiments = repository.list(project_id=project_id, **kwargs)
+        experiments = repository.list(project_id=project_id, limit=limit, offset=offset, get_meta=get_meta)
         return experiments
 
     def get(self, experiment_id):

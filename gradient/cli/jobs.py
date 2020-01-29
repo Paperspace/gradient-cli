@@ -233,6 +233,24 @@ def common_jobs_create_options(f):
             cls=common.GradientOption,
         ),
         click.option(
+            "--registryTarget",
+            "registry_target",
+            help="Docker registry target",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--registryTargetUsername",
+            "registry_target_username",
+            help="Docker registry username",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--registryTargetPassword",
+            "registry_target_password",
+            help="Docker registry password",
+            cls=common.GradientOption,
+        ),
+        click.option(
             "--buildOnly",
             "build_only",
             type=bool,

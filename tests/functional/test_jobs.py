@@ -476,6 +476,9 @@ class TestJobsCreate(object):
         "--projectId", "some_project_id",
         "--registryPassword", "some_registry_password",
         "--registryUsername", "some_registry_username",
+        "--registryTarget", "some_registry_target",
+        "--registryTargetPassword", "some_registry_target_password",
+        "--registryTargetUsername", "some_registry_target_username",
         "--relDockerfilePath", "some dockerfile path",
         "--startedByUserId", "some_user_id",
         "--useDockerfile", "True",
@@ -501,10 +504,11 @@ class TestJobsCreate(object):
         "container": "some_container",
         "workingDirectory": "/some/path",
         "projectId": "some_project_id",
-        "registryUsername": "some_registry_username",
+        "registryTargetUsername": "some_registry_target_username",
         "workspaceUrl": "s3://some.workspace.url",
         "machineType": "K80",
-        "registryPassword": "some_registry_password",
+        "registryTargetPassword": "some_registry_target_password",
+        "registryTarget": "some_registry_target",
         "isPublic": True,
         "workspaceFileName": "s3://some.workspace.url",
         "jobEnv": {"key": "val"},
@@ -515,6 +519,8 @@ class TestJobsCreate(object):
         "command": "some command",
         "ports": "8080,9000:9900",
         "buildOnly": True,
+        "registryUsername": "some_registry_username",
+        "registryPassword": "some_registry_password",
     }
     RESPONSE_JSON_200 = {"id": "sadkfhlskdjh", "message": "success"}
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'

@@ -234,6 +234,9 @@ class JobRunClient(BaseClient):
             cluster_id=None,
             node_attrs=None,
             workspace_file_name=None,
+            registry_target=None,
+            registry_target_username=None,
+            registry_target_password=None,
             build_only=False,
     ):
 
@@ -265,6 +268,9 @@ class JobRunClient(BaseClient):
             cluster_id=cluster_id,
             target_node_attrs=node_attrs,
             workspace_file_name=workspace_file_name,
+            registry_target=registry_target,
+            registry_target_username=registry_target_username,
+            registry_target_password=registry_target_password,
             build_only=build_only,
         )
         handle = RunJob(self.api_key, self.logger, self.client).create(job, data=data)

@@ -86,3 +86,9 @@ class JobSchema(BaseSchema):
     registry_username = marshmallow.fields.Str(dump_to="registryUsername", load_from="registryUsername")
     registry_password = marshmallow.fields.Str(dump_to="registryPassword", load_from="registryPassword")
     build_only = marshmallow.fields.Bool(dump_to="buildOnly", load_from="buildOnly")
+
+    registry_target = marshmallow.fields.Str(dump_to="registryTarget", load_from="registryTarget")
+    registry_target_username = marshmallow.fields.Str(
+        dump_to="registryTargetUsername", load_from="registryTargetUsername")
+    registry_target_password = marshmallow.fields.Str(
+        dump_to="registryTargetPassword", load_from="registryTargetPassword")

@@ -82,3 +82,7 @@ class Job(object):
     registry_username = attr.ib(type=str, default=None)
     registry_password = attr.ib(type=str, default=None)
     build_only = attr.ib(type=bool, default=None)
+
+    registry_target = attr.ib(type=str, default=None)
+    registry_target_username = attr.ib(type=str, default=None)
+    registry_target_password = attr.ib(type=str, default=None)
