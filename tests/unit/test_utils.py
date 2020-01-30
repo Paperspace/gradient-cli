@@ -141,5 +141,9 @@ class TestCommonFunction(object):
         ),
     ])
     def test_validate_comma_split_option(self, comma_value, value, expected_result):
+        if expected_result:
+            expected_result.sort()
         result = validate_comma_split_option(comma_value, value)
+        if result:
+            result.sort()
         assert result == expected_result

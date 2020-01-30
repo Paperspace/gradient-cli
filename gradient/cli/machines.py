@@ -7,7 +7,7 @@ from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
-from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, validate_comma_split_option
 from gradient.cli.validators import validate_email, validate_mutually_exclusive
 from gradient.commands import machines as machines_commands
 
@@ -180,9 +180,25 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
     help="The script id of a script to be run on startup. See the Script Guide for more info on using scripts",
     cls=common.GradientOption,
 )
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    type=str,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
 @api_key_option
 @common.options_file
 def create_machine(api_key, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     del_if_value_is_none(kwargs)
 
     assign_public_ip = kwargs.get("assign_public_ip")

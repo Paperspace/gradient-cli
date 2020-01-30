@@ -6,7 +6,10 @@ from gradient import utils, logger
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string
-from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts
+from gradient.cli.common import (
+    api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts,
+    validate_comma_split_option,
+)
 from gradient.cli.experiments import \
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used
 from gradient.commands import jobs as jobs_commands
@@ -258,6 +261,21 @@ def common_jobs_create_options(f):
             help="Determines whether to only build and not run image (default false)",
             cls=common.GradientOption,
         ),
+        click.option(
+            "--tag",
+            "tags",
+            type=str,
+            multiple=True,
+            help="One or many tags that you want to add to experiment",
+            cls=common.GradientOption
+        ),
+        click.option(
+            "--tags",
+            "tags_comma",
+            type=str,
+            help="Separated by comma tags that you want add to experiment",
+            cls=common.GradientOption
+        )
     ]
     return reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -268,6 +286,7 @@ def common_jobs_create_options(f):
 @common.options_file
 @click.pass_context
 def create_job(ctx, api_key, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     utils.validate_workspace_input(kwargs)
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
 

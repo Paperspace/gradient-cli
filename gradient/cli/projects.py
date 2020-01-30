@@ -2,6 +2,7 @@ import click
 
 from gradient.cli import common
 from gradient.cli.cli import cli
+from gradient.cli.common import validate_comma_split_option
 from gradient.commands import projects as projects_commands
 from gradient.wizards.projects import run_create_project_wizard
 
@@ -39,9 +40,25 @@ def list_projects(api_key, options_file):
     help="URL to the repository",
     cls=common.GradientOption,
 )
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    type=str,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
 @common.api_key_option
 @common.options_file
 def create_project(api_key, options_file, **project):
+    project["tags"] = validate_comma_split_option(project.pop("tags_comma"), project.pop("tags"))
     command = projects_commands.CreateProjectCommand(api_key)
     command.execute(project)
 

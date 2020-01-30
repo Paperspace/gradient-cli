@@ -4,6 +4,7 @@ Deployment related client handler logic.
 Remember that in code snippets all highlighted lines are required other lines are optional.
 """
 from .base_client import BaseClient
+from .tag_client import TagClient
 from .. import config, models, repositories
 
 
@@ -24,6 +25,7 @@ class DeploymentsClient(BaseClient):
         )
     """
     HOST_URL = config.config.CONFIG_HOST
+    entity = "deployment"
 
     def create(
             self,
@@ -46,6 +48,7 @@ class DeploymentsClient(BaseClient):
             cluster_id=None,
             auth_username=None,
             auth_password=None,
+            tags=None,
             use_vpc=False,
     ):
         """
@@ -89,6 +92,7 @@ class DeploymentsClient(BaseClient):
         :param str cluster_id: cluster ID
         :param str auth_username: Username
         :param str auth_password: Password
+        :param list[str] tags: List of tags
         :param bool use_vpc:
 
         :returns: Created deployment id
@@ -119,6 +123,9 @@ class DeploymentsClient(BaseClient):
 
         repository = repositories.CreateDeployment(api_key=self.api_key, logger=self.logger)
         deployment_id = repository.create(deployment, use_vpc=use_vpc)
+        if tags:
+            tag_client = TagClient(api_key=self.api_key)
+            tag_client.add_tags(entity_id=deployment_id, entity=self.entity, tags=tags)
         return deployment_id
 
     def get(self, deployment_id):

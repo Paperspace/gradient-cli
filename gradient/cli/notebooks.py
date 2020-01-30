@@ -2,6 +2,7 @@ import click
 
 from gradient.cli import common
 from gradient.cli.cli import cli
+from gradient.cli.common import validate_comma_split_option
 from gradient.commands import notebooks
 
 
@@ -86,9 +87,25 @@ def notebooks_group():
     type=bool,
     cls=common.GradientOption,
 )
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    type=str,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
 @common.api_key_option
 @common.options_file
 def create_notebook(api_key, options_file, **notebook):
+    notebook["tags"] = validate_comma_split_option(notebook.pop("tags_comma"), notebook.pop("tags"))
     command = notebooks.CreateNotebookCommand(api_key=api_key)
     command.execute(**notebook)
 

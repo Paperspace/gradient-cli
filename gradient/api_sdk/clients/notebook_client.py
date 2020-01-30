@@ -1,8 +1,11 @@
 from .base_client import BaseClient
+from .tag_client import TagClient
 from .. import repositories, models
 
 
 class NotebooksClient(BaseClient):
+    entity = "notebook"
+
     def create(
             self,
             vm_type_id,
@@ -16,6 +19,7 @@ class NotebooksClient(BaseClient):
             container_user=None,
             shutdown_timeout=None,
             is_preemptible=None,
+            tags=None,
     ):
         """Create new notebook
 
@@ -30,6 +34,7 @@ class NotebooksClient(BaseClient):
         :param str container_user:
         :param int|float shutdown_timeout:
         :param bool is_preemptible:
+        :param list[str] tags: List of tags
 
         :return: Notebook ID
         :rtype str:
@@ -51,6 +56,9 @@ class NotebooksClient(BaseClient):
 
         repository = repositories.CreateNotebook(api_key=self.api_key, logger=self.logger)
         handle = repository.create(notebook)
+        if tags:
+            tag_client = TagClient(api_key=self.api_key)
+            tag_client.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
     def get(self, id):

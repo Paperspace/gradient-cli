@@ -48,9 +48,9 @@ class DeleteModelCommand(GetModelsClientMixin, BaseCommand):
 class UploadModel(GetModelsClientMixin, BaseCommand):
     SPINNER_MESSAGE = "Uploading model"
 
-    def execute(self, path, name, model_type, model_summary, notes):
+    def execute(self, path, name, model_type, model_summary, notes, **kwargs):
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            model_id = self.client.upload(path, name, model_type, model_summary, notes)
+            model_id = self.client.upload(path, name, model_type, model_summary, notes, **kwargs)
 
         self.logger.log("Model uploaded with ID: {}".format(model_id))
 

@@ -10,6 +10,7 @@ from gradient import api_sdk, exceptions, Job, JobArtifactsDownloader
 from gradient.api_sdk import config, sdk_exceptions
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.clients.base_client import BaseClient
+from gradient.api_sdk.clients.tag_client import TagClient
 from gradient.api_sdk.repositories.jobs import RunJob
 from gradient.api_sdk.utils import print_dict_recursive, urljoin
 from gradient.commands.common import BaseCommand
@@ -203,6 +204,8 @@ class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
 
 
 class JobRunClient(BaseClient):
+    entity = "job"
+
     def __init__(self, http_client_, *args, **kwargs):
         super(JobRunClient, self).__init__(*args, **kwargs)
         self.client = http_client_
@@ -238,6 +241,7 @@ class JobRunClient(BaseClient):
             registry_target_username=None,
             registry_target_password=None,
             build_only=False,
+            tags=None,
     ):
 
         if not build_only:
@@ -274,6 +278,9 @@ class JobRunClient(BaseClient):
             build_only=build_only,
         )
         handle = RunJob(self.api_key, self.logger, self.client).create(job, data=data)
+        if tags:
+            tag_client = TagClient(api_key=self.api_key)
+            tag_client.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
 

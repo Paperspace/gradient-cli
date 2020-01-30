@@ -4,6 +4,7 @@ from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
+from gradient.cli.common import validate_comma_split_option
 from gradient.commands import models as models_commands
 
 
@@ -80,11 +81,27 @@ def list_models(api_key, model_id, options_file):
     help="Additional notes",
     cls=common.GradientOption,
 )
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    type=str,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
 @common.api_key_option
 @common.options_file
-def upload_model(path, name, model_type, model_summary, notes, api_key, options_file):
+def upload_model(path, name, model_type, model_summary, notes, api_key, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     command = models_commands.UploadModel(api_key=api_key)
-    command.execute(path, name, model_type, model_summary, notes)
+    command.execute(path, name, model_type, model_summary, notes, **kwargs)
 
 
 @models_group.command("details", help="Show model details")

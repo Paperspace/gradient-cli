@@ -1,10 +1,12 @@
 import json
 
 from .base_client import BaseClient
+from .tag_client import TagClient
 from .. import repositories, models
 
 
 class ModelsClient(BaseClient):
+    entity = "mlModel"
     def list(self, experiment_id=None, project_id=None):
         """Get list of models
 
@@ -25,7 +27,7 @@ class ModelsClient(BaseClient):
         repository = repositories.DeleteModel(api_key=self.api_key, logger=self.logger)
         repository.delete(model_id)
 
-    def upload(self, path, name, model_type, model_summary=None, notes=None):
+    def upload(self, path, name, model_type, model_summary=None, notes=None, tags=None,):
         """Upload model
 
         :param file path: path to Model
@@ -33,6 +35,7 @@ class ModelsClient(BaseClient):
         :param str model_type: Model Type
         :param dict|None model_summary: Dictionary describing model parameters like loss, accuracy, etc.
         :param str|None notes: Optional model description
+        :param list[str] tags: List of tags
 
         :return: ID of new model
         :rtype: str
@@ -47,6 +50,11 @@ class ModelsClient(BaseClient):
 
         repository = repositories.UploadModel(api_key=self.api_key, logger=self.logger)
         model_id = repository.create(model, path=path)
+
+        if tags:
+            tag_client = TagClient(api_key=self.api_key)
+            tag_client.add_tags(entity_id=model_id, entity=self.entity, tags=tags)
+
         return model_id
 
     def get(self, model_id):

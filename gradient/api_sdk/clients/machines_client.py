@@ -1,9 +1,11 @@
 from gradient.api_sdk import repositories, models
 from gradient.api_sdk.repositories.machines import CheckMachineAvailability, DeleteMachine, ListMachines, WaitForState
 from .base_client import BaseClient
+from .tag_client import TagClient
 
 
 class MachinesClient(BaseClient):
+    entity = "machine"
     def create(
             self,
             name,
@@ -23,6 +25,7 @@ class MachinesClient(BaseClient):
             last_name=None,
             notification_email=None,
             script_id=None,
+            tags=None,
     ):
         """Create new machine
 
@@ -46,6 +49,7 @@ class MachinesClient(BaseClient):
         :param str last_name: If creating a new user, specify their last name (mutually exclusive with user_id)
         :param str notification_email: Send a notification to this email address when complete
         :param str script_id: The script id of a script to be run on startup
+        :param list[str] tags: List of tags
 
         :returns: ID of created machine
         :rtype: str
@@ -73,6 +77,9 @@ class MachinesClient(BaseClient):
 
         repository = repositories.CreateMachine(api_key=self.api_key, logger=self.logger)
         handle = repository.create(instance)
+        if tags:
+            tag_client = TagClient(api_key=self.api_key)
+            tag_client.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
     def get(self, id):
