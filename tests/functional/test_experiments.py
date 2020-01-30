@@ -20,7 +20,6 @@ class TestExperimentsCreateSingleNode(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "create", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -29,7 +28,6 @@ class TestExperimentsCreateSingleNode(object):
     ]
     BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE = [
         "experiments", "create", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -67,7 +65,6 @@ class TestExperimentsCreateSingleNode(object):
         "--optionsFile",  # path added in test,
     ]
     BASIC_OPTIONS_REQUEST = {
-        "name": u"exp1",
         "projectHandle": u"testHandle",
         "container": u"testContainer",
         "machineType": u"testType",
@@ -101,7 +98,6 @@ class TestExperimentsCreateSingleNode(object):
     }
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "create", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -676,7 +672,6 @@ class TestExperimentsCreateMultiNode(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "create", "multinode",
-        "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
@@ -743,7 +738,6 @@ class TestExperimentsCreateMultiNode(object):
         "--optionsFile",  # path added in test,
     ]
     BASIC_OPTIONS_REQUEST = {
-        u"name": u"multinode_mpi",
         u"projectHandle": u"prq70zy79",
         u"experimentTypeId": 2,
         u"workerContainer": u"wcon",
@@ -809,7 +803,6 @@ class TestExperimentsCreateMultiNode(object):
 
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "create", "multinode",
-        "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
@@ -975,7 +968,6 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/run/"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "run", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -985,7 +977,6 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     ]
     BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE = [
         "experiments", "run", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -1026,7 +1017,6 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     ]
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "run", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -1043,7 +1033,6 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/run/"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "run", "multinode",
-        "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
@@ -1114,7 +1103,6 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
     ]
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "run", "multinode",
-        "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
