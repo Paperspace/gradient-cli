@@ -111,3 +111,16 @@ MODEL_TYPES_MAP = collections.OrderedDict(
 class ApiTypes:
     REST = "REST"
     GRPC = "GRPC"
+
+
+class DatasetVolumeKinds:
+    DYNAMIC = "dynamic"
+    SHARED = "shared"
+
+
+DATASET_VOLUME_KINDS = collections.OrderedDict(
+    (
+        ("dynamic", DatasetVolumeKinds.DYNAMIC),
+        ("shared", DatasetVolumeKinds.SHARED),
+    ),
+)

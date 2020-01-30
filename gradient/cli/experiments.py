@@ -216,6 +216,7 @@ def dataset_options(f):
             "--datasetVolumeKind",
             "dataset_volume_kind_list",
             multiple=True,
+            type=ChoiceType(constants.DATASET_VOLUME_KINDS, case_sensitive=False),
             help="S3 dataset's volume kind. If used, --datasetVolumeSize has to be set as well",
             cls=common.GradientDatasetOption,
         ),
