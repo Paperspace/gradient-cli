@@ -1340,7 +1340,8 @@ Aborted!
                                                 "fake content")
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, ["experiments", "list", "--projectId", "handle1", "-p", "handle2"])
+        result = runner.invoke(cli.cli, ["experiments", "list", "--projectId", "handle1", "-p", "handle2",
+                                         "--tag", "some_tag", "--tag", "some_tag_2"])
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
@@ -1348,7 +1349,9 @@ Aborted!
                                             params={"limit": 20,
                                                     "offset": 0,
                                                     "projectHandle[0]": u"handle1",
-                                                    "projectHandle[1]": u"handle2"})
+                                                    "projectHandle[1]": u"handle2",
+                                                    "tag": ("some_tag", "some_tag_2"),
+                                                    })
 
         assert result.output == "No data found\n"
 
@@ -1383,7 +1386,10 @@ Aborted!
                                             params={"limit": 20,
                                                     "offset": 0,
                                                     "projectHandle[0]": "some_id",
-                                                    "projectHandle[1]": "some_id_2"})
+                                                    "projectHandle[1]": "some_id_2",
+                                                    "tag": ("some_tag", "some_tag_2"),
+                                                    },
+                                            )
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
