@@ -175,6 +175,8 @@ def options_file(f):
 
 def validate_comma_split_option(comma_option_value, option_value):
     if comma_option_value or option_value:
+        if option_value:
+            option_value = list(option_value)
         if comma_option_value:
             option_value.extend(comma_option_value.replace(" , ", ",").replace(", ", ",").split(","))
         return list(set(option_value))
