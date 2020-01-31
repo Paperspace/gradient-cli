@@ -666,15 +666,44 @@ def stop_experiment(id, api_key, options_file, use_vpc):
 
 
 @experiments_group.command("list", help="List experiments")
-@click.option("--projectId", "-p", "project_ids", multiple=True, metavar='<project ID>', cls=common.GradientOption)
-@click.option("--limit", "-l", "exp_limit", default=20)
-@click.option("--offset", "-o", "exp_offset", default=0)
+@click.option(
+    "--projectId",
+    "-p",
+    "project_ids",
+    multiple=True,
+    metavar='<project ID>',
+    help="Filter by project IDs. Multiple use",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    cls=common.GradientOption,
+    help="Filter by tags. Multiple use"
+)
+@click.option(
+    "--limit",
+    "-l",
+    "exp_limit",
+    default=20,
+    help="Limit listed experiments per page",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--offset",
+    "-o",
+    "exp_offset",
+    default=0,
+    cls=common.GradientOption,
+)
 @api_key_option
 @common.options_file
-def list_experiments(project_ids, api_key, exp_limit, exp_offset, options_file):
+def list_experiments(project_ids, api_key, exp_limit, exp_offset, tags, options_file):
     command = experiments_commands.ListExperimentsCommand(api_key=api_key)
 
-    for experiments_str, next_iteration in command.execute(project_id=project_ids, limit=exp_limit, offset=exp_offset):
+    res = command.execute(project_id=project_ids, limit=exp_limit, offset=exp_offset, tags=tags)
+    for experiments_str, next_iteration in res:
         click.echo(experiments_str)
         if next_iteration:
             click.confirm("Do you want to continue?", abort=True)
