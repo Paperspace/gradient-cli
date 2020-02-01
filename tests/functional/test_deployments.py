@@ -93,8 +93,8 @@ class TestDeploymentsCreate(object):
     }
     TAGS_JSON = {
         "entity": "deployment",
-        "entityId": "'sadkfhlskdjh'",
-        "tags": ['test0', 'test2', 'test1', 'test3']
+        "entityId": "sadkfhlskdjh",
+        "tags": ["test0", "test1", "test2", "test3"]
     }
     ALL_OPTIONS_REQUEST = {
         "machineType": u"G1",
@@ -119,6 +119,68 @@ class TestDeploymentsCreate(object):
         "oauthSecret": "some_password",
     }
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
+    UPDATE_TAGS_RESPONSE_JSON_200 = [
+    {
+        "tagId": 1,
+        "entity": "experiment",
+        "entityId": 3,
+        "dtCreated": "2020-02-01T12:46:58.506Z",
+        "dtDeleted": None,
+        "userId": 1,
+        "id": 1,
+        "entity_id": 3,
+        "tag": {
+            "name": "test0",
+            "dtCreated": "2020-02-01T12:46:58.480Z",
+            "id": 1
+        }
+    },
+    {
+        "tagId": 2,
+        "entity": "experiment",
+        "entityId": 3,
+        "dtCreated": "2020-02-01T12:46:58.507Z",
+        "dtDeleted": None,
+        "userId": 1,
+        "id": 2,
+        "entity_id": 3,
+        "tag": {
+            "name": "test2",
+            "dtCreated": "2020-02-01T12:46:58.481Z",
+            "id": 2
+        }
+    },
+    {
+        "tagId": 3,
+        "entity": "experiment",
+        "entityId": 3,
+        "dtCreated": "2020-02-01T12:46:58.509Z",
+        "dtDeleted": None,
+        "userId": 1,
+        "id": 3,
+        "entity_id": 3,
+        "tag": {
+            "name": "test1",
+            "dtCreated": "2020-02-01T12:46:58.482Z",
+            "id": 3
+        }
+    },
+    {
+        "tagId": 4,
+        "entity": "experiment",
+        "entityId": 3,
+        "dtCreated": "2020-02-01T12:46:58.510Z",
+        "dtDeleted": None,
+        "userId": 1,
+        "id": 4,
+        "entity_id": 3,
+        "tag": {
+            "name": "test3",
+            "dtCreated": "2020-02-01T12:46:58.483Z",
+            "id": 4
+        }
+    }
+]
     EXPECTED_STDOUT = "New deployment created with id: sadkfhlskdjh\n" \
                       "https://www.paperspace.com/console/deployments/sadkfhlskdjh\n"
 
@@ -226,13 +288,13 @@ class TestDeploymentsCreate(object):
         assert result.output == self.EXPECTED_STDOUT_MODEL_NOT_FOUND
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
-    def test_should_send_proper_data_and_tag_deployment(self, post_patched, put_patched, get_patched):
+    def test_should_send_proper_data_and_tag_deployment(self, post_patched, get_patched, put_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
-        get_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
-        put_patched.return_value = MockResponse()
+        get_patched.return_value = MockResponse({}, 200, "fake content")
+        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_TAGS)
@@ -244,13 +306,11 @@ class TestDeploymentsCreate(object):
                                              files=None,
                                              data=None)
 
-        put_patched.assert_called_one_with(
+        put_patched.assert_called_once_with(
             self.TAGS_URL,
             headers=EXPECTED_HEADERS,
             json=self.TAGS_JSON,
             params=None,
-            files=None,
-            data=None,
         )
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
