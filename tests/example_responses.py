@@ -965,6 +965,69 @@ LIST_OF_EXPERIMENTS_FILTERED_BUT_NONE_FOUND = {
     }
 }
 
+UPDATE_TAGS_RESPONSE = [
+    {
+        "tagId": 1,
+        "entity": "experiment",
+        "entityId": 3,
+        "dtCreated": "2020-02-01T12:46:58.506Z",
+        "dtDeleted": None,
+        "userId": 1,
+        "id": 1,
+        "entity_id": 3,
+        "tag": {
+            "name": "test0",
+            "dtCreated": "2020-02-01T12:46:58.480Z",
+            "id": 1
+        }
+    },
+    {
+        "tagId": 2,
+        "entity": "experiment",
+        "entityId": 3,
+        "dtCreated": "2020-02-01T12:46:58.507Z",
+        "dtDeleted": None,
+        "userId": 1,
+        "id": 2,
+        "entity_id": 3,
+        "tag": {
+            "name": "test2",
+            "dtCreated": "2020-02-01T12:46:58.481Z",
+            "id": 2
+        }
+    },
+    {
+        "tagId": 3,
+        "entity": "experiment",
+        "entityId": 3,
+        "dtCreated": "2020-02-01T12:46:58.509Z",
+        "dtDeleted": None,
+        "userId": 1,
+        "id": 3,
+        "entity_id": 3,
+        "tag": {
+            "name": "test1",
+            "dtCreated": "2020-02-01T12:46:58.482Z",
+            "id": 3
+        }
+    },
+    {
+        "tagId": 4,
+        "entity": "experiment",
+        "entityId": 3,
+        "dtCreated": "2020-02-01T12:46:58.510Z",
+        "dtDeleted": None,
+        "userId": 1,
+        "id": 4,
+        "entity_id": 3,
+        "tag": {
+            "name": "test3",
+            "dtCreated": "2020-02-01T12:46:58.483Z",
+            "id": 4
+        }
+    }
+]
+
 CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE = {
     "deployment": {
         "id": "sadkfhlskdjh",

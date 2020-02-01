@@ -443,6 +443,7 @@ class TestListJobArtifacts(TestJobs):
 
 class TestJobsCreate(object):
     URL = "https://api.paperspace.io"
+    TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     EXPECTED_HEADERS = default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -454,6 +455,18 @@ class TestJobsCreate(object):
         "--machineType", "testType",
         "--command", "testCommand",
         "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+    ]
+    BASIC_OPTIONS_COMMAND_WITH_TAGS = [
+        "jobs", "create",
+        "--name", "exp1",
+        "--projectId", "testHandle",
+        "--container", "testContainer",
+        "--machineType", "testType",
+        "--command", "testCommand",
+        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+        "--tag", "test0",
+        "--tag", "test1",
+        "--tags", "test2,test3",
     ]
     FULL_OPTIONS_COMMAND = [
         "jobs", "create",
@@ -522,9 +535,18 @@ class TestJobsCreate(object):
         "registryUsername": "some_registry_username",
         "registryPassword": "some_registry_password",
     }
+    TAGS_JSON = {
+        "entity": "job",
+        "entityId": "sadkfhlskdjh",
+        "tags": ["test0", "test1", "test2", "test3"]
+    }
     RESPONSE_JSON_200 = {"id": "sadkfhlskdjh", "message": "success"}
+    UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
     EXPECTED_STDOUT = u'New job created with ID: sadkfhlskdjh\n'
+    EXPECTED_STDOUT_TAGS = u'New job created with ID: sadkfhlskdjh\n' \
+                           u'https://www.paperspace.com/console/jobs/sadkfhlskdjh\n'
+
 
     RESPONSE_JSON_404_PROJECT_NOT_FOUND = {"details": {"handle": "wrong_handle"}, "error": "Project not found"}
     RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'
@@ -577,6 +599,34 @@ class TestJobsCreate(object):
                                              params=self.FULL_OPTIONS_REQUEST,
                                              files=None,
                                              data=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    def test_should_send_proper_data_and_tag_job(self, post_patched, get_patched, put_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        get_patched.return_value = MockResponse({}, 200, "fake content")
+        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_TAGS)
+
+        post_patched.assert_called_once_with(self.URL + '/jobs/createJob/',
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=None,
+                                             params=self.BASIC_OPTIONS_REQUEST,
+                                             files=None,
+                                             data=None)
+
+        put_patched.assert_called_once_with(
+            self.TAGS_URL,
+            headers=self.EXPECTED_HEADERS,
+            json=self.TAGS_JSON,
+            params=None,
+        )
+
+        assert result.output == self.EXPECTED_STDOUT_TAGS, result.exc_info
         assert result.exit_code == 0
 
 

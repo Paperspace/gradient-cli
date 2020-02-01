@@ -9,6 +9,7 @@ from tests import MockResponse, example_responses
 
 class TestCreateHyperparameters(object):
     URL = "https://services.paperspace.io/experiments/v1/hyperopt/"
+    TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     COMMAND = [
         "experiments", "hyperparameters", "create",
         "--name", "some_name",
@@ -20,6 +21,20 @@ class TestCreateHyperparameters(object):
         "--projectId", "some_project_id",
         "--workspace", "none",
     ]
+    COMMAND_WITH_TAGS = [
+        "experiments", "hyperparameters", "create",
+        "--name", "some_name",
+        "--tuningCommand", "some command",
+        "--workerContainer", "some_container",
+        "--workerMachineType", "k80",
+        "--workerCommand", "some worker command",
+        "--workerCount", "1",
+        "--projectId", "some_project_id",
+        "--workspace", "none",
+        "--tag", "test0",
+        "--tag", "test1",
+        "--tags", "test2,test3",
+    ]
     EXPECTED_REQUEST_JSON = {
         "workerContainer": "some_container",
         "workerMachineType": "k80",
@@ -30,6 +45,12 @@ class TestCreateHyperparameters(object):
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
         "projectHandle": "some_project_id",
     }
+    TAGS_JSON = {
+        "entity": "experiment",
+        "entityId": "eshgvasywz9k1w",
+        "tags": ["test0", "test1", "test2", "test3"]
+    }
+    UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
 
     COMMAND_WHEN_ALL_PARAMETERS_WERE_USED = [
         "experiments", "hyperparameters", "create",
@@ -254,6 +275,34 @@ class TestCreateHyperparameters(object):
 
         assert result.output == "Failed to create resource\n"
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    def test_should_send_proper_data_and_tag_hyperopt_experiment(self, post_patched, get_patched, put_patched):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE, 201)
+        get_patched.return_value = MockResponse({}, 200, "fake content")
+        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_TAGS)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+
+        put_patched.assert_called_once_with(
+            self.TAGS_URL,
+            headers=self.EXPECTED_HEADERS,
+            json=self.TAGS_JSON,
+            params=None,
+        )
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        assert result.exit_code == 0
 
 
 class TestCreateAndStartHyperparameters(object):
