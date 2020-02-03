@@ -234,6 +234,7 @@ class TestDeploymentsList(object):
                 ],
             },
         },
+        "tagFilter": ("some_tag",)
     }
     LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND = {"deploymentList": [], "total": 17, "displayTotal": 0,
                                                                 "runningTotal": 0}

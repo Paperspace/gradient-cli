@@ -211,6 +211,13 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
     help="Use to filter by model ID",
     cls=common.GradientOption,
 )
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    cls=common.GradientOption,
+    help="Filter by tags. Multiple use"
+)
 @api_key_option
 @common.options_file
 def get_deployments_list(api_key, options_file, **filters):
