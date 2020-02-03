@@ -22,9 +22,12 @@ class TestModelsList(object):
         "models", "list",
         "--experimentId", "some_experiment_id",
         "--projectId", "some_project_id",
+        "--tag", "some_tag",
+        "--tag", "some_other_tag",
     ]
     EXPECTED_REQUEST_JSON_WITH_FILTERING = {"filter": {"where": {"and": [{"projectId": "some_project_id",
-                                                                          "experimentId": "some_experiment_id"}]}}}
+                                                                          "experimentId": "some_experiment_id"}]}},
+                                            "tagFilter": ("some_tag", "some_other_tag")}
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = ["models", "list", "--apiKey", "some_key"]
     COMMAND_WITH_OPTIONS_FILE = ["models", "list", "--optionsFile", ]  # path added in test
