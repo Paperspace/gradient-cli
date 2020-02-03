@@ -163,18 +163,22 @@ class DeploymentsClient(BaseClient):
         repository = repositories.StopDeployment(api_key=self.api_key, logger=self.logger)
         repository.stop(deployment_id, use_vpc=use_vpc)
 
-    def list(self, state=None, project_id=None, model_id=None, use_vpc=False):
+    def list(self, state=None, project_id=None, model_id=None, use_vpc=False, tags=None):
         """
         List deployments with optional filtering
 
-        :param str state:
-        :param str project_id:
-        :param str model_id:
+        :param str state: state to filter deployments
+        :param str project_id: project ID to filter deployments
+        :param str model_id: model ID to filter deployments
         :param bool use_vpc:
+        :param list[str]|tuple[str] tags: tags to filter deployments with OR
+
+        :returns: List of Deployment model instances
+        :rtype: list[models.Deployment]
         """
 
         repository = repositories.ListDeployments(api_key=self.api_key, logger=self.logger)
-        deployments = repository.list(state=state, project_id=project_id, model_id=model_id, use_vpc=use_vpc)
+        deployments = repository.list(state=state, project_id=project_id, model_id=model_id, use_vpc=use_vpc, tags=tags)
         return deployments
 
     def delete(self, deployment_id, use_vpc=False):
