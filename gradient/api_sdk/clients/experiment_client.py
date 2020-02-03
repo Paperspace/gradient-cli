@@ -9,11 +9,11 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
     def create_single_node(
             self,
-            name,
             project_id,
             machine_type,
             command,
             ports=None,
+            name=None,
             workspace_url=None,
             workspace_ref=None,
             workspace_username=None,
@@ -109,7 +109,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
     def create_multi_node(
             self,
-            name,
             project_id,
             worker_container,
             worker_machine_type,
@@ -119,6 +118,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_machine_type,
             parameter_server_command,
             parameter_server_count,
+            name=None,
             experiment_type_id=constants.ExperimentType.GRPC_MULTI_NODE,
             ports=None,
             workspace_url=None,
@@ -240,12 +240,12 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
     def create_mpi_multi_node(
             self,
-            name,
             project_id,
             worker_container,
             worker_machine_type,
             worker_command,
             worker_count,
+            name=None,
             master_container=None,
             master_machine_type=None,
             master_command=None,
@@ -367,10 +367,10 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
     def run_single_node(
             self,
-            name,
             project_id,
             machine_type,
             command,
+            name=None,
             ports=None,
             workspace_url=None,
             workspace_ref=None,
@@ -466,7 +466,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
     def run_multi_node(
             self,
-            name,
             project_id,
             worker_container,
             worker_machine_type,
@@ -476,6 +475,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_machine_type,
             parameter_server_command,
             parameter_server_count,
+            name=None,
             experiment_type_id=constants.ExperimentType.GRPC_MULTI_NODE,
             ports=None,
             workspace_url=None,
@@ -595,7 +595,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
     def run_mpi_multi_node(
             self,
-            name,
             project_id,
             worker_container,
             worker_machine_type,
@@ -605,6 +604,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_machine_type,
             master_command,
             master_count,
+            name=None,
             ports=None,
             workspace_url=None,
             workspace_ref=None,
@@ -744,20 +744,21 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         repository = repositories.StopExperiment(api_key=self.api_key, logger=self.logger)
         repository.stop(experiment_id, use_vpc=use_vpc)
 
-    def list(self, project_id=None, offset=None, limit=None, get_meta=False):
+    def list(self, project_id=None, offset=None, limit=None, get_meta=False, tags=None):
         """Get a list of experiments. Optionally filter by project ID
 
         :param str|list|None project_id:
         :param int offset:
         :param int limit:
         :param bool get_meta: get dict of metadata like number of total items, etc. Setting to True changes rtype
+        :param list[str]|tuple[str] tags: tags to filter with OR
 
         :return: experiments
         :rtype: list[models.SingleNodeExperiment|models.MultiNodeExperiment]|tuple[list[models.SingleNodeExperiment|models.MultiNodeExperiment],dict]
         """
 
         repository = repositories.ListExperiments(api_key=self.api_key, logger=self.logger)
-        experiments = repository.list(project_id=project_id, limit=limit, offset=offset, get_meta=get_meta)
+        experiments = repository.list(project_id=project_id, limit=limit, offset=offset, get_meta=get_meta, tags=tags)
         return experiments
 
     def get(self, experiment_id):

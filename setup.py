@@ -73,7 +73,7 @@ setup(
         'prompt_toolkit<3.0',
         'marshmallow<3.0',
         'attrs<=19',
-        'PyYAML',
+        'PyYAML==5.*',
     ],
     entry_points={'console_scripts': [
         'gradient = gradient:main.main',

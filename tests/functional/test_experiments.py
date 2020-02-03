@@ -20,7 +20,6 @@ class TestExperimentsCreateSingleNode(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "create", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -29,7 +28,6 @@ class TestExperimentsCreateSingleNode(object):
     ]
     BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE = [
         "experiments", "create", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -67,7 +65,6 @@ class TestExperimentsCreateSingleNode(object):
         "--optionsFile",  # path added in test,
     ]
     BASIC_OPTIONS_REQUEST = {
-        "name": u"exp1",
         "projectHandle": u"testHandle",
         "container": u"testContainer",
         "machineType": u"testType",
@@ -101,7 +98,6 @@ class TestExperimentsCreateSingleNode(object):
     }
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "create", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -364,7 +360,7 @@ class TestExperimentsCreateSingleNode(object):
         assert result.exit_code == 0
 
 
-class TestExperimentsCreateMultiNode(object):
+class TestExperimentsCreateMultiNodeDatasetObjects(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/"
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/"
     EXPECTED_HEADERS = http_client.default_headers.copy()
@@ -373,6 +369,309 @@ class TestExperimentsCreateMultiNode(object):
     BASIC_OPTIONS_COMMAND = [
         "experiments", "create", "multinode",
         "--name", "multinode_mpi",
+        "--projectId", "prq70zy79",
+        "--experimentType", "GRPC",
+        "--workerContainer", "wcon",
+        "--workerMachineType", "mty",
+        "--workerCommand", "wcom",
+        "--workerCount", 2,
+        "--parameterServerContainer", "pscon",
+        "--parameterServerMachineType", "psmtype",
+        "--parameterServerCommand", "ls",
+        "--parameterServerCount", 2,
+        "--workerContainerUser", "usr",
+        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+    ]
+    FULL_OPTIONS_COMMAND = [
+        "experiments", "create", "multinode",
+        "--name", "multinode_mpi",
+        "--ports", 3456,
+        "--workspaceUrl", "wurl",
+        "--workspaceRef", "some_branch_name",
+        "--workspaceUsername", "username",
+        "--workspacePassword", "password",
+        "--workingDirectory", "/dir",
+        "--artifactDirectory", "/artdir",
+        "--clusterId", '2a',
+        "--experimentEnv", '{"key":"val"}',
+        "--projectId", "prq70zy79",
+        "--experimentType", "MPI",
+        "--workerContainer", "wcon",
+        "--workerMachineType", "mty",
+        "--workerCommand", "wcom",
+        "--workerCount", 2,
+        "--masterContainer", "pscon",
+        "--masterMachineType", "psmtype",
+        "--masterCommand", "ls",
+        "--masterCount", 2,
+        "--workerContainerUser", "usr",
+        "--workerRegistryUsername", "rusr",
+        "--workerRegistryPassword", "rpass",
+        "--workerRegistryUrl", "rurl",
+        "--masterContainerUser", "pscuser",
+        "--masterRegistryUsername", "psrcus",
+        "--masterRegistryPassword", "psrpass",
+        "--masterRegistryUrl", "psrurl",
+        "--apiKey", "some_key",
+        "--modelPath", "some-model-path",
+        "--modelType", "some-model-type",
+        "--ignoreFiles", "file1,file2",
+        "--isPreemptible",
+        "--datasetUri", "s3://some.dataset/uri",
+        "--datasetName", "some dataset name",
+        "--datasetAwsAccessKeyId", "none",
+        "--datasetAwsSecretAccessKey", "none",
+        "--datasetVersionId", "version1",
+        "--datasetEtag", "some etag",
+        "--datasetUri", "s3://some.other.dataset/uri",
+        "--datasetName", "none",
+        "--datasetAwsAccessKeyId", "some_other_key_id",
+        "--datasetAwsSecretAccessKey", "some_other_secret",
+        "--datasetVersionId", "version2",
+        "--datasetEtag", "some other etag",
+    ]
+    FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
+        "experiments", "create", "multinode",
+        "--optionsFile",  # path added in test,
+    ]
+    BASIC_OPTIONS_REQUEST = {
+        u"name": u"multinode_mpi",
+        u"projectHandle": u"prq70zy79",
+        u"experimentTypeId": 2,
+        u"workerContainer": u"wcon",
+        u"workerMachineType": u"mty",
+        u"workerCommand": u"d2NvbQ==",
+        u"workerCount": 2,
+        u"parameterServerContainer": u"pscon",
+        u"parameterServerMachineType": u"psmtype",
+        u"parameterServerCommand": u"bHM=",
+        u"parameterServerCount": 2,
+        u"workerContainerUser": u"usr",
+        u"workspaceUrl": u"https://github.com/Paperspace/gradient-cli.git",
+    }
+    FULL_OPTIONS_REQUEST = {
+        "name": u"multinode_mpi",
+        "ports": "3456",
+        "workspaceUrl": u"wurl",
+        "workspaceRef": "some_branch_name",
+        "workspaceUsername": u"username",
+        "workspacePassword": u"password",
+        "workingDirectory": u"/dir",
+        "artifactDirectory": u"/artdir",
+        "clusterId": '2a',
+        "experimentEnv": {"key": "val"},
+        "projectHandle": "prq70zy79",
+        "experimentTypeId": 3,
+        "workerContainer": u"wcon",
+        "workerMachineType": u"mty",
+        "workerCommand": u"d2NvbQ==",
+        "workerCount": 2,
+        "masterContainer": u"pscon",
+        "masterMachineType": u"psmtype",
+        "masterCommand": u"bHM=",
+        "masterCount": 2,
+        "workerContainerUser": u"usr",
+        "workerRegistryUsername": u"rusr",
+        "workerRegistryPassword": u"rpass",
+        "workerRegistryUrl": u"rurl",
+        "masterContainerUser": u"pscuser",
+        "masterRegistryUsername": u"psrcus",
+        "masterRegistryPassword": u"psrpass",
+        "masterRegistryUrl": u"psrurl",
+        "isPreemptible": True,
+        "modelPath": "some-model-path",
+        "modelType": "some-model-type",
+        "datasets": [
+            {
+                "uri": "s3://some.dataset/uri",
+                "name": "some dataset name",
+                "etag": "some etag",
+                "versionId": "version1",
+            },
+            {
+                "uri": "s3://some.other.dataset/uri",
+                "awsAccessKeyId": "some_other_key_id",
+                "awsSecretAccessKey": "some_other_secret",
+                "etag": "some other etag",
+                "versionId": "version2",
+            },
+        ]
+    }
+    RESPONSE_JSON_200 = {"handle": "sadkfhlskdjh", "message": "success"}
+    RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
+    EXPECTED_STDOUT = "New experiment created with ID: sadkfhlskdjh\n"
+
+    BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
+        "experiments", "create", "multinode",
+        "--name", "multinode_mpi",
+        "--projectId", "prq70zy79",
+        "--experimentType", "GRPC",
+        "--workerContainer", "wcon",
+        "--workerMachineType", "mty",
+        "--workerCommand", "wcom",
+        "--workerCount", 2,
+        "--parameterServerContainer", "pscon",
+        "--parameterServerMachineType", "psmtype",
+        "--parameterServerCommand", "ls",
+        "--parameterServerCount", 2,
+        "--workerContainerUser", "usr",
+        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+        "--vpc",
+    ]
+
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
+                                                                                                         post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_options_from_config_file(
+            self, post_patched, create_multi_node_experiment_ds_objects_config_path):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [create_multi_node_experiment_ds_objects_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(self,
+                                                                                                        post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.FULL_OPTIONS_COMMAND)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert self.EXPECTED_STDOUT in result.output
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_data_to_v2_url_when_vpc_switch_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
+            self, post_patched, tensorboard_handler_class):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
+        tensorboard_handler = mock.MagicMock()
+        tensorboard_handler_class.return_value = tensorboard_handler
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+        assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
+
+        tensorboard_handler_class.assert_called_once_with("some_key")
+        tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with("some_tensorboard_id", "sadkfhlskdjh")
+
+    @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
+            self, post_patched, tensorboard_handler_class):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
+        tensorboard_handler = mock.MagicMock()
+        tensorboard_handler_class.return_value = tensorboard_handler
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+        assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
+
+        tensorboard_handler_class.assert_called_once_with("some_key")
+        tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
+
+    @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
+            self, post_patched, tensorboard_handler_class):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
+        tensorboard_handler = mock.MagicMock()
+        tensorboard_handler_class.return_value = tensorboard_handler
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0
+        assert self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] == "some_key"
+
+        tensorboard_handler_class.assert_called_once_with("some_key")
+        tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
+
+class TestExperimentsCreateMultiNode(object):
+    URL = "https://services.paperspace.io/experiments/v1/experiments/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/"
+    EXPECTED_HEADERS = http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+    BASIC_OPTIONS_COMMAND = [
+        "experiments", "create", "multinode",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
@@ -439,7 +738,6 @@ class TestExperimentsCreateMultiNode(object):
         "--optionsFile",  # path added in test,
     ]
     BASIC_OPTIONS_REQUEST = {
-        u"name": u"multinode_mpi",
         u"projectHandle": u"prq70zy79",
         u"experimentTypeId": 2,
         u"workerContainer": u"wcon",
@@ -505,7 +803,6 @@ class TestExperimentsCreateMultiNode(object):
 
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "create", "multinode",
-        "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
@@ -671,7 +968,6 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/run/"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "run", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -681,7 +977,6 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     ]
     BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE = [
         "experiments", "run", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -722,7 +1017,6 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     ]
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "run", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -739,7 +1033,6 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/run/"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "run", "multinode",
-        "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
@@ -810,7 +1103,6 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
     ]
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
         "experiments", "run", "multinode",
-        "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
@@ -1048,7 +1340,8 @@ Aborted!
                                                 "fake content")
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, ["experiments", "list", "--projectId", "handle1", "-p", "handle2"])
+        result = runner.invoke(cli.cli, ["experiments", "list", "--projectId", "handle1", "-p", "handle2",
+                                         "--tag", "some_tag", "--tag", "some_tag_2"])
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
@@ -1056,7 +1349,9 @@ Aborted!
                                             params={"limit": 20,
                                                     "offset": 0,
                                                     "projectHandle[0]": u"handle1",
-                                                    "projectHandle[1]": u"handle2"})
+                                                    "projectHandle[1]": u"handle2",
+                                                    "tag": ("some_tag", "some_tag_2"),
+                                                    })
 
         assert result.output == "No data found\n"
 
@@ -1091,7 +1386,10 @@ Aborted!
                                             params={"limit": 20,
                                                     "offset": 0,
                                                     "projectHandle[0]": "some_id",
-                                                    "projectHandle[1]": "some_id_2"})
+                                                    "projectHandle[1]": "some_id_2",
+                                                    "tag": ("some_tag", "some_tag_2"),
+                                                    },
+                                            )
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"

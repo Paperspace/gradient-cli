@@ -3,6 +3,7 @@ import json
 import re
 
 import click
+import six
 import termcolor
 import yaml
 from click.exceptions import Exit
@@ -70,20 +71,32 @@ class ReadValueFromConfigFile(click.Parameter):
             with open(config_file) as f:
                 config_data = yaml.load(f, Loader=yaml.FullLoader)
                 option_name = get_option_name(self.opts)
-                value = config_data.get(option_name)
-                if value is not None:
-                    if isinstance(value, dict):
-                        value = json.dumps(value)
+                if (isinstance(self, GradientObjectListOption) and
+                    self.object_list_name in config_data):
+                    value_list = []
+                    for object_list_item in config_data[self.object_list_name]:
+                        value_list.append(object_list_item.get(self.object_key))
 
-                    opts[self.name] = value
+                    if value_list:
+                        opts[self.name] = value_list
+                else:
+                    value = config_data.get(option_name)
+                    if value is not None:
+                        if isinstance(value, dict):
+                            value = json.dumps(value)
+                        elif self.multiple and isinstance(value, six.string_types):
+                            value = (value,)
+
+                        opts[self.name] = value
 
         return super(ReadValueFromConfigFile, self).handle_parse_result(
-                ctx, opts, args)
+            ctx, opts, args)
 
 
 class ColorExtrasInCommandHelpMixin(object):
     def get_help_record(self, *args, **kwargs):
-        rv = super(ColorExtrasInCommandHelpMixin, self).get_help_record(*args, **kwargs)
+        rv = super(ColorExtrasInCommandHelpMixin,
+                   self).get_help_record(*args, **kwargs)
 
         if not config.USE_CONSOLE_COLORS:
             return rv
@@ -134,6 +147,7 @@ def generate_options_template(ctx, param, value):
         return value
 
     params = {}
+    objects_value_lists = {} # Object list name -> object key -> list of values
     for param in ctx.command.params:
         option_name = get_option_name(param.opts)
         if option_name in (OPTIONS_FILE_OPTION_NAME, OPTIONS_DUMP_FILE_OPTION_NAME):
@@ -141,12 +155,46 @@ def generate_options_template(ctx, param, value):
 
         option_value = ctx.params.get(param.name) or param.default
 
+        # If this is an object list type option, add its value list to
+        # the specific object list set of value lists.
+        if isinstance(param, GradientObjectListOption):
+            new_value_list = option_value if option_value is not None else []
+            object_list_name = param.object_list_name
+            value_lists = objects_value_lists.setdefault(object_list_name, {})
+            value_lists[param.object_key] = new_value_list
+            continue
+
         if isinstance(param.type, cli_types.ChoiceType):
             for key, val in param.type.type_map.items():
                 if val == option_value:
                     option_value = key
 
         params[option_name] = option_value
+
+    # Transform value lists into objects
+    object_lists = {}
+    for object_list_name, value_lists in objects_value_lists.items():
+        # Find maximum length value list and assume it lines up
+        # with other object list options
+        object_list = object_lists.setdefault(object_list_name, [])
+
+        num_items = max(len(value_list) for value_list in value_lists.values())
+
+        for i in range(num_items):
+            new_object = {}
+            for object_key, value_list in value_lists.items():
+                if i < len(value_list):
+                    new_object[object_key] = value_list[i]
+                else:
+                    new_object[object_key] = None
+
+            object_list.append(new_object)
+
+    # Add all object lists to overall params
+    # for all non-empty object lists
+    for object_list_name, object_list in object_lists.items():
+        if object_list:
+            params[object_list_name] = object_list
 
     with open(value, "w") as f:
         yaml.safe_dump(params, f, default_flow_style=False)
@@ -171,6 +219,29 @@ def options_file(f):
         )
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
+
+
+class GradientObjectListOption(GradientOption):
+    def __init__(self, object_name, param_decls, **kwargs):
+        super(GradientObjectListOption, self).__init__(param_decls, **kwargs)
+        self.object_name = object_name
+        self.object_list_name = self.object_name + "s"
+        self.object_key = self._compose_object_key()
+
+    # Get this option's object key for the objects in the object list
+    def _compose_object_key(self):
+        option_name = get_option_name(self.opts)
+        if not option_name.startswith(self.object_name):
+            return option_name
+
+        object_key = option_name[len(self.object_name):]
+        object_key = object_key[0].lower() + object_key[1:]
+        return object_key
+
+
+class GradientDatasetOption(GradientObjectListOption):
+    def __init__(self, param_decls, **kwargs):
+        super(GradientDatasetOption, self).__init__("dataset", param_decls, **kwargs)
 
 
 def validate_comma_split_option(comma_option_value, option_value):

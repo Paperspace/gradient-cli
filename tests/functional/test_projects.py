@@ -13,7 +13,12 @@ class TestListProjects(object):
     EXPECTED_PARAMS = {
         "filter": """{"offset":0,"where":{"dtDeleted":null},"order":"dtCreated desc"}"""
     }
+    EXPECTED_PARAMS_WITH_FILTERING_BY_TAGS = {
+        "filter": """{"offset":0,"where":{"dtDeleted":null},"order":"dtCreated desc"}""",
+        "tagFilter": ("some_tag", "some_tag_2"),
+    }
     BASIC_COMMAND = ["projects", "list"]
+    BASIC_COMMAND_WITH_FILTERING_BY_TAGS = ["projects", "list", "--tag", "some_tag", "--tag", "some_tag_2"]
     # TODO: change to `REQUEST_JSON = None` or whatever works when PS_API is fixed
     EXPECTED_RESPONSE_JSON = example_responses.LIST_PROJECTS_RESPONSE
     EXPECTED_STDOUT = """+-----------+-------------------+------------+----------------------------+
@@ -49,6 +54,21 @@ class TestListProjects(object):
                                        headers=self.EXPECTED_HEADERS,
                                        json=None,
                                        params=self.EXPECTED_PARAMS)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_valid_post_request_and_print_table_when_projects_list_was_used_with_filtering_by_tags(
+            self, get_patched):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_FILTERING_BY_TAGS)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS,
+                                       json=None,
+                                       params=self.EXPECTED_PARAMS_WITH_FILTERING_BY_TAGS)
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")

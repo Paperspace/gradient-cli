@@ -50,42 +50,16 @@ class ProjectsClient(BaseClient):
             tag_client.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
-    def list(self):
+    def list(self, tags=None):
         """Get list of your projects
 
-        *EXAMPLE*::
-
-            gradient projects list
-
-        *EXAMPLE RETURN*::
-
-            +-----------+------------------+------------+----------------------------+
-            | ID        | Name             | Repository | Created                    |
-            +-----------+------------------+------------+----------------------------+
-            | project-id| <name-of-project>| None       | 2019-06-28 10:38:57.874000 |
-            | project-id| <name-of-project>| None       | 2019-07-17 13:17:34.493000 |
-            | project-id| <name-of-project>| None       | 2019-07-17 13:21:12.770000 |
-            | project-id| <name-of-project>| None       | 2019-07-29 09:26:49.105000 |
-            +-----------+------------------+------------+----------------------------+
-
-        in sdk::
-
-            from gradient.api_sdk.clients import ProjectsClient
-
-            api_key = 'your-api-key'
-            projects_client = ProjectsClient(api_key)
-
-            projects_list = projects_client.list()
-
-            for project in project_list:
-                print(project)
-
+        :param list[str]|tuple[str] tags: tags to filter with OR
 
         :returns: list of projects
         :rtype: list[models.Project]
         """
 
-        projects = repositories.ListProjects(api_key=self.api_key, logger=self.logger).list()
+        projects = repositories.ListProjects(api_key=self.api_key, logger=self.logger).list(tags=tags)
         return projects
 
     def delete(self, project_id):

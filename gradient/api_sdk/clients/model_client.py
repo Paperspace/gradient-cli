@@ -7,16 +7,18 @@ from .. import repositories, models
 
 class ModelsClient(BaseClient):
     entity = "mlModel"
-    def list(self, experiment_id=None, project_id=None):
+    def list(self, experiment_id=None, project_id=None, tags=None):
         """Get list of models
 
-        :param str experiment_id: Experiment ID
-        :param str project_id: Project ID
+        :param str experiment_id: Experiment ID to filter models
+        :param str project_id: Project ID to filter models
+        :param list[str]|tuple[str] tags: tags to filter models
 
+        :returns: List of Model instances
         :rtype: list[models.Model]
         """
         repository = repositories.ListModels(api_key=self.api_key, logger=self.logger)
-        models_list = repository.list(experiment_id=experiment_id, project_id=project_id)
+        models_list = repository.list(experiment_id=experiment_id, project_id=project_id, tags=tags)
         return models_list
 
     def delete(self, model_id):

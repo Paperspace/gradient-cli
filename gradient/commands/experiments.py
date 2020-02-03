@@ -238,13 +238,10 @@ class StopExperimentCommand(BaseExperimentCommand):
 
 class ListExperimentsCommand(ListCommandMixin, BaseExperimentCommand):
     TOTAL_ITEMS_KEY = "totalItems"
+
     def _get_instances(self, **kwargs):
-        project_id = kwargs.get("project_id")
-        limit = kwargs.get("limit")
-        offset = kwargs.get("offset")
-        get_meta = True
         try:
-            instances, meta_data = self.client.list(project_id, get_meta=get_meta, limit=limit, offset=offset)
+            instances, meta_data = self.client.list(get_meta=True, **kwargs)
         except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
