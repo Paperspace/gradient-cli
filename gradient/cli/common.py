@@ -3,6 +3,7 @@ import json
 import re
 
 import click
+import six
 import termcolor
 import yaml
 from click.exceptions import Exit
@@ -83,6 +84,9 @@ class ReadValueFromConfigFile(click.Parameter):
                     if value is not None:
                         if isinstance(value, dict):
                             value = json.dumps(value)
+                        elif self.multiple and isinstance(value, six.string_types):
+                            value = (value,)
+
                         opts[self.name] = value
 
         return super(ReadValueFromConfigFile, self).handle_parse_result(
