@@ -36,7 +36,7 @@ class CreateProjectCommand(BaseProjectCommand):
 class ListProjectsCommand(ListCommandMixin, BaseProjectCommand):
     def _get_instances(self, kwargs):
         try:
-            instances = self.client.list()
+            instances = self.client.list(**kwargs)
         except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 

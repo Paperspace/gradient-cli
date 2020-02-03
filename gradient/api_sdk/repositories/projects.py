@@ -1,3 +1,5 @@
+import json
+
 import gradient.api_sdk.config
 from .. import serializers
 from ..repositories.common import CreateResource, ListResources, DeleteResource
@@ -29,10 +31,15 @@ class ListProjects(GetBaseProjectsApiUrlMixin, ListResources):
         return projects
 
     def _get_request_params(self, kwargs):
-        filters = {
+        params = {
             "filter": """{"offset":0,"where":{"dtDeleted":null},"order":"dtCreated desc"}"""
         }
-        return filters
+
+        tags = kwargs.get("tags")
+        if tags:
+            params["tagFilter"] = tags
+
+        return params
 
 
 class DeleteProject(GetBaseProjectsApiUrlMixin, DeleteResource):

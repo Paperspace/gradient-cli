@@ -12,11 +12,18 @@ def projects_group():
 
 
 @projects_group.command("list", help="List projects")
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    cls=common.GradientOption,
+    help="Filter by tags. Multiple use"
+)
 @common.api_key_option
 @common.options_file
-def list_projects(api_key, options_file):
+def list_projects(api_key, tags, options_file):
     command = projects_commands.ListProjectsCommand(api_key=api_key)
-    command.execute()
+    command.execute(tags=tags)
 
 
 @projects_group.command("create", help="Create project")
