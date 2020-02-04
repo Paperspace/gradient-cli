@@ -81,3 +81,15 @@ class DownloadModelFiles(GetModelsClientMixin, BaseCommand):
             model_files_downloader.download(model_id, destination_directory)
         except OSError as e:
             raise ApplicationError(e)
+
+
+class MLModelAddTagsCommand(GetModelsClientMixin, BaseCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.add_tags(deployment_id, **kwargs)
+        self.logger.log("Tags added to ml model")
+
+
+class MLModelRemoveTagsCommand(GetModelsClientMixin, BaseCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.remove_tags(deployment_id, **kwargs)
+        self.logger.log("Tags removed from ml model")

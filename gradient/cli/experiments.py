@@ -11,6 +11,7 @@ from gradient.cli.common import api_key_option, ClickGroup, validate_comma_split
 from gradient.cli.utils.flag_with_value import GradientRegisterReaderOption, GradientRegisterWriterOption, \
     GradientRegisterWriterCommand
 from gradient.commands import experiments as experiments_commands
+from gradient.commands.experiments import ExperimentAddTagsCommand, ExperimentRemoveTagsCommand
 
 MULTI_NODE_CREATE_EXPERIMENT_COMMANDS = {
     constants.ExperimentType.GRPC_MULTI_NODE: experiments_commands.CreateMultiNodeExperimentCommand,
@@ -41,6 +42,10 @@ def create_experiment():
 
 @experiments_group.group(name="run", help="Create and start new experiment", cls=ClickGroup)
 def create_and_start_experiment():
+    pass
+
+@experiments_group.group(name="tags", help="Manage tags for experiment", cls=ClickGroup)
+def experiments_tags():
     pass
 
 
@@ -779,3 +784,55 @@ def list_logs(experiment_id, line, limit, follow, options_file, api_key=None):
 def delete_experiment(id, options_file, api_key):
     command = experiments_commands.DeleteExperimentCommand(api_key=api_key)
     command.execute(id)
+
+
+@experiments_tags.command("add", help="Add tags to experiment")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def experiment_add_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = ExperimentAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@experiments_tags.command("remove", help="Remove tags from experiment")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to remove from experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want to remove from experiment",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def experiment_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = ExperimentRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

@@ -10,6 +10,10 @@ from gradient.commands import notebooks
 def notebooks_group():
     pass
 
+@notebooks_group.group("tags", help="Manage notebook tags", cls=common.ClickGroup)
+def notebook_tags():
+    pass
+
 
 # @notebooks_group.command("create", help="Create new notebook")
 # @click.option(
@@ -150,3 +154,55 @@ def list_notebooks(n_limit, n_offset, api_key, options_file):
 def show_notebook(id, api_key, options_file):
     command = notebooks.ShowNotebookDetailsCommand(api_key=api_key)
     command.execute(id)
+
+
+@notebook_tags.command("add", help="Add tags to notebook")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to add to notebook",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want add to notebook",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def notebook_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = notebooks.NotebookAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@notebook_tags.command("remove", help="Remove tags from notebook")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to remove from notebook",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want to remove from notebook",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def notebook_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = notebooks.NotebookRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

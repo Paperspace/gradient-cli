@@ -375,3 +375,15 @@ class DownloadArtifactsCommand(BaseJobCommand):
                 artifact_downloader.download(job_id, destination_directory)
             except OSError as e:
                 raise sdk_exceptions.GradientSdkError(e)
+
+
+class JobAddTagsCommand(BaseJobCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.add_tags(deployment_id, **kwargs)
+        self.logger.log("Tags added to jobs")
+
+
+class JobRemoveTagsCommand(BaseJobCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.remove_tags(deployment_id, **kwargs)
+        self.logger.log("Tags removed from jobs")

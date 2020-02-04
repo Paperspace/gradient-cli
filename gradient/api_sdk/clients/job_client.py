@@ -183,8 +183,7 @@ class JobsClient(BaseClient):
         )
         handle = CreateJob(self.api_key, self.logger).create(job, data=data)
         if tags:
-            tag_client = TagClient(api_key=self.api_key)
-            tag_client.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
         return handle
 
     def delete(self, job_id):
@@ -365,3 +364,11 @@ class JobsClient(BaseClient):
         :rtype: list[Artifact]
         """
         return ListJobArtifacts(self.api_key, self.logger).list(jobId=job_id, files=files, links=links, size=size)
+
+    def add_tags(self, entity_id, tags):
+        tag_client = TagClient(api_key=self.api_key)
+        tag_client.add_tags(entity_id=entity_id, entity=self.entity, tags=tags)
+
+    def remove_tags(self, entity_id, tags):
+        tag_client = TagClient(api_key=self.api_key)
+        tag_client.remove_tags(entity_id=entity_id, entity=self.entity, tags=tags)

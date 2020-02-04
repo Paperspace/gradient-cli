@@ -25,6 +25,11 @@ def machines_group():
     pass
 
 
+@cli.group("tags", help="Manage machine tags", cls=ClickGroup)
+def machines_tags():
+    pass
+
+
 check_machine_availability_help = "Get machine availability for the given region and machine type. " \
                                   "Note: availability is only provided for the dedicated GPU machine types. " \
                                   "Also, not all machine types are available in all regions"
@@ -623,3 +628,55 @@ wait_for_machine_state_help = "Wait for the machine with the given id to enter a
 def wait_for_machine_state(machine_id, state, api_key, options_file):
     command = machines_commands.WaitForMachineStateCommand(api_key=api_key)
     command.execute(machine_id, state)
+
+
+@machines_tags.command("add", help="Add tags to machine")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to add to machine",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want add to machine",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def machine_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = machines_commands.MachineAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@machines_tags.command("remove", help="Remove tags from machine")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to remove from machine",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want to remove from machine",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def machine_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = machines_commands.MachineRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

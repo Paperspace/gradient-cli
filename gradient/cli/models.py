@@ -13,6 +13,11 @@ def models_group():
     pass
 
 
+@cli.group("tags", help="Manage model tags", cls=common.ClickGroup)
+def model_tags():
+    pass
+
+
 @models_group.command("list", help="List models with optional filtering")
 @click.option(
     "--experimentId",
@@ -143,3 +148,55 @@ def model_details(model_id, api_key, options_file):
 def download_model_files(model_id, destination_directory, api_key, options_file):
     command = models_commands.DownloadModelFiles(api_key=api_key)
     command.execute(model_id, destination_directory)
+
+
+@model_tags.command("add", help="Add tags to ml model")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to add to ml model",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want add to ml model",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def ml_model_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = models_commands.MLModelAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@model_tags.command("remove", help="Remove tags from ml model")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to remove from ml model",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want to remove from ml model",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def ml_model_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = models_commands.MLModelRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

@@ -405,3 +405,15 @@ class DeleteExperimentCommand(BaseExperimentCommand):
     def execute(self, experiment_id, *args, **kwargs):
         self.client.delete(experiment_id)
         self.logger.log("Experiment deleted")
+
+
+class ExperimentAddTagsCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, *args, **kwargs):
+        self.client.add_tags(experiment_id, **kwargs)
+        self.logger.log("Tags added to experiment")
+
+
+class ExperimentRemoveTagsCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, *args, **kwargs):
+        self.client.remove_tags(experiment_id, **kwargs)
+        self.logger.log("Tags removed from experiment")

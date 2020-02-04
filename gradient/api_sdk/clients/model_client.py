@@ -54,8 +54,7 @@ class ModelsClient(BaseClient):
         model_id = repository.create(model, path=path)
 
         if tags:
-            tag_client = TagClient(api_key=self.api_key)
-            tag_client.add_tags(entity_id=model_id, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=model_id, tags=tags)
 
         return model_id
 
@@ -82,3 +81,11 @@ class ModelsClient(BaseClient):
         repository = repositories.ListModelFiles(api_key=self.api_key, logger=self.logger)
         models_list = repository.list(model_id=model_id, links=links, size=size)
         return models_list
+
+    def add_tags(self, entity_id, tags):
+        tag_client = TagClient(api_key=self.api_key)
+        tag_client.add_tags(entity_id=entity_id, entity=self.entity, tags=tags)
+
+    def remove_tags(self, entity_id, tags):
+        tag_client = TagClient(api_key=self.api_key)
+        tag_client.remove_tags(entity_id=entity_id, entity=self.entity, tags=tags)

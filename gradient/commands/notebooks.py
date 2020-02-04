@@ -75,3 +75,15 @@ class ShowNotebookDetailsCommand(DetailsCommandMixin, BaseNotebookCommand):
             ("FQDN", instance.fqdn),
         )
         return data
+
+
+class NotebookAddTagsCommand(BaseNotebookCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.add_tags(deployment_id, **kwargs)
+        self.logger.log("Tags added to notebook")
+
+
+class NotebookRemoveTagsCommand(BaseNotebookCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.remove_tags(deployment_id, **kwargs)
+        self.logger.log("Tags removed from notebook")

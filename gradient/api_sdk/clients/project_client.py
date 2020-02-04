@@ -46,8 +46,7 @@ class ProjectsClient(BaseClient):
 
         handle = repositories.CreateProject(api_key=self.api_key, logger=self.logger).create(project)
         if tags:
-            tag_client = TagClient(api_key=self.api_key)
-            tag_client.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
         return handle
 
     def list(self, tags=None):
@@ -65,3 +64,11 @@ class ProjectsClient(BaseClient):
     def delete(self, project_id):
         repository = repositories.DeleteProject(api_key=self.api_key, logger=self.logger)
         repository.delete(project_id)
+
+    def add_tags(self, entity_id, tags):
+        tag_client = TagClient(api_key=self.api_key)
+        tag_client.add_tags(entity_id=entity_id, entity=self.entity, tags=tags)
+
+    def remove_tags(self, entity_id, tags):
+        tag_client = TagClient(api_key=self.api_key)
+        tag_client.remove_tags(entity_id=entity_id, entity=self.entity, tags=tags)

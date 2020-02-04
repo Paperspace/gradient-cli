@@ -7,10 +7,16 @@ from gradient.cli import common
 from gradient.cli.common import ClickGroup, validate_comma_split_option
 from gradient.cli.experiments import common_experiments_create_options, get_workspace_handler, experiments_group
 from gradient.commands import hyperparameters as hyperparameters_commands
+from gradient.commands.hyperparameters import HyperparameterAddTagsCommand, HyperparameterRemoveTagsCommand
 
 
 @experiments_group.group("hyperparameters", help="Manage hyperparameters", cls=ClickGroup)
 def hyperparameters_group():
+    pass
+
+
+@hyperparameters_group.group("tags", help="Manage hyperparameter tags", cls=ClickGroup)
+def hyperparameters_tags():
     pass
 
 
@@ -189,3 +195,55 @@ def get_hyperparameter_details(api_key, id_, options_file):
 def start_hyperparameter_tuning(api_key, options_file, id_):
     command = hyperparameters_commands.HyperparameterStartCommand(api_key=api_key)
     command.execute(id_)
+
+
+@hyperparameters_tags.command("add", help="Add tags to hyperparameter")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to add to hyperparameter",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want add to hyperparameter",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def hyperparameter_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = HyperparameterAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@hyperparameters_tags.command("remove", help="Remove tags from hyperparameter")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to remove from hyperparameter",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want to remove from hyperparameter",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def hyperparameter_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = HyperparameterRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

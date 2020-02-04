@@ -12,6 +12,11 @@ def projects_group():
     pass
 
 
+@projects_group.group("tags", help="Manage project tags", cls=common.ClickGroup)
+def project_tags():
+    pass
+
+
 @projects_group.command("list", help="List projects")
 @click.option(
     "--tag",
@@ -88,3 +93,55 @@ def create_project_wizard():
 def delete_project(project_id, options_file, api_key):
     command = projects_commands.DeleteProjectCommand(api_key)
     command.execute(project_id)
+
+
+@project_tags.command("add", help="Add tags to project")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to add to project",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want add to project",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def project_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = projects_commands.ProjectAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@project_tags.command("remove", help="Remove tags from project")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to remove from project",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want to remove from project",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def project_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = projects_commands.ProjectRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

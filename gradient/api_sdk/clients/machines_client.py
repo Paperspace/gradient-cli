@@ -78,8 +78,7 @@ class MachinesClient(BaseClient):
         repository = repositories.CreateMachine(api_key=self.api_key, logger=self.logger)
         handle = repository.create(instance)
         if tags:
-            tag_client = TagClient(api_key=self.api_key)
-            tag_client.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
         return handle
 
     def get(self, id):
@@ -293,3 +292,11 @@ class MachinesClient(BaseClient):
             last_run_timestamp=last_run_timestamp,
         )
         return machines
+
+    def add_tags(self, entity_id, tags):
+        tag_client = TagClient(api_key=self.api_key)
+        tag_client.add_tags(entity_id=entity_id, entity=self.entity, tags=tags)
+
+    def remove_tags(self, entity_id, tags):
+        tag_client = TagClient(api_key=self.api_key)
+        tag_client.remove_tags(entity_id=entity_id, entity=self.entity, tags=tags)

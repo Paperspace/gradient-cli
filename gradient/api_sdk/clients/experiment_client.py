@@ -823,3 +823,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
     def add_tags(self, entity_id, tags):
         tag_client = TagClient(api_key=self.api_key)
         tag_client.add_tags(entity_id=entity_id, entity=self.entity, tags=tags)
+
+    def remove_tags(self, entity_id, tags):
+        tag_client = TagClient(api_key=self.api_key)
+        tag_client.remove_tags(entity_id=entity_id, entity=self.entity, tags=tags)

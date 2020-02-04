@@ -147,3 +147,15 @@ class GetDeploymentDetails(DetailsCommandMixin, _DeploymentCommand):
             ("Cluster ID", instance.cluster_id),
         )
         return data
+
+
+class DeploymentAddTagsCommand(_DeploymentCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.add_tags(deployment_id, **kwargs)
+        self.logger.log("Tags added to deployment")
+
+
+class DeploymentRemoveTagsCommand(_DeploymentCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.remove_tags(deployment_id, **kwargs)
+        self.logger.log("Tags removed from deployment")

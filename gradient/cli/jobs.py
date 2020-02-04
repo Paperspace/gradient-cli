@@ -13,6 +13,7 @@ from gradient.cli.common import (
 from gradient.cli.experiments import \
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used
 from gradient.commands import jobs as jobs_commands
+from gradient.commands.jobs import JobAddTagsCommand, JobRemoveTagsCommand
 from gradient.workspace import WorkspaceHandler
 
 
@@ -24,6 +25,11 @@ def get_workspace_handler():
 
 @cli.group("jobs", help="Manage gradient jobs", cls=ClickGroup)
 def jobs_group():
+    pass
+
+
+@jobs_group.group("tags", help="Manage job tags", cls=ClickGroup)
+def jobs_tags():
     pass
 
 
@@ -410,3 +416,55 @@ def list_artifacts(job_id, size, links, files, options_file, api_key=None):
 def download_artifacts(job_id, destination_directory, options_file, api_key=None):
     command = jobs_commands.DownloadArtifactsCommand(api_key=api_key)
     command.execute(job_id=job_id, destination_directory=destination_directory)
+
+
+@jobs_tags.command("add", help="Add tags to job")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to add to job",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want add to job",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def job_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = JobAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@jobs_tags.command("remove", help="Remove tags from job")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    type=str,
+    multiple=True,
+    help="One or many tags that you want to remove from job",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    type=str,
+    help="Separated by comma tags that you want to remove from job",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def job_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = JobRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

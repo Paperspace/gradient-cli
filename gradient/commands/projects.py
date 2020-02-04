@@ -55,3 +55,15 @@ class DeleteProjectCommand(BaseProjectCommand):
     def execute(self, project_id):
         self.client.delete(project_id)
         self.logger.log("Project deleted")
+
+
+class ProjectAddTagsCommand(BaseProjectCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.add_tags(deployment_id, **kwargs)
+        self.logger.log("Tags added to project")
+
+
+class ProjectRemoveTagsCommand(BaseProjectCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.remove_tags(deployment_id, **kwargs)
+        self.logger.log("Tags removed from project")
