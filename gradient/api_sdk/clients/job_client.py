@@ -214,7 +214,7 @@ class JobsClient(BaseClient):
         """
         StopJob(self.api_key, self.logger).stop(job_id)
 
-    def list(self, project_id=None, project=None, experiment_id=None):
+    def list(self, project_id=None, project=None, experiment_id=None, tags=None):
         """
         Method to list jobs.
 
@@ -237,12 +237,13 @@ class JobsClient(BaseClient):
         :param str project_id: id of project that you want to list jobs
         :param str project: name of project that you want to list jobs
         :param str experiment_id: id of experiment that you want to list jobs
+        :param list[str]|tuple[str] tags: tags to filter jobs with OR
 
         :returns: list of job models
-        :rtype: list
+        :rtype: list[Job]
         """
         return ListJobs(self.api_key, self.logger).list(project_id=project_id, project=project,
-                                                        experiment_id=experiment_id)
+                                                        experiment_id=experiment_id, tags=tags)
 
     def logs(self, job_id, line=0, limit=10000):
         """

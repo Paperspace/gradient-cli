@@ -69,6 +69,13 @@ def stop_job(job_id, api_key=None):
     help="Use to filter jobs by experiment ID",
     cls=common.GradientOption,
 )
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    cls=common.GradientOption,
+    help="Filter by tags. Multiple use"
+)
 @api_key_option
 @common.options_file
 def list_jobs(api_key, options_file, **filters):
