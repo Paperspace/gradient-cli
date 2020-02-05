@@ -300,7 +300,7 @@ class TestExperimentsCreateSingleNode(object):
         ]
 
         workspace_path = create_test_dir_tree()
-        zip_file_name = os.path.basename(workspace_path) + ".zip"
+        zip_file_name = "workspace.zip"
         command = self.BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE[:] + [workspace_path]
         zip_file_path = os.path.join(tempfile.gettempdir(), zip_file_name)
         temporary_directory_for_extracted_files = os.path.join(tempfile.gettempdir(), "extracted_files")
