@@ -1692,7 +1692,8 @@ LIST_PROJECTS_RESPONSE = {
     }
 }
 
-LIST_JOBS_RESPONSE_JSON = [
+LIST_JOBS_RESPONSE_JSON = {
+    "jobList": [
     {
         "id": "jsxeeba5qq99yn",
         "name": "job 1",
@@ -2475,6 +2476,7 @@ LIST_JOBS_RESPONSE_JSON = [
         "experimentId": "es47og38wzhnuo"
     }
 ]
+}
 
 LIST_MODELS_RESPONSE_JSON = {
     "modelList": [
