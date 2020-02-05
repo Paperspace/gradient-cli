@@ -37,11 +37,17 @@ class ListTagRepository(ListResources):
             "entityIds": kwargs.get("entity_ids")
         }
 
-    def _parse_object(self, instance_dict):
+    def _parse_objects(self, data, **kwargs):
         instances = []
-        for entity in instance_dict:
-            entity_tags = []
-            for tag in entity:
-                entity_tags.append(tag.get("tag").get("name"))
-            instances.append({entity: entity_tags})
+        instance_dicts = self._get_instance_dicts(data, **kwargs)
+        for entity in instance_dicts:
+            tags = self._parse_object(instance_dicts.get(entity))
+            instances.append({entity: tags})
+
         return instances
+
+    def _parse_object(self, entity_tags):
+        tags = []
+        for tag in entity_tags:
+            tags.append(tag.get("tag").get("name"))
+        return tags

@@ -359,3 +359,17 @@ def models_upload_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "models_upload.yaml"
     return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def entity_tags_add_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "entity_tags_add.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def entity_tags_remove_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "entity_tags_remove.yaml"
+    return str(fixture_dir.resolve())

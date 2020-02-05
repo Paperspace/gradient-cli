@@ -50,7 +50,9 @@ class TagClient(BaseClient):
         entity_tags = list_tag_repository.list(entity=entity, entity_ids=[entity_id])
 
         if entity_tags:
+            entity_tags = entity_tags[0].get(entity_id)
             entity_tags = set(entity_tags) - set(tags)
+            entity_tags = sorted(list(entity_tags))
 
             update_tag_repository = UpdateTagRepository(api_key=self.api_key, logger=self.logger)
             update_tag_repository.update(entity=entity, entity_id=entity_id, tags=entity_tags)

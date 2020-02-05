@@ -79,12 +79,12 @@ class HyperparameterStartCommand(BaseHyperparameterCommand):
 
 
 class HyperparameterAddTagsCommand(BaseHyperparameterCommand):
-    def execute(self, deployment_id, *args, **kwargs):
-        self.client.add_tags(deployment_id, **kwargs)
+    def execute(self, hyperparameter_id, *args, **kwargs):
+        self.client.add_tags(hyperparameter_id, **kwargs)
         self.logger.log("Tags added to hyperparameter")
 
 
 class HyperparameterRemoveTagsCommand(BaseHyperparameterCommand):
-    def execute(self, deployment_id, *args, **kwargs):
-        self.client.remove_tags(deployment_id, **kwargs)
+    def execute(self, hyperparameter_id, *args, **kwargs):
+        self.client.remove_tags(hyperparameter_id, **kwargs)
         self.logger.log("Tags removed from hyperparameter")

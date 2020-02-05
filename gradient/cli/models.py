@@ -13,7 +13,7 @@ def models_group():
     pass
 
 
-@cli.group("tags", help="Manage model tags", cls=common.ClickGroup)
+@models_group.group("tags", help="Manage model tags", cls=common.ClickGroup)
 def model_tags():
     pass
 

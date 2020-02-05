@@ -134,10 +134,15 @@ class TestCommonFunction(object):
     @pytest.mark.parametrize("comma_value, value, expected_result", [
         pytest.param(None, None, None, id="None passed in both argument"),
         pytest.param(None, ['test'], ['test'], id="None passed as comma separated value"),
+        pytest.param("test", None, ['test'], id="None passed as list value"),
         pytest.param("test0", ["test1"], ["test0", "test1"], id="Pass single values for arguments"),
         pytest.param(
             "test0,test1", ["test2"], ["test0", "test1", "test2"],
             id="Pass more values separated by comma and single element in list"
+        ),
+        pytest.param(
+            "test0,test1, test2 , test3", ["test4"], ["test0", "test1", "test2", "test3", "test4"],
+            id="Pass more values separated by comma in different style and single element in list"
         ),
     ])
     def test_validate_comma_split_option(self, comma_value, value, expected_result):

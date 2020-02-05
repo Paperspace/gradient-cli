@@ -25,7 +25,7 @@ def machines_group():
     pass
 
 
-@cli.group("tags", help="Manage machine tags", cls=ClickGroup)
+@machines_group.group("tags", help="Manage machine tags", cls=ClickGroup)
 def machines_tags():
     pass
 

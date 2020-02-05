@@ -380,10 +380,10 @@ class DownloadArtifactsCommand(BaseJobCommand):
 class JobAddTagsCommand(BaseJobCommand):
     def execute(self, deployment_id, *args, **kwargs):
         self.client.add_tags(deployment_id, **kwargs)
-        self.logger.log("Tags added to jobs")
+        self.logger.log("Tags added to job")
 
 
 class JobRemoveTagsCommand(BaseJobCommand):
     def execute(self, deployment_id, *args, **kwargs):
         self.client.remove_tags(deployment_id, **kwargs)
-        self.logger.log("Tags removed from jobs")
+        self.logger.log("Tags removed from job")
