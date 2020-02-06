@@ -141,7 +141,7 @@ class TestCommonFunction(object):
             id="Pass more values separated by comma and single element in list"
         ),
         pytest.param(
-            "test0,test1, test2 , test3", ["test4"], ["test0", "test1", "test2", "test3", "test4"],
+            "test0 ,test1, test2 , test3", ["test4"], ["test0", "test1", "test2", "test3", "test4"],
             id="Pass more values separated by comma in different style and single element in list"
         ),
     ])
