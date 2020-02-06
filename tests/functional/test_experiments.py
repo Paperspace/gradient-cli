@@ -1,8 +1,10 @@
 import os
+import shutil
 import tempfile
 import zipfile
 
 import mock
+import pytest
 from click.testing import CliRunner
 
 from gradient.api_sdk import constants
@@ -10,6 +12,33 @@ from gradient.api_sdk.clients import http_client
 from gradient.cli import cli
 from tests import example_responses, MockResponse
 from tests.unit.test_archiver_class import create_test_dir_tree
+
+
+@pytest.fixture
+def temporary_directory_for_extracted_files():
+    temp_dir_path = os.path.join(tempfile.gettempdir(), "extracted_files")
+    shutil.rmtree(temp_dir_path, ignore_errors=True)
+
+    yield temp_dir_path
+
+    shutil.rmtree(temp_dir_path, ignore_errors=True)
+
+
+@pytest.fixture
+def temporary_zip_file_path():
+    zip_file_path = os.path.join(tempfile.gettempdir(), "workspace.zip")
+
+    try:
+        os.remove(zip_file_path)
+    except OSError:
+        pass
+
+    yield zip_file_path
+
+    try:
+        os.remove(zip_file_path)
+    except OSError:
+        pass
 
 
 class TestExperimentsCreateSingleNode(object):
@@ -281,7 +310,12 @@ class TestExperimentsCreateSingleNode(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_zip_and_upload_local_workspace_when_local_path_was_passed_to_workspace_option(
-            self, get_patched, post_patched, multipart_encoder_cls_patched):
+            self, get_patched,
+            post_patched,
+            multipart_encoder_cls_patched,
+            temporary_directory_for_extracted_files,
+            temporary_zip_file_path,
+    ):
         multipart_encoder_patched = mock.MagicMock()
         multipart_encoder_content_type = mock.MagicMock()
         # multipart_encoder_patched.content_type = multipart_encoder_content_type
@@ -300,10 +334,8 @@ class TestExperimentsCreateSingleNode(object):
         ]
 
         workspace_path = create_test_dir_tree()
-        zip_file_name = "workspace.zip"
+        zip_file_name = os.path.basename(temporary_zip_file_path)
         command = self.BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE[:] + [workspace_path]
-        zip_file_path = os.path.join(tempfile.gettempdir(), zip_file_name)
-        temporary_directory_for_extracted_files = os.path.join(tempfile.gettempdir(), "extracted_files")
         create_experiment_request_json = self.BASIC_OPTIONS_REQUEST.copy()
         create_experiment_request_json["workspaceUrl"] = \
             "s3://ps-projects/" + example_responses.GET_PRESIGNED_URL_FOR_S3_BUCKET_RESPONSE_JSON["data"]["fields"][
@@ -314,16 +346,16 @@ class TestExperimentsCreateSingleNode(object):
 
         # assert self.EXPECTED_STDOUT in result.output, result.exc_info
 
-        with zipfile.ZipFile(zip_file_path) as zip_handler:
+        with zipfile.ZipFile(temporary_zip_file_path) as zip_handler:
             zip_handler.extractall(temporary_directory_for_extracted_files)
 
-        file1_path = os.path.join(temporary_directory_for_extracted_files, "file1")
+        file1_path = os.path.join(temporary_directory_for_extracted_files, "file1.txt")
         assert os.path.exists(file1_path)
         assert os.path.isfile(file1_path)
         with open(file1_path) as h:
             assert h.read() == "keton"
 
-        file2_path = os.path.join(temporary_directory_for_extracted_files, "subdir1", "file2")
+        file2_path = os.path.join(temporary_directory_for_extracted_files, "subdir1", "file2.jpg")
         assert os.path.exists(file2_path)
         assert os.path.isfile(file2_path)
         with open(file2_path) as h:
