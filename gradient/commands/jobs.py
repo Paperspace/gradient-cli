@@ -10,7 +10,6 @@ from gradient import api_sdk, exceptions, Job, JobArtifactsDownloader
 from gradient.api_sdk import config, sdk_exceptions
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.clients.base_client import BaseClient
-from gradient.api_sdk.clients.tag_client import TagClient
 from gradient.api_sdk.repositories.jobs import RunJob
 from gradient.api_sdk.utils import print_dict_recursive, urljoin
 from gradient.commands.common import BaseCommand
@@ -20,6 +19,8 @@ from gradient.workspace import MultipartEncoder
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseJobCommand(BaseCommand):
+    entity = "job"
+
     def _get_client(self, api_key, logger_):
         client = api_sdk.clients.JobsClient(api_key=api_key, logger=logger_)
         return client
@@ -279,8 +280,7 @@ class JobRunClient(BaseClient):
         )
         handle = RunJob(self.api_key, self.logger, self.client).create(job, data=data)
         if tags:
-            tag_client = TagClient(api_key=self.api_key)
-            tag_client.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
 
@@ -378,12 +378,12 @@ class DownloadArtifactsCommand(BaseJobCommand):
 
 
 class JobAddTagsCommand(BaseJobCommand):
-    def execute(self, deployment_id, *args, **kwargs):
-        self.client.add_tags(deployment_id, **kwargs)
+    def execute(self, job_id, *args, **kwargs):
+        self.client.add_tags(job_id, entity=self.entity, **kwargs)
         self.logger.log("Tags added to job")
 
 
 class JobRemoveTagsCommand(BaseJobCommand):
-    def execute(self, deployment_id, *args, **kwargs):
-        self.client.remove_tags(deployment_id, **kwargs)
+    def execute(self, job_id, *args, **kwargs):
+        self.client.remove_tags(job_id, entity=self.entity, **kwargs)
         self.logger.log("Tags removed from job")

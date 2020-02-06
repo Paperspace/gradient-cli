@@ -10,6 +10,7 @@ from gradient.commands.experiments import BaseCreateExperimentCommandMixin
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseHyperparameterCommand(BaseCommand):
+    entity = "experiment"
     def _get_client(self, api_key, logger):
         client = api_sdk.clients.HyperparameterJobsClient(api_key=api_key, logger=logger)
         return client
@@ -80,11 +81,11 @@ class HyperparameterStartCommand(BaseHyperparameterCommand):
 
 class HyperparameterAddTagsCommand(BaseHyperparameterCommand):
     def execute(self, hyperparameter_id, *args, **kwargs):
-        self.client.add_tags(hyperparameter_id, **kwargs)
+        self.client.add_tags(hyperparameter_id, entity=self.entity, **kwargs)
         self.logger.log("Tags added to hyperparameter")
 
 
 class HyperparameterRemoveTagsCommand(BaseHyperparameterCommand):
     def execute(self, hyperparameter_id, *args, **kwargs):
-        self.client.remove_tags(hyperparameter_id, **kwargs)
+        self.client.remove_tags(hyperparameter_id, entity=self.entity, **kwargs)
         self.logger.log("Tags removed from hyperparameter")

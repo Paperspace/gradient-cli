@@ -1,5 +1,4 @@
 from .base_client import BaseClient
-from .tag_client import TagClient
 from .. import repositories, models, constants, utils
 from ..sdk_exceptions import ResourceCreatingDataError
 
@@ -103,7 +102,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         handle = repository.create(experiment, use_vpc=use_vpc)
 
         if tags:
-            self.add_tags(handle, tags)
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
 
         return handle
 
@@ -234,7 +233,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         handle = repository.create(experiment, use_vpc=use_vpc)
 
         if tags:
-            self.add_tags(handle, tags)
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
 
         return handle
 
@@ -361,7 +360,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         handle = repository.create(experiment, use_vpc=use_vpc)
 
         if tags:
-            self.add_tags(handle, tags)
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
 
         return handle
 
@@ -460,7 +459,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         handle = repository.create(experiment, use_vpc=use_vpc)
 
         if tags:
-            self.add_tags(handle, tags)
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
 
         return handle
 
@@ -590,7 +589,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         handle = repository.create(experiment, use_vpc=use_vpc)
 
         if tags:
-            self.add_tags(handle, tags)
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
     def run_mpi_multi_node(
@@ -716,7 +715,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         handle = repository.create(experiment, use_vpc=use_vpc)
 
         if tags:
-            self.add_tags(handle, tags)
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
 
         return handle
 
@@ -819,11 +818,3 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
         datasets = [models.Dataset(**ds) for ds in datasets]
         return datasets
-
-    def add_tags(self, entity_id, tags):
-        tag_client = TagClient(api_key=self.api_key)
-        tag_client.add_tags(entity_id=entity_id, entity=self.entity, tags=tags)
-
-    def remove_tags(self, entity_id, tags):
-        tag_client = TagClient(api_key=self.api_key)
-        tag_client.remove_tags(entity_id=entity_id, entity=self.entity, tags=tags)

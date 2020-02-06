@@ -12,6 +12,8 @@ from .common import BaseCommand, ListCommandMixin
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseProjectCommand(BaseCommand):
+    entity = "project"
+
     def _get_client(self, api_key, logger):
         client = api_sdk.clients.ProjectsClient(api_key=api_key, logger=logger)
         return client
@@ -58,12 +60,12 @@ class DeleteProjectCommand(BaseProjectCommand):
 
 
 class ProjectAddTagsCommand(BaseProjectCommand):
-    def execute(self, deployment_id, *args, **kwargs):
-        self.client.add_tags(deployment_id, **kwargs)
+    def execute(self, project_id, *args, **kwargs):
+        self.client.add_tags(project_id, entity=self.entity, **kwargs)
         self.logger.log("Tags added to project")
 
 
 class ProjectRemoveTagsCommand(BaseProjectCommand):
-    def execute(self, deployment_id, *args, **kwargs):
-        self.client.remove_tags(deployment_id, **kwargs)
+    def execute(self, project_id, *args, **kwargs):
+        self.client.remove_tags(project_id, entity=self.entity, **kwargs)
         self.logger.log("Tags removed from project")

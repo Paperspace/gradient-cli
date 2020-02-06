@@ -4,7 +4,6 @@ Deployment related client handler logic.
 Remember that in code snippets all highlighted lines are required other lines are optional.
 """
 from .base_client import BaseClient
-from .tag_client import TagClient
 from .. import config, models, repositories
 
 
@@ -124,7 +123,7 @@ class DeploymentsClient(BaseClient):
         repository = repositories.CreateDeployment(api_key=self.api_key, logger=self.logger)
         deployment_id = repository.create(deployment, use_vpc=use_vpc)
         if tags:
-            self.add_tags(entity_id=deployment_id, tags=tags)
+            self.add_tags(entity_id=deployment_id, entity=self.entity, tags=tags)
         return deployment_id
 
     def get(self, deployment_id):
@@ -241,11 +240,3 @@ class DeploymentsClient(BaseClient):
 
         repository = repositories.UpdateDeployment(api_key=self.api_key, logger=self.logger)
         repository.update(deployment_id, deployment, use_vpc=use_vpc)
-
-    def add_tags(self, entity_id, tags):
-        tag_client = TagClient(api_key=self.api_key)
-        tag_client.add_tags(entity_id=entity_id, entity=self.entity, tags=tags)
-
-    def remove_tags(self, entity_id, tags):
-        tag_client = TagClient(api_key=self.api_key)
-        tag_client.remove_tags(entity_id=entity_id, entity=self.entity, tags=tags)

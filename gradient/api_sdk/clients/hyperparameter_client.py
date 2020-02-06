@@ -1,5 +1,4 @@
 from . import base_client
-from .tag_client import TagClient
 from .. import models, repositories
 
 
@@ -111,7 +110,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         handle = repository.create(hyperparameter)
 
         if tags:
-            self.add_tags(handle, tags)
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
 
         return handle
 
@@ -233,7 +232,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         handle = repository.create(hyperparameter)
 
         if tags:
-            self.add_tags(handle, tags)
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
 
         return handle
 
@@ -285,11 +284,3 @@ class HyperparameterJobsClient(base_client.BaseClient):
         repository = repositories.ListHyperparameterJobs(api_key=self.api_key, logger=self.logger)
         experiments = repository.list()
         return experiments
-
-    def add_tags(self, entity_id, tags):
-        tag_client = TagClient(api_key=self.api_key)
-        tag_client.add_tags(entity_id=entity_id, entity=self.entity, tags=tags)
-
-    def remove_tags(self, entity_id, tags):
-        tag_client = TagClient(api_key=self.api_key)
-        tag_client.remove_tags(entity_id=entity_id, entity=self.entity, tags=tags)
