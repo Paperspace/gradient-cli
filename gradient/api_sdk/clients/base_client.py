@@ -40,6 +40,27 @@ class BaseClient(object):
         if entity not in self.KNOWN_TAGS_ENTITIES:
             raise ReceivingDataFailedError("Not known entity type provided")
 
+    @staticmethod
+    def merge_tags(entity_id, entity_tags, new_tags):
+        result_tags = []
+        if entity_tags:
+            entity_tags = entity_tags[0].get(entity_id, [])
+
+            result_tags = entity_tags + new_tags
+        else:
+            result_tags += new_tags
+        return sorted(list(set(result_tags)))
+
+    @staticmethod
+    def diff_tags(entity_id, entity_tags, tags_to_remove):
+        result_tags = []
+        if entity_tags:
+            entity_tags = entity_tags[0].get(entity_id, [])
+            entity_tags = set(entity_tags) - set(tags_to_remove)
+            result_tags = sorted(list(entity_tags))
+
+        return result_tags
+
     def add_tags(self, entity_id, entity, tags):
         """
         Add tags to entity.
@@ -54,7 +75,7 @@ class BaseClient(object):
         entity_tags = list_tag_repository.list(entity=entity, entity_ids=[entity_id])
 
         if entity_tags:
-            tags = list(set(entity_tags.get(entity_id) + tags))
+            tags = self.merge_tags(entity_id, entity_tags, tags)
 
         update_tag_repository = UpdateTagRepository(api_key=self.api_key, logger=self.logger)
         update_tag_repository.update(entity=entity, entity_id=entity_id, tags=tags)
@@ -73,9 +94,7 @@ class BaseClient(object):
         entity_tags = list_tag_repository.list(entity=entity, entity_ids=[entity_id])
 
         if entity_tags:
-            entity_tags = entity_tags[0].get(entity_id)
-            entity_tags = set(entity_tags) - set(tags)
-            entity_tags = sorted(list(entity_tags))
+            entity_tags = self.diff_tags(entity_id, entity_tags, tags)
 
             update_tag_repository = UpdateTagRepository(api_key=self.api_key, logger=self.logger)
             update_tag_repository.update(entity=entity, entity_id=entity_id, tags=entity_tags)
