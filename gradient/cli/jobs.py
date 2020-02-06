@@ -277,7 +277,6 @@ def common_jobs_create_options(f):
         click.option(
             "--tag",
             "tags",
-            type=str,
             multiple=True,
             help="One or many tags that you want to add to experiment",
             cls=common.GradientOption
@@ -285,7 +284,6 @@ def common_jobs_create_options(f):
         click.option(
             "--tags",
             "tags_comma",
-            type=str,
             help="Separated by comma tags that you want add to experiment",
             cls=common.GradientOption
         )
@@ -430,7 +428,6 @@ def download_artifacts(job_id, destination_directory, options_file, api_key=None
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to add to job",
     cls=common.GradientOption
@@ -438,7 +435,6 @@ def download_artifacts(job_id, destination_directory, options_file, api_key=None
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want add to job",
     cls=common.GradientOption
 )
@@ -456,7 +452,6 @@ def job_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to remove from job",
     cls=common.GradientOption
@@ -464,7 +459,6 @@ def job_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want to remove from job",
     cls=common.GradientOption
 )

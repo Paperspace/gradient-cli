@@ -202,7 +202,6 @@ def start_hyperparameter_tuning(api_key, options_file, id_):
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to add to hyperparameter",
     cls=common.GradientOption
@@ -210,7 +209,6 @@ def start_hyperparameter_tuning(api_key, options_file, id_):
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want add to hyperparameter",
     cls=common.GradientOption
 )
@@ -228,7 +226,6 @@ def hyperparameter_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to remove from hyperparameter",
     cls=common.GradientOption
@@ -236,7 +233,6 @@ def hyperparameter_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want to remove from hyperparameter",
     cls=common.GradientOption
 )

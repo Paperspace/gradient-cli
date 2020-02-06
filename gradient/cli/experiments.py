@@ -166,7 +166,6 @@ def common_experiments_create_options(f):
         click.option(
             "--tag",
             "tags",
-            type=str,
             multiple=True,
             help="One or many tags that you want to add to experiment",
             cls=common.GradientOption
@@ -174,7 +173,6 @@ def common_experiments_create_options(f):
         click.option(
             "--tags",
             "tags_comma",
-            type=str,
             help="Separated by comma tags that you want add to experiment",
             cls=common.GradientOption
         )
@@ -791,7 +789,6 @@ def delete_experiment(id, options_file, api_key):
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to add to experiment",
     cls=common.GradientOption
@@ -799,7 +796,6 @@ def delete_experiment(id, options_file, api_key):
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want add to experiment",
     cls=common.GradientOption
 )
@@ -817,7 +813,6 @@ def experiment_add_tags(id, options_file, api_key, **kwargs):
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to remove from experiment",
     cls=common.GradientOption
@@ -825,7 +820,6 @@ def experiment_add_tags(id, options_file, api_key, **kwargs):
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want to remove from experiment",
     cls=common.GradientOption
 )

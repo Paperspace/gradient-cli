@@ -56,14 +56,12 @@ def list_projects(api_key, tags, options_file):
     "--tag",
     "tags",
     multiple=True,
-    type=str,
     help="One or many tags that you want to add to experiment",
     cls=common.GradientOption
 )
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want add to experiment",
     cls=common.GradientOption
 )
@@ -100,7 +98,6 @@ def delete_project(project_id, options_file, api_key):
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to add to project",
     cls=common.GradientOption
@@ -108,7 +105,6 @@ def delete_project(project_id, options_file, api_key):
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want add to project",
     cls=common.GradientOption
 )
@@ -126,7 +122,6 @@ def project_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to remove from project",
     cls=common.GradientOption
@@ -134,7 +129,6 @@ def project_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want to remove from project",
     cls=common.GradientOption
 )

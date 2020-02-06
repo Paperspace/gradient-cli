@@ -95,14 +95,12 @@ def notebook_tags():
     "--tag",
     "tags",
     multiple=True,
-    type=str,
     help="One or many tags that you want to add to experiment",
     cls=common.GradientOption
 )
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want add to experiment",
     cls=common.GradientOption
 )
@@ -161,7 +159,6 @@ def show_notebook(id, api_key, options_file):
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to add to notebook",
     cls=common.GradientOption
@@ -169,7 +166,6 @@ def show_notebook(id, api_key, options_file):
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want add to notebook",
     cls=common.GradientOption
 )
@@ -187,7 +183,6 @@ def notebook_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to remove from notebook",
     cls=common.GradientOption
@@ -195,7 +190,6 @@ def notebook_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want to remove from notebook",
     cls=common.GradientOption
 )

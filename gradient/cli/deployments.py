@@ -176,14 +176,12 @@ def get_deployment_client(api_key):
     "--tag",
     "tags",
     multiple=True,
-    type=str,
     help="One or many tags that you want to add to experiment",
     cls=common.GradientOption
 )
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want add to experiment",
     cls=common.GradientOption
 )
@@ -488,7 +486,6 @@ def get_deployment(deployment_id, api_key, options_file):
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to add to deployment",
     cls=common.GradientOption
@@ -496,7 +493,6 @@ def get_deployment(deployment_id, api_key, options_file):
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want add to deployment",
     cls=common.GradientOption
 )
@@ -516,7 +512,6 @@ def deployment_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to remove from deployment",
     cls=common.GradientOption
@@ -524,7 +519,6 @@ def deployment_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want to remove from deployment",
     cls=common.GradientOption
 )

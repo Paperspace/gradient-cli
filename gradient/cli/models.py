@@ -97,14 +97,12 @@ def delete_model(api_key, model_id, options_file):
     "--tag",
     "tags",
     multiple=True,
-    type=str,
     help="One or many tags that you want to add to experiment",
     cls=common.GradientOption
 )
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want add to experiment",
     cls=common.GradientOption
 )
@@ -155,7 +153,6 @@ def download_model_files(model_id, destination_directory, api_key, options_file)
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to add to ml model",
     cls=common.GradientOption
@@ -163,7 +160,6 @@ def download_model_files(model_id, destination_directory, api_key, options_file)
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want add to ml model",
     cls=common.GradientOption
 )
@@ -181,7 +177,6 @@ def ml_model_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--tag",
     "tags",
-    type=str,
     multiple=True,
     help="One or many tags that you want to remove from ml model",
     cls=common.GradientOption
@@ -189,7 +184,6 @@ def ml_model_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--tags",
     "tags_comma",
-    type=str,
     help="Separated by comma tags that you want to remove from ml model",
     cls=common.GradientOption
 )
