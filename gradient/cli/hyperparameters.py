@@ -127,7 +127,6 @@ def common_hyperparameter_create_options(f):
 @common.api_key_option
 @common.options_file
 def create_hyperparameter(api_key, options_file, **hyperparameter):
-    utils.validate_workspace_input(hyperparameter)
     common.del_if_value_is_none(hyperparameter, del_all_falsy=True)
 
     command = hyperparameters_commands.CreateHyperparameterCommand(
@@ -143,7 +142,6 @@ def create_hyperparameter(api_key, options_file, **hyperparameter):
 @common.api_key_option
 @common.options_file
 def create_and_start_hyperparameter(api_key, options_file, **hyperparameter):
-    utils.validate_workspace_input(hyperparameter)
     common.del_if_value_is_none(hyperparameter, del_all_falsy=True)
 
     command = hyperparameters_commands.CreateAndStartHyperparameterCommand(

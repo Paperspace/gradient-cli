@@ -37,9 +37,6 @@ class JobsClient(BaseClient):
             command=None,
             ports=None,
             is_public=None,
-            workspace=None,
-            workspace_archive=None,
-            workspace_url=None,
             working_directory=None,
             experiment_id=None,
             job_env=None,
@@ -76,7 +73,6 @@ class JobsClient(BaseClient):
                 name='Example job',
                 command='pip install -r requirements.txt && python mnist.py',
                 ports='5000:5000',
-                workspace_url='git+https://github.com/Paperspace/mnist-sample.git',
                 job_env={
                     'CUSTOM_ENV'='Some value that will be set as system environment',
                 }
@@ -112,11 +108,6 @@ class JobsClient(BaseClient):
             Example value: ``5000:5000,8080:8080``
 
         :param bool is_public: bool flag to select if job should be available by default None
-        :param str workspace: this field is used with CLI to upload folder as your workspace. You can provide here path
-            that you wish to upload. (Soon also will support a path to a workspace archive or git repository URL.)
-        :param str workspace_archive: Path to workspace archive. (Currently being deprecated in an upcoming version.)
-        :param str workspace_url: url to repo with code to run inside of job.
-            (Currently being deprecated in an upcoming version.)
         :param str working_directory: location of code to run. By default ``/paperspace``
         :param str experiment_id: Id of experiment to which job should be connected. If not provided there will be
             created new experiment for this job.
@@ -155,9 +146,6 @@ class JobsClient(BaseClient):
             command=command,
             ports=ports,
             is_public=is_public,
-            workspace=workspace,
-            workspace_archive=workspace_archive,
-            workspace_url=workspace_url,
             working_directory=working_directory,
             experiment_id=experiment_id,
             job_env=job_env,

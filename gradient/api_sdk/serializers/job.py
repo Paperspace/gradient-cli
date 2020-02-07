@@ -10,7 +10,6 @@ class JobSchema(BaseSchema):
     id = marshmallow.fields.Str(dump_to="id", load_from="id")
     name = marshmallow.fields.Str(required=True)
     state = marshmallow.fields.Str()
-    workspace_url = marshmallow.fields.Str(dump_to="workspaceUrl", load_from="workspaceUrl")
     workspace_file_name = marshmallow.fields.Str(dump_to="workspaceFileName", load_from="workspaceFileName")
     working_directory = marshmallow.fields.Str(dump_to="workingDirectory", load_from="workingDirectory")
     artifacts_directory = marshmallow.fields.Str(dump_to="artifactsDirectory", load_from="artifactsDirectory")
@@ -79,8 +78,6 @@ class JobSchema(BaseSchema):
     experiment_id = marshmallow.fields.Str(dump_to="experimentId", load_from="experimentId")
 
     command = marshmallow.fields.Str()
-    workspace = marshmallow.fields.Str()
-    workspace_archive = marshmallow.fields.Str(dump_to="workspaceArchive", load_from="workspaceArchive")
     use_dockerfile = marshmallow.fields.Bool(dump_to="useDockerfile", load_from="useDockerfile")
     rel_dockerfile_path = marshmallow.fields.Str(dump_to="relDockerfilePath", load_from="relDockerfilePath")
     registry_username = marshmallow.fields.Str(dump_to="registryUsername", load_from="registryUsername")

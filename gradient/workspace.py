@@ -90,11 +90,9 @@ class WorkspaceHandler(object):
 
     @staticmethod
     def _validate_input(input_data):
-        utils.validate_workspace_input(input_data)
-
-        workspace_url = input_data.get('workspaceUrl') or input_data.get("workspace_url")
         workspace_path = input_data.get('workspace')
-        workspace_archive = input_data.get('workspaceArchive') or input_data.get("workspace_archive")
+        workspace_archive = None
+        workspace_url = None
 
         if workspace_path not in ("none", None):
             path_type = utils.PathParser.parse_path(workspace_path)

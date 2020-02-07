@@ -40,11 +40,6 @@ from gradient.api_sdk.constants import RunMode
 @common.api_key_option
 @common.options_file
 def run(api_key, options_file, **kwargs):
-    utils.validate_workspace_input(kwargs)
-    if kwargs["workspace_archive"] or kwargs["workspace_url"]:
-        logger.Logger().error("WARNING: --workspaceUrl and --workspaceArchive options will not be included "
-                              "in version 0.6.0")
-
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
 

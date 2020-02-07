@@ -30,22 +30,12 @@ def workspace_handler():
 
 
 class TestWorkspace(object):
-
-    @pytest.mark.parametrize('params', ({'workspace': 'foo', 'workspaceUrl': 'bar'},
-                                        {'workspaceUrl': 'ffo', 'workspaceArchive': 'var'},
-                                        {'workspaceArchive': 'foo', 'workspace': 'bar'},
-                                        {'workspace': 'foo', 'workspaceUrl': 'bar', 'workspaceArchive': 'baz'}))
-    def test_raise_exception_when_more_than_one_workspace_provided(self, params):
-        workspace_handler = S3WorkspaceHandler(mock.MagicMock, mock.MagicMock)
-        with pytest.raises(click.UsageError):
-            workspace_handler.handle(params)
-
-    @mock.patch("gradient.utils.PathParser.parse_path", return_value=gradient.utils.PathParser.LOCAL_FILE)
+    @mock.patch("gradient.utils.PathParser.parse_path", return_value=gradient.utils.PathParser.S3_URL)
     @mock.patch("gradient.workspace.S3WorkspaceHandler._upload")
-    def test_dont_upload_if_archive_path_provided(self, _, __, workspace_handler):
+    def test_dont_upload_if_s3_url_provided(self, _, __, workspace_handler):
         workspace_handler._upload = mock.MagicMock()
 
-        workspace_handler.handle({'workspaceUrl': 'foo'})
+        workspace_handler.handle({'workspace': 's3://some-path'})
 
         workspace_handler._upload.assert_not_called()
 
@@ -83,7 +73,7 @@ class TestWorkspace(object):
     def test_dont_zip_files_and_receive_s3_response_when_workspace_archive_provided(self, _, workspace_handler):
         workspace_handler._zip_workspace = mock.MagicMock()
 
-        response_url = workspace_handler.handle({"projectHandle": "some_project_id", "workspaceArchive": "foo.zip"})
+        response_url = workspace_handler.handle({"projectHandle": "some_project_id", "workspace": "foo.zip"})
 
         workspace_handler._zip_workspace.assert_not_called()
         workspace_handler._upload.assert_called_once()

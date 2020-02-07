@@ -138,18 +138,6 @@ class HyperparameterJobsClient(base_client.BaseClient):
     ):
         """Create and start hyperparameter tuning job
 
-        *EXAMPLE*::
-
-            gradient hyperparameters run
-            --name HyperoptKerasExperimentCLI1
-            --projectId <your-project-id>
-            --tuningCommand 'make run_hyperopt'
-            --workerContainer tensorflow/tensorflow:1.13.1-gpu-py3
-            --workerMachineType K80
-            --workerCommand 'make run_hyperopt_worker'
-            --workerCount 2
-            --workspaceUrl git+https://github.com/Paperspace/hyperopt-keras-sample
-
         :param str name: Name of new experiment  [required]
         :param str project_id: Project ID  [required]
         :param str tuning_command: Tuning command  [required]
@@ -247,23 +235,6 @@ class HyperparameterJobsClient(base_client.BaseClient):
 
     def list(self):
         """Get a list of hyperparameter tuning jobs
-
-        *EXAMPLE*::
-
-            gradient hyperparameters list
-
-        *EXAMPLE RETURN*::
-
-            +--------------------------------+----------------+------------+
-            | Name                           | ID             | Project ID |
-            +--------------------------------+----------------+------------+
-            | name-of-your-experiment-job    | job-id         | project-id |
-            | name-of-your-experiment-job    | job-id         | project-id |
-            | name-of-your-experiment-job    | job-id         | project-id |
-            | name-of-your-experiment-job    | job-id         | project-id |
-            | name-of-your-experiment-job    | job-id         | project-id |
-            +--------------------------------+----------------+------------+
-
 
         :rtype: list[models.Hyperparameter]
         """

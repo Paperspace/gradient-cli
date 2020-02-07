@@ -41,9 +41,7 @@ def status_code_to_error_obj(status_code):
 
 
 def validate_workspace_input(input_data):
-    workspace_url = input_data.get('workspaceUrl')
     workspace_path = input_data.get('workspace')
-    workspace_archive = input_data.get('workspaceArchive')
 
     if (workspace_archive and workspace_path) \
             or (workspace_archive and workspace_url) \

@@ -60,7 +60,7 @@ class TestCreateHyperparameters(object):
         "--workerDockerfilePath", "some_docker_path",
         "--workerUseDockerfile",
         "--workingDirectory", "some_working_directory",
-        "--workspaceUrl", "s3://some.path",
+        "--workspace", "s3://some-path",
     ]
     EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED = {
         "workerContainer": "some_worker_container",
@@ -89,7 +89,7 @@ class TestCreateHyperparameters(object):
         "ports": "8080,9000:9999",
         "useDockerfile": True,
         "workingDirectory": "some_working_directory",
-        "workspaceUrl": "s3://some.path",
+        "workspaceUrl": "s3://some-path",
     }
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "create", "--optionsFile", ]  # path added in test
 
@@ -227,6 +227,7 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
@@ -234,7 +235,6 @@ class TestCreateHyperparameters(object):
                                              files=None,
                                              data=None)
 
-        assert result.output == self.EXPECTED_STDOUT
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -267,7 +267,6 @@ class TestCreateAndStartHyperparameters(object):
         "--workerCommand", "some worker command",
         "--workerCount", "1",
         "--projectId", "some_project_id",
-        "--workspace", "none",
     ]
     EXPECTED_REQUEST_JSON = {
         "workerContainer": "some_container",
@@ -309,7 +308,7 @@ class TestCreateAndStartHyperparameters(object):
         "--workerDockerfilePath", "some_docker_path",
         "--workerUseDockerfile",
         "--workingDirectory", "some_working_directory",
-        "--workspaceUrl", "s3://some.path",
+        "--workspace", "s3://some-path",
     ]
     EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED = {
         "workerContainer": "some_worker_container",
@@ -338,7 +337,7 @@ class TestCreateAndStartHyperparameters(object):
         "ports": "8080,9000:9999",
         "useDockerfile": True,
         "workingDirectory": "some_working_directory",
-        "workspaceUrl": "s3://some.path",
+        "workspaceUrl": "s3://some-path",
     }
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "run", "--optionsFile", ]  # path added in test
 
