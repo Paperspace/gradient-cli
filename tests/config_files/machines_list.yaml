@@ -24,3 +24,6 @@ teamId: some_team_id
 updatesPending: asdf
 usageRate: some_usage_rate
 userId: some_user_id
+tag:
+  - test1
+  - test2

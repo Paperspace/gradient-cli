@@ -226,6 +226,7 @@ class MachinesClient(BaseClient):
             user_id=None,
             team_id=None,
             last_run_timestamp=None,
+            tags=None,
     ):
         """
 
@@ -253,6 +254,7 @@ class MachinesClient(BaseClient):
         :param str user_id: Filter by user ID
         :param str team_id: Filter by team ID
         :param str last_run_timestamp: Filter by last run date
+        :param list[str]|tuple[str] tags: tags to filter with OR
 
         :return: List of machines
         :rtype: list[models.Machine]
@@ -284,5 +286,6 @@ class MachinesClient(BaseClient):
             user_id=user_id,
             team_id=team_id,
             last_run_timestamp=last_run_timestamp,
+            tags=tags,
         )
         return machines

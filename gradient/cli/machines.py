@@ -396,10 +396,17 @@ list_machines_help = "List information about all machines available to either th
     help="Filter by last run date",
     cls=common.GradientOption,
 )
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    cls=common.GradientOption,
+    help="Filter by tags. Multiple use"
+)
 @api_key_option
 @common.options_file
 def list_machines(api_key, params, options_file, **kwargs):
-    del_if_value_is_none(kwargs)
+    del_if_value_is_none(kwargs, del_all_falsy=True)
     params = params or {}
     kwargs = kwargs or {}
     validate_mutually_exclusive(params.values(), kwargs.values(),

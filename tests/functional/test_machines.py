@@ -538,6 +538,8 @@ class TestListMachines(object):
         "--updatesPending", "True",
         "--usageRate", "some_usage_rate",
         "--userId", "some_user_id",
+        "--tag", "test1",
+        "--tag", "test2",
     ]
     ALL_OPTIONS_REQUEST_JSON = {
         "params": {
@@ -565,7 +567,8 @@ class TestListMachines(object):
             "updatesPending": True,
             "usageRate": "some_usage_rate",
             "userId": "some_user_id",
-        }
+        },
+        "tagFilter": ["test1", "test2"],
     }
 
     COMMAND_WITH_PARAMS_OPTION = ["machines", "list",

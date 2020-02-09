@@ -65,12 +65,17 @@ class ListMachines(MachinesApiUrlMixin, ListResources):
         return "/machines/getMachines/"
 
     def _get_request_json(self, kwargs):
+        tags = kwargs.pop("tags", [])
+
         instance = models.Machine(**kwargs)
         serializer = serializers.MachineSchemaForListing()
         marshaled = serializer.dump(instance)
         instance_dict = marshaled.data
         instance_dict_without_nulls = {key: val for key, val in instance_dict.items() if val is not None}
         json_ = {"params": instance_dict_without_nulls} if instance_dict_without_nulls else None
+
+        if tags:
+            json_["tagFilter"] = list(tags)
         return json_
 
 
