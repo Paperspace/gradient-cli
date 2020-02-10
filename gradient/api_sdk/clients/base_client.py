@@ -29,7 +29,8 @@ class BaseClient(object):
     CLUSTER_VPC_TYPE = "Kubernetes Processing Site"
 
     def validate_cluster_id_need_vpc(self, cluster_id, use_vpc):
-        cluster_repo = ValidateClusterRepository(api_key=self.api_key, logger=self.logger)
-        cluster_details = cluster_repo.get(cluster_id=cluster_id)
-        if cluster_details.get("type") == self.CLUSTER_VPC_TYPE and not use_vpc:
-            raise GradientSdkError("Provided cluster id need --vpc flag to proceed")
+        if cluster_id and not use_vpc:
+            cluster_repo = ValidateClusterRepository(api_key=self.api_key, logger=self.logger)
+            cluster_details = cluster_repo.get(cluster_id=cluster_id)
+            if cluster_details.get("type") == self.CLUSTER_VPC_TYPE:
+                raise GradientSdkError("Provided cluster id need --vpc flag to proceed")

@@ -1,5 +1,6 @@
 from gradient.api_sdk.config import config
 from gradient.api_sdk.repositories.common import GetResource
+from gradient.api_sdk.sdk_exceptions import MalformedResponseError
 from gradient.api_sdk.serializers.cluster import ClusterSchema
 
 
@@ -16,3 +17,13 @@ class ValidateClusterRepository(GetResource):
         return {
             "id": kwargs.get("cluster_id")
         }
+
+    def _parse_object(self, instance_dict, **kwargs):
+        """
+        :param dict instance_dict:
+        :return: model instance
+        """
+        instance = self.SERIALIZER_CLS().dump(instance_dict)
+        if instance.errors:
+            raise MalformedResponseError(instance.errors)
+        return instance.data
