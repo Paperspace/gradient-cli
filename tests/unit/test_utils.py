@@ -144,6 +144,10 @@ class TestCommonFunction(object):
             "test0 ,test1, test2 , test3", ["test4"], ["test0", "test1", "test2", "test3", "test4"],
             id="Pass more values separated by comma in different style and single element in list"
         ),
+        pytest.param(
+            "test0\t,test1,\ntest2\t,\ttest3\n", ["test4"], ["test0", "test1", "test2", "test3", "test4"],
+            id="Pass more values separated by comma with more type of white chars and single element in list"
+        ),
     ])
     def test_validate_comma_split_option(self, comma_value, value, expected_result):
         if expected_result:

@@ -251,6 +251,6 @@ def validate_comma_split_option(comma_option_value, option_value):
         else:
             option_value = list()
         if comma_option_value:
-            comma_option_value = [s.strip(" ") for s in comma_option_value.split(",")]
+            comma_option_value = [s.strip() for s in comma_option_value.split(",")]
             option_value.extend(comma_option_value)
         return sorted(list(set(option_value)))
