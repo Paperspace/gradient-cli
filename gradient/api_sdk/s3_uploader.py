@@ -1,4 +1,5 @@
 import collections
+import fnmatch
 import os
 import tempfile
 import zipfile
@@ -40,7 +41,11 @@ class MultipartEncoderWithProgressbar(MultipartEncoder):
 
 
 class ZipArchiver(object):
-    DEFAULT_EXCLUDED_PATHS = [".git", ".idea", ".pytest_cache"]
+    DEFAULT_EXCLUDED_PATHS = [
+        os.path.join(".git", "*"),
+        os.path.join(".idea", "*"),
+        os.path.join(".pytest_cache", "*"),
+    ]
 
     def __init__(self, logger=None):
         self.logger = logger or MuteLogger()
@@ -98,8 +103,6 @@ class ZipArchiver(object):
         # Read all directory, subdirectories and file lists
         for root, dirs, files in os.walk(input_path):
             relative_path = os.path.relpath(root, input_path)
-            if relative_path in excluded_paths:
-                continue
 
             for filename in files:
                 # Create the full filepath by using os module.
@@ -107,6 +110,9 @@ class ZipArchiver(object):
                     file_path = filename
                 else:
                     file_path = os.path.join(os.path.relpath(root, input_path), filename)
+
+                if any(fnmatch.fnmatch(file_path, pattern) for pattern in excluded_paths):
+                    continue
 
                 if file_path not in excluded_paths:
                     file_paths[file_path] = os.path.join(root, filename)
