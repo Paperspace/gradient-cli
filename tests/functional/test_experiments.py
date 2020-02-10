@@ -231,11 +231,13 @@ class TestExperimentsCreateSingleNode(object):
         assert self.EXPECTED_STDOUT_PROJECT_NOT_FOUND in result.output, result.exc_info[1]
         assert result.exit_code == 0
 
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class, get_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -256,11 +258,13 @@ class TestExperimentsCreateSingleNode(object):
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with("some_tensorboard_id", "sadkfhlskdjh")
 
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class, get_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -281,11 +285,13 @@ class TestExperimentsCreateSingleNode(object):
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class, get_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -569,10 +575,12 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
                                              data=None)
         assert result.exit_code == 0
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_config_file(
-            self, post_patched, create_multi_node_experiment_ds_objects_config_path):
+            self, post_patched, get_patched, create_multi_node_experiment_ds_objects_config_path):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [create_multi_node_experiment_ds_objects_config_path]
 
         runner = CliRunner()
@@ -622,10 +630,12 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         assert result.exit_code == 0
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, get_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -647,10 +657,12 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with("some_tensorboard_id", "sadkfhlskdjh")
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, get_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -672,10 +684,12 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, get_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -867,10 +881,12 @@ class TestExperimentsCreateMultiNode(object):
                                              data=None)
         assert result.exit_code == 0
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_config_file(
-            self, post_patched, create_multi_node_experiment_config_path):
+            self, post_patched, get_patched, create_multi_node_experiment_config_path):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [create_multi_node_experiment_config_path]
 
         runner = CliRunner()
@@ -920,10 +936,12 @@ class TestExperimentsCreateMultiNode(object):
         assert result.exit_code == 0
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, get_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -945,10 +963,12 @@ class TestExperimentsCreateMultiNode(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with("some_tensorboard_id", "sadkfhlskdjh")
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, get_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -970,10 +990,12 @@ class TestExperimentsCreateMultiNode(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, get_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
