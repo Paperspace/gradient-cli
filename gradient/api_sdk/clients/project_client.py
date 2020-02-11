@@ -3,7 +3,9 @@ from .. import models, repositories
 
 
 class ProjectsClient(BaseClient):
-    def create(self, name, repository_name=None, repository_url=None):
+    entity = "project"
+
+    def create(self, name, repository_name=None, repository_url=None, tags=None,):
         """Create new project
 
         *EXAMPLE*::
@@ -29,6 +31,7 @@ class ProjectsClient(BaseClient):
         :param str name: Name of new project [required]
         :param str repository_name: Name of the repository
         :param str repository_url: URL to the repository
+        :param list[str] tags: List of tags
 
         :returns: project ID
         :rtype: str
@@ -41,6 +44,8 @@ class ProjectsClient(BaseClient):
         )
 
         handle = repositories.CreateProject(api_key=self.api_key, logger=self.logger).create(project)
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
     def list(self, tags=None):

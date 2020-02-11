@@ -7,7 +7,7 @@ from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
-from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, validate_comma_split_option
 from gradient.cli.validators import validate_email, validate_mutually_exclusive
 from gradient.commands import machines as machines_commands
 
@@ -22,6 +22,11 @@ REGIONS_MAP = collections.OrderedDict(
 
 @cli.group("machines", help="Manage machines", cls=ClickGroup)
 def machines_group():
+    pass
+
+
+@machines_group.group("tags", help="Manage machine tags", cls=ClickGroup)
+def machines_tags():
     pass
 
 
@@ -180,9 +185,23 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
     help="The script id of a script to be run on startup. See the Script Guide for more info on using scripts",
     cls=common.GradientOption,
 )
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
 @api_key_option
 @common.options_file
 def create_machine(api_key, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     del_if_value_is_none(kwargs)
 
     assign_public_ip = kwargs.get("assign_public_ip")
@@ -607,3 +626,51 @@ wait_for_machine_state_help = "Wait for the machine with the given id to enter a
 def wait_for_machine_state(machine_id, state, api_key, options_file):
     command = machines_commands.WaitForMachineStateCommand(api_key=api_key)
     command.execute(machine_id, state)
+
+
+@machines_tags.command("add", help="Add tags to machine")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to machine",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to machine",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def machine_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = machines_commands.MachineAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@machines_tags.command("remove", help="Remove tags from machine")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to remove from machine",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want to remove from machine",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def machine_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = machines_commands.MachineRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

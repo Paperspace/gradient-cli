@@ -24,6 +24,7 @@ class DeploymentsClient(BaseClient):
         )
     """
     HOST_URL = config.config.CONFIG_HOST
+    entity = "deployment"
 
     def create(
             self,
@@ -46,6 +47,7 @@ class DeploymentsClient(BaseClient):
             cluster_id=None,
             auth_username=None,
             auth_password=None,
+            tags=None,
             use_vpc=False,
     ):
         """
@@ -89,6 +91,7 @@ class DeploymentsClient(BaseClient):
         :param str cluster_id: cluster ID
         :param str auth_username: Username
         :param str auth_password: Password
+        :param list[str] tags: List of tags
         :param bool use_vpc:
 
         :returns: Created deployment id
@@ -120,6 +123,8 @@ class DeploymentsClient(BaseClient):
 
         repository = repositories.CreateDeployment(api_key=self.api_key, logger=self.logger)
         deployment_id = repository.create(deployment, use_vpc=use_vpc)
+        if tags:
+            self.add_tags(entity_id=deployment_id, entity=self.entity, tags=tags)
         return deployment_id
 
     def get(self, deployment_id):

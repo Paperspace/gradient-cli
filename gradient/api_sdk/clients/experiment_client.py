@@ -4,6 +4,8 @@ from ..sdk_exceptions import ResourceCreatingDataError
 
 
 class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
+    entity = "experiment"
+
     def create_single_node(
             self,
             project_id,
@@ -28,6 +30,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             registry_username=None,
             registry_password=None,
             registry_url=None,
+            tags=None,
             use_vpc=False,
     ):
         """
@@ -57,6 +60,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str registry_username: Registry username for accessing private docker registry container if necessary
         :param str registry_password: Registry password for accessing private docker registry container if necessary
         :param str registry_url: Registry server URL for accessing private docker registry container if necessary
+        :param list[str] tags: List of tags
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -96,6 +100,10 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
         repository = repositories.CreateSingleNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def create_multi_node(
@@ -132,6 +140,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_registry_username=None,
             parameter_server_registry_password=None,
             parameter_server_registry_url=None,
+            tags=None,
             use_vpc=False,
     ):
         """
@@ -171,6 +180,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str parameter_server_registry_username: Registry username for accessing private docker registry container if necessary
         :param str parameter_server_registry_password: Registry password for accessing private docker registry container if necessary
         :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if necessary
+        :param list[str] tags: List of tags
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -221,6 +231,10 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
         repository = repositories.CreateMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def create_mpi_multi_node(
@@ -256,6 +270,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_registry_username=None,
             master_registry_password=None,
             master_registry_url=None,
+            tags=None,
             use_vpc=False,
     ):
         """
@@ -294,6 +309,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str master_registry_username: Registry username for accessing private docker registry container if necessary
         :param str master_registry_password: Registry password for accessing private docker registry container if necessary
         :param str master_registry_url: Registry server URL for accessing private docker registry container if necessary
+        :param list[str] tags: List of tags
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -343,6 +359,10 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
         repository = repositories.CreateMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def run_single_node(
@@ -369,6 +389,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             registry_username=None,
             registry_password=None,
             registry_url=None,
+            tags=None,
             use_vpc=False,
     ):
         """Create and start single node experiment
@@ -397,6 +418,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str registry_username: Registry username for accessing private docker registry container if necessary
         :param str registry_password: Registry password for accessing private docker registry container if necessary
         :param str registry_url: Registry server URL for accessing private docker registry container if necessary
+        :param list[str] tags: List of tags
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -436,6 +458,10 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
         repository = repositories.RunSingleNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def run_multi_node(
@@ -472,6 +498,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_registry_username=None,
             parameter_server_registry_password=None,
             parameter_server_registry_url=None,
+            tags=None,
             use_vpc=False,
     ):
         """Create and start multinode experiment
@@ -510,6 +537,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str parameter_server_registry_username: Registry username for accessing private docker registry container if necessary
         :param str parameter_server_registry_password: Registry password for accessing private docker registry container if necessary
         :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if necessary
+        :param list[str] tags: List of tags
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -560,6 +588,9 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
         repository = repositories.RunMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
     def run_mpi_multi_node(
@@ -595,6 +626,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_registry_username=None,
             master_registry_password=None,
             master_registry_url=None,
+            tags=None,
             use_vpc=False,
     ):
         """Create and start multinode experiment using MPI
@@ -632,6 +664,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str master_registry_username: Registry username for accessing private docker registry container if necessary
         :param str master_registry_password: Registry password for accessing private docker registry container if necessary
         :param str master_registry_url: Registry server URL for accessing private docker registry container if necessary
+        :param list[str] tags: List of tags
         :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :returns: experiment handle
@@ -682,6 +715,10 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
         repository = repositories.RunMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
         handle = repository.create(experiment, use_vpc=use_vpc)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def start(self, experiment_id, use_vpc=False):
