@@ -5840,9 +5840,9 @@ GET_V1_CLUSTER_DETAILS_RESPONSE = {
     "modelId": 1,
     "nodes": [
         {
-            "id": "cmsq4u0gf0m971f",
+            "id": "some_node_id",
             "name": "default",
-            "clusterId": "cluwffvkb",
+            "clusterId": "some_cluster_id",
             "activeJobId": None,
             "machineId": None,
             "dtCreated": "2019-11-21T10:06:27.602Z",

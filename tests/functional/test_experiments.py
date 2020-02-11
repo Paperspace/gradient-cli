@@ -864,6 +864,7 @@ class TestExperimentsCreateMultiNode(object):
         "--vpc",
     ]
 
+
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
@@ -1153,6 +1154,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
     ]
     FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
         "experiments", "run", "multinode",
+        "--no-logs",
         "--optionsFile",  # path added in test
     ]
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
