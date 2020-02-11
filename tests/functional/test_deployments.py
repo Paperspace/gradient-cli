@@ -261,7 +261,7 @@ class TestDeploymentsCreate(object):
     def test_should_return_error_message_for_passing_vpc_cluster_without_vpc_flag(self, get_patched):
         get_patched.return_value = MockResponse(example_responses.GET_CLUSTER_DETAILS_RESPONSE, 200)
         cluster_id = "some_cluster_id"
-        command = self.BASIC_OPTIONS_COMMAND.copy()
+        command = list(self.BASIC_OPTIONS_COMMAND)
         command.extend(["--clusterId", cluster_id])
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
