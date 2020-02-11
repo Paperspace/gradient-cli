@@ -26,6 +26,7 @@ class JobsClient(BaseClient):
         )
 
     """
+    entity = "job"
 
     def create(
             self,
@@ -58,6 +59,7 @@ class JobsClient(BaseClient):
             registry_target_username=None,
             registry_target_password=None,
             build_only=False,
+            tags=None,
     ):
         """
         Method to create and start job in paperspace gradient.
@@ -139,6 +141,7 @@ class JobsClient(BaseClient):
         :param str registry_target_username: username for custom docker registry
         :param str registry_target_password: password for custom docker registry
         :param bool build_only: determines whether to only build and not run image
+        :param list[str] tags: List of tags
 
         :returns: Job handle
         :rtype: str
@@ -178,6 +181,8 @@ class JobsClient(BaseClient):
             build_only=build_only,
         )
         handle = CreateJob(self.api_key, self.logger).create(job, data=data)
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
     def delete(self, job_id):

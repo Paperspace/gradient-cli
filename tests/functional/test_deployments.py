@@ -11,6 +11,7 @@ EXPECTED_HEADERS = deployments_commands.default_headers
 
 class TestDeploymentsCreate(object):
     URL = "https://api.paperspace.io/deployments/createDeployment/"
+    TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     URL_V2 = "https://api.paperspace.io/deployments/v2/createDeployment/"
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -22,6 +23,18 @@ class TestDeploymentsCreate(object):
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
+    ]
+    BASIC_OPTIONS_COMMAND_WITH_TAGS = [
+        "deployments", "create",
+        "--deploymentType", "tfserving",
+        "--modelId", "some_model_id",
+        "--name", "some_name",
+        "--machineType", "G1",
+        "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--instanceCount", "666",
+        "--tag", "test0",
+        "--tag", "test1",
+        "--tags", "test2,test3",
     ]
     BASIC_OPTIONS_COMMAND_WITH_USE_VPC_FLAG = [
         "deployments", "create",
@@ -78,6 +91,11 @@ class TestDeploymentsCreate(object):
         "instanceCount": 666,
         "modelId": u"some_model_id",
     }
+    TAGS_JSON = {
+        "entity": "deployment",
+        "entityId": "sadkfhlskdjh",
+        "tags": ["test0", "test1", "test2", "test3"]
+    }
     ALL_OPTIONS_REQUEST = {
         "machineType": u"G1",
         "name": u"some_name",
@@ -101,6 +119,7 @@ class TestDeploymentsCreate(object):
         "oauthSecret": "some_password",
     }
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
+    UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
     EXPECTED_STDOUT = "New deployment created with id: sadkfhlskdjh\n" \
                       "https://www.paperspace.com/console/deployments/sadkfhlskdjh\n"
 
@@ -206,6 +225,34 @@ class TestDeploymentsCreate(object):
                                              files=None,
                                              data=None)
         assert result.output == self.EXPECTED_STDOUT_MODEL_NOT_FOUND
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    def test_should_send_proper_data_and_tag_deployment(self, post_patched, get_patched, put_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
+        get_patched.return_value = MockResponse({}, 200, "fake content")
+        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_TAGS)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+
+        put_patched.assert_called_once_with(
+            self.TAGS_URL,
+            headers=EXPECTED_HEADERS,
+            json=self.TAGS_JSON,
+            params=None,
+        )
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
         assert result.exit_code == 0
 
 

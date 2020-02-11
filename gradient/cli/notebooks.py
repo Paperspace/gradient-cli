@@ -2,11 +2,16 @@ import click
 
 from gradient.cli import common
 from gradient.cli.cli import cli
+from gradient.cli.common import validate_comma_split_option
 from gradient.commands import notebooks
 
 
 @cli.group("notebooks", help="Manage notebooks", cls=common.ClickGroup)
 def notebooks_group():
+    pass
+
+@notebooks_group.group("tags", help="Manage notebook tags", cls=common.ClickGroup)
+def notebook_tags():
     pass
 
 
@@ -86,9 +91,23 @@ def notebooks_group():
     type=bool,
     cls=common.GradientOption,
 )
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
 @common.api_key_option
 @common.options_file
 def create_notebook(api_key, options_file, **notebook):
+    notebook["tags"] = validate_comma_split_option(notebook.pop("tags_comma"), notebook.pop("tags"))
     command = notebooks.CreateNotebookCommand(api_key=api_key)
     command.execute(**notebook)
 
@@ -133,3 +152,51 @@ def list_notebooks(n_limit, n_offset, api_key, options_file):
 def show_notebook(id, api_key, options_file):
     command = notebooks.ShowNotebookDetailsCommand(api_key=api_key)
     command.execute(id)
+
+
+@notebook_tags.command("add", help="Add tags to notebook")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to notebook",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to notebook",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def notebook_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = notebooks.NotebookAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@notebook_tags.command("remove", help="Remove tags from notebook")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to remove from notebook",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want to remove from notebook",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def notebook_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = notebooks.NotebookRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

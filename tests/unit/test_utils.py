@@ -5,6 +5,7 @@ import pytest
 
 import gradient.api_sdk.utils
 from gradient import utils, exceptions
+from gradient.cli.common import validate_comma_split_option
 from gradient.exceptions import WrongPathError
 from gradient.utils import PathParser
 
@@ -127,3 +128,31 @@ class TestValidateAuthOptions(object):
     def test_should_not_raise_exception_when_all_values_were_set(self):
         kwargs = {"auth_username": "username", "auth_password": "password", "generate_auth": True}
         pytest.raises(exceptions.ApplicationError, utils.validate_auth_options, kwargs)
+
+
+class TestCommonFunction(object):
+    @pytest.mark.parametrize("comma_value, value, expected_result", [
+        pytest.param(None, None, None, id="None passed in both argument"),
+        pytest.param(None, ['test'], ['test'], id="None passed as comma separated value"),
+        pytest.param("test", None, ['test'], id="None passed as list value"),
+        pytest.param("test0", ["test1"], ["test0", "test1"], id="Pass single values for arguments"),
+        pytest.param(
+            "test0,test1", ["test2"], ["test0", "test1", "test2"],
+            id="Pass more values separated by comma and single element in list"
+        ),
+        pytest.param(
+            "test0 ,test1, test2 , test3", ["test4"], ["test0", "test1", "test2", "test3", "test4"],
+            id="Pass more values separated by comma in different style and single element in list"
+        ),
+        pytest.param(
+            "test0\t,test1,\ntest2\t,\ttest3\n", ["test4"], ["test0", "test1", "test2", "test3", "test4"],
+            id="Pass more values separated by comma with more type of white chars and single element in list"
+        ),
+    ])
+    def test_validate_comma_split_option(self, comma_value, value, expected_result):
+        if expected_result:
+            expected_result.sort()
+        result = validate_comma_split_option(comma_value, value)
+        if result:
+            result.sort()
+        assert result == expected_result
