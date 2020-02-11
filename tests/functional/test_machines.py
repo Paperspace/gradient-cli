@@ -896,9 +896,9 @@ class TestShowMachine(object):
 | Script ID                 | None                                                                               |
 | Last Run                  | None                                                                               |
 | Dynamic Public IP         | False                                                                              |
-| Last event                | name:     create                                                                   |
+| Last event                | name:     restart                                                                  |
 |                           | state:    done                                                                     |
-|                           | created:  2019-04-11T18:10:29.665Z                                                 |
+|                           | created:  2019-04-12T12:19:03.814Z                                                 |
 +---------------------------+------------------------------------------------------------------------------------+
 """
 

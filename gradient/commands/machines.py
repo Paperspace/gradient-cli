@@ -1,4 +1,5 @@
-import halo
+import datetime
+
 import terminaltables
 
 from gradient import api_sdk
@@ -61,9 +62,15 @@ class ShowMachineCommand(DetailsCommandMixin, GetMachinesClientMixin, common.Bas
         :param api_sdk.Machine machine:
         """
         try:
-            last_event = machine.events[-1]
-            last_event_string = "name:     {}\nstate:    {}\ncreated:  {}" \
-                .format(last_event.name, last_event.state, last_event.created)
+            if machine.events:
+                sorted_events = sorted(machine.events,
+                                       key=lambda x: datetime.datetime.strptime(x.created, "%Y-%m-%dT%H:%M:%S.%fZ"))
+                last_event = sorted_events[-1]
+                last_event_string = "name:     {}\nstate:    {}\ncreated:  {}" \
+                    .format(last_event.name, last_event.state, last_event.created)
+            else:
+                last_event_string = ""
+
         except (KeyError, IndexError):
             last_event_string = None
 
