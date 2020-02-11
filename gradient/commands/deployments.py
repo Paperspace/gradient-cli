@@ -133,6 +133,8 @@ class GetDeploymentDetails(DetailsCommandMixin, _DeploymentCommand):
         """
         :param models.Deployment instance:
         """
+        tags_string = ", ".join(instance.tags)
+
         data = (
             ("ID", instance.id),
             ("Name", instance.name),
@@ -145,5 +147,6 @@ class GetDeploymentDetails(DetailsCommandMixin, _DeploymentCommand):
             ("Endpoint", instance.endpoint),
             ("API type", instance.api_type),
             ("Cluster ID", instance.cluster_id),
+            ("Tags", tags_string),
         )
         return data

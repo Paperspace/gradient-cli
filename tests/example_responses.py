@@ -4429,6 +4429,14 @@ DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON = {
         "projectId": 612,
         "started_by_user_id": 1655,
         "state": 1,
+        "tags": [
+            {
+                "name": "tag1",
+            },
+            {
+                "name": "tag2",
+            },
+        ],
         "templateHistory": {
             "dtCreated": "2019-03-22T13:22:26.375543+00:00",
             "dtDeleted": None,
@@ -4452,50 +4460,58 @@ DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON = {
 
 DETAILS_OF_MULTI_NODE_EXPERIMENT_RESPONSE_JSON = {
   "data": {
-    "dtCreated": "2019-12-16T16:18:47.881765+00:00",
-    "dtDeleted": None,
-    "dtFinished": None,
-    "dtModified": "2019-12-16T16:18:47.881765+00:00",
-    "dtProvisioningFinished": None,
-    "dtProvisioningStarted": None,
-    "dtStarted": None,
-    "dtTeardownFinished": None,
-    "dtTeardownStarted": None,
-    "experimentError": None,
-    "experimentTemplateHistoryId": 34335,
-    "experimentTemplateId": 439,
-    "experimentTypeId": 3,
-    "handle": "emarbao6t6tsn",
-    "id": 34272,
-    "projectHandle": "pr85u3sfa",
-    "projectId": 1824,
-    "started_by_user_id": 1655,
-    "state": 10,
-    "templateHistory": {
-      "cliCommand": "gradient experiments create multinode --name some_name --projectId pr85u3sfa --experimentType MPI --workerContainer python --workerMachineType c5.xlarge --workerCommand \"echo worker\" --workerCount 2 --masterContainer python --masterMachineType c5.xlarge --masterCommand \"echo master\" --masterCount 1 --workspaceUrl some.url --workingDirectory /some/working/directory --clusterId clqr4b0ox --experimentEnv '{\"key\": \"value\"}' --ports 5000 --modelType some_type --modelPath /some/model/path",
-      "dtCreated": "2019-12-16T16:18:46.577973+00:00",
+      "dtCreated": "2019-12-16T16:18:47.881765+00:00",
       "dtDeleted": None,
+      "dtFinished": None,
+      "dtModified": "2019-12-16T16:18:47.881765+00:00",
+      "dtProvisioningFinished": None,
+      "dtProvisioningStarted": None,
+      "dtStarted": None,
+      "dtTeardownFinished": None,
+      "dtTeardownStarted": None,
+      "experimentError": None,
+      "experimentTemplateHistoryId": 34335,
       "experimentTemplateId": 439,
-      "id": 34335,
-      "params": {
-        "artifact_directory": "/some/artifact/directory",
-        "cluster_id": "clqr4b0ox",
-        "experiment_env": {
-          "key": "value"
-        },
-        "is_preemptible": False,
-        "model_path": "/some/model/path",
-        "model_type": "some_type",
-        "name": "some_name",
-        "ports": "5000",
-        "project_handle": "pr85u3sfa",
-        "version": "v2",
-        "working_directory": "/some/working/directory",
-        "workspace_url": "some.url"
-      },
-      "triggerEvent": None,
-      "triggerEventId": None
-    }
+      "experimentTypeId": 3,
+      "handle": "emarbao6t6tsn",
+      "id": 34272,
+      "projectHandle": "pr85u3sfa",
+      "projectId": 1824,
+      "started_by_user_id": 1655,
+      "state": 10,
+      "tags": [
+          {
+              "name": "tag1",
+          },
+          {
+              "name": "tag2",
+          },
+      ],
+      "templateHistory": {
+          "cliCommand": "gradient experiments create multinode --name some_name --projectId pr85u3sfa --experimentType MPI --workerContainer python --workerMachineType c5.xlarge --workerCommand \"echo worker\" --workerCount 2 --masterContainer python --masterMachineType c5.xlarge --masterCommand \"echo master\" --masterCount 1 --workspaceUrl some.url --workingDirectory /some/working/directory --clusterId clqr4b0ox --experimentEnv '{\"key\": \"value\"}' --ports 5000 --modelType some_type --modelPath /some/model/path",
+          "dtCreated": "2019-12-16T16:18:46.577973+00:00",
+          "dtDeleted": None,
+          "experimentTemplateId": 439,
+          "id": 34335,
+          "params": {
+              "artifact_directory": "/some/artifact/directory",
+              "cluster_id": "clqr4b0ox",
+              "experiment_env": {
+                  "key": "value"
+              },
+              "is_preemptible": False,
+              "model_path": "/some/model/path",
+              "model_type": "some_type",
+              "name": "some_name",
+              "ports": "5000",
+              "project_handle": "pr85u3sfa",
+              "version": "v2",
+              "working_directory": "/some/working/directory",
+              "workspace_url": "some.url"
+          },
+          "triggerEvent": None,
+          "triggerEventId": None
+      }
   },
   "message": "success"
 }
@@ -5659,7 +5675,7 @@ GET_DEPLOYMENT_DETAILS_JSON_RESPONSE = {
             "containerUrlPath": None,
             "endpointUrlPath": None,
             "method": None,
-            "tags": None
+            "tags": ["tag1", "tag2"],
         }
     ],
     "total": 129,

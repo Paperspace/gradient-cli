@@ -1186,6 +1186,7 @@ class TestExperimentDetail(object):
 | Worker Machine Type | None                     |
 | Working Directory   | /some/working/directory  |
 | Workspace URL       | some.url                 |
+| Tags                | tag1, tag2               |
 +---------------------+--------------------------+
 """
     SINGLE_NODE_DETAILS_STDOUT = """+---------------------+----------------+
@@ -1202,6 +1203,7 @@ class TestExperimentDetail(object):
 | Workspace URL       | None           |
 | Model Type          | None           |
 | Model Path          | None           |
+| Tags                | tag1, tag2     |
 +---------------------+----------------+
 """
 

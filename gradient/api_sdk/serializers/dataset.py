@@ -1,6 +1,7 @@
 import marshmallow as ma
 
 from .base import BaseSchema
+from .tag import TagSchema
 from .. import models
 
 
@@ -13,3 +14,4 @@ class DatasetSchema(BaseSchema):
     etag = ma.fields.String()
     version_id = ma.fields.String(dump_to="versionId", load_from="versionId")
     name = ma.fields.String()
+    tags = ma.fields.Nested(TagSchema, only="name", many=True, load_only=True)

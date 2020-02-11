@@ -851,6 +851,7 @@ class TestDeploymentDetails(object):
 | Endpoint        | https://paperspace.io/model-serving/some_id:predict |
 | API type        | REST                                                |
 | Cluster ID      | some_cluster_id                                     |
+| Tags            | tag1, tag2                                          |
 +-----------------+-----------------------------------------------------+
 """
 

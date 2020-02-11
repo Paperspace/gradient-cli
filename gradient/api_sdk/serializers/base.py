@@ -23,13 +23,16 @@ class BaseSchema(marshmallow.Schema):
 
     def _get_instance(self, obj_dict):
         obj = self.load(obj_dict)
+        if obj.data is None:
+            return None
+
         instance = self.MODEL(**obj.data)
         self._get_nested(instance, obj_dict)
         return instance
 
     def _get_nested(self, instance, obj_dict):
         for field_name, field_type in self.fields.items():
-            if not isinstance(field_type, marshmallow.fields.Nested):
+            if not isinstance(field_type, marshmallow.fields.Nested) or not field_type.many:
                 continue
 
             load_from = field_type.load_from or field_name

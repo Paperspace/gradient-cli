@@ -2,6 +2,7 @@ import marshmallow
 
 from gradient.api_sdk import models
 from .base import BaseSchema
+from .tag import TagSchema
 
 
 class JobSchema(BaseSchema):
@@ -92,3 +93,5 @@ class JobSchema(BaseSchema):
         dump_to="registryTargetUsername", load_from="registryTargetUsername")
     registry_target_password = marshmallow.fields.Str(
         dump_to="registryTargetPassword", load_from="registryTargetPassword")
+
+    tags = marshmallow.fields.Nested(TagSchema, only="name", many=True, load_only=True)

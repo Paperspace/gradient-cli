@@ -281,6 +281,8 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
         """
         :param api_sdk.SingleNodeExperiment experiment:
         """
+
+        tags_string = ", ".join(experiment.tags)
         data = (
             ("Name", experiment.name),
             ("ID", experiment.id),
@@ -294,6 +296,7 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
             ("Workspace URL", experiment.workspace_url),
             ("Model Type", experiment.model_type),
             ("Model Path", experiment.model_path),
+            ("Tags", tags_string),
         )
         return data
 
@@ -302,6 +305,8 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
         """
         :param api_sdk.MultiNodeExperiment experiment:
         """
+
+        tags_string = ", ".join(experiment.tags)
         data = (
             ("Name", experiment.name),
             ("ID", experiment.id),
@@ -324,6 +329,7 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
             ("Worker Machine Type", experiment.worker_machine_type),
             ("Working Directory", experiment.working_directory),
             ("Workspace URL", experiment.workspace_url),
+            ("Tags", tags_string),
         )
         return data
 
@@ -332,6 +338,8 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
         """
         :param api_sdk.MpiMultiNodeExperiment experiment:
         """
+
+        tags_string = ", ".join(experiment.tags)
         data = (
             ("Name", experiment.name),
             ("ID", experiment.id),
@@ -354,6 +362,7 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
             ("Worker Machine Type", experiment.worker_machine_type),
             ("Working Directory", experiment.working_directory),
             ("Workspace URL", experiment.workspace_url),
+            ("Tags", tags_string),
         )
         return data
 

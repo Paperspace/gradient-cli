@@ -18,3 +18,4 @@ class Tensorboard(object):
     experiments = attr.ib(type=list, default=None)
     url = attr.ib(type=str, default=None)
     state = attr.ib(type=int, default=None)
+    tags = attr.ib(type=list, factory=list)
