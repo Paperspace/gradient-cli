@@ -8,12 +8,17 @@ from gradient.api_sdk import DeploymentsClient
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
-from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, validate_comma_split_option
 from gradient.commands import deployments as deployments_commands
+from gradient.commands.deployments import DeploymentRemoveTagsCommand, DeploymentAddTagsCommand
 
 
 @cli.group("deployments", help="Manage deployments", cls=ClickGroup)
 def deployments():
+    pass
+
+@deployments.group("tags", help="Manage deployments tags", cls=ClickGroup)
+def deployments_tags():
     pass
 
 
@@ -167,11 +172,24 @@ def get_deployment_client(api_key):
     is_flag=True,
     cls=common.GradientOption,
 )
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
 @api_key_option
 @common.options_file
 def create_deployment(api_key, use_vpc, options_file, **kwargs):
     utils.validate_auth_options(kwargs)
-
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     del_if_value_is_none(kwargs)
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.CreateDeploymentCommand(deployment_client=deployment_client)
@@ -461,3 +479,55 @@ def get_deployment(deployment_id, api_key, options_file):
     deployment_client = get_deployment_client(api_key)
     command = deployments_commands.GetDeploymentDetails(deployment_client=deployment_client)
     command.execute(deployment_id)
+
+
+@deployments_tags.command("add", help="Add tags to deployment")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to deployment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to deployment",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def deployment_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    deployment_client = get_deployment_client(api_key)
+
+    command = DeploymentAddTagsCommand(deployment_client=deployment_client)
+    command.execute(id, **kwargs)
+
+
+@deployments_tags.command("remove", help="Remove tags from deployment")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to remove from deployment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want to remove from deployment",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def deployment_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    deployment_client = get_deployment_client(api_key)
+
+    command = DeploymentRemoveTagsCommand(deployment_client=deployment_client)
+    command.execute(id, **kwargs)

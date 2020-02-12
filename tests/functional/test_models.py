@@ -237,6 +237,7 @@ class TestDeleteModel(object):
 
 class TestModelUpload(object):
     URL = "https://api.paperspace.io/mlModels/createModel"
+    TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     MODEL_FILE = "saved_model.pb"
     BASE_COMMAND = [
         "models", "upload",
@@ -244,9 +245,23 @@ class TestModelUpload(object):
         "--name", "some_name",
         "--modelType", "tensorflow",
     ]
+    BASE_COMMAND_WITH_TAGS = [
+        "models", "upload",
+        MODEL_FILE,
+        "--name", "some_name",
+        "--modelType", "tensorflow",
+        "--tag", "test0",
+        "--tag", "test1",
+        "--tags", "test2,test3",
+    ]
     BASE_PARAMS = {
         "name": "some_name",
         "modelType": "Tensorflow",
+    }
+    TAGS_JSON = {
+        "entity": "mlModel",
+        "entityId": "some_model_id",
+        "tags": ["test0", "test1", "test2", "test3"]
     }
     COMMAND_WITH_ALL_OPTIONS = [
         "models", "upload",
@@ -281,6 +296,7 @@ class TestModelUpload(object):
     EXPECTED_STDOUT = "Model uploaded with ID: some_model_id\n"
 
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 400, "message": "Invalid API token"}
+    UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_post_request_when_models_update_command_was_used_with_basic_options(self, post_patched):
@@ -386,6 +402,41 @@ class TestModelUpload(object):
                                                  params=self.BASE_PARAMS)
 
             assert result.output == "Failed to create resource: Invalid API token\n"
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    def test_should_send_proper_data_and_tag_machine(self, post_patched, get_patched, put_patched):
+        post_patched.return_value = MockResponse(json_data=example_responses.MODEL_UPLOAD_RESPONSE_JSON)
+        get_patched.return_value = MockResponse({}, 200)
+        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200)
+
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            with open(self.MODEL_FILE, "w") as h:
+                h.write("I'm a model!")
+
+            result = runner.invoke(cli.cli, self.BASE_COMMAND_WITH_TAGS)
+
+            post_patched.assert_called_once_with(self.URL,
+                                                 headers=self.EXPECTED_HEADERS,
+                                                 json=None,
+                                                 files=[(self.MODEL_FILE, mock.ANY)],
+                                                 data=None,
+                                                 params=self.BASE_PARAMS)
+
+            assert post_patched.call_args.kwargs["files"][0][1].name == self.MODEL_FILE
+            assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+            put_patched.assert_called_once_with(
+                self.TAGS_URL,
+                headers=self.EXPECTED_HEADERS,
+                json=self.TAGS_JSON,
+                params=None,
+            )
+
+            assert result.output == self.EXPECTED_STDOUT, result.exc_info
+            assert result.exit_code == 0
 
 
 class TestModelDetails(object):

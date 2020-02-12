@@ -10,6 +10,7 @@ from gradient.commands.common import DetailsCommandMixin
 
 
 class GetMachinesClientMixin(object):
+    entity = "machine"
     def _get_client(self, api_key, logger):
         client = api_sdk.MachinesClient(api_key=api_key, logger=logger)
         return client
@@ -165,3 +166,15 @@ class WaitForMachineStateCommand(GetMachinesClientMixin, BaseCommand):
     def execute(self, machine_id, state, interval=5):
         self.client.wait_for_state(machine_id, state, interval)
         self.logger.log("Machine state: {}".format(state))
+
+
+class MachineAddTagsCommand(GetMachinesClientMixin, BaseCommand):
+    def execute(self, machine_id, *args, **kwargs):
+        self.client.add_tags(machine_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to machine")
+
+
+class MachineRemoveTagsCommand(GetMachinesClientMixin, BaseCommand):
+    def execute(self, machine_id, *args, **kwargs):
+        self.client.remove_tags(machine_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from machine")

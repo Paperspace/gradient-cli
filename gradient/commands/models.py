@@ -12,6 +12,7 @@ from gradient.exceptions import ApplicationError
 
 @six.add_metaclass(abc.ABCMeta)
 class GetModelsClientMixin:
+    entity = "mlModel"
     def _get_client(self, api_key, logger):
         client = api_sdk.clients.ModelsClient(api_key=api_key, logger=logger)
         return client
@@ -48,9 +49,9 @@ class DeleteModelCommand(GetModelsClientMixin, BaseCommand):
 class UploadModel(GetModelsClientMixin, BaseCommand):
     SPINNER_MESSAGE = "Uploading model"
 
-    def execute(self, path, name, model_type, model_summary, notes):
+    def execute(self, path, name, model_type, model_summary, notes, **kwargs):
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            model_id = self.client.upload(path, name, model_type, model_summary, notes)
+            model_id = self.client.upload(path, name, model_type, model_summary, notes, **kwargs)
 
         self.logger.log("Model uploaded with ID: {}".format(model_id))
 
@@ -81,3 +82,15 @@ class DownloadModelFiles(GetModelsClientMixin, BaseCommand):
             model_files_downloader.download(model_id, destination_directory)
         except OSError as e:
             raise ApplicationError(e)
+
+
+class MLModelAddTagsCommand(GetModelsClientMixin, BaseCommand):
+    def execute(self, ml_model_id, *args, **kwargs):
+        self.client.add_tags(ml_model_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to ml model")
+
+
+class MLModelRemoveTagsCommand(GetModelsClientMixin, BaseCommand):
+    def execute(self, ml_model_id, *args, **kwargs):
+        self.client.remove_tags(ml_model_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from ml model")

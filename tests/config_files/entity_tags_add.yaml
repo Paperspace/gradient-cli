@@ -1,0 +1,6 @@
+apiKey: some_key
+id: some_id
+tag:
+  - test0
+  - test1
+tags: test2,test3

@@ -146,11 +146,24 @@ class TestListProjects(object):
 
 class TestCreateProject(object):
     URL = "https://api.paperspace.io/projects/"
+    TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     COMMAND = [
         "projects", "create",
         "--name", "some_name",
     ]
+    COMMAND_WITH_TAGS = [
+        "projects", "create",
+        "--name", "some_name",
+        "--tag", "test0",
+        "--tag", "test1",
+        "--tags", "test2,test3",
+    ]
     EXPECTED_REQUEST_JSON = {"name": "some_name"}
+    TAGS_JSON = {
+        "entity": "project",
+        "entityId": "pru5a4dnu",
+        "tags": ["test0", "test1", "test2", "test3"]
+    }
     EXPECTED_RESPONSE_JSON = {
         "name": "some_name",
         "handle": "pru5a4dnu",
@@ -185,6 +198,7 @@ class TestCreateProject(object):
         "repoName": "mnist-sample",
         "repoUrl": "https://github.com/Paperspace/mnist-sample",
     }
+    UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
 
     EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
@@ -335,6 +349,34 @@ class TestCreateProject(object):
 
         assert result.output == "Failed to create resource\n"
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    def test_should_send_proper_data_and_tag_project(self, post_patched, get_patched, put_patched):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WHEN_ALL_PARAMETERS_WERE_USED, 201)
+        get_patched.return_value = MockResponse({}, 200, "fake content")
+        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_TAGS)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+
+        put_patched.assert_called_once_with(
+            self.TAGS_URL,
+            headers=self.EXPECTED_HEADERS,
+            json=self.TAGS_JSON,
+            params=None,
+        )
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        assert result.exit_code == 0
 
 
 class TestDeleteProjects(object):

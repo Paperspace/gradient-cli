@@ -242,3 +242,15 @@ class GradientObjectListOption(GradientOption):
 class GradientDatasetOption(GradientObjectListOption):
     def __init__(self, param_decls, **kwargs):
         super(GradientDatasetOption, self).__init__("dataset", param_decls, **kwargs)
+
+
+def validate_comma_split_option(comma_option_value, option_value):
+    if comma_option_value or option_value:
+        if option_value:
+            option_value = list(option_value)
+        else:
+            option_value = list()
+        if comma_option_value:
+            comma_option_value = [s.strip() for s in comma_option_value.split(",")]
+            option_value.extend(comma_option_value)
+        return sorted(list(set(option_value)))

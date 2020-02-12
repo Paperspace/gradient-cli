@@ -26,6 +26,7 @@ except ImportError:
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseExperimentCommand(BaseCommand):
+    entity = "experiment"
     def _get_client(self, api_key, logger):
         client = api_sdk.clients.ExperimentsClient(api_key=api_key, logger=logger)
         return client
@@ -414,3 +415,15 @@ class DeleteExperimentCommand(BaseExperimentCommand):
     def execute(self, experiment_id, *args, **kwargs):
         self.client.delete(experiment_id)
         self.logger.log("Experiment deleted")
+
+
+class ExperimentAddTagsCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, *args, **kwargs):
+        self.client.add_tags(experiment_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to experiment")
+
+
+class ExperimentRemoveTagsCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, *args, **kwargs):
+        self.client.remove_tags(experiment_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from experiment")

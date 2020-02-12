@@ -176,6 +176,8 @@ from tests import MockResponse, example_responses
 #                                         params=None)
 #         assert result.exit_code == 0
 #
+# TODO: Add test case for creating notebook with tags
+#
 #
 # class TestNotebooksDelete(object):
 #     URL = "https://api.paperspace.io/notebooks/v2/deleteNotebook"

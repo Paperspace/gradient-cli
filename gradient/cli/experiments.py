@@ -7,10 +7,11 @@ from gradient.api_sdk import constants
 from gradient.cli import common, validators
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
-from gradient.cli.common import api_key_option, ClickGroup
+from gradient.cli.common import api_key_option, ClickGroup, validate_comma_split_option
 from gradient.cli.utils.flag_with_value import GradientRegisterReaderOption, GradientRegisterWriterOption, \
     GradientRegisterWriterCommand
 from gradient.commands import experiments as experiments_commands
+from gradient.commands.experiments import ExperimentAddTagsCommand, ExperimentRemoveTagsCommand
 
 MULTI_NODE_CREATE_EXPERIMENT_COMMANDS = {
     constants.ExperimentType.GRPC_MULTI_NODE: experiments_commands.CreateMultiNodeExperimentCommand,
@@ -41,6 +42,10 @@ def create_experiment():
 
 @experiments_group.group(name="run", help="Create and start new experiment", cls=ClickGroup)
 def create_and_start_experiment():
+    pass
+
+@experiments_group.group(name="tags", help="Manage tags for experiment", cls=ClickGroup)
+def experiments_tags():
     pass
 
 
@@ -158,6 +163,19 @@ def common_experiments_create_options(f):
             help="Flag: is preemptible",
             cls=common.GradientOption,
         ),
+        click.option(
+            "--tag",
+            "tags",
+            multiple=True,
+            help="One or many tags that you want to add to experiment",
+            cls=common.GradientOption
+        ),
+        click.option(
+            "--tags",
+            "tags_comma",
+            help="Separated by comma tags that you want add to experiment",
+            cls=common.GradientOption
+        )
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -516,6 +534,7 @@ def parse_tensorboard_options(tensorboard, tensorboard_set):
 @api_key_option
 @common.options_file
 def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
@@ -539,6 +558,7 @@ def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_fi
 @api_key_option
 @common.options_file
 def create_single_node(api_key, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
@@ -570,6 +590,7 @@ def create_single_node(api_key, use_vpc, tensorboard, tensorboard_set, options_f
 @common.options_file
 @click.pass_context
 def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
@@ -608,6 +629,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, t
 @click.pass_context
 def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, tensorboard, tensorboard_set, options_file,
                                  **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
@@ -760,3 +782,51 @@ def list_logs(experiment_id, line, limit, follow, options_file, api_key=None):
 def delete_experiment(id, options_file, api_key):
     command = experiments_commands.DeleteExperimentCommand(api_key=api_key)
     command.execute(id)
+
+
+@experiments_tags.command("add", help="Add tags to experiment")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def experiment_add_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = ExperimentAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@experiments_tags.command("remove", help="Remove tags from experiment")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to remove from experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want to remove from experiment",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def experiment_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = ExperimentRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

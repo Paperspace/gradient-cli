@@ -9,6 +9,7 @@ from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsComma
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseNotebookCommand(BaseCommand):
+    entity = "notebook"
     def _get_client(self, api_key, logger):
         client = api_sdk.clients.NotebooksClient(api_key=api_key, logger=logger)
         return client
@@ -75,3 +76,15 @@ class ShowNotebookDetailsCommand(DetailsCommandMixin, BaseNotebookCommand):
             ("FQDN", instance.fqdn),
         )
         return data
+
+
+class NotebookAddTagsCommand(BaseNotebookCommand):
+    def execute(self, notebook_id, *args, **kwargs):
+        self.client.add_tags(notebook_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to notebook")
+
+
+class NotebookRemoveTagsCommand(BaseNotebookCommand):
+    def execute(self, notebook_id, *args, **kwargs):
+        self.client.remove_tags(notebook_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from notebook")
