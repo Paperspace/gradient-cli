@@ -142,6 +142,9 @@ class TestExperimentsCreateSingleNode(object):
     RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'
     EXPECTED_STDOUT_PROJECT_NOT_FOUND = "handle: wrong_handle\nProject not found\n"
 
+    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
+    EXPECTED_STDOUT_MISSING_VPC_FLAG = "Provided cluster id need --vpc flag to proceed\n"
+
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
@@ -397,6 +400,21 @@ class TestExperimentsCreateSingleNode(object):
 
         assert result.exit_code == 0
 
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_return_error_message_for_passing_vpc_cluster_without_vpc_flag(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.GET_CLUSTER_DETAILS_RESPONSE, 200)
+        cluster_id = "some_cluster_id"
+        command = list(self.BASIC_OPTIONS_COMMAND)
+        command.extend(["--clusterId", cluster_id])
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT_MISSING_VPC_FLAG in result.output, result.exc_info
+        get_patched.assert_called_once_with(self.VALIDATE_CLUSTER_URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params={"id": cluster_id})
+
 
 class TestExperimentsCreateMultiNodeDatasetObjects(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/"
@@ -557,6 +575,8 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         "--vpc",
     ]
 
+    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
+    EXPECTED_STDOUT_MISSING_VPC_FLAG = "Provided cluster id need --vpc flag to proceed\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
@@ -709,6 +729,22 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
 
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_return_error_message_for_passing_vpc_cluster_without_vpc_flag(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.GET_CLUSTER_DETAILS_RESPONSE, 200)
+        cluster_id = "some_cluster_id"
+        command = list(self.BASIC_OPTIONS_COMMAND)
+        command.extend(["--clusterId", cluster_id])
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT_MISSING_VPC_FLAG, result.exc_info
+        get_patched.assert_called_once_with(self.VALIDATE_CLUSTER_URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params={"id": cluster_id})
+
 
 class TestExperimentsCreateMultiNode(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/"
@@ -864,6 +900,8 @@ class TestExperimentsCreateMultiNode(object):
         "--vpc",
     ]
 
+    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
+    EXPECTED_STDOUT_MISSING_VPC_FLAG = "Provided cluster id need --vpc flag to proceed\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
@@ -1016,6 +1054,21 @@ class TestExperimentsCreateMultiNode(object):
 
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_return_error_message_for_passing_vpc_cluster_without_vpc_flag(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.GET_CLUSTER_DETAILS_RESPONSE, 200)
+        cluster_id = "some_cluster_id"
+        command = list(self.BASIC_OPTIONS_COMMAND)
+        command.extend(["--clusterId", cluster_id])
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT_MISSING_VPC_FLAG, result.exc_info
+        get_patched.assert_called_once_with(self.VALIDATE_CLUSTER_URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params={"id": cluster_id})
 
 
 class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
