@@ -65,7 +65,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
-
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
         if not is_preemptible:
             is_preemptible = None
 
@@ -183,7 +183,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
-
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
         experiment_type_id = self._get_experiment_type_id(experiment_type_id)
 
         if not is_preemptible:
@@ -311,6 +311,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
         if not is_preemptible:
             is_preemptible = None
 
@@ -418,7 +419,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
-
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
         if not is_preemptible:
             is_preemptible = None
 
@@ -536,7 +537,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
-
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
         experiment_type_id = self._get_experiment_type_id(experiment_type_id)
 
         if not is_preemptible:
@@ -662,6 +663,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
         if not is_preemptible:
             is_preemptible = None
 
