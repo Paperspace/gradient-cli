@@ -1828,7 +1828,11 @@ LIST_JOBS_RESPONSE_JSON = {
         "isPreemptible": False,
         "metricsURL": "metrics-gcp-dev.paperspace.io",
         "customMetrics": None,
-        "experimentId": "esk8lny3pxyqd6"
+        "experimentId": "esk8lny3pxyqd6",
+        "tags": [
+            "tag1",
+            "tag2",
+        ],
     },
     {
         "id": "jfl063dsv634h",

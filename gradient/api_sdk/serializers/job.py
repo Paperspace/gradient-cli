@@ -94,4 +94,4 @@ class JobSchema(BaseSchema):
     registry_target_password = marshmallow.fields.Str(
         dump_to="registryTargetPassword", load_from="registryTargetPassword")
 
-    tags = marshmallow.fields.Nested(TagSchema, only="name", many=True, load_only=True)
+    tags = marshmallow.fields.Str(many=True, load_only=True)
