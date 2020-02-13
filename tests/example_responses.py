@@ -5794,3 +5794,62 @@ GET_DEPLOYMENT_DETAILS_JSON_RESPONSE = {
     "displayTotal": 129,
     "runningTotal": 0
 }
+
+GET_CLUSTER_DETAILS_RESPONSE = {
+    "id": "some_cluster_id",
+    "name": "EKS testing",
+    "type": "Kubernetes Processing Site",
+    "region": "Private",
+    "cloud": "aws",
+    "teamId": "some_team_id",
+    "isDefault": False,
+    "dtCreated": "2019-11-21T07:27:37.010Z",
+    "dtModified": "2019-11-21T18:12:27.723Z",
+    "clusterId": 1,
+    "isPrivate": True,
+    "modelName": "team",
+    "modelId": 1,
+    "nodes": [
+        {
+            "id": "cmsq4u0gf0m971f",
+            "name": "default",
+            "clusterId": "cluwffvkb",
+            "activeJobId": None,
+            "machineId": None,
+            "dtCreated": "2019-11-21T10:06:27.602Z",
+            "dtModified": "2019-11-21T10:06:27.602Z",
+            "dtDeleted": None,
+            "dtHeartbeat": None,
+            "nodeAttrs": None
+        }
+    ]
+}
+GET_V1_CLUSTER_DETAILS_RESPONSE = {
+    "id": "some_cluster_id",
+    "name": "EKS testing",
+    "type": "Job Cluster",
+    "region": "Private",
+    "cloud": "aws",
+    "teamId": "some_team_id",
+    "isDefault": False,
+    "dtCreated": "2019-11-21T07:27:37.010Z",
+    "dtModified": "2019-11-21T18:12:27.723Z",
+    "clusterId": 1,
+    "isPrivate": True,
+    "modelName": "team",
+    "modelId": 1,
+    "nodes": [
+        {
+            "id": "some_node_id",
+            "name": "default",
+            "clusterId": "some_cluster_id",
+            "activeJobId": None,
+            "machineId": None,
+            "dtCreated": "2019-11-21T10:06:27.602Z",
+            "dtModified": "2019-11-21T10:06:27.602Z",
+            "dtDeleted": None,
+            "dtHeartbeat": None,
+            "nodeAttrs": None
+        }
+    ]
+}

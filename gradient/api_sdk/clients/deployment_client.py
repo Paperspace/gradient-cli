@@ -97,6 +97,7 @@ class DeploymentsClient(BaseClient):
         :returns: Created deployment id
         :rtype: str
         """
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
         deployment = models.Deployment(
             deployment_type=deployment_type,
             model_id=model_id,
@@ -215,6 +216,7 @@ class DeploymentsClient(BaseClient):
             auth_password=None,
             use_vpc=False,
     ):
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
         deployment = models.Deployment(
             deployment_type=deployment_type,
             model_id=model_id,
