@@ -1,7 +1,6 @@
 import marshmallow
 
 from .base import BaseSchema
-from .tag import TagSchema
 from .. import models
 
 
@@ -25,4 +24,4 @@ class NotebookSchema(BaseSchema):
     vm_type = marshmallow.fields.Str(load_from="vmType", dump_to="vmType")
     fqdn = marshmallow.fields.Str()
     namespace = marshmallow.fields.Str()
-    tags = marshmallow.fields.Nested(TagSchema, only="name", many=True, load_only=True)
+    tags = marshmallow.fields.List(marshmallow.fields.Str(), load_only=True)

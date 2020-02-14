@@ -63,3 +63,8 @@ class ProjectsClient(BaseClient):
     def delete(self, project_id):
         repository = repositories.DeleteProject(api_key=self.api_key, logger=self.logger)
         repository.delete(project_id)
+
+    def get(self, project_id):
+        repository = repositories.GetProject(api_key=self.api_key, logger=self.logger)
+        project = repository.get(id=project_id)
+        return project
