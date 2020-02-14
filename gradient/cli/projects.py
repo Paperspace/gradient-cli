@@ -73,6 +73,20 @@ def create_project(api_key, options_file, **project):
     command.execute(project)
 
 
+@projects_group.command("details", help="Show details of a project")
+@click.option(
+    "--id",
+    "project_id",
+    required=True,
+    help="Project ID",
+)
+@common.api_key_option
+@common.options_file
+def create_project(project_id, api_key, options_file):
+    command = projects_commands.ShowProjectDetailsCommand(api_key)
+    command.execute(project_id)
+
+
 @projects_group.command("wizard", help="Run create project wizard")
 def create_project_wizard():
     run_create_project_wizard()

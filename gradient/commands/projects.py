@@ -7,7 +7,7 @@ from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import urljoin
-from .common import BaseCommand, ListCommandMixin
+from .common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -69,3 +69,20 @@ class ProjectRemoveTagsCommand(BaseProjectCommand):
     def execute(self, project_id, *args, **kwargs):
         self.client.remove_tags(project_id, entity=self.entity, **kwargs)
         self.logger.log("Tags removed from project")
+
+
+class ShowProjectDetailsCommand(DetailsCommandMixin, BaseProjectCommand):
+    def _get_table_data(self, instance):
+        """
+        :param api_sdk.Project instance:
+        """
+        tags_string = ", ".join(instance.tags)
+
+        data = (
+            ("Name", instance.name),
+            ("ID", instance.id),
+            ("Repository name", instance.repository_name),
+            ("Repository url", instance.repository_url),
+            ("Tags", tags_string),
+        )
+        return data

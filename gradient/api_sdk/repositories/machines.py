@@ -1,6 +1,7 @@
 import time
 
 from gradient.api_sdk.config import config
+from gradient.api_sdk.serializers import MachineSchema
 from .common import BaseRepository, CreateResource, DeleteResource, ListResources, StartResource, StopResource, \
     GetResource, AlterResource
 from .. import serializers, models
@@ -119,10 +120,7 @@ class StopMachine(MachinesApiUrlMixin, StopResource):
 
 
 class GetMachine(MachinesApiUrlMixin, GetResource):
-    def _parse_object(self, data, **kwargs):
-        machine = serializers.MachineSchema().get_instance(data)
-        machine.events = serializers.MachineEventSchema().get_instance(machine.events, many=True)
-        return machine
+    SERIALIZER_CLS = MachineSchema
 
     def get_request_url(self, **kwargs):
         return "/machines/getMachinePublic/"

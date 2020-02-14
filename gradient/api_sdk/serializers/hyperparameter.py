@@ -3,6 +3,7 @@ import copy
 import marshmallow
 
 from .experiment import BaseExperimentSchema
+from .tag import TagSchema
 from .. import models, utils
 
 
@@ -30,6 +31,7 @@ class HyperparameterSchema(BaseExperimentSchema):
                                                              load_from="hyperparameterServerContainer")
     hyperparameter_server_container_user = marshmallow.fields.Str(dump_to="hyperparameterServerContainerUser",
                                                                   load_from="hyperparameterServerContainerUser")
+    tags = marshmallow.fields.Nested(TagSchema, only="name", many=True, load_only=True)
 
     @marshmallow.pre_dump
     def preprocess(self, data, **kwargs):

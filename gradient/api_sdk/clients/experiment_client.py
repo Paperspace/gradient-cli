@@ -1,6 +1,5 @@
 from .base_client import BaseClient
 from .. import repositories, models, constants, utils
-from ..sdk_exceptions import ResourceCreatingDataError
 
 
 class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
@@ -69,8 +68,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
         if not is_preemptible:
             is_preemptible = None
-
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment = models.SingleNodeExperiment(
             experiment_type_id=constants.ExperimentType.SINGLE_NODE,
@@ -192,7 +189,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         if not is_preemptible:
             is_preemptible = None
 
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment = models.MultiNodeExperiment(
             name=name,
@@ -319,7 +315,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         if not is_preemptible:
             is_preemptible = None
 
-        datasets = self._dataset_dicts_to_instances(datasets)
         experiment_type_id = constants.ExperimentType.MPI_MULTI_NODE
 
         experiment = models.MpiMultiNodeExperiment(
@@ -428,7 +423,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         if not is_preemptible:
             is_preemptible = None
 
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment = models.SingleNodeExperiment(
             experiment_type_id=constants.ExperimentType.SINGLE_NODE,
@@ -549,7 +543,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         if not is_preemptible:
             is_preemptible = None
 
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment = models.MultiNodeExperiment(
             name=name,
@@ -674,7 +667,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         if not is_preemptible:
             is_preemptible = None
 
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment_type_id = constants.ExperimentType.MPI_MULTI_NODE
 
@@ -805,18 +797,3 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
     def delete(self, experiment_id):
         repository = repositories.DeleteExperiment(api_key=self.api_key, logger=self.logger)
         repository.delete(experiment_id)
-
-    def _dataset_dicts_to_instances(self, datasets):
-        if not datasets:
-            return None
-
-        if isinstance(datasets, dict):
-            datasets = [datasets]
-
-        for ds in datasets:
-            if not ds.get("uri"):
-                raise ResourceCreatingDataError("Error while creating experiment with dataset: "
-                                                "\"uri\" key is required and it's value must be a valid S3 URI")
-
-        datasets = [models.Dataset(**ds) for ds in datasets]
-        return datasets

@@ -1263,6 +1263,7 @@ class TestExperimentDetail(object):
 | Worker Machine Type | None                     |
 | Working Directory   | /some/working/directory  |
 | Workspace URL       | some.url                 |
+| Tags                | tag1, tag2               |
 +---------------------+--------------------------+
 """
     SINGLE_NODE_DETAILS_STDOUT = """+---------------------+----------------+
@@ -1279,18 +1280,18 @@ class TestExperimentDetail(object):
 | Workspace URL       | None           |
 | Model Type          | None           |
 | Model Path          | None           |
+| Tags                | tag1, tag2     |
 +---------------------+----------------+
 """
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_single_node_experiment_details_in_a_table(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON,
-                                                200, "fake content")
+        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT, result.exc_info[1]
+        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,

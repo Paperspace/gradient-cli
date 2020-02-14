@@ -61,6 +61,8 @@ class GetModelCommand(DetailsCommandMixin, GetModelsClientMixin, BaseCommand):
         """
         :param api_sdk.Model instance:
         """
+        tags_string = ", ".join(instance.tags)
+
         data = (
             ("ID", instance.id),
             ("Name", instance.name),
@@ -69,6 +71,7 @@ class GetModelCommand(DetailsCommandMixin, GetModelsClientMixin, BaseCommand):
             ("Model Type", instance.model_type),
             ("URL", instance.url),
             ("Deployment State", instance.deployment_state),
+            ("Tags", tags_string),
         )
         return data
 

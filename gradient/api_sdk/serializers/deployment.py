@@ -2,6 +2,7 @@ import marshmallow as ma
 
 from gradient.api_sdk import models
 from .base import BaseSchema
+from .tag import TagSchema
 
 
 class DeploymentSchema(BaseSchema):
@@ -34,3 +35,4 @@ class DeploymentSchema(BaseSchema):
     auth_username = ma.fields.Str(dump_to="oauthKey", load_from="oauthKey")
     auth_password = ma.fields.Str(dump_to="oauthSecret", load_from="oauthSecret")
     cluster_id = ma.fields.Str(dump_to="cluster", load_from="clusterId")
+    tags = ma.fields.List(ma.fields.Str, load_only=True)
