@@ -1,6 +1,7 @@
 from .base_client import BaseClient
 from .. import repositories, models, constants, utils
-from ..sdk_exceptions import ResourceCreatingDataError
+from ..sdk_exceptions import ResourceCreatingDataError, InvalidParametersError
+from ..validation_messages import EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
 
 
 class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
@@ -66,6 +67,9 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+
+        self._validate_arguments(model_type=model_type, model_path=model_path)
+        self._validate_arguments(model_type=model_type, model_path=model_path)
 
         if not is_preemptible:
             is_preemptible = None
@@ -186,6 +190,8 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+
+        self._validate_arguments(model_type=model_type, model_path=model_path)
 
         experiment_type_id = self._get_experiment_type_id(experiment_type_id)
 
@@ -315,6 +321,8 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+        self._validate_arguments(model_type=model_type, model_path=model_path)
+
         if not is_preemptible:
             is_preemptible = None
 
@@ -423,6 +431,8 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+
+        self._validate_arguments(model_type=model_type, model_path=model_path)
 
         if not is_preemptible:
             is_preemptible = None
@@ -542,6 +552,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+        self._validate_arguments(model_type=model_type, model_path=model_path)
 
         experiment_type_id = self._get_experiment_type_id(experiment_type_id)
 
@@ -669,6 +680,8 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+        self._validate_arguments(model_type=model_type, model_path=model_path)
+
         if not is_preemptible:
             is_preemptible = None
 
@@ -818,3 +831,9 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
 
         datasets = [models.Dataset(**ds) for ds in datasets]
         return datasets
+
+    def _validate_arguments(self, **kwargs):
+        if kwargs.get("model_path") and not kwargs.get("model_type"):
+            raise InvalidParametersError(
+                EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            )

@@ -7,8 +7,9 @@ import mock
 import pytest
 from click.testing import CliRunner
 
-from gradient.api_sdk import constants
+from gradient.api_sdk import constants, InvalidParametersError
 from gradient.api_sdk.clients import http_client
+from gradient.api_sdk.validation_messages import EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
 from gradient.cli import cli
 from tests import example_responses, MockResponse
 from tests.unit.test_archiver_class import create_test_dir_tree
@@ -695,6 +696,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
 
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
+
 
 class TestExperimentsCreateMultiNode(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/"
@@ -1718,3 +1720,78 @@ class TestExperimentLogs(object):
         result = runner.invoke(cli.cli, self.COMMAND_WITH_FOLLOW)
 
         assert "Awaiting logs...\nFailed to fetch data: Authentication failed\n" in result.output
+
+
+class TestExperimentValidation(object):
+
+    @pytest.mark.parametrize(
+        "command, expected_message", [
+            (
+                [
+                    "experiments", "create", "singlenode",
+                    "--projectId", "testHandle",
+                    "--container", "testContainer",
+                    "--machineType", "testType",
+                    "--command", "testCommand",
+                    "--workspaceUrl", "some-workspace",
+                    "--modelPath", "some/model/path"
+                ],
+                EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            ), (
+                [
+                    "experiments", "create", "multinode",
+                    "--name", "multinode",
+                    "--projectId", "prq70zy79",
+                    "--experimentType", "GRPC",
+                    "--workerContainer", "wcon",
+                    "--workerMachineType", "mty",
+                    "--workerCommand", "wcom",
+                    "--workerCount", 2,
+                    "--parameterServerContainer", "pscon",
+                    "--parameterServerMachineType", "psmtype",
+                    "--parameterServerCommand", "ls",
+                    "--parameterServerCount", 2,
+                    "--workerContainerUser", "usr",
+                    "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+                    "--modelPath", "some/model/path"
+                ],
+                EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            ), (
+                [
+                    "experiments", "run", "singlenode",
+                    "--projectId", "testHandle",
+                    "--container", "testContainer",
+                    "--machineType", "testType",
+                    "--command", "testCommand",
+                    "--workspaceUrl", "some-workspace",
+                    "--no-logs",
+                    "--modelPath", "some/model/path"
+                ],
+                EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            ), (
+                [
+                    "experiments", "run", "multinode",
+                    "--projectId", "prq70zy79",
+                    "--experimentType", "GRPC",
+                    "--workerContainer", "wcon",
+                    "--workerMachineType", "mty",
+                    "--workerCommand", "wcom",
+                    "--workerCount", 2,
+                    "--parameterServerContainer", "pscon",
+                    "--parameterServerMachineType", "psmtype",
+                    "--parameterServerCommand", "ls",
+                    "--parameterServerCount", 2,
+                    "--workerContainerUser", "usr",
+                    "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+                    "--no-logs",
+                    "--modelPath", "some/model/path"
+                ],
+                EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            ),
+        ]
+    )
+    def test_experiment_create_argument_validation_error(self, command, expected_message):
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert expected_message in result.output
