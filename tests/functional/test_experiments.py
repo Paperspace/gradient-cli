@@ -143,6 +143,9 @@ class TestExperimentsCreateSingleNode(object):
     RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'
     EXPECTED_STDOUT_PROJECT_NOT_FOUND = "handle: wrong_handle\nProject not found\n"
 
+    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
+    EXPECTED_STDOUT_MISSING_VPC_FLAG = "Provided cluster id need --vpc flag to proceed\n"
+
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
@@ -232,11 +235,13 @@ class TestExperimentsCreateSingleNode(object):
         assert self.EXPECTED_STDOUT_PROJECT_NOT_FOUND in result.output, result.exc_info[1]
         assert result.exit_code == 0
 
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class, get_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -257,11 +262,13 @@ class TestExperimentsCreateSingleNode(object):
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with("some_tensorboard_id", "sadkfhlskdjh")
 
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class, get_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -282,11 +289,13 @@ class TestExperimentsCreateSingleNode(object):
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class, get_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -391,6 +400,21 @@ class TestExperimentsCreateSingleNode(object):
         )
 
         assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_return_error_message_for_passing_vpc_cluster_without_vpc_flag(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.GET_CLUSTER_DETAILS_RESPONSE, 200)
+        cluster_id = "some_cluster_id"
+        command = list(self.BASIC_OPTIONS_COMMAND)
+        command.extend(["--clusterId", cluster_id])
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT_MISSING_VPC_FLAG in result.output, result.exc_info
+        get_patched.assert_called_once_with(self.VALIDATE_CLUSTER_URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params={"id": cluster_id})
 
 
 class TestExperimentsCreateMultiNodeDatasetObjects(object):
@@ -552,6 +576,8 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         "--vpc",
     ]
 
+    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
+    EXPECTED_STDOUT_MISSING_VPC_FLAG = "Provided cluster id need --vpc flag to proceed\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
@@ -570,10 +596,12 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
                                              data=None)
         assert result.exit_code == 0
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_config_file(
-            self, post_patched, create_multi_node_experiment_ds_objects_config_path):
+            self, post_patched, get_patched, create_multi_node_experiment_ds_objects_config_path):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [create_multi_node_experiment_ds_objects_config_path]
 
         runner = CliRunner()
@@ -623,10 +651,12 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         assert result.exit_code == 0
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, get_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -648,10 +678,12 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with("some_tensorboard_id", "sadkfhlskdjh")
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, get_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -673,10 +705,12 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, get_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -696,6 +730,21 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
 
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_return_error_message_for_passing_vpc_cluster_without_vpc_flag(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.GET_CLUSTER_DETAILS_RESPONSE, 200)
+        cluster_id = "some_cluster_id"
+        command = list(self.BASIC_OPTIONS_COMMAND)
+        command.extend(["--clusterId", cluster_id])
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT_MISSING_VPC_FLAG, result.exc_info
+        get_patched.assert_called_once_with(self.VALIDATE_CLUSTER_URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params={"id": cluster_id})
 
 
 class TestExperimentsCreateMultiNode(object):
@@ -852,6 +901,9 @@ class TestExperimentsCreateMultiNode(object):
         "--vpc",
     ]
 
+    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
+    EXPECTED_STDOUT_MISSING_VPC_FLAG = "Provided cluster id need --vpc flag to proceed\n"
+
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
@@ -869,10 +921,12 @@ class TestExperimentsCreateMultiNode(object):
                                              data=None)
         assert result.exit_code == 0
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_config_file(
-            self, post_patched, create_multi_node_experiment_config_path):
+            self, post_patched, get_patched, create_multi_node_experiment_config_path):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [create_multi_node_experiment_config_path]
 
         runner = CliRunner()
@@ -922,10 +976,12 @@ class TestExperimentsCreateMultiNode(object):
         assert result.exit_code == 0
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, get_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -947,10 +1003,12 @@ class TestExperimentsCreateMultiNode(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with("some_tensorboard_id", "sadkfhlskdjh")
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, get_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -972,10 +1030,12 @@ class TestExperimentsCreateMultiNode(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, get_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -995,6 +1055,21 @@ class TestExperimentsCreateMultiNode(object):
 
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_return_error_message_for_passing_vpc_cluster_without_vpc_flag(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.GET_CLUSTER_DETAILS_RESPONSE, 200)
+        cluster_id = "some_cluster_id"
+        command = list(self.BASIC_OPTIONS_COMMAND)
+        command.extend(["--clusterId", cluster_id])
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT_MISSING_VPC_FLAG, result.exc_info
+        get_patched.assert_called_once_with(self.VALIDATE_CLUSTER_URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=None,
+                                            params={"id": cluster_id})
 
 
 class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
@@ -1133,6 +1208,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
     ]
     FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
         "experiments", "run", "multinode",
+        "--no-logs",
         "--optionsFile",  # path added in test
     ]
     BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
@@ -1188,6 +1264,7 @@ class TestExperimentDetail(object):
 | Worker Machine Type | None                     |
 | Working Directory   | /some/working/directory  |
 | Workspace URL       | some.url                 |
+| Tags                | tag1, tag2               |
 +---------------------+--------------------------+
 """
     SINGLE_NODE_DETAILS_STDOUT = """+---------------------+----------------+
@@ -1204,18 +1281,18 @@ class TestExperimentDetail(object):
 | Workspace URL       | None           |
 | Model Type          | None           |
 | Model Path          | None           |
+| Tags                | tag1, tag2     |
 +---------------------+----------------+
 """
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_single_node_experiment_details_in_a_table(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON,
-                                                200, "fake content")
+        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT, result.exc_info[1]
+        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,

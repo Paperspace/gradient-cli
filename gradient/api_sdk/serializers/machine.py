@@ -1,6 +1,7 @@
 import marshmallow
 
 from .base import BaseSchema
+from .tag import TagSchema
 from .. import models
 
 
@@ -58,6 +59,7 @@ class MachineSchema(BaseSchema):
     last_run_timestamp = marshmallow.fields.Str(dump_to="dtLastRun", load_from="dtLastRun")
 
     events = marshmallow.fields.Nested(MachineEventSchema, many=True)
+    tags = marshmallow.fields.Nested(TagSchema, only="name", many=True, load_only=True)
 
 
 class MachineSchemaForListing(MachineSchema):

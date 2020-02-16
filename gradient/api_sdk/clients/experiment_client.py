@@ -67,14 +67,12 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
 
-        self._validate_arguments(model_type=model_type, model_path=model_path)
         self._validate_arguments(model_type=model_type, model_path=model_path)
 
         if not is_preemptible:
             is_preemptible = None
-
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment = models.SingleNodeExperiment(
             experiment_type_id=constants.ExperimentType.SINGLE_NODE,
@@ -190,6 +188,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
 
         self._validate_arguments(model_type=model_type, model_path=model_path)
 
@@ -198,7 +197,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         if not is_preemptible:
             is_preemptible = None
 
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment = models.MultiNodeExperiment(
             name=name,
@@ -321,12 +319,12 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
         self._validate_arguments(model_type=model_type, model_path=model_path)
 
         if not is_preemptible:
             is_preemptible = None
 
-        datasets = self._dataset_dicts_to_instances(datasets)
         experiment_type_id = constants.ExperimentType.MPI_MULTI_NODE
 
         experiment = models.MpiMultiNodeExperiment(
@@ -431,13 +429,13 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
 
         self._validate_arguments(model_type=model_type, model_path=model_path)
 
         if not is_preemptible:
             is_preemptible = None
 
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment = models.SingleNodeExperiment(
             experiment_type_id=constants.ExperimentType.SINGLE_NODE,
@@ -552,6 +550,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
         self._validate_arguments(model_type=model_type, model_path=model_path)
 
         experiment_type_id = self._get_experiment_type_id(experiment_type_id)
@@ -559,7 +558,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         if not is_preemptible:
             is_preemptible = None
 
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment = models.MultiNodeExperiment(
             name=name,
@@ -680,12 +678,12 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :returns: experiment handle
         :rtype: str
         """
+        self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
         self._validate_arguments(model_type=model_type, model_path=model_path)
 
         if not is_preemptible:
             is_preemptible = None
 
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment_type_id = constants.ExperimentType.MPI_MULTI_NODE
 

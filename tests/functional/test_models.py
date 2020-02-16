@@ -462,6 +462,20 @@ class TestModelDetails(object):
 | Model Type       | Tensorflow                                                                 |
 | URL              | s3://ps-projects-development/asdf/some_project_id/some_experiment_id/model |
 | Deployment State | Stopped                                                                    |
+| Tags             |                                                                            |
++------------------+----------------------------------------------------------------------------+
+"""
+
+    EXPECTED_STDOUT_WITH_TAGS = """+------------------+----------------------------------------------------------------------------+
+| ID               | some_id                                                                    |
++------------------+----------------------------------------------------------------------------+
+| Name             | some_name                                                                  |
+| Project ID       | some_project_id                                                            |
+| Experiment ID    | some_experiment_id                                                         |
+| Model Type       | Tensorflow                                                                 |
+| URL              | s3://ps-projects-development/asdf/some_project_id/some_experiment_id/model |
+| Deployment State | Stopped                                                                    |
+| Tags             | tag1, tag2                                                                 |
 +------------------+----------------------------------------------------------------------------+
 """
 
@@ -475,6 +489,21 @@ class TestModelDetails(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS,
+                                            json=self.EXPECTED_REQUEST_JSON,
+                                            params=None)
+
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_get_request_and_print_details_of_experiment_that_has_some_tags(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.MODEL_DETAILS_RESPONSE_JSON_WITH_TAGS)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WITH_TAGS, result.exc_info
         get_patched.assert_called_once_with(self.URL,
                                             headers=self.EXPECTED_HEADERS,
                                             json=self.EXPECTED_REQUEST_JSON,

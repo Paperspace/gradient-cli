@@ -13,6 +13,7 @@ class TestDeploymentsCreate(object):
     URL = "https://api.paperspace.io/deployments/createDeployment/"
     TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     URL_V2 = "https://api.paperspace.io/deployments/v2/createDeployment/"
+    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     BASIC_OPTIONS_COMMAND = [
@@ -126,6 +127,7 @@ class TestDeploymentsCreate(object):
     RESPONSE_JSON_404_MODEL_NOT_FOUND = {"error": {"name": "Error", "status": 404, "message": "Unable to find model"}}
     RESPONSE_CONTENT_404_MODEL_NOT_FOUND = b'{"error":{"name":"Error","status":404,"message":"Unable to find model"}}\n'
     EXPECTED_STDOUT_MODEL_NOT_FOUND = "Failed to create resource: Unable to find model\n"
+    EXPECTED_STDOUT_MISSING_VPC_FLAG = "Provided cluster id need --vpc flag to proceed\n"
 
     @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_deployment_with_basic_options(self, post_patched):
@@ -254,6 +256,22 @@ class TestDeploymentsCreate(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_return_error_message_for_passing_vpc_cluster_without_vpc_flag(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.GET_CLUSTER_DETAILS_RESPONSE, 200)
+        cluster_id = "some_cluster_id"
+        command = list(self.BASIC_OPTIONS_COMMAND)
+        command.extend(["--clusterId", cluster_id])
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT_MISSING_VPC_FLAG, result.exc_info
+        get_patched.assert_called_once_with(self.VALIDATE_CLUSTER_URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=None,
+                                            params={"id": cluster_id})
+
 
 
 class TestDeploymentsList(object):
@@ -763,6 +781,9 @@ class TestDeploymentsUpdate(object):
         "error": {"name": "Error", "status": 404, "message": "Model with handle some_model_id does not exist"}}
     EXPECTED_STDOUT_MODEL_NOT_FOUND = "Failed to update resource: Model with handle some_model_id does not exist\n"
 
+    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
+    EXPECTED_STDOUT_MISSING_VPC_FLAG = "Provided cluster id need --vpc flag to proceed\n"
+
     @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_updated_deployment_with_basic_options(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
@@ -862,6 +883,21 @@ class TestDeploymentsUpdate(object):
         assert result.output == self.EXPECTED_STDOUT_MODEL_NOT_FOUND
         assert result.exit_code == 0
 
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    def test_should_return_error_message_for_passing_vpc_cluster_without_vpc_flag(self, get_patched):
+        get_patched.return_value = MockResponse(example_responses.GET_CLUSTER_DETAILS_RESPONSE, 200)
+        cluster_id = "some_cluster_id"
+        command = list(self.BASIC_OPTIONS_COMMAND)
+        command.extend(["--clusterId", cluster_id])
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT_MISSING_VPC_FLAG, result.exc_info
+        get_patched.assert_called_once_with(self.VALIDATE_CLUSTER_URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=None,
+                                            params={"id": cluster_id})
+
 
 class TestDeploymentDetails(object):
     URL = "https://api.paperspace.io/deployments/getDeploymentList/"
@@ -898,6 +934,7 @@ class TestDeploymentDetails(object):
 | Endpoint        | https://paperspace.io/model-serving/some_id:predict |
 | API type        | REST                                                |
 | Cluster ID      | some_cluster_id                                     |
+| Tags            | tag1, tag2                                          |
 +-----------------+-----------------------------------------------------+
 """
 

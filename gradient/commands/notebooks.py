@@ -2,6 +2,7 @@ import abc
 
 import halo
 import six
+
 from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
 from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
@@ -68,12 +69,15 @@ class ShowNotebookDetailsCommand(DetailsCommandMixin, BaseNotebookCommand):
         """
         :param api_sdk.Notebook instance:
         """
+        tags_string = ", ".join(instance.tags)
+
         data = (
             ("Name", instance.name),
             ("ID", instance.id),
             ("VM Type", instance.vm_type),
             ("State", instance.state),
             ("FQDN", instance.fqdn),
+            ("Tags", tags_string),
         )
         return data
 

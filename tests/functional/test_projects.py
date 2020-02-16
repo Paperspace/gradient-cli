@@ -508,3 +508,151 @@ class TestDeleteProjects(object):
                                        files=None)
         assert result.output == "Failed to delete resource\n"
         assert result.exit_code == 0
+
+
+class TestProjectsDetails(object):
+    URL = "https://api.paperspace.io/projects/"
+    EXPECTED_HEADERS = default_headers.copy()
+    EXPECTED_PARAMS = {
+        "filter": """{"where":{"handle":"some_id"}}"""
+    }
+    BASIC_COMMAND = ["projects", "details", "--id", "some_id"]
+    COMMAND_WITH_OPTIONS_FILE = ["projects", "details", "--id", "some_id", "--optionsFile", ]  # path added in test
+    BASIC_COMMAND_WITH_API_KEY = ["projects", "details", "--id", "some_id", "--apiKey", "some_key"]
+
+    EXPECTED_RESPONSE_JSON = example_responses.DETAILS_OF_PROJECT
+    EXPECTED_STDOUT = """+-----------------+-----------+
+| Name            | some_name |
++-----------------+-----------+
+| ID              | some_id   |
+| Repository name | None      |
+| Repository url  | None      |
+| Tags            |           |
++-----------------+-----------+
+"""
+
+    EXPECTED_RESPONSE_JSON_WITH_TAGS = example_responses.DETAILS_OF_PROJECT_WITH_TAGS
+    EXPECTED_STDOUT_WITH_TAGS = """+-----------------+------------+
+| Name            | some_name  |
++-----------------+------------+
+| ID              | some_id    |
+| Repository name | None       |
+| Repository url  | None       |
+| Tags            | tag1, tag2 |
++-----------------+------------+
+"""
+
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
+    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
+
+    RESPONSE_JSON_WHEN_PROJECT_WAS_NOT_FOUND = {
+        "data": [],
+        "meta": {
+            "where": {"handle": "some_id"},
+            "totalItems": 0,
+        },
+        "tagFilter": [],
+    }
+    EXPECTED_STDOUT_WHEN_PROJECT_WAS_NOT_FOUND = "Project not found\n"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_valid_post_request_and_print_table_when_projects_details_was_run(self, get_patched):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS,
+                                       json=None,
+                                       params=self.EXPECTED_PARAMS)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_valid_post_request_and_print_table_when_projects_details_was_run_with_tags(self, get_patched):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON_WITH_TAGS)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WITH_TAGS, result.exc_info
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS,
+                                       json=None,
+                                       params=self.EXPECTED_PARAMS)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_valid_post_request_when_projects_details_was_used_with_api_key_option(self, get_patched):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON_WITH_TAGS)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params=self.EXPECTED_PARAMS)
+        assert result.output == self.EXPECTED_STDOUT_WITH_TAGS
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_options_from_yaml_file(self, get_patched, projects_details_config_path):
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON_WITH_TAGS)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [projects_details_config_path]
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, command)
+
+        assert result.output == self.EXPECTED_STDOUT_WITH_TAGS, result.exc_info
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params=self.EXPECTED_PARAMS)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_valid_post_request_when_projects_details_was_used_with_wrong_api_key(self, get_patched):
+        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params=self.EXPECTED_PARAMS)
+        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_error_message_when_project_was_not_found(self, get_patched):
+        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WHEN_PROJECT_WAS_NOT_FOUND)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS,
+                                       json=None,
+                                       params=self.EXPECTED_PARAMS)
+        assert result.output == self.EXPECTED_STDOUT_WHEN_PROJECT_WAS_NOT_FOUND
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_error_message_when_error_status_code_received_but_no_content_was_provided(self, get_patched):
+        get_patched.return_value = MockResponse(status_code=400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=self.EXPECTED_HEADERS,
+                                       json=None,
+                                       params=self.EXPECTED_PARAMS)
+        assert result.output == "Failed to fetch data\n"
+        assert result.exit_code == 0

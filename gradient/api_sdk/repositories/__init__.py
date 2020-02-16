@@ -10,5 +10,5 @@ from .machines import CheckMachineAvailability, CreateMachine, CreateResource, S
     RestartMachine, GetMachine, UpdateMachine, GetMachineUtilization
 from .models import DeleteModel, ListModels, UploadModel, GetModel, ListModelFiles
 from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks
-from .projects import CreateProject, ListProjects, DeleteProject
+from .projects import CreateProject, ListProjects, DeleteProject, GetProject
 from .tensorboards import CreateTensorboard, GetTensorboard, ListTensorboards, UpdateTensorboard, DeleteTensorboard
