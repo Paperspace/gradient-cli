@@ -815,21 +815,6 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         repository = repositories.DeleteExperiment(api_key=self.api_key, logger=self.logger)
         repository.delete(experiment_id)
 
-    def _dataset_dicts_to_instances(self, datasets):
-        if not datasets:
-            return None
-
-        if isinstance(datasets, dict):
-            datasets = [datasets]
-
-        for ds in datasets:
-            if not ds.get("uri"):
-                raise ResourceCreatingDataError("Error while creating experiment with dataset: "
-                                                "\"uri\" key is required and it's value must be a valid S3 URI")
-
-        datasets = [models.Dataset(**ds) for ds in datasets]
-        return datasets
-
     def _validate_arguments(self, **kwargs):
         if kwargs.get("model_path") and not kwargs.get("model_type"):
             raise InvalidParametersError(

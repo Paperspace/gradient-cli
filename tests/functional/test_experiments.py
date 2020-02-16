@@ -7,7 +7,7 @@ import mock
 import pytest
 from click.testing import CliRunner
 
-from gradient.api_sdk import constants, InvalidParametersError
+from gradient.api_sdk import constants
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.validation_messages import EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
 from gradient.cli import cli
