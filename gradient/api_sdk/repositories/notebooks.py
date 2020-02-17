@@ -1,5 +1,6 @@
+import json
+
 import gradient.api_sdk.config
-from gradient import config
 from .common import CreateResource, DeleteResource, ListResources, GetResource
 from .. import serializers
 
@@ -79,17 +80,25 @@ class ListNotebooks(GetNotebookApiUrlMixin, ListResources):
         notebooks = serializer.get_instance(notebook_dicts, many=True)
         return notebooks
 
-    def _get_request_json(self, kwargs):
-        json_ = {
+    def _get_request_params(self, kwargs):
+        filters = {
             "filter": {
-                "filter": {
-                    "limit": kwargs.get("limit"),
-                    "offset": kwargs.get("offset"),
-                    "where": {
-                        "dtDeleted": None,
-                    },
-                    "order": "jobId desc",
+                "limit": kwargs.get("limit"),
+                "offset": kwargs.get("offset"),
+                "where": {
+                    "dtDeleted": None,
                 },
+                "order": "jobId desc",
             },
         }
-        return json_
+
+        params = {}
+        filter_string = json.dumps(filters)
+        params["filter"] = filter_string
+
+        tags = kwargs.get("tags", [])
+        for i, tag in enumerate(tags):
+            key = "tagFilter[{}]".format(i)
+            params[key] = tag
+
+        return params

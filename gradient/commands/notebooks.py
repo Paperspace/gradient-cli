@@ -47,9 +47,10 @@ class ListNotebooksCommand(ListCommandMixin, BaseNotebookCommand):
     def _get_instances(self, **kwargs):
         limit = kwargs.get("limit")
         offset = kwargs.get("offset")
+        tags = kwargs.get("tags")
         get_meta = True
         try:
-            instances, meta_data = self.client.list(get_meta=get_meta, limit=limit, offset=offset)
+            instances, meta_data = self.client.list(get_meta=get_meta, limit=limit, offset=offset, tags=tags)
         except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
         return instances, meta_data
