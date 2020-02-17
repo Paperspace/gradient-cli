@@ -77,11 +77,11 @@ class NotebooksClient(BaseClient):
         repository = repositories.DeleteNotebook(api_key=self.api_key, logger=self.logger)
         repository.delete(id)
 
-    def list(self, **kwargs):
+    def list(self, tags=None, limit=None, offset=None, get_meta=False):
         """Get list of Notebooks
 
         :rtype: list[models.Notebook]
         """
         repository = repositories.ListNotebooks(api_key=self.api_key, logger=self.logger)
-        notebooks = repository.list(**kwargs)
+        notebooks = repository.list(tags=tags, limit=limit, offset=offset, get_meta=get_meta)
         return notebooks
