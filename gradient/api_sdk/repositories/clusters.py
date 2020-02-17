@@ -1,5 +1,5 @@
 from gradient.api_sdk.config import config
-from gradient.api_sdk.repositories.common import GetResource
+from gradient.api_sdk.repositories.common import GetResource, ListResources
 from gradient.api_sdk.sdk_exceptions import MalformedResponseError
 from gradient.api_sdk.serializers.cluster import ClusterSchema
 
@@ -27,3 +27,24 @@ class ValidateClusterRepository(GetResource):
         if instance.errors:
             raise MalformedResponseError(instance.errors)
         return instance.data
+
+
+class ListClusters(ListResources):
+    SERIALIZER_CLS = ClusterSchema
+
+    def get_request_url(self, **kwargs):
+        return "/clusters/getClusters"
+
+    def _get_request_params(self, kwargs):
+        filter = {
+            "limit": kwargs.get("limit"),
+            "offset": kwargs.get("offset"),
+            "where": {
+                "isPrivate": True
+            },
+            "order": kwargs.get("order")
+        }
+
+        return {
+            "filter": filter
+        }
