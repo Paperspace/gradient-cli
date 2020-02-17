@@ -1,5 +1,7 @@
 from .base_client import BaseClient
 from .. import repositories, models, constants, utils
+from ..sdk_exceptions import ResourceCreatingDataError, InvalidParametersError
+from ..validation_messages import EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
 
 
 class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
@@ -66,6 +68,9 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :rtype: str
         """
         self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
+
+        self._validate_arguments(model_type=model_type, model_path=model_path)
+
         if not is_preemptible:
             is_preemptible = None
 
@@ -184,6 +189,9 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :rtype: str
         """
         self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
+
+        self._validate_arguments(model_type=model_type, model_path=model_path)
+
         experiment_type_id = self._get_experiment_type_id(experiment_type_id)
 
         if not is_preemptible:
@@ -312,6 +320,8 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :rtype: str
         """
         self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
+        self._validate_arguments(model_type=model_type, model_path=model_path)
+
         if not is_preemptible:
             is_preemptible = None
 
@@ -420,6 +430,9 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :rtype: str
         """
         self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
+
+        self._validate_arguments(model_type=model_type, model_path=model_path)
+
         if not is_preemptible:
             is_preemptible = None
 
@@ -538,6 +551,8 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :rtype: str
         """
         self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
+        self._validate_arguments(model_type=model_type, model_path=model_path)
+
         experiment_type_id = self._get_experiment_type_id(experiment_type_id)
 
         if not is_preemptible:
@@ -664,6 +679,8 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :rtype: str
         """
         self.validate_cluster_id_need_vpc(cluster_id, use_vpc)
+        self._validate_arguments(model_type=model_type, model_path=model_path)
+
         if not is_preemptible:
             is_preemptible = None
 
@@ -797,3 +814,9 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
     def delete(self, experiment_id):
         repository = repositories.DeleteExperiment(api_key=self.api_key, logger=self.logger)
         repository.delete(experiment_id)
+
+    def _validate_arguments(self, **kwargs):
+        if kwargs.get("model_path") and not kwargs.get("model_type"):
+            raise InvalidParametersError(
+                EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            )
