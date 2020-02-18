@@ -540,7 +540,7 @@ def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_fi
 
     validators.validate_multi_node(kwargs)
     utils.validate_workspace_input(kwargs)
-    common.del_if_value_is_none(kwargs, del_all_falsy=True)
+    common.del_if_value_is_none(kwargs)
     experiment_type = kwargs.get('experiment_type_id')
     command_class = MULTI_NODE_CREATE_EXPERIMENT_COMMANDS.get(experiment_type)
     command = command_class(
@@ -563,7 +563,7 @@ def create_single_node(api_key, use_vpc, tensorboard, tensorboard_set, options_f
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
     utils.validate_workspace_input(kwargs)
-    common.del_if_value_is_none(kwargs, del_all_falsy=True)
+    common.del_if_value_is_none(kwargs)
 
     command = experiments_commands.CreateSingleNodeExperimentCommand(
         api_key=api_key,
@@ -596,7 +596,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, t
 
     validators.validate_multi_node(kwargs)
     utils.validate_workspace_input(kwargs)
-    common.del_if_value_is_none(kwargs, del_all_falsy=True)
+    common.del_if_value_is_none(kwargs)
 
     experiment_type = kwargs.get('experiment_type_id')
     command_class = MULTI_NODE_RUN_EXPERIMENT_COMMANDS.get(experiment_type)
@@ -634,7 +634,7 @@ def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, tensorboard, 
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
     utils.validate_workspace_input(kwargs)
-    common.del_if_value_is_none(kwargs, del_all_falsy=True)
+    common.del_if_value_is_none(kwargs)
 
     command = experiments_commands.CreateAndStartSingleNodeExperimentCommand(
         api_key=api_key,
