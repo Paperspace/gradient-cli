@@ -135,7 +135,7 @@ def common_hyperparameter_create_options(f):
 def create_hyperparameter(api_key, options_file, **hyperparameter):
     hyperparameter["tags"] = validate_comma_split_option(hyperparameter.pop("tags_comma"), hyperparameter.pop("tags"))
     utils.validate_workspace_input(hyperparameter)
-    common.del_if_value_is_none(hyperparameter, del_all_falsy=True)
+    common.del_if_value_is_none(hyperparameter)
 
     command = hyperparameters_commands.CreateHyperparameterCommand(
         api_key=api_key,
@@ -152,7 +152,7 @@ def create_hyperparameter(api_key, options_file, **hyperparameter):
 def create_and_start_hyperparameter(api_key, options_file, **hyperparameter):
     hyperparameter["tags"] = validate_comma_split_option(hyperparameter.pop("tags_comma"), hyperparameter.pop("tags"))
     utils.validate_workspace_input(hyperparameter)
-    common.del_if_value_is_none(hyperparameter, del_all_falsy=True)
+    common.del_if_value_is_none(hyperparameter)
 
     command = hyperparameters_commands.CreateAndStartHyperparameterCommand(
         api_key=api_key,
