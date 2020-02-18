@@ -42,7 +42,6 @@ class ListClusters(ListResources):
             "where": {
                 "isPrivate": True
             },
-            "order": kwargs.get("order")
         }
 
         return {
