@@ -89,12 +89,12 @@ class BaseCreateExperimentCommandMixin(object):
         super(BaseCreateExperimentCommandMixin, self).__init__(*args, **kwargs)
         self.workspace_handler = workspace_handler
 
-    def execute(self, json_, add_to_tensorboard=False, use_vpc=False):
+    def execute(self, json_, add_to_tensorboard=False):
         self._handle_workspace(json_)
         self._handle_dataset_data(json_)
 
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            experiment_id = self._create(json_, use_vpc=use_vpc)
+            experiment_id = self._create(json_)
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(experiment_id))
         self.logger.log(self.get_instance_url(experiment_id, json_["project_id"]))
@@ -109,7 +109,7 @@ class BaseCreateExperimentCommandMixin(object):
     def _handle_workspace(self, instance_dict):
         handler = self.workspace_handler.handle(instance_dict)
 
-        if (instance_dict.get("cluster_id") or instance_dict.get("use_vpc")) and handler.lower() == "none":
+        if instance_dict.get("cluster_id") and handler.lower() == "none":
             raise click.UsageError('Missing option "--workspace" is required for VPC experiments')
 
         instance_dict.pop("ignore_files", None)
@@ -166,26 +166,26 @@ class BaseCreateExperimentCommandMixin(object):
         json_["datasets"] = datasets
 
     @abc.abstractmethod
-    def _create(self, json_, use_vpc):
+    def _create(self, json_):
         pass
 
 
 class CreateSingleNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
-    def _create(self, json_, use_vpc=False):
-        handle = self.client.create_single_node(use_vpc=use_vpc, **json_)
+    def _create(self, json_):
+        handle = self.client.create_single_node(**json_)
         return handle
 
 
 class CreateMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
-    def _create(self, json_, use_vpc=False):
-        handle = self.client.create_multi_node(use_vpc=use_vpc, **json_)
+    def _create(self, json_):
+        handle = self.client.create_multi_node(**json_)
         return handle
 
 
 class CreateMpiMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
-    def _create(self, json_, use_vpc=False):
+    def _create(self, json_):
         json_.pop("experiment_type_id", None)  # for MPI there is no experiment_type_id parameter in client method
-        handle = self.client.create_mpi_multi_node(use_vpc=use_vpc, **json_)
+        handle = self.client.create_mpi_multi_node(**json_)
         return handle
 
 
@@ -193,8 +193,8 @@ class CreateAndStartMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin,
     SPINNER_MESSAGE = "Creating and starting new experiment"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
 
-    def _create(self, json_, use_vpc=False):
-        handle = self.client.run_multi_node(use_vpc=use_vpc, **json_)
+    def _create(self, json_):
+        handle = self.client.run_multi_node(**json_)
         return handle
 
 
@@ -202,9 +202,9 @@ class CreateAndStartMpiMultiNodeExperimentCommand(BaseCreateExperimentCommandMix
     SPINNER_MESSAGE = "Creating and starting new experiment"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
 
-    def _create(self, json_, use_vpc=False):
+    def _create(self, json_):
         json_.pop("experiment_type_id", None)  # for MPI there is no experiment_type_id parameter in client method
-        handle = self.client.run_mpi_multi_node(use_vpc=use_vpc, **json_)
+        handle = self.client.run_mpi_multi_node(**json_)
         return handle
 
 
@@ -212,28 +212,26 @@ class CreateAndStartSingleNodeExperimentCommand(BaseCreateExperimentCommandMixin
     SPINNER_MESSAGE = "Creating and starting new experiment"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
 
-    def _create(self, json_, use_vpc=False):
-        handle = self.client.run_single_node(use_vpc=use_vpc, **json_)
+    def _create(self, json_):
+        handle = self.client.run_single_node(**json_)
         return handle
 
 
 class StartExperimentCommand(BaseExperimentCommand):
-    def execute(self, experiment_id, use_vpc=False):
+    def execute(self, experiment_id):
         """
         :param str experiment_id:
-        :param bool use_vpc:
         """
-        self.client.start(experiment_id, use_vpc=use_vpc)
+        self.client.start(experiment_id)
         self.logger.log("Experiment started")
 
 
 class StopExperimentCommand(BaseExperimentCommand):
-    def execute(self, experiment_id, use_vpc=False):
+    def execute(self, experiment_id):
         """
         :param str experiment_id:
-        :param str use_vpc:
         """
-        self.client.stop(experiment_id, use_vpc=use_vpc)
+        self.client.stop(experiment_id)
         self.logger.log("Experiment stopped")
 
 

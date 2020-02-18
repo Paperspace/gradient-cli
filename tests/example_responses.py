@@ -6004,7 +6004,7 @@ DETAILS_OF_PROJECT = {
                         "started_by_user_id": 192354,
                         "state": 1,
                         "templateHistory": {
-                            "cliCommand": "gradient experiments create multinode --name some_name --projectId some_id --experimentType GRPC --workerContainer python --workerMachineType c5.xlarge --workerCommand \"python script.py\" --workerCount 2 --parameterServerContainer python --parameterServerMachineType c5.xlarge --parameterServerCommand \"python script.py\" --parameterServerCount 1 --workspaceUrl s3://some_workspace.url --clusterId some_cluster_id --ports 5000:5000 --vpc",
+                            "cliCommand": "gradient experiments create multinode --name some_name --projectId some_id --experimentType GRPC --workerContainer python --workerMachineType c5.xlarge --workerCommand \"python script.py\" --workerCount 2 --parameterServerContainer python --parameterServerMachineType c5.xlarge --parameterServerCommand \"python script.py\" --parameterServerCount 1 --workspaceUrl s3://some_workspace.url --clusterId some_cluster_id --ports 5000:5000",
                             "dtCreated": "2020-02-13T16:02:21.263923+00:00",
                             "dtDeleted": None,
                             "experimentTemplateId": 7156,
@@ -6093,7 +6093,7 @@ DETAILS_OF_PROJECT_WITH_TAGS = {
                         "started_by_user_id": 192354,
                         "state": 1,
                         "templateHistory": {
-                            "cliCommand": "gradient experiments create multinode --name some_name --projectId some_id --experimentType GRPC --workerContainer python --workerMachineType c5.xlarge --workerCommand \"python script.py\" --workerCount 2 --parameterServerContainer python --parameterServerMachineType c5.xlarge --parameterServerCommand \"python script.py\" --parameterServerCount 1 --workspaceUrl s3://some_workspace.url --clusterId some_cluster_id --ports 5000:5000 --vpc",
+                            "cliCommand": "gradient experiments create multinode --name some_name --projectId some_id --experimentType GRPC --workerContainer python --workerMachineType c5.xlarge --workerCommand \"python script.py\" --workerCount 2 --parameterServerContainer python --parameterServerMachineType c5.xlarge --parameterServerCommand \"python script.py\" --parameterServerCount 1 --workspaceUrl s3://some_workspace.url --clusterId some_cluster_id --ports 5000:5000",
                             "dtCreated": "2020-02-13T16:02:21.263923+00:00",
                             "dtDeleted": None,
                             "experimentTemplateId": 7156,

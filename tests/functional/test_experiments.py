@@ -9,6 +9,7 @@ from click.testing import CliRunner
 
 from gradient.api_sdk import constants
 from gradient.api_sdk.clients import http_client
+from gradient.api_sdk.validation_messages import EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
 from gradient.cli import cli
 from tests import example_responses, MockResponse
 from tests.unit.test_archiver_class import create_test_dir_tree
@@ -125,30 +126,17 @@ class TestExperimentsCreateSingleNode(object):
         "modelType": "some-model-type",
         "isPreemptible": True,
     }
-    BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
-        "experiments", "create", "singlenode",
-        "--projectId", "testHandle",
-        "--container", "testContainer",
-        "--machineType", "testType",
-        "--command", "testCommand",
-        "--workspaceUrl", "some-workspace",
-        "--vpc",
-    ]
     RESPONSE_JSON_200 = {"handle": "sadkfhlskdjh", "message": "success"}
-    RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
     EXPECTED_STDOUT = "New experiment created with ID: sadkfhlskdjh\n"
 
     RESPONSE_JSON_404_PROJECT_NOT_FOUND = {"details": {"handle": "wrong_handle"}, "error": "Project not found"}
     RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'
     EXPECTED_STDOUT_PROJECT_NOT_FOUND = "handle: wrong_handle\nProject not found\n"
 
-    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
-    EXPECTED_STDOUT_MISSING_VPC_FLAG = "Provided cluster id need --vpc flag to proceed\n"
-
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
@@ -166,7 +154,7 @@ class TestExperimentsCreateSingleNode(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_config_file(
             self, post_patched, create_single_node_experiment_config_path):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
         command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [create_single_node_experiment_config_path]
 
         runner = CliRunner()
@@ -179,36 +167,18 @@ class TestExperimentsCreateSingleNode(object):
                                              params=None,
                                              files=None,
                                              data=None)
-        assert result.exit_code == 0
-
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_send_data_to_v2_url_when_vpc_switch_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
-
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH)
-
-        assert self.EXPECTED_STDOUT in result.output, result.exc_info
-
-        post_patched.assert_called_once_with(self.URL_V2,
-                                             headers=self.EXPECTED_HEADERS,
-                                             json=self.BASIC_OPTIONS_REQUEST,
-                                             params=None,
-                                             files=None,
-                                             data=None)
-        assert result.exit_code == 0
+        assert result.exit_code == 0, result.exc_info
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(self,
                                                                                                         post_patched):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.FULL_OPTIONS_COMMAND)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        assert self.EXPECTED_STDOUT in result.output
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -249,7 +219,7 @@ class TestExperimentsCreateSingleNode(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -276,7 +246,7 @@ class TestExperimentsCreateSingleNode(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -303,7 +273,7 @@ class TestExperimentsCreateSingleNode(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -400,21 +370,6 @@ class TestExperimentsCreateSingleNode(object):
 
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
-    def test_should_return_error_message_for_passing_vpc_cluster_without_vpc_flag(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.GET_CLUSTER_DETAILS_RESPONSE, 200)
-        cluster_id = "some_cluster_id"
-        command = list(self.BASIC_OPTIONS_COMMAND)
-        command.extend(["--clusterId", cluster_id])
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, command)
-
-        assert self.EXPECTED_STDOUT_MISSING_VPC_FLAG in result.output, result.exc_info
-        get_patched.assert_called_once_with(self.VALIDATE_CLUSTER_URL,
-                                            headers=self.EXPECTED_HEADERS,
-                                            json=None,
-                                            params={"id": cluster_id})
-
 
 class TestExperimentsCreateMultiNodeDatasetObjects(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/"
@@ -424,7 +379,6 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "create", "multinode",
-        "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
@@ -491,7 +445,6 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         "--optionsFile",  # path added in test,
     ]
     BASIC_OPTIONS_REQUEST = {
-        u"name": u"multinode_mpi",
         u"projectHandle": u"prq70zy79",
         u"experimentTypeId": 2,
         u"workerContainer": u"wcon",
@@ -557,27 +510,6 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
     EXPECTED_STDOUT = "New experiment created with ID: sadkfhlskdjh\n"
 
-    BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
-        "experiments", "create", "multinode",
-        "--name", "multinode_mpi",
-        "--projectId", "prq70zy79",
-        "--experimentType", "GRPC",
-        "--workerContainer", "wcon",
-        "--workerMachineType", "mty",
-        "--workerCommand", "wcom",
-        "--workerCount", 2,
-        "--parameterServerContainer", "pscon",
-        "--parameterServerMachineType", "psmtype",
-        "--parameterServerCommand", "ls",
-        "--parameterServerCount", 2,
-        "--workerContainerUser", "usr",
-        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
-        "--vpc",
-    ]
-
-    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
-    EXPECTED_STDOUT_MISSING_VPC_FLAG = "Provided cluster id need --vpc flag to proceed\n"
-
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
@@ -595,19 +527,17 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
                                              data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_config_file(
-            self, post_patched, get_patched, create_multi_node_experiment_ds_objects_config_path):
+            self, post_patched, create_multi_node_experiment_ds_objects_config_path):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
-        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [create_multi_node_experiment_ds_objects_config_path]
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -623,7 +553,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.FULL_OPTIONS_COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -632,30 +562,11 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         assert self.EXPECTED_STDOUT in result.output
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_send_data_to_v2_url_when_vpc_switch_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
-
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH)
-
-        assert self.EXPECTED_STDOUT in result.output, result.exc_info
-
-        post_patched.assert_called_once_with(self.URL_V2,
-                                             headers=self.EXPECTED_HEADERS,
-                                             json=self.BASIC_OPTIONS_REQUEST,
-                                             params=None,
-                                             files=None,
-                                             data=None)
-        assert result.exit_code == 0
-
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
-            self, post_patched, get_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
-        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -664,7 +575,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -677,12 +588,10 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with("some_tensorboard_id", "sadkfhlskdjh")
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
-            self, post_patched, get_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
-        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -691,7 +600,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -704,12 +613,10 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
-            self, post_patched, get_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
-        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -718,7 +625,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -729,22 +636,6 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
 
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
-
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
-    def test_should_return_error_message_for_passing_vpc_cluster_without_vpc_flag(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.GET_CLUSTER_DETAILS_RESPONSE, 200)
-        cluster_id = "some_cluster_id"
-        command = list(self.BASIC_OPTIONS_COMMAND)
-        command.extend(["--clusterId", cluster_id])
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, command)
-
-        assert result.output == self.EXPECTED_STDOUT_MISSING_VPC_FLAG, result.exc_info
-        get_patched.assert_called_once_with(self.VALIDATE_CLUSTER_URL,
-                                            headers=self.EXPECTED_HEADERS,
-                                            json=None,
-                                            params={"id": cluster_id})
-
 
 class TestExperimentsCreateMultiNode(object):
     URL = "https://services.paperspace.io/experiments/v1/experiments/"
@@ -883,26 +774,6 @@ class TestExperimentsCreateMultiNode(object):
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
     EXPECTED_STDOUT = "New experiment created with ID: sadkfhlskdjh\n"
 
-    BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
-        "experiments", "create", "multinode",
-        "--projectId", "prq70zy79",
-        "--experimentType", "GRPC",
-        "--workerContainer", "wcon",
-        "--workerMachineType", "mty",
-        "--workerCommand", "wcom",
-        "--workerCount", 2,
-        "--parameterServerContainer", "pscon",
-        "--parameterServerMachineType", "psmtype",
-        "--parameterServerCommand", "ls",
-        "--parameterServerCount", 2,
-        "--workerContainerUser", "usr",
-        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
-        "--vpc",
-    ]
-
-    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
-    EXPECTED_STDOUT_MISSING_VPC_FLAG = "Provided cluster id need --vpc flag to proceed\n"
-
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
@@ -920,19 +791,17 @@ class TestExperimentsCreateMultiNode(object):
                                              data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_config_file(
-            self, post_patched, get_patched, create_multi_node_experiment_config_path):
+            self, post_patched, create_multi_node_experiment_config_path):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
-        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [create_multi_node_experiment_config_path]
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -948,7 +817,7 @@ class TestExperimentsCreateMultiNode(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.FULL_OPTIONS_COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -957,30 +826,11 @@ class TestExperimentsCreateMultiNode(object):
         assert self.EXPECTED_STDOUT in result.output
         assert result.exit_code == 0
 
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_send_data_to_v2_url_when_vpc_switch_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
-
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH)
-
-        assert self.EXPECTED_STDOUT in result.output, result.exc_info
-
-        post_patched.assert_called_once_with(self.URL_V2,
-                                             headers=self.EXPECTED_HEADERS,
-                                             json=self.BASIC_OPTIONS_REQUEST,
-                                             params=None,
-                                             files=None,
-                                             data=None)
-        assert result.exit_code == 0
-
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
-            self, post_patched, get_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
-        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -989,7 +839,7 @@ class TestExperimentsCreateMultiNode(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -1002,12 +852,10 @@ class TestExperimentsCreateMultiNode(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with("some_tensorboard_id", "sadkfhlskdjh")
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
-            self, post_patched, get_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
-        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -1016,7 +864,7 @@ class TestExperimentsCreateMultiNode(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -1029,12 +877,10 @@ class TestExperimentsCreateMultiNode(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
-            self, post_patched, get_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
-        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -1043,7 +889,7 @@ class TestExperimentsCreateMultiNode(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -1054,21 +900,6 @@ class TestExperimentsCreateMultiNode(object):
 
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
-
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
-    def test_should_return_error_message_for_passing_vpc_cluster_without_vpc_flag(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.GET_CLUSTER_DETAILS_RESPONSE, 200)
-        cluster_id = "some_cluster_id"
-        command = list(self.BASIC_OPTIONS_COMMAND)
-        command.extend(["--clusterId", cluster_id])
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, command)
-
-        assert result.output == self.EXPECTED_STDOUT_MISSING_VPC_FLAG, result.exc_info
-        get_patched.assert_called_once_with(self.VALIDATE_CLUSTER_URL,
-                                            headers=self.EXPECTED_HEADERS,
-                                            json=None,
-                                            params={"id": cluster_id})
 
 
 class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
@@ -1122,16 +953,6 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
         "experiments", "run", "singlenode",
         "--optionsFile",  # path added in test,
-    ]
-    BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
-        "experiments", "run", "singlenode",
-        "--projectId", "testHandle",
-        "--container", "testContainer",
-        "--machineType", "testType",
-        "--command", "testCommand",
-        "--workspaceUrl", "some-workspace",
-        "--no-logs",
-        "--vpc",
     ]
     EXPECTED_STDOUT = "New experiment created and started with ID: sadkfhlskdjh\n"
 
@@ -1210,7 +1031,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--no-logs",
         "--optionsFile",  # path added in test
     ]
-    BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
+    BASIC_OPTIONS_COMMAND_WHEN_CLUSTER_ID_WAS_SET = [
         "experiments", "run", "multinode",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
@@ -1225,13 +1046,13 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "--workerContainerUser", "usr",
         "--workspace", "https://github.com/Paperspace/gradient-cli.git",
         "--no-logs",
-        "--vpc",
+        "--clusterId", "some_cluster_id",
     ]
     EXPECTED_STDOUT = "New experiment created and started with ID: sadkfhlskdjh\n"
 
 
 class TestExperimentDetail(object):
-    URL = "https://services.paperspace.io/experiments/v1/experiments/experiment-id/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/experiment-id/"
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -1291,8 +1112,8 @@ class TestExperimentDetail(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT
-        get_patched.assert_called_once_with(self.URL,
+        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT, result.exc_info
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
@@ -1311,7 +1132,7 @@ class TestExperimentDetail(object):
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
 
         assert result.output == self.SINGLE_NODE_DETAILS_STDOUT, result.exc_info[1]
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=expected_headers,
                                             json=None,
                                             params=None)
@@ -1331,7 +1152,7 @@ class TestExperimentDetail(object):
         result = runner.invoke(cli.cli, command)
 
         assert result.output == self.SINGLE_NODE_DETAILS_STDOUT, result.exc_info[1]
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=expected_headers,
                                             json=None,
                                             params=None)
@@ -1346,7 +1167,7 @@ class TestExperimentDetail(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
@@ -1362,7 +1183,7 @@ class TestExperimentDetail(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
@@ -1372,7 +1193,7 @@ class TestExperimentDetail(object):
 
 
 class TestExperimentList(object):
-    URL = "https://services.paperspace.io/experiments/v1/experiments/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/"
     COMMAND = ["experiments", "list"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "list", "--optionsFile", ]  # path added in test
     EXPECTED_HEADERS = http_client.default_headers.copy()
@@ -1401,7 +1222,7 @@ Aborted!
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.DETAILS_STDOUT
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params={"limit": 20, "offset": 0})
@@ -1418,7 +1239,7 @@ Aborted!
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params={"limit": 20, "offset": 0})
@@ -1433,7 +1254,7 @@ Aborted!
         runner = CliRunner()
         result = runner.invoke(cli.cli, ["experiments", "list", "--projectId", "handle1", "-p", "handle2"])
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params={"limit": 20,
@@ -1453,7 +1274,7 @@ Aborted!
         result = runner.invoke(cli.cli, ["experiments", "list", "--projectId", "handle1", "-p", "handle2",
                                          "--tag", "some_tag", "--tag", "some_tag_2"])
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params={"limit": 20,
@@ -1473,7 +1294,7 @@ Aborted!
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
                                             params={"limit": 20, "offset": 0})
@@ -1490,7 +1311,7 @@ Aborted!
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
-        get_patched.assert_called_once_with(self.URL,
+        get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params={"limit": 20,
@@ -1506,11 +1327,9 @@ Aborted!
 
 
 class TestStartExperiment(object):
-    URL = "https://services.paperspace.io/experiments/v1/experiments/some-id/start/"
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/some-id/start/"
     COMMAND = ["experiments", "start", "some-id"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "start", "--optionsFile", ]  # path added in test
-    COMMAND_WITH_VPC_FLAG = ["experiments", "start", "some-id", "--vpc"]
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -1520,27 +1339,12 @@ class TestStartExperiment(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_put_request_and_print_confirmation(self, put_patched):
-        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
+        put_patched.return_value = MockResponse(self.RESPONSE_JSON)
         expected_headers = http_client.default_headers.copy()
         expected_headers["X-API-Key"] = "some_key"
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
-
-        assert result.output == self.START_STDOUT, result.exc_info
-        put_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS,
-                                            json=None,
-                                            params=None)
-
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
-    def test_should_send_request_to_api_v2_when_vcp_flag_was_used(self, put_patched):
-        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
-        expected_headers = http_client.default_headers.copy()
-        expected_headers["X-API-Key"] = "some_key"
-
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, self.COMMAND_WITH_VPC_FLAG)
 
         assert result.output == self.START_STDOUT, result.exc_info
         put_patched.assert_called_once_with(self.URL_V2,
@@ -1550,20 +1354,20 @@ class TestStartExperiment(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_put_request_with_changed_api_key_when_api_key_option_was_provided(self, put_patched):
-        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
+        put_patched.return_value = MockResponse(self.RESPONSE_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
 
         assert result.output == self.START_STDOUT
-        put_patched.assert_called_once_with(self.URL,
+        put_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=None)
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_read_options_from_config_file(self, put_patched, experiments_start_config_path):
-        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
+        put_patched.return_value = MockResponse(self.RESPONSE_JSON)
         command = self.COMMAND_WITH_OPTIONS_FILE[:] + [experiments_start_config_path]
 
         runner = CliRunner()
@@ -1577,10 +1381,8 @@ class TestStartExperiment(object):
 
 
 class TestStopExperiment(object):
-    URL = "https://services.paperspace.io/experiments/v1/experiments/some-id/stop/"
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/some-id/stop/"
     COMMAND = ["experiments", "stop", "some-id"]
-    COMMAND_WITH_VPC_FLAG = ["experiments", "stop", "some-id", "--vpc"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "stop", "--optionsFile", ]  # path added in test
     EXPECTED_HEADERS = http_client.default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
@@ -1591,27 +1393,12 @@ class TestStopExperiment(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_put_request_and_print_confirmation(self, put_patched):
-        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
+        put_patched.return_value = MockResponse(self.RESPONSE_JSON)
         expected_headers = http_client.default_headers.copy()
         expected_headers["X-API-Key"] = "some_key"
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
-
-        assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        put_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS,
-                                            json=None,
-                                            params=None)
-
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
-    def test_should_send_request_to_api_v2_when_vcp_flag_was_used(self, put_patched):
-        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
-        expected_headers = http_client.default_headers.copy()
-        expected_headers["X-API-Key"] = "some_key"
-
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, self.COMMAND_WITH_VPC_FLAG)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         put_patched.assert_called_once_with(self.URL_V2,
@@ -1621,20 +1408,20 @@ class TestStopExperiment(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_put_request_with_changed_api_key_when_api_key_option_was_provided(self, put_patched):
-        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
+        put_patched.return_value = MockResponse(self.RESPONSE_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
 
         assert result.output == self.EXPECTED_STDOUT
-        put_patched.assert_called_once_with(self.URL,
+        put_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=None)
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_read_options_from_config_file(self, put_patched, experiments_stop_config_path):
-        put_patched.return_value = MockResponse(self.RESPONSE_JSON, 200, "fake content")
+        put_patched.return_value = MockResponse(self.RESPONSE_JSON)
         command = self.COMMAND_WITH_OPTIONS_FILE[:] + [experiments_stop_config_path]
 
         runner = CliRunner()
@@ -1648,7 +1435,7 @@ class TestStopExperiment(object):
 
 
 class TestDeleteExperiment(object):
-    URL = "https://services.paperspace.io/experiments/v1/experiments/some-id/"
+    URL = "https://services.paperspace.io/experiments/v2/experiments/some-id/"
     COMMAND = ["experiments", "delete", "some-id"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "delete", "--optionsFile", ]  # path added in test
     EXPECTED_HEADERS = http_client.default_headers.copy()
@@ -1796,3 +1583,78 @@ class TestExperimentLogs(object):
         result = runner.invoke(cli.cli, self.COMMAND_WITH_FOLLOW)
 
         assert "Awaiting logs...\nFailed to fetch data: Authentication failed\n" in result.output
+
+
+class TestExperimentValidation(object):
+
+    @pytest.mark.parametrize(
+        "command, expected_message", [
+            (
+                    [
+                        "experiments", "create", "singlenode",
+                        "--projectId", "testHandle",
+                        "--container", "testContainer",
+                        "--machineType", "testType",
+                        "--command", "testCommand",
+                        "--workspaceUrl", "some-workspace",
+                        "--modelPath", "some/model/path"
+                    ],
+                    EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            ), (
+                    [
+                        "experiments", "create", "multinode",
+                        "--name", "multinode",
+                        "--projectId", "prq70zy79",
+                        "--experimentType", "GRPC",
+                        "--workerContainer", "wcon",
+                        "--workerMachineType", "mty",
+                        "--workerCommand", "wcom",
+                        "--workerCount", 2,
+                        "--parameterServerContainer", "pscon",
+                        "--parameterServerMachineType", "psmtype",
+                        "--parameterServerCommand", "ls",
+                        "--parameterServerCount", 2,
+                        "--workerContainerUser", "usr",
+                        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+                        "--modelPath", "some/model/path"
+                    ],
+                    EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            ), (
+                    [
+                        "experiments", "run", "singlenode",
+                        "--projectId", "testHandle",
+                        "--container", "testContainer",
+                        "--machineType", "testType",
+                        "--command", "testCommand",
+                        "--workspaceUrl", "some-workspace",
+                        "--no-logs",
+                        "--modelPath", "some/model/path"
+                    ],
+                    EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            ), (
+                    [
+                        "experiments", "run", "multinode",
+                        "--projectId", "prq70zy79",
+                        "--experimentType", "GRPC",
+                        "--workerContainer", "wcon",
+                        "--workerMachineType", "mty",
+                        "--workerCommand", "wcom",
+                        "--workerCount", 2,
+                        "--parameterServerContainer", "pscon",
+                        "--parameterServerMachineType", "psmtype",
+                        "--parameterServerCommand", "ls",
+                        "--parameterServerCount", 2,
+                        "--workerContainerUser", "usr",
+                        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+                        "--no-logs",
+                        "--modelPath", "some/model/path"
+                    ],
+                    EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            ),
+        ]
+    )
+    def test_experiment_create_argument_validation_error(self, command, expected_message):
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert expected_message in result.output

@@ -24,26 +24,26 @@ class BaseRepository(object):
         pass
 
     @abc.abstractmethod
-    def _get_api_url(self, use_vpc=False):
+    def _get_api_url(self, **kwargs):
         """Get base url to the api
 
         :rtype: str
         """
         pass
 
-    def _get_client(self, use_vpc=False):
+    def _get_client(self, **kwargs):
         """
         :rtype: http_client.API
         """
-        api_url = self._get_api_url(use_vpc=use_vpc)
+        api_url = self._get_api_url(**kwargs)
         client = http_client.API(api_url=api_url, api_key=self.api_key, logger=self.logger)
         return client
 
-    def _get(self, kwargs, use_vpc=False):
+    def _get(self, **kwargs):
         json_ = self._get_request_json(kwargs)
         params = self._get_request_params(kwargs)
-        url = self.get_request_url(use_vpc=use_vpc, **kwargs)
-        client = self._get_client()
+        url = self.get_request_url(**kwargs)
+        client = self._get_client(**kwargs)
         response = client.get(url, json=json_, params=params)
         gradient_response = http_client.GradientResponse.interpret_response(response)
 
@@ -80,7 +80,7 @@ class ListResources(BaseRepository):
     def _get_instance_dicts(self, data, **kwargs):
         return data
 
-    def _get_meta_data(self, resp, **kwargs):
+    def _get_meta_data(self, resp):
         pass
 
     def _parse_object(self, instance_dict):
@@ -91,8 +91,8 @@ class ListResources(BaseRepository):
         instance = self.SERIALIZER_CLS().get_instance(instance_dict)
         return instance
 
-    def list(self, use_vpc=False, **kwargs):
-        response = self._get(kwargs, use_vpc=use_vpc)
+    def list(self, **kwargs):
+        response = self._get(**kwargs)
         self._validate_response(response)
         instances = self._get_instances(response, **kwargs)
         if kwargs.get("get_meta"):
@@ -122,7 +122,7 @@ class GetResource(BaseRepository):
         return instance
 
     def get(self, **kwargs):
-        response = self._get(kwargs)
+        response = self._get(**kwargs)
         self._validate_response(response)
         instance = self._get_instance(response, **kwargs)
         return instance
@@ -145,9 +145,9 @@ class CreateResource(BaseRepository):
     VALIDATION_ERROR_MESSAGE = "Failed to create resource"
     HANDLE_FIELD = "handle"
 
-    def create(self, instance, use_vpc=False, data=None, path=None):
+    def create(self, instance, data=None, path=None):
         instance_dict = self._get_instance_dict(instance)
-        response = self._send_create_request(instance_dict, use_vpc=use_vpc, data=data, path=path)
+        response = self._send_create_request(instance_dict, data=data, path=path)
         self._validate_response(response)
         handle = self._process_response(response)
         return handle
@@ -166,9 +166,9 @@ class CreateResource(BaseRepository):
         serializer = self.SERIALIZER_CLS()
         return serializer
 
-    def _send_create_request(self, instance_dict, use_vpc, data=None, path=None):
-        url = self.get_request_url(use_vpc=use_vpc)
-        client = self._get_client(use_vpc=use_vpc)
+    def _send_create_request(self, instance_dict, data=None, path=None):
+        url = self.get_request_url(**instance_dict)
+        client = self._get_client(**instance_dict)
         json_ = self._get_request_json(instance_dict)
         params = self._get_request_params(instance_dict)
         files = self._get_request_files(path)
@@ -214,14 +214,14 @@ class AlterResource(BaseRepository):
         serializer = self.SERIALIZER_CLS()
         return serializer
 
-    def _run(self, use_vpc=False, **kwargs):
-        url = self.get_request_url(use_vpc=use_vpc, **kwargs)
-        response = self._send(url, use_vpc=use_vpc, **kwargs)
+    def _run(self, **kwargs):
+        url = self.get_request_url(**kwargs)
+        response = self._send(url, **kwargs)
         self._validate_response(response)
         return response
 
-    def _send(self, url, use_vpc=False, **kwargs):
-        client = self._get_client(use_vpc=use_vpc)
+    def _send(self, url, **kwargs):
+        client = self._get_client(**kwargs)
         json_data = self._get_request_json(kwargs)
         response = self._send_request(client, url, json_data=json_data)
         gradient_response = http_client.GradientResponse.interpret_response(response)
@@ -236,8 +236,8 @@ class AlterResource(BaseRepository):
 class DeleteResource(AlterResource):
     VALIDATION_ERROR_MESSAGE = "Failed to delete resource"
 
-    def delete(self, id_, use_vpc=False, **kwargs):
-        self._run(id=id_, use_vpc=use_vpc, **kwargs)
+    def delete(self, id_, **kwargs):
+        self._run(id=id_, **kwargs)
 
     def _send_request(self, client, url, json_data=None):
         response = client.delete(url, json=json_data)
@@ -248,8 +248,8 @@ class DeleteResource(AlterResource):
 class StartResource(AlterResource):
     VALIDATION_ERROR_MESSAGE = "Unable to start instance"
 
-    def start(self, id_, use_vpc=False):
-        self._run(id=id_, use_vpc=use_vpc)
+    def start(self, id_):
+        self._run(id=id_)
 
     def _send_request(self, client, url, json_data=None):
         response = client.put(url, json=json_data)
@@ -260,8 +260,8 @@ class StartResource(AlterResource):
 class StopResource(AlterResource):
     VALIDATION_ERROR_MESSAGE = "Unable to stop instance"
 
-    def stop(self, id_, use_vpc=False):
-        self._run(id=id_, use_vpc=use_vpc)
+    def stop(self, id_):
+        self._run(id=id_)
 
     def _send_request(self, client, url, json_data=None):
         response = client.put(url, json=json_data)

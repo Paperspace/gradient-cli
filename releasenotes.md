@@ -1,5 +1,12 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.6.0a1
+### New features
+* Added commands to `add` and `remove` tags
+* Added filtering notebooks by tags
+* Added showing tags in `details` commands
+* Added `projects details` command
+
 # Release Notes for 0.6.0a0
 ### Breaking changes
 * `--name` is not required to create/run experiment. Parameters in methods for creating/running experiments have changed 
