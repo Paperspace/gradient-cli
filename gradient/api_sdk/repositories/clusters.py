@@ -35,6 +35,9 @@ class ListClusters(ListResources):
     def get_request_url(self, **kwargs):
         return "/clusters/getClusters"
 
+    def _get_api_url(self, **kwargs):
+        return config.CONFIG_HOST
+
     def _get_request_params(self, kwargs):
         filter = {
             "limit": kwargs.get("limit"),
