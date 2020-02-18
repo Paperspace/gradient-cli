@@ -44,6 +44,7 @@ def create_experiment():
 def create_and_start_experiment():
     pass
 
+
 @experiments_group.group(name="tags", help="Manage tags for experiment", cls=ClickGroup)
 def experiments_tags():
     pass
@@ -409,13 +410,6 @@ def common_experiment_create_multi_node_options(f):
             help="Master registry URL (MPI only)",
             cls=common.GradientOption
         ),
-        click.option(
-            "--vpc",
-            "use_vpc",
-            type=bool,
-            is_flag=True,
-            cls=common.GradientOption,
-        ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -467,13 +461,6 @@ def common_experiments_create_single_node_options(f):
             "registry_url",
             metavar="<registry url>",
             help="Registry URL",
-            cls=common.GradientOption,
-        ),
-        click.option(
-            "--vpc",
-            "use_vpc",
-            type=bool,
-            is_flag=True,
             cls=common.GradientOption,
         ),
     ]
@@ -533,7 +520,7 @@ def parse_tensorboard_options(tensorboard, tensorboard_set):
 @tensorboard_option
 @api_key_option
 @common.options_file
-def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
+def create_multi_node(api_key, tensorboard, tensorboard_set, options_file, **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
@@ -547,7 +534,7 @@ def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_fi
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    command.execute(kwargs, add_to_tensorboard=add_to_tensorboard, use_vpc=use_vpc)
+    command.execute(kwargs, add_to_tensorboard=add_to_tensorboard)
 
 
 @create_experiment.command(name="singlenode", help="Create single node experiment", cls=GradientRegisterWriterCommand)
@@ -557,7 +544,7 @@ def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_fi
 @tensorboard_option
 @api_key_option
 @common.options_file
-def create_single_node(api_key, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
+def create_single_node(api_key, tensorboard, tensorboard_set, options_file, **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
@@ -569,7 +556,7 @@ def create_single_node(api_key, use_vpc, tensorboard, tensorboard_set, options_f
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    command.execute(kwargs, add_to_tensorboard=add_to_tensorboard, use_vpc=use_vpc)
+    command.execute(kwargs, add_to_tensorboard=add_to_tensorboard)
 
 
 @create_and_start_experiment.command(name="multinode", help="Create and start new multi node experiment",
@@ -589,7 +576,7 @@ def create_single_node(api_key, use_vpc, tensorboard, tensorboard_set, options_f
 @api_key_option
 @common.options_file
 @click.pass_context
-def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
+def create_and_start_multi_node(ctx, api_key, show_logs, tensorboard, tensorboard_set, options_file, **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
@@ -605,7 +592,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, t
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    experiment_id = command.execute(kwargs, add_to_tensorboard=add_to_tensorboard, use_vpc=use_vpc)
+    experiment_id = command.execute(kwargs, add_to_tensorboard=add_to_tensorboard)
     if experiment_id and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
@@ -627,7 +614,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, t
 @api_key_option
 @common.options_file
 @click.pass_context
-def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, tensorboard, tensorboard_set, options_file,
+def create_and_start_single_node(ctx, api_key, show_logs, tensorboard, tensorboard_set, options_file,
                                  **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
@@ -640,7 +627,7 @@ def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, tensorboard, 
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    experiment_id = command.execute(kwargs, add_to_tensorboard=add_to_tensorboard, use_vpc=use_vpc)
+    experiment_id = command.execute(kwargs, add_to_tensorboard=add_to_tensorboard)
     if experiment_id and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
@@ -653,19 +640,12 @@ def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, tensorboard, 
     is_flag=True,
     help="Show logs",
 )
-@click.option(
-    "--vpc",
-    "use_vpc",
-    type=bool,
-    is_flag=True,
-    cls=common.GradientOption,
-)
 @api_key_option
 @common.options_file
 @click.pass_context
-def start_experiment(ctx, id, show_logs, api_key, options_file, use_vpc):
+def start_experiment(ctx, id, show_logs, api_key, options_file):
     command = experiments_commands.StartExperimentCommand(api_key=api_key)
-    command.execute(id, use_vpc=use_vpc)
+    command.execute(id)
 
     if show_logs:
         ctx.invoke(list_logs, experiment_id=id, line=0, limit=100, follow=True, api_key=api_key)
@@ -674,17 +654,10 @@ def start_experiment(ctx, id, show_logs, api_key, options_file, use_vpc):
 @experiments_group.command("stop", help="Stop experiment")
 @click.argument("id", cls=common.GradientArgument)
 @api_key_option
-@click.option(
-    "--vpc",
-    "use_vpc",
-    type=bool,
-    is_flag=True,
-    cls=common.GradientOption,
-)
 @common.options_file
-def stop_experiment(id, api_key, options_file, use_vpc):
+def stop_experiment(id, api_key, options_file):
     command = experiments_commands.StopExperimentCommand(api_key=api_key)
-    command.execute(id, use_vpc=use_vpc)
+    command.execute(id)
 
 
 @experiments_group.command("list", help="List experiments")

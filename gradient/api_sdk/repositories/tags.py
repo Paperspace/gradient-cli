@@ -6,7 +6,7 @@ class UpdateTagRepository(AlterResource):
     def get_request_url(self, **kwargs):
         return "/entityTags/updateTags"
 
-    def _get_api_url(self, use_vpc=False):
+    def _get_api_url(self, **kwargs):
         return config.config.CONFIG_HOST
 
     def _get_request_json(self, instance_dict):
@@ -28,7 +28,7 @@ class ListTagRepository(ListResources):
     def get_request_url(self, **kwargs):
         return "/entityTags/getTags"
 
-    def _get_api_url(self, use_vpc=False):
+    def _get_api_url(self, **kwargs):
         return config.config.CONFIG_HOST
 
     def _get_request_params(self, kwargs):

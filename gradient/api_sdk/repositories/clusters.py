@@ -10,7 +10,7 @@ class ValidateClusterRepository(GetResource):
     def get_request_url(self, **kwargs):
         return "/clusters/getCluster"
 
-    def _get_api_url(self, use_vpc=False):
+    def _get_api_url(self, **kwargs):
         return config.CONFIG_HOST
 
     def _get_request_params(self, kwargs):
