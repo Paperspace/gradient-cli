@@ -38,11 +38,16 @@ class ListDeployments(GetBaseDeploymentApiUrlMixin, ListResources):
         if kwargs["project_id"]:
             filters["projectId"] = kwargs["project_id"]
 
-        if not filters:
-            return None
+        if filters:
+            json_ = {"filter": {"where": {"and": [filters]}}}
+        else:
+            json_ = {}
 
-        json_ = {"filter": {"where": {"and": [filters]}}}
-        return json_
+        tags = kwargs.get("tags")
+        if tags:
+            json_["tagFilter"] = tags
+
+        return json_ or None
 
 
 class CreateDeployment(GetBaseDeploymentApiUrlMixin, CreateResource):

@@ -19,6 +19,8 @@ from gradient.workspace import MultipartEncoder
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseJobCommand(BaseCommand):
+    entity = "job"
+
     def _get_client(self, api_key, logger_):
         client = api_sdk.clients.JobsClient(api_key=api_key, logger=logger_)
         return client
@@ -203,6 +205,8 @@ class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
 
 
 class JobRunClient(BaseClient):
+    entity = "job"
+
     def __init__(self, http_client_, *args, **kwargs):
         super(JobRunClient, self).__init__(*args, **kwargs)
         self.client = http_client_
@@ -238,6 +242,7 @@ class JobRunClient(BaseClient):
             registry_target_username=None,
             registry_target_password=None,
             build_only=False,
+            tags=None,
     ):
 
         if not build_only:
@@ -274,6 +279,8 @@ class JobRunClient(BaseClient):
             build_only=build_only,
         )
         handle = RunJob(self.api_key, self.logger, self.client).create(job, data=data)
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
 
@@ -368,3 +375,15 @@ class DownloadArtifactsCommand(BaseJobCommand):
                 artifact_downloader.download(job_id, destination_directory)
             except OSError as e:
                 raise sdk_exceptions.GradientSdkError(e)
+
+
+class JobAddTagsCommand(BaseJobCommand):
+    def execute(self, job_id, *args, **kwargs):
+        self.client.add_tags(job_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to job")
+
+
+class JobRemoveTagsCommand(BaseJobCommand):
+    def execute(self, job_id, *args, **kwargs):
+        self.client.remove_tags(job_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from job")

@@ -24,6 +24,7 @@ class DeploymentsClient(BaseClient):
         )
     """
     HOST_URL = config.config.CONFIG_HOST
+    entity = "deployment"
 
     def create(
             self,
@@ -46,6 +47,7 @@ class DeploymentsClient(BaseClient):
             cluster_id=None,
             auth_username=None,
             auth_password=None,
+            tags=None,
     ):
         """
         Method to create a Deployment instance.
@@ -88,6 +90,7 @@ class DeploymentsClient(BaseClient):
         :param str cluster_id: cluster ID
         :param str auth_username: Username
         :param str auth_password: Password
+        :param list[str] tags: List of tags
 
         :returns: Created deployment id
         :rtype: str
@@ -117,6 +120,8 @@ class DeploymentsClient(BaseClient):
 
         repository = repositories.CreateDeployment(api_key=self.api_key, logger=self.logger)
         deployment_id = repository.create(deployment)
+        if tags:
+            self.add_tags(entity_id=deployment_id, entity=self.entity, tags=tags)
         return deployment_id
 
     def get(self, deployment_id):
@@ -159,17 +164,21 @@ class DeploymentsClient(BaseClient):
         repository = repositories.StopDeployment(api_key=self.api_key, logger=self.logger)
         repository.stop(deployment_id)
 
-    def list(self, state=None, project_id=None, model_id=None):
+    def list(self, state=None, project_id=None, model_id=None, tags=None):
         """
         List deployments with optional filtering
 
-        :param str state:
-        :param str project_id:
-        :param str model_id:
+        :param str state: state to filter deployments
+        :param str project_id: project ID to filter deployments
+        :param str model_id: model ID to filter deployments
+        :param list[str]|tuple[str] tags: tags to filter deployments with OR
+
+        :returns: List of Deployment model instances
+        :rtype: list[models.Deployment]
         """
 
         repository = repositories.ListDeployments(api_key=self.api_key, logger=self.logger)
-        deployments = repository.list(state=state, project_id=project_id, model_id=model_id)
+        deployments = repository.list(state=state, project_id=project_id, model_id=model_id, tags=tags)
         return deployments
 
     def delete(self, deployment_id):

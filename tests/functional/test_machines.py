@@ -121,6 +121,7 @@ class TestMachineAvailability(object):
 
 class TestCreateMachine(object):
     URL = "https://api.paperspace.io/machines/createSingleMachinePublic/"
+    TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     BASIC_COMMAND = [
         "machines", "create",
         "--region", "CA1",
@@ -130,6 +131,18 @@ class TestCreateMachine(object):
         "--machineName", "some_name",
         "--templateId", "some_template",
     ]
+    BASIC_COMMAND_WITH_TAGS = [
+        "machines", "create",
+        "--region", "CA1",
+        "--machineType", "P5000",
+        "--size", 2,
+        "--billingType", "hourly",
+        "--machineName", "some_name",
+        "--templateId", "some_template",
+        "--tag", "test0",
+        "--tag", "test1",
+        "--tags", "test2,test3",
+    ]
     REQUEST_JSON = {
         "billingType": "hourly",
         "machineType": "P5000",
@@ -137,6 +150,11 @@ class TestCreateMachine(object):
         "region": "West Coast (CA1)",
         "templateId": "some_template",
         "size": 2,
+    }
+    TAGS_JSON = {
+        "entity": "machine",
+        "entityId": "psclbvqpc",
+        "tags": ["test0", "test1", "test2", "test3"]
     }
     EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
 
@@ -197,6 +215,7 @@ class TestCreateMachine(object):
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to create resource: Invalid API token\n"
+    UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
 
     RESPONSE_JSON_WITH_WRONG_TEMPLATE_ID = {
         "error": {
@@ -340,6 +359,34 @@ class TestCreateMachine(object):
         assert "Error: --userId is mutually exclusive with --email, --password, --firstName and --lastName\n" \
                in result.output
         assert result.exit_code == 2
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    def test_should_send_proper_data_and_tag_machine(self, post_patched, get_patched, put_patched):
+        post_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
+        get_patched.return_value = MockResponse({}, 200)
+        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_TAGS)
+
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=self.REQUEST_JSON,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+
+        put_patched.assert_called_once_with(
+            self.TAGS_URL,
+            headers=self.EXPECTED_HEADERS,
+            json=self.TAGS_JSON,
+            params=None,
+        )
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        assert result.exit_code == 0
 
 
 class TestDestroyMachine(object):
@@ -896,9 +943,9 @@ class TestShowMachine(object):
 | Script ID                 | None                                                                               |
 | Last Run                  | None                                                                               |
 | Dynamic Public IP         | False                                                                              |
-| Last event                | name:     create                                                                   |
+| Last event                | name:     restart                                                                  |
 |                           | state:    done                                                                     |
-|                           | created:  2019-04-11T18:10:29.665Z                                                 |
+|                           | created:  2019-04-12T12:19:03.814Z                                                 |
 +---------------------------+------------------------------------------------------------------------------------+
 """
 

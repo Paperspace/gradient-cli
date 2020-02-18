@@ -1,15 +1,45 @@
 import os
+import shutil
 import tempfile
 import zipfile
 
 import mock
+import pytest
 from click.testing import CliRunner
 
 from gradient.api_sdk import constants
 from gradient.api_sdk.clients import http_client
+from gradient.api_sdk.validation_messages import EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
 from gradient.cli import cli
 from tests import example_responses, MockResponse
 from tests.unit.test_archiver_class import create_test_dir_tree
+
+
+@pytest.fixture
+def temporary_directory_for_extracted_files():
+    temp_dir_path = os.path.join(tempfile.gettempdir(), "extracted_files")
+    shutil.rmtree(temp_dir_path, ignore_errors=True)
+
+    yield temp_dir_path
+
+    shutil.rmtree(temp_dir_path, ignore_errors=True)
+
+
+@pytest.fixture
+def temporary_zip_file_path():
+    zip_file_path = os.path.join(tempfile.gettempdir(), "workspace.zip")
+
+    try:
+        os.remove(zip_file_path)
+    except OSError:
+        pass
+
+    yield zip_file_path
+
+    try:
+        os.remove(zip_file_path)
+    except OSError:
+        pass
 
 
 class TestExperimentsCreateSingleNode(object):
@@ -20,7 +50,6 @@ class TestExperimentsCreateSingleNode(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "create", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -29,7 +58,6 @@ class TestExperimentsCreateSingleNode(object):
     ]
     BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE = [
         "experiments", "create", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -67,7 +95,6 @@ class TestExperimentsCreateSingleNode(object):
         "--optionsFile",  # path added in test,
     ]
     BASIC_OPTIONS_REQUEST = {
-        "name": u"exp1",
         "projectHandle": u"testHandle",
         "container": u"testContainer",
         "machineType": u"testType",
@@ -177,11 +204,13 @@ class TestExperimentsCreateSingleNode(object):
         assert self.EXPECTED_STDOUT_PROJECT_NOT_FOUND in result.output, result.exc_info[1]
         assert result.exit_code == 0
 
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class, get_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -202,11 +231,13 @@ class TestExperimentsCreateSingleNode(object):
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with("some_tensorboard_id", "sadkfhlskdjh")
 
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class, get_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -227,11 +258,13 @@ class TestExperimentsCreateSingleNode(object):
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
-            self, post_patched, tensorboard_handler_class):
+            self, post_patched, tensorboard_handler_class, get_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -256,7 +289,12 @@ class TestExperimentsCreateSingleNode(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_zip_and_upload_local_workspace_when_local_path_was_passed_to_workspace_option(
-            self, get_patched, post_patched, multipart_encoder_cls_patched):
+            self, get_patched,
+            post_patched,
+            multipart_encoder_cls_patched,
+            temporary_directory_for_extracted_files,
+            temporary_zip_file_path,
+    ):
         multipart_encoder_patched = mock.MagicMock()
         multipart_encoder_content_type = mock.MagicMock()
         # multipart_encoder_patched.content_type = multipart_encoder_content_type
@@ -275,10 +313,8 @@ class TestExperimentsCreateSingleNode(object):
         ]
 
         workspace_path = create_test_dir_tree()
-        zip_file_name = os.path.basename(workspace_path) + ".zip"
+        zip_file_name = os.path.basename(temporary_zip_file_path)
         command = self.BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE[:] + [workspace_path]
-        zip_file_path = os.path.join(tempfile.gettempdir(), zip_file_name)
-        temporary_directory_for_extracted_files = os.path.join(tempfile.gettempdir(), "extracted_files")
         create_experiment_request_json = self.BASIC_OPTIONS_REQUEST.copy()
         create_experiment_request_json["workspaceUrl"] = \
             "s3://ps-projects/" + example_responses.GET_PRESIGNED_URL_FOR_S3_BUCKET_RESPONSE_JSON["data"]["fields"][
@@ -289,16 +325,16 @@ class TestExperimentsCreateSingleNode(object):
 
         # assert self.EXPECTED_STDOUT in result.output, result.exc_info
 
-        with zipfile.ZipFile(zip_file_path) as zip_handler:
+        with zipfile.ZipFile(temporary_zip_file_path) as zip_handler:
             zip_handler.extractall(temporary_directory_for_extracted_files)
 
-        file1_path = os.path.join(temporary_directory_for_extracted_files, "file1")
+        file1_path = os.path.join(temporary_directory_for_extracted_files, "file1.txt")
         assert os.path.exists(file1_path)
         assert os.path.isfile(file1_path)
         with open(file1_path) as h:
             assert h.read() == "keton"
 
-        file2_path = os.path.join(temporary_directory_for_extracted_files, "subdir1", "file2")
+        file2_path = os.path.join(temporary_directory_for_extracted_files, "subdir1", "file2.jpg")
         assert os.path.exists(file2_path)
         assert os.path.isfile(file2_path)
         with open(file2_path) as h:
@@ -343,7 +379,6 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "create", "multinode",
-        "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
@@ -410,7 +445,6 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         "--optionsFile",  # path added in test,
     ]
     BASIC_OPTIONS_REQUEST = {
-        u"name": u"multinode_mpi",
         u"projectHandle": u"prq70zy79",
         u"experimentTypeId": 2,
         u"workerContainer": u"wcon",
@@ -476,25 +510,6 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
     EXPECTED_STDOUT = "New experiment created with ID: sadkfhlskdjh\n"
 
-    BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH = [
-        "experiments", "create", "multinode",
-        "--name", "multinode_mpi",
-        "--projectId", "prq70zy79",
-        "--experimentType", "GRPC",
-        "--workerContainer", "wcon",
-        "--workerMachineType", "mty",
-        "--workerCommand", "wcom",
-        "--workerCount", 2,
-        "--parameterServerContainer", "pscon",
-        "--parameterServerMachineType", "psmtype",
-        "--parameterServerCommand", "ls",
-        "--parameterServerCount", 2,
-        "--workerContainerUser", "usr",
-        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
-        "--vpc",
-    ]
-
-
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
@@ -522,7 +537,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -538,30 +553,13 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.FULL_OPTIONS_COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
         assert self.EXPECTED_STDOUT in result.output
-        assert result.exit_code == 0
-
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_send_data_to_v2_url_when_vpc_switch_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
-
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_VPC_SWITCH)
-
-        assert self.EXPECTED_STDOUT in result.output, result.exc_info
-
-        post_patched.assert_called_once_with(self.URL_V2,
-                                             headers=self.EXPECTED_HEADERS,
-                                             json=self.BASIC_OPTIONS_REQUEST,
-                                             params=None,
-                                             files=None,
-                                             data=None)
         assert result.exit_code == 0
 
     @mock.patch("gradient.commands.experiments.TensorboardHandler")
@@ -577,7 +575,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -602,7 +600,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -627,7 +625,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         result = runner.invoke(cli.cli, command)
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
                                              params=None,
@@ -647,7 +645,6 @@ class TestExperimentsCreateMultiNode(object):
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "create", "multinode",
-        "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
@@ -714,7 +711,6 @@ class TestExperimentsCreateMultiNode(object):
         "--optionsFile",  # path added in test,
     ]
     BASIC_OPTIONS_REQUEST = {
-        u"name": u"multinode_mpi",
         u"projectHandle": u"prq70zy79",
         u"experimentTypeId": 2,
         u"workerContainer": u"wcon",
@@ -911,7 +907,6 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/run/"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "run", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -921,7 +916,6 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     ]
     BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE = [
         "experiments", "run", "singlenode",
-        "--name", "exp1",
         "--projectId", "testHandle",
         "--container", "testContainer",
         "--machineType", "testType",
@@ -968,7 +962,6 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/run/"
     BASIC_OPTIONS_COMMAND = [
         "experiments", "run", "multinode",
-        "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
@@ -1035,11 +1028,11 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
     ]
     FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
         "experiments", "run", "multinode",
+        "--no-logs",
         "--optionsFile",  # path added in test
     ]
     BASIC_OPTIONS_COMMAND_WHEN_CLUSTER_ID_WAS_SET = [
         "experiments", "run", "multinode",
-        "--name", "multinode_mpi",
         "--projectId", "prq70zy79",
         "--experimentType", "GRPC",
         "--workerContainer", "wcon",
@@ -1091,6 +1084,7 @@ class TestExperimentDetail(object):
 | Worker Machine Type | None                     |
 | Working Directory   | /some/working/directory  |
 | Workspace URL       | some.url                 |
+| Tags                | tag1, tag2               |
 +---------------------+--------------------------+
 """
     SINGLE_NODE_DETAILS_STDOUT = """+---------------------+----------------+
@@ -1107,6 +1101,7 @@ class TestExperimentDetail(object):
 | Workspace URL       | None           |
 | Model Type          | None           |
 | Model Path          | None           |
+| Tags                | tag1, tag2     |
 +---------------------+----------------+
 """
 
@@ -1117,7 +1112,7 @@ class TestExperimentDetail(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT, result.exc_info[1]
+        assert result.output == self.SINGLE_NODE_DETAILS_STDOUT, result.exc_info
         get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
                                             json=None,
@@ -1276,7 +1271,8 @@ Aborted!
                                                 "fake content")
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, ["experiments", "list", "--projectId", "handle1", "-p", "handle2"])
+        result = runner.invoke(cli.cli, ["experiments", "list", "--projectId", "handle1", "-p", "handle2",
+                                         "--tag", "some_tag", "--tag", "some_tag_2"])
 
         get_patched.assert_called_once_with(self.URL_V2,
                                             headers=self.EXPECTED_HEADERS,
@@ -1284,7 +1280,9 @@ Aborted!
                                             params={"limit": 20,
                                                     "offset": 0,
                                                     "projectHandle[0]": u"handle1",
-                                                    "projectHandle[1]": u"handle2"})
+                                                    "projectHandle[1]": u"handle2",
+                                                    "tag": ("some_tag", "some_tag_2"),
+                                                    })
 
         assert result.output == "No data found\n"
 
@@ -1319,7 +1317,10 @@ Aborted!
                                             params={"limit": 20,
                                                     "offset": 0,
                                                     "projectHandle[0]": "some_id",
-                                                    "projectHandle[1]": "some_id_2"})
+                                                    "projectHandle[1]": "some_id_2",
+                                                    "tag": ("some_tag", "some_tag_2"),
+                                                    },
+                                            )
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -1582,3 +1583,78 @@ class TestExperimentLogs(object):
         result = runner.invoke(cli.cli, self.COMMAND_WITH_FOLLOW)
 
         assert "Awaiting logs...\nFailed to fetch data: Authentication failed\n" in result.output
+
+
+class TestExperimentValidation(object):
+
+    @pytest.mark.parametrize(
+        "command, expected_message", [
+            (
+                    [
+                        "experiments", "create", "singlenode",
+                        "--projectId", "testHandle",
+                        "--container", "testContainer",
+                        "--machineType", "testType",
+                        "--command", "testCommand",
+                        "--workspaceUrl", "some-workspace",
+                        "--modelPath", "some/model/path"
+                    ],
+                    EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            ), (
+                    [
+                        "experiments", "create", "multinode",
+                        "--name", "multinode",
+                        "--projectId", "prq70zy79",
+                        "--experimentType", "GRPC",
+                        "--workerContainer", "wcon",
+                        "--workerMachineType", "mty",
+                        "--workerCommand", "wcom",
+                        "--workerCount", 2,
+                        "--parameterServerContainer", "pscon",
+                        "--parameterServerMachineType", "psmtype",
+                        "--parameterServerCommand", "ls",
+                        "--parameterServerCount", 2,
+                        "--workerContainerUser", "usr",
+                        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+                        "--modelPath", "some/model/path"
+                    ],
+                    EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            ), (
+                    [
+                        "experiments", "run", "singlenode",
+                        "--projectId", "testHandle",
+                        "--container", "testContainer",
+                        "--machineType", "testType",
+                        "--command", "testCommand",
+                        "--workspaceUrl", "some-workspace",
+                        "--no-logs",
+                        "--modelPath", "some/model/path"
+                    ],
+                    EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            ), (
+                    [
+                        "experiments", "run", "multinode",
+                        "--projectId", "prq70zy79",
+                        "--experimentType", "GRPC",
+                        "--workerContainer", "wcon",
+                        "--workerMachineType", "mty",
+                        "--workerCommand", "wcom",
+                        "--workerCount", 2,
+                        "--parameterServerContainer", "pscon",
+                        "--parameterServerMachineType", "psmtype",
+                        "--parameterServerCommand", "ls",
+                        "--parameterServerCount", 2,
+                        "--workerContainerUser", "usr",
+                        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+                        "--no-logs",
+                        "--modelPath", "some/model/path"
+                    ],
+                    EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            ),
+        ]
+    )
+    def test_experiment_create_argument_validation_error(self, command, expected_message):
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert expected_message in result.output

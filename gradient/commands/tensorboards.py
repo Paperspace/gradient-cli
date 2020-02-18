@@ -1,6 +1,5 @@
 import abc
 import pydoc
-from itertools import islice
 
 import halo
 import six

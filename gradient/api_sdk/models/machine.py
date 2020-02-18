@@ -41,6 +41,7 @@ class Machine(object):
     created_timestamp = attr.ib(type=str, default=None)
     last_run_timestamp = attr.ib(type=str, default=None)
     events = attr.ib(type=list, default=None)
+    tags = attr.ib(type=list, factory=list)
 
 
 @attr.s

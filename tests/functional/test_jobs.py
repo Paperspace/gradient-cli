@@ -22,7 +22,7 @@ class TestJobs(object):
 
 
 class TestListJobs(TestJobs):
-    URL = "https://api.paperspace.io/jobs/getJobs/"
+    URL = "https://api.paperspace.io/jobs/getJobList/"
     BASIC_COMMAND = ["jobs", "list"]
     COMMAND_WITH_OPTIONS_FILE = ["jobs", "list", "--optionsFile", ]  # path added in test
 
@@ -52,11 +52,17 @@ class TestListJobs(TestJobs):
     BASIC_COMMAND_WITH_FILTERING = [
         "jobs", "list",
         "--projectId", "some_project_id",
-        "--experimentId", "some_experiment_id",
+        "--tag", "some_tag",
+        "--tag", "some_other_tag",
     ]
-    EXPECTED_REQUEST_JSON_WITH_FILTERING = {
-        "projectId": "some_project_id",
-        "experimentId": "some_experiment_id",
+    EXPECTED_PARAMS_WITHOUT_FILTERING = {
+        "filter": "{\"filter\": {\"where\": {}}}",
+    }
+    EXPECTED_REQUEST_PARAMS_WITH_FILTERING = {
+        "filter": "{\"filter\": {\"where\": {\"projectId\": \"some_project_id\"}}}",
+        "modelName": "team",
+        "tagFilter[0]": "some_tag",
+        "tagFilter[1]": "some_other_tag",
     }
 
     BASIC_COMMAND_WITH_MUTUALLY_EXCLUSIVE_FILTERS = [
@@ -64,19 +70,6 @@ class TestListJobs(TestJobs):
         "--project", "some_project_name",
         "--projectId", "some_project_id",
     ]
-    EXPECTED_REQUEST_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS = {
-        "project": "some_project_name",
-        "projectId": "some_project_id",
-    }
-    RESPONSE_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS = {
-        "error": {
-            "name": "Error",
-            "status": 422,
-            "message": "Incompatible parameters: project and projectId cannot both be specified",
-        },
-    }
-    EXPECTED_STDOUT_WHEN_MUTUALLY_EXCLUSIVE_FILTERS = "Failed to fetch data: Incompatible parameters: project and " \
-                                                      "projectId cannot both be specified\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_jobs_list_was_used(self, get_patched):
@@ -89,7 +82,7 @@ class TestListJobs(TestJobs):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS_WITHOUT_FILTERING)
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -102,7 +95,7 @@ class TestListJobs(TestJobs):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS_WITHOUT_FILTERING)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -116,8 +109,8 @@ class TestListJobs(TestJobs):
 
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
-                                       json=self.EXPECTED_REQUEST_JSON_WITH_FILTERING,
-                                       params=None)
+                                       json=None,
+                                       params=self.EXPECTED_REQUEST_PARAMS_WITH_FILTERING)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -131,7 +124,7 @@ class TestListJobs(TestJobs):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS_WITHOUT_FILTERING)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
@@ -145,7 +138,7 @@ class TestListJobs(TestJobs):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS_WITHOUT_FILTERING)
         assert result.output == self.EXPECTED_STDOUT_WHEN_NO_JOBS_WERE_FOUND
         assert result.exit_code == 0
 
@@ -159,7 +152,7 @@ class TestListJobs(TestJobs):
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS_WITHOUT_FILTERING)
         assert result.output == "Failed to fetch data\n"
         assert result.exit_code == 0
 
@@ -172,24 +165,9 @@ class TestListJobs(TestJobs):
 
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
-                                       json=self.EXPECTED_REQUEST_JSON_WITH_FILTERING,
-                                       params=None)
+                                       json=None,
+                                       params=self.EXPECTED_REQUEST_PARAMS_WITH_FILTERING)
         assert result.output == self.EXPECTED_STDOUT
-        assert result.exit_code == 0
-
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
-    def test_should_print_proper_message_when_jobs_list_was_used_with_mutually_exclusive_filters(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS,
-                                                status_code=422)
-
-        cli_runner = CliRunner()
-        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_MUTUALLY_EXCLUSIVE_FILTERS)
-
-        get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
-                                       json=self.EXPECTED_REQUEST_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS,
-                                       params=None)
-        assert result.output == self.EXPECTED_STDOUT_WHEN_MUTUALLY_EXCLUSIVE_FILTERS
         assert result.exit_code == 0
 
 
@@ -443,6 +421,7 @@ class TestListJobArtifacts(TestJobs):
 
 class TestJobsCreate(object):
     URL = "https://api.paperspace.io"
+    TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     EXPECTED_HEADERS = default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -454,6 +433,18 @@ class TestJobsCreate(object):
         "--machineType", "testType",
         "--command", "testCommand",
         "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+    ]
+    BASIC_OPTIONS_COMMAND_WITH_TAGS = [
+        "jobs", "create",
+        "--name", "exp1",
+        "--projectId", "testHandle",
+        "--container", "testContainer",
+        "--machineType", "testType",
+        "--command", "testCommand",
+        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+        "--tag", "test0",
+        "--tag", "test1",
+        "--tags", "test2,test3",
     ]
     FULL_OPTIONS_COMMAND = [
         "jobs", "create",
@@ -522,9 +513,18 @@ class TestJobsCreate(object):
         "registryUsername": "some_registry_username",
         "registryPassword": "some_registry_password",
     }
+    TAGS_JSON = {
+        "entity": "job",
+        "entityId": "sadkfhlskdjh",
+        "tags": ["test0", "test1", "test2", "test3"]
+    }
     RESPONSE_JSON_200 = {"id": "sadkfhlskdjh", "message": "success"}
+    UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
     EXPECTED_STDOUT = u'New job created with ID: sadkfhlskdjh\n'
+    EXPECTED_STDOUT_TAGS = u'New job created with ID: sadkfhlskdjh\n' \
+                           u'https://www.paperspace.com/console/jobs/sadkfhlskdjh\n'
+
 
     RESPONSE_JSON_404_PROJECT_NOT_FOUND = {"details": {"handle": "wrong_handle"}, "error": "Project not found"}
     RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'
@@ -577,6 +577,34 @@ class TestJobsCreate(object):
                                              params=self.FULL_OPTIONS_REQUEST,
                                              files=None,
                                              data=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    def test_should_send_proper_data_and_tag_job(self, post_patched, get_patched, put_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        get_patched.return_value = MockResponse({}, 200, "fake content")
+        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_TAGS)
+
+        post_patched.assert_called_once_with(self.URL + '/jobs/createJob/',
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=None,
+                                             params=self.BASIC_OPTIONS_REQUEST,
+                                             files=None,
+                                             data=None)
+
+        put_patched.assert_called_once_with(
+            self.TAGS_URL,
+            headers=self.EXPECTED_HEADERS,
+            json=self.TAGS_JSON,
+            params=None,
+        )
+
+        assert result.output == self.EXPECTED_STDOUT_TAGS, result.exc_info
         assert result.exit_code == 0
 
 

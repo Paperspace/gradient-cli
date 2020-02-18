@@ -26,6 +26,7 @@ except ImportError:
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseExperimentCommand(BaseCommand):
+    entity = "experiment"
     def _get_client(self, api_key, logger):
         client = api_sdk.clients.ExperimentsClient(api_key=api_key, logger=logger)
         return client
@@ -108,7 +109,7 @@ class BaseCreateExperimentCommandMixin(object):
     def _handle_workspace(self, instance_dict):
         handler = self.workspace_handler.handle(instance_dict)
 
-        if (instance_dict.get("cluster_id") or instance_dict.get("use_vpc")) and handler.lower() == "none":
+        if instance_dict.get("cluster_id") and handler.lower() == "none":
             raise click.UsageError('Missing option "--workspace" is required for VPC experiments')
 
         instance_dict.pop("ignore_files", None)
@@ -236,13 +237,10 @@ class StopExperimentCommand(BaseExperimentCommand):
 
 class ListExperimentsCommand(ListCommandMixin, BaseExperimentCommand):
     TOTAL_ITEMS_KEY = "totalItems"
+
     def _get_instances(self, **kwargs):
-        project_id = kwargs.get("project_id")
-        limit = kwargs.get("limit")
-        offset = kwargs.get("offset")
-        get_meta = True
         try:
-            instances, meta_data = self.client.list(project_id, get_meta=get_meta, limit=limit, offset=offset)
+            instances, meta_data = self.client.list(get_meta=True, **kwargs)
         except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
@@ -282,6 +280,8 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
         """
         :param api_sdk.SingleNodeExperiment experiment:
         """
+
+        tags_string = ", ".join(experiment.tags)
         data = (
             ("Name", experiment.name),
             ("ID", experiment.id),
@@ -295,6 +295,7 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
             ("Workspace URL", experiment.workspace_url),
             ("Model Type", experiment.model_type),
             ("Model Path", experiment.model_path),
+            ("Tags", tags_string),
         )
         return data
 
@@ -303,6 +304,8 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
         """
         :param api_sdk.MultiNodeExperiment experiment:
         """
+
+        tags_string = ", ".join(experiment.tags)
         data = (
             ("Name", experiment.name),
             ("ID", experiment.id),
@@ -325,6 +328,7 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
             ("Worker Machine Type", experiment.worker_machine_type),
             ("Working Directory", experiment.working_directory),
             ("Workspace URL", experiment.workspace_url),
+            ("Tags", tags_string),
         )
         return data
 
@@ -333,6 +337,8 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
         """
         :param api_sdk.MpiMultiNodeExperiment experiment:
         """
+
+        tags_string = ", ".join(experiment.tags)
         data = (
             ("Name", experiment.name),
             ("ID", experiment.id),
@@ -355,6 +361,7 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
             ("Worker Machine Type", experiment.worker_machine_type),
             ("Working Directory", experiment.working_directory),
             ("Workspace URL", experiment.workspace_url),
+            ("Tags", tags_string),
         )
         return data
 
@@ -406,3 +413,15 @@ class DeleteExperimentCommand(BaseExperimentCommand):
     def execute(self, experiment_id, *args, **kwargs):
         self.client.delete(experiment_id)
         self.logger.log("Experiment deleted")
+
+
+class ExperimentAddTagsCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, *args, **kwargs):
+        self.client.add_tags(experiment_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to experiment")
+
+
+class ExperimentRemoveTagsCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, *args, **kwargs):
+        self.client.remove_tags(experiment_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from experiment")

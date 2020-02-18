@@ -7,11 +7,13 @@ from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import urljoin
-from .common import BaseCommand, ListCommandMixin
+from .common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseProjectCommand(BaseCommand):
+    entity = "project"
+
     def _get_client(self, api_key, logger):
         client = api_sdk.clients.ProjectsClient(api_key=api_key, logger=logger)
         return client
@@ -36,7 +38,7 @@ class CreateProjectCommand(BaseProjectCommand):
 class ListProjectsCommand(ListCommandMixin, BaseProjectCommand):
     def _get_instances(self, kwargs):
         try:
-            instances = self.client.list()
+            instances = self.client.list(**kwargs)
         except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
@@ -55,3 +57,32 @@ class DeleteProjectCommand(BaseProjectCommand):
     def execute(self, project_id):
         self.client.delete(project_id)
         self.logger.log("Project deleted")
+
+
+class ProjectAddTagsCommand(BaseProjectCommand):
+    def execute(self, project_id, *args, **kwargs):
+        self.client.add_tags(project_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to project")
+
+
+class ProjectRemoveTagsCommand(BaseProjectCommand):
+    def execute(self, project_id, *args, **kwargs):
+        self.client.remove_tags(project_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from project")
+
+
+class ShowProjectDetailsCommand(DetailsCommandMixin, BaseProjectCommand):
+    def _get_table_data(self, instance):
+        """
+        :param api_sdk.Project instance:
+        """
+        tags_string = ", ".join(instance.tags)
+
+        data = (
+            ("Name", instance.name),
+            ("ID", instance.id),
+            ("Repository name", instance.repository_name),
+            ("Repository url", instance.repository_url),
+            ("Tags", tags_string),
+        )
+        return data

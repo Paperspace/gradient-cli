@@ -49,16 +49,13 @@ class WorkspaceHandler(object):
         self.archive_basename = None
 
     def _zip_workspace(self, workspace_path, ignore_files):
-        if not workspace_path:
-            workspace_path = '.'
-            zip_file_name = os.path.basename(os.getcwd()) + '.zip'
-        else:
-            zip_file_name = os.path.basename(workspace_path) + '.zip'
-
+        zip_file_name = 'workspace.zip'
         zip_file_path = os.path.join(tempfile.gettempdir(), zip_file_name)
 
         if ignore_files:
             ignore_files = ignore_files.split(",")
+            ignore_files = [f.strip() for f in ignore_files]
+
         zip_archiver = self._get_workspace_archiver()
         zip_archiver.archive(workspace_path, zip_file_path, exclude=ignore_files)
 

@@ -24,6 +24,7 @@ class _DeploymentCommand(object):
     def __init__(self, deployment_client, logger_=gradient_logger.Logger()):
         self.client = deployment_client
         self.logger = logger_
+        self.entity = "deployment"
 
     @abc.abstractmethod
     def execute(self, **kwargs):
@@ -133,6 +134,8 @@ class GetDeploymentDetails(DetailsCommandMixin, _DeploymentCommand):
         """
         :param models.Deployment instance:
         """
+        tags_string = ", ".join(instance.tags)
+
         data = (
             ("ID", instance.id),
             ("Name", instance.name),
@@ -145,5 +148,18 @@ class GetDeploymentDetails(DetailsCommandMixin, _DeploymentCommand):
             ("Endpoint", instance.endpoint),
             ("API type", instance.api_type),
             ("Cluster ID", instance.cluster_id),
+            ("Tags", tags_string),
         )
         return data
+
+
+class DeploymentAddTagsCommand(_DeploymentCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.add_tags(deployment_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to deployment")
+
+
+class DeploymentRemoveTagsCommand(_DeploymentCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.remove_tags(deployment_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from deployment")

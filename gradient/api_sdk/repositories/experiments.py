@@ -75,6 +75,10 @@ class ListExperiments(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, Li
                 key = "projectHandle[{}]".format(i)
                 params[key] = experiment_id
 
+        tags = kwargs.get("tags")
+        if tags:
+            params["tag"] = tags
+
         return params
 
 

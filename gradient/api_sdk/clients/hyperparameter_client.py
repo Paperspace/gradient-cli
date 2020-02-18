@@ -3,6 +3,8 @@ from .. import models, repositories
 
 
 class HyperparameterJobsClient(base_client.BaseClient):
+    entity = "experiment"
+
     def create(
             self,
             name,
@@ -31,7 +33,8 @@ class HyperparameterJobsClient(base_client.BaseClient):
             hyperparameter_server_container_user=None,
             hyperparameter_server_machine_type=None,
             working_directory=None,
-            use_dockerfile=False
+            use_dockerfile=False,
+            tags=None,
     ):
         """Create hyperparameter tuning job
         :param str name: Name of new experiment [required]
@@ -61,6 +64,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str hyperparameter_server_machine_type: Hyperparameter server machine type
         :param str working_directory: Working directory for the experiment
         :param bool use_dockerfile: Flag: use dockerfile
+        :param list[str] tags: List of tags
 
         :returns: ID of a new job
         :rtype: str
@@ -104,6 +108,10 @@ class HyperparameterJobsClient(base_client.BaseClient):
 
         repository = repositories.CreateHyperparameterJob(api_key=self.api_key, logger=self.logger)
         handle = repository.create(hyperparameter)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def run(
@@ -135,6 +143,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
             hyperparameter_server_machine_type=None,
             working_directory=None,
             use_dockerfile=False,
+            tags=None,
     ):
         """Create and start hyperparameter tuning job
 
@@ -177,6 +186,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :param str hyperparameter_server_machine_type: hps machine type
         :param str working_directory: Working directory for the experiment
         :param bool use_dockerfile: Flag: use dockerfile
+        :param list[str] tags: List of tags
 
         :returns: ID of a new job
         :rtype: str
@@ -220,6 +230,10 @@ class HyperparameterJobsClient(base_client.BaseClient):
 
         repository = repositories.CreateAndStartHyperparameterJob(api_key=self.api_key, logger=self.logger)
         handle = repository.create(hyperparameter)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def get(self, id):

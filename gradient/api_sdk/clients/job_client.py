@@ -26,6 +26,7 @@ class JobsClient(BaseClient):
         )
 
     """
+    entity = "job"
 
     def create(
             self,
@@ -58,6 +59,7 @@ class JobsClient(BaseClient):
             registry_target_username=None,
             registry_target_password=None,
             build_only=False,
+            tags=None,
     ):
         """
         Method to create and start job in paperspace gradient.
@@ -139,6 +141,7 @@ class JobsClient(BaseClient):
         :param str registry_target_username: username for custom docker registry
         :param str registry_target_password: password for custom docker registry
         :param bool build_only: determines whether to only build and not run image
+        :param list[str] tags: List of tags
 
         :returns: Job handle
         :rtype: str
@@ -178,6 +181,8 @@ class JobsClient(BaseClient):
             build_only=build_only,
         )
         handle = CreateJob(self.api_key, self.logger).create(job, data=data)
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
     def delete(self, job_id):
@@ -214,7 +219,7 @@ class JobsClient(BaseClient):
         """
         StopJob(self.api_key, self.logger).stop(job_id)
 
-    def list(self, project_id=None, project=None, experiment_id=None):
+    def list(self, project_id=None, project=None, experiment_id=None, tags=None):
         """
         Method to list jobs.
 
@@ -237,12 +242,13 @@ class JobsClient(BaseClient):
         :param str project_id: id of project that you want to list jobs
         :param str project: name of project that you want to list jobs
         :param str experiment_id: id of experiment that you want to list jobs
+        :param list[str]|tuple[str] tags: tags to filter jobs with OR
 
         :returns: list of job models
-        :rtype: list
+        :rtype: list[Job]
         """
         return ListJobs(self.api_key, self.logger).list(project_id=project_id, project=project,
-                                                        experiment_id=experiment_id)
+                                                        experiment_id=experiment_id, tags=tags)
 
     def logs(self, job_id, line=0, limit=10000):
         """

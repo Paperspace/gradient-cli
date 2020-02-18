@@ -1,3 +1,5 @@
+import json
+
 import mock
 from click.testing import CliRunner
 
@@ -176,6 +178,8 @@ from tests import MockResponse, example_responses
 #                                         params=None)
 #         assert result.exit_code == 0
 #
+# TODO: Add test case for creating notebook with tags
+#
 #
 # class TestNotebooksDelete(object):
 #     URL = "https://api.paperspace.io/notebooks/v2/deleteNotebook"
@@ -295,9 +299,21 @@ class TestNotebooksShow(object):
 | VM Type | K80                               |
 | State   | Running                           |
 | FQDN    | ngw7piq9.dgradient.paperspace.com |
+| Tags    |                                   |
++---------+-----------------------------------+
+"""
+    EXPECTED_STDOUT_WITH_TAGS = """+---------+-----------------------------------+
+| Name    | some_name                         |
++---------+-----------------------------------+
+| ID      | ngw7piq9                          |
+| VM Type | K80                               |
+| State   | Running                           |
+| FQDN    | ngw7piq9.dgradient.paperspace.com |
+| Tags    | tag1, tag2                        |
 +---------+-----------------------------------+
 """
     RESPONSE_JSON = example_responses.NOTEBOOK_GET_RESPONSE
+    RESPONSE_JSON_WITH_TAGS = example_responses.NOTEBOOK_GET_RESPONSE_WITH_TAGS
 
     COMMAND_WITH_API_KEY_USED = ["notebooks", "show", "--id", "some_id", "--apiKey", "some_key"]
 
@@ -318,6 +334,20 @@ class TestNotebooksShow(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json={"notebookId": "some_id"},
+                                             params=None)
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_post_request_and_print_notebook_details_with_tags(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_TAGS)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WITH_TAGS, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS,
                                              json={"notebookId": "some_id"},
@@ -385,6 +415,11 @@ class TestNotebooksShow(object):
 class TestNotebooksList(object):
     URL = "https://api.paperspace.io/notebooks/getNotebooks"
     COMMAND = ["notebooks", "list"]
+    COMMAND_WITH_FILTERING_BY_TAGS = [
+        "notebooks", "list",
+        "--tag", "tag1",
+        "--tag", "tag2",
+    ]
     EXPECTED_STDOUT = """+--------------------+----------+
 | Name               | ID       |
 +--------------------+----------+
@@ -406,16 +441,14 @@ class TestNotebooksList(object):
 
     COMMAND_WITH_OPTIONS_FILE_USED = ["notebooks", "list", "--optionsFile", ]  # path added in test
 
-    EXPERCTED_REQUEST_JSON = {
+    EXPECTED_FILTERS = {
         "filter": {
-            "filter": {
-                "where": {
-                    "dtDeleted": None,
-                },
-                "limit": 20,
-                "order": "jobId desc",
-                "offset": 0,
+            "where": {
+                "dtDeleted": None,
             },
+            "limit": 20,
+            "order": "jobId desc",
+            "offset": 0,
         },
     }
 
@@ -436,37 +469,72 @@ class TestNotebooksList(object):
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
                                              headers=self.EXPECTED_HEADERS,
-                                             json=self.EXPERCTED_REQUEST_JSON,
-                                             params=None)
+                                             json=None,
+                                             params=mock.ANY)
+        params = post_patched.call_args.kwargs["params"]
+        filter_params = params["filter"]
+        filter_params = json.loads(filter_params)
+        assert filter_params == self.EXPECTED_FILTERS
+        assert "tagFilter[0]" not in params
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
-    def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched):
+    def test_should_send_post_request_and_print_notebook_details_when_filtering_by_tags(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_FILTERING_BY_TAGS)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=self.EXPECTED_HEADERS,
+                                             json=None,
+                                             params=mock.ANY)
+        params = post_patched.call_args.kwargs["params"]
+        filter_params = params["filter"]
+        filter_params = json.loads(filter_params)
+        assert filter_params == self.EXPECTED_FILTERS
+        assert "tagFilter[0]" in params
+        assert params["tagFilter[0]"] in ("tag1", "tag2")
+        assert params["tagFilter[1]"] in ("tag1", "tag2")
+        assert params["tagFilter[0]"] != params["tagFilter[1]"]
+        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_changed_headers_when_api_key_option_was_used(self, get_patched):
+        get_patched.return_value = MockResponse(self.RESPONSE_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_USED)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
-                                             json=self.EXPERCTED_REQUEST_JSON,
-                                             params=None)
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=None,
+                                            params=mock.ANY)
+        params = get_patched.call_args.kwargs["params"]
+        filter_params = params["filter"]
+        filter_params = json.loads(filter_params)
+        assert filter_params == self.EXPECTED_FILTERS
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
-    def test_should_read_option_from_yaml_file(self, post_patched, notebooks_list_config_path):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON)
+    def test_should_read_option_from_yaml_file(self, get_patched, notebooks_list_config_path):
+        get_patched.return_value = MockResponse(self.RESPONSE_JSON)
         command = self.COMMAND_WITH_OPTIONS_FILE_USED[:] + [notebooks_list_config_path]
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
-                                             json=self.EXPERCTED_REQUEST_JSON,
-                                             params=None)
+        get_patched.assert_called_once_with(self.URL,
+                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=None,
+                                            params=mock.ANY)
+        params = get_patched.call_args.kwargs["params"]
+        filter_params = params["filter"]
+        filter_params = json.loads(filter_params)
+        assert filter_params == self.EXPECTED_FILTERS
         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -479,8 +547,12 @@ class TestNotebooksList(object):
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
-                                       json=self.EXPERCTED_REQUEST_JSON,
-                                       params=None)
+                                       json=None,
+                                       params=mock.ANY)
+        params = get_patched.call_args.kwargs["params"]
+        filter_params = params["filter"]
+        filter_params = json.loads(filter_params)
+        assert filter_params == self.EXPECTED_FILTERS
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -493,6 +565,10 @@ class TestNotebooksList(object):
         assert result.output == "Failed to fetch data\n", result.exc_info
         get_patched.assert_called_with(self.URL,
                                        headers=self.EXPECTED_HEADERS,
-                                       json=self.EXPERCTED_REQUEST_JSON,
-                                       params=None)
+                                       json=None,
+                                       params=mock.ANY)
+        params = get_patched.call_args.kwargs["params"]
+        filter_params = params["filter"]
+        filter_params = json.loads(filter_params)
+        assert filter_params == self.EXPECTED_FILTERS
         assert result.exit_code == 0

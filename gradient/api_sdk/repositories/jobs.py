@@ -1,3 +1,5 @@
+import json
+
 import gradient.api_sdk.config
 from gradient.api_sdk import serializers
 from gradient.api_sdk.clients import http_client
@@ -13,12 +15,12 @@ class GetBaseJobApiUrlMixin(object):
 class ListJobs(GetBaseJobApiUrlMixin, ListResources):
 
     def get_request_url(self, **kwargs):
-        return "/jobs/getJobs/"
+        return "/jobs/getJobList/"
 
     def _parse_objects(self, data, **kwargs):
         jobs = []
 
-        for job_dict in data:
+        for job_dict in data["jobList"]:
             job = self._parse_object(job_dict)
             jobs.append(job)
 
@@ -28,19 +30,29 @@ class ListJobs(GetBaseJobApiUrlMixin, ListResources):
         job = serializers.JobSchema().get_instance(job_dict)
         return job
 
-    def _get_request_json(self, kwargs):
-        filters = dict()
+    def _get_request_params(self, kwargs):
+        filters = {"filter": {"where": {}}}
         if kwargs.get("project_id"):
-            filters["projectId"] = kwargs.get("project_id")
+            filters["filter"]["where"]["projectId"] = kwargs.get("project_id")
 
         if kwargs.get("project"):
-            filters["project"] = kwargs.get("project")
+            filters["filter"]["where"]["project"] = kwargs.get("project")
 
         if kwargs.get("experiment_id"):
-            filters["experimentId"] = kwargs.get("experiment_id")
+            filters["filter"]["where"]["experimentId"] = kwargs.get("experiment_id")
 
-        json_ = filters or None
-        return json_
+        params = {}
+        filter_string = json.dumps(filters)
+        params["filter"] = filter_string
+
+        tags = kwargs.get("tags")
+        if tags:
+            params["modelName"] = "team"  # TODO: filtering by tags won't work without this. Remove this when fixed.
+            for i, tag in enumerate(tags):
+                key = "tagFilter[{}]".format(i)
+                params[key] = tag
+
+        return params or None
 
 
 class ListJobLogs(ListResources):

@@ -9,4 +9,5 @@ from .machine import Machine, MachineEvent, MachineUtilization
 from .model import Model, ModelFile
 from .notebook import Notebook
 from .project import Project
+from .tag import Tag
 from .tensorboard import Instance, Tensorboard
