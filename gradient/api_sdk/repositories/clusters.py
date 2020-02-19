@@ -1,3 +1,5 @@
+import json
+
 from gradient.api_sdk.config import config
 from gradient.api_sdk.repositories.common import GetResource, ListResources
 from gradient.api_sdk.sdk_exceptions import MalformedResponseError
@@ -48,5 +50,5 @@ class ListClusters(ListResources):
         }
 
         return {
-            "filter": filter
+            "filter": json.dumps(filter)
         }
