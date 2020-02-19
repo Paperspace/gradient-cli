@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.6.0a2
+### Breaking changes
+* Removed the `--vpc` flag
+
 # Release Notes for 0.6.0a1
 ### New features
 * Added commands to `add` and `remove` tags
