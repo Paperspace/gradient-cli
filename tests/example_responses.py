@@ -6140,3 +6140,51 @@ DETAILS_OF_PROJECT_WITH_TAGS = {
     },
     "tagFilter": []
 }
+
+EXAMPLE_CLUSTERS_LIST_RESPONSE = [
+    {
+        "id": "cluster_id_1",
+        "name": "cluster name 1",
+        "type": "Job Cluster",
+        "region": "Private",
+        "cloud": "private",
+        "teamId": "team_id",
+        "isDefault": True,
+        "dtCreated": "2019-07-05T23:28:17.416Z",
+        "dtModified": "2019-07-05T23:28:17.416Z",
+        "clusterId": 91,
+        "isPrivate": True,
+        "modelName": "team",
+        "modelId": 1170
+    },
+    {
+        "id": "cluster_id_2",
+        "name": "cluster name 2",
+        "type": "Kubernetes Processing Site",
+        "region": "Private",
+        "cloud": "aws",
+        "teamId": "team_id",
+        "isDefault": False,
+        "dtCreated": "2019-07-22T14:50:10.170Z",
+        "dtModified": "2019-11-21T18:12:27.723Z",
+        "clusterId": 92,
+        "isPrivate": True,
+        "modelName": "team",
+        "modelId": 1170
+    },
+    {
+        "id": "cluster_id_3",
+        "name": "cluster name 3",
+        "type": "Job Cluster",
+        "region": "Private",
+        "cloud": "gcp",
+        "teamId": "team_id",
+        "isDefault": False,
+        "dtCreated": "2019-10-29T18:42:50.985Z",
+        "dtModified": "2019-11-21T18:12:27.723Z",
+        "clusterId": 100,
+        "isPrivate": True,
+        "modelName": "team",
+        "modelId": 1170
+    }
+]
