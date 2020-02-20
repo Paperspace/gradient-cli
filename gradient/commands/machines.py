@@ -5,14 +5,20 @@ import terminaltables
 from gradient import api_sdk
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import urljoin
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.commands import common, BaseCommand
 from gradient.commands.common import DetailsCommandMixin
 
 
 class GetMachinesClientMixin(object):
     entity = "machine"
+
     def _get_client(self, api_key, logger):
-        client = api_sdk.MachinesClient(api_key=api_key, logger=logger)
+        client = api_sdk.MachinesClient(
+            api_key=api_key,
+            logger=logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
         return client
 
 

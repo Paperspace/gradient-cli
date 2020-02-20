@@ -2,8 +2,8 @@ import collections
 
 import click
 
-from gradient import exceptions, logger, DEPLOYMENT_TYPES_MAP
-from gradient import utils
+from gradient import cliutils
+from gradient import exceptions, clilogger, DEPLOYMENT_TYPES_MAP
 from gradient.api_sdk import DeploymentsClient
 from gradient.cli import common
 from gradient.cli.cli import cli
@@ -24,7 +24,7 @@ def deployments_tags():
 
 
 def get_deployment_client(api_key):
-    deployment_client = DeploymentsClient(api_key=api_key, logger=logger.Logger())
+    deployment_client = DeploymentsClient(api_key=api_key, logger=clilogger.CliLogger(), ps_client_name="gradient-cli")
     return deployment_client
 
 
@@ -182,7 +182,7 @@ def get_deployment_client(api_key):
 @api_key_option
 @common.options_file
 def create_deployment(api_key, options_file, **kwargs):
-    utils.validate_auth_options(kwargs)
+    cliutils.validate_auth_options(kwargs)
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     del_if_value_is_none(kwargs)
     deployment_client = get_deployment_client(api_key)
@@ -239,7 +239,7 @@ def get_deployments_list(api_key, options_file, **filters):
     try:
         command.execute(**filters)
     except exceptions.ApplicationError as e:
-        logger.Logger().error(e)
+        clilogger.CliLogger().error(e)
 
 
 @deployments.command("start", help="Start deployment")

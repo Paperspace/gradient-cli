@@ -11,8 +11,8 @@ from prompt_toolkit.styles import Style
 from prompt_toolkit.widgets import Frame, Label, TextArea, RadioList, Box, Button, HorizontalLine
 
 from gradient import commands
-from gradient.logger import Logger
 from gradient.cli import common
+from gradient.clilogger import CliLogger
 
 if not six.PY2:
     unicode = str
@@ -94,7 +94,7 @@ class Questions(object):
                 for field_name, question in self._questions.items()}
 
 
-class WizardLogger(Logger):
+class WizardLogger(CliLogger):
     def __init__(self, output_field):
         self.output_field = output_field
 

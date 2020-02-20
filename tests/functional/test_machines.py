@@ -1,9 +1,15 @@
 import mock
 from click.testing import CliRunner
 
-import gradient.api_sdk.clients.http_client
+from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import MockResponse, example_responses
+
+EXPECTED_HEADERS = default_headers.copy()
+EXPECTED_HEADERS["ps_client_name"] = "gradient-cli"
+
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY = EXPECTED_HEADERS.copy()
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
 
 class TestMachineAvailability(object):
@@ -15,7 +21,6 @@ class TestMachineAvailability(object):
     ]
     PARAMS = {"region": "East Coast (NY2)", "machineType": "P4000"}
     RESPONSE_JSON = {"available": True}
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
 
     COMMAND_WITH_API_KEY = [
         "machines", "availability",
@@ -25,8 +30,6 @@ class TestMachineAvailability(object):
     ]
     COMMAND_WITH_OPTIONS_FILE = ["machines", "availability", "--optionsFile", ]  # path added in test
 
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_STDOUT = "Machine available: True\n"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
@@ -41,7 +44,7 @@ class TestMachineAvailability(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.PARAMS)
         assert result.exit_code == 0
@@ -54,7 +57,7 @@ class TestMachineAvailability(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.PARAMS)
         assert result.output == self.EXPECTED_STDOUT
@@ -69,7 +72,7 @@ class TestMachineAvailability(object):
         result = cli_runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.PARAMS)
         assert result.output == self.EXPECTED_STDOUT
@@ -84,7 +87,7 @@ class TestMachineAvailability(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.PARAMS)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
@@ -98,7 +101,7 @@ class TestMachineAvailability(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.PARAMS)
         assert result.output == "Unknown error while checking machine availability\n"
@@ -112,7 +115,7 @@ class TestMachineAvailability(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.PARAMS)
         assert result.output == "Failed to fetch data\n"
@@ -156,7 +159,6 @@ class TestCreateMachine(object):
         "entityId": "psclbvqpc",
         "tags": ["test0", "test1", "test2", "test3"]
     }
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
 
     ALL_COMMANDS = [
         "machines", "create",
@@ -208,8 +210,6 @@ class TestCreateMachine(object):
 
     COMMAND_WITH_OPTIONS_FILE = ["machines", "create", "--optionsFile", ]  # path added in test
 
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_STDOUT = "New machine created with id: psclbvqpc\n" \
                       "https://www.paperspace.com/console/machines/psclbvqpc\n"
 
@@ -246,7 +246,7 @@ class TestCreateMachine(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
                                        params=None,
                                        files=None,
@@ -262,7 +262,7 @@ class TestCreateMachine(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=self.ALL_OPTIONS_REQUEST_JSON,
                                         params=None,
                                         files=None,
@@ -277,7 +277,7 @@ class TestCreateMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=self.REQUEST_JSON,
                                         params=None,
                                         files=None,
@@ -294,7 +294,7 @@ class TestCreateMachine(object):
         result = cli_runner.invoke(cli.cli, command)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=self.ALL_OPTIONS_REQUEST_JSON,
                                         params=None,
                                         files=None,
@@ -310,7 +310,7 @@ class TestCreateMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=self.REQUEST_JSON,
                                         params=None,
                                         files=None,
@@ -326,7 +326,7 @@ class TestCreateMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=self.REQUEST_JSON,
                                         params=None,
                                         files=None,
@@ -342,7 +342,7 @@ class TestCreateMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=self.REQUEST_JSON,
                                         params=None,
                                         files=None,
@@ -360,9 +360,9 @@ class TestCreateMachine(object):
                in result.output
         assert result.exit_code == 2
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_tag_machine(self, post_patched, get_patched, put_patched):
         post_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
         get_patched.return_value = MockResponse({}, 200)
@@ -372,7 +372,7 @@ class TestCreateMachine(object):
         result = runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_TAGS)
 
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+                                             headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
                                              params=None,
                                              files=None,
@@ -380,7 +380,7 @@ class TestCreateMachine(object):
 
         put_patched.assert_called_once_with(
             self.TAGS_URL,
-            headers=self.EXPECTED_HEADERS,
+            headers=EXPECTED_HEADERS,
             json=self.TAGS_JSON,
             params=None,
         )
@@ -395,7 +395,6 @@ class TestDestroyMachine(object):
         "machines", "destroy",
         "--machineId", "some_id",
     ]
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
 
     ALL_COMMANDS = [
         "machines", "destroy",
@@ -412,8 +411,6 @@ class TestDestroyMachine(object):
 
     COMMAND_WITH_OPTIONS_FILE = ["machines", "destroy", "--optionsFile", ]  # path added in test
 
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_STDOUT = "Machine successfully destroyed\n"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
@@ -437,7 +434,7 @@ class TestDestroyMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -453,7 +450,7 @@ class TestDestroyMachine(object):
         result = cli_runner.invoke(cli.cli, self.ALL_COMMANDS)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=self.ALL_COMMANDS_REQUEST_JSON,
                                         params=None,
                                         files=None,
@@ -471,7 +468,7 @@ class TestDestroyMachine(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=self.ALL_COMMANDS_REQUEST_JSON,
                                         params=None,
                                         files=None,
@@ -486,7 +483,7 @@ class TestDestroyMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -502,7 +499,7 @@ class TestDestroyMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -519,7 +516,7 @@ class TestDestroyMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -535,7 +532,7 @@ class TestDestroyMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -546,7 +543,6 @@ class TestDestroyMachine(object):
 
 class TestListMachines(object):
     URL = "https://api.paperspace.io/machines/getMachines/"
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     BASIC_COMMAND = ["machines", "list"]
     REQUEST_JSON = {}
     EXPECTED_RESPONSE_JSON = example_responses.LIST_MACHINES_RESPONSE
@@ -627,8 +623,6 @@ class TestListMachines(object):
     COMMAND_WITH_OPTIONS_FILE = ["machines", "list", "--optionsFile", ]  # path added in test
 
     BASIC_COMMAND_WITH_API_KEY = ["machines", "list", "--apiKey", "some_key"]
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
@@ -650,7 +644,7 @@ class TestListMachines(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=None)
         assert result.exit_code == 0
@@ -664,7 +658,7 @@ class TestListMachines(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=self.ALL_OPTIONS_REQUEST_JSON,
                                        params=None)
         assert result.exit_code == 0
@@ -678,7 +672,7 @@ class TestListMachines(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=self.ALL_OPTIONS_REQUEST_JSON,
                                        params=None)
         assert result.exit_code == 0
@@ -691,7 +685,7 @@ class TestListMachines(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_PARAMS_OPTION)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON_WITH_PARAMS_OPTION,
                                        params=None)
         assert result.output == self.EXPECTED_STDOUT
@@ -705,7 +699,7 @@ class TestListMachines(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=None)
         assert result.output == self.EXPECTED_STDOUT
@@ -720,7 +714,7 @@ class TestListMachines(object):
         result = cli_runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=self.ALL_OPTIONS_REQUEST_JSON,
                                        params=None)
         assert result.output == self.EXPECTED_STDOUT
@@ -734,7 +728,7 @@ class TestListMachines(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
@@ -748,7 +742,7 @@ class TestListMachines(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=None)
         assert result.output == self.EXPECTED_STDOUT_WHEN_NO_MACHINES_WERE_FOUND
@@ -762,7 +756,7 @@ class TestListMachines(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=None)
         assert result.output == "Failed to fetch data\n"
@@ -784,7 +778,6 @@ class TestRestartMachine(object):
         "machines", "restart",
         "--machineId", "some_id",
     ]
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_STDOUT = "Machine restarted\n"
 
     COMMAND_WITH_API_KEY = [
@@ -794,9 +787,6 @@ class TestRestartMachine(object):
     ]
 
     COMMAND_WITH_OPTIONS_FILE = ["machines", "restart", "--optionsFile", ]  # path added in test
-
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Unable to restart instance: Invalid API token\n"
@@ -820,7 +810,7 @@ class TestRestartMachine(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -835,7 +825,7 @@ class TestRestartMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -853,7 +843,7 @@ class TestRestartMachine(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -868,7 +858,7 @@ class TestRestartMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -884,7 +874,7 @@ class TestRestartMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -901,7 +891,7 @@ class TestRestartMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -912,7 +902,6 @@ class TestRestartMachine(object):
 
 class TestShowMachine(object):
     URL = "https://api.paperspace.io/machines/getMachinePublic/"
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     BASIC_COMMAND = ["machines", "show", "--machineId", "some_id"]
     REQUEST_PARAMS = {"machineId": "some_id"}
     EXPECTED_RESPONSE_JSON = example_responses.SHOW_MACHINE_RESPONSE
@@ -956,9 +945,6 @@ class TestShowMachine(object):
     ]
     COMMAND_WITH_OPTIONS_FILE = ["machines", "show", "--optionsFile", ]  # path added in test
 
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
 
@@ -980,7 +966,7 @@ class TestShowMachine(object):
 
         assert result.output.strip() == self.EXPECTED_STDOUT.strip(), result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.exit_code == 0
@@ -993,7 +979,7 @@ class TestShowMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output.strip() == self.EXPECTED_STDOUT.strip()
@@ -1009,7 +995,7 @@ class TestShowMachine(object):
 
         assert result.output.strip() == self.EXPECTED_STDOUT.strip(), result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.exit_code == 0
@@ -1022,7 +1008,7 @@ class TestShowMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
@@ -1037,7 +1023,7 @@ class TestShowMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
@@ -1051,7 +1037,7 @@ class TestShowMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == "Failed to fetch data\n"
@@ -1064,7 +1050,6 @@ class TestStartMachine(object):
         "machines", "start",
         "--machineId", "some_id",
     ]
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_STDOUT = "Machine started\n"
 
     COMMAND_WITH_OPTIONS_FILE = ["machines", "start", "--optionsFile", ]  # path added in test
@@ -1074,8 +1059,6 @@ class TestStartMachine(object):
         "--machineId", "some_id",
         "--apiKey", "some_key",
     ]
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Unable to start instance: Invalid API token\n"
@@ -1098,7 +1081,7 @@ class TestStartMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -1114,7 +1097,7 @@ class TestStartMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -1132,7 +1115,7 @@ class TestStartMachine(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -1147,7 +1130,7 @@ class TestStartMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -1163,7 +1146,7 @@ class TestStartMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -1180,7 +1163,7 @@ class TestStartMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -1195,7 +1178,6 @@ class TestStopMachine(object):
         "machines", "stop",
         "--machineId", "some_id",
     ]
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     EXPECTED_STDOUT = "Machine stopped\n"
 
     COMMAND_WITH_OPTIONS_FILE = ["machines", "stop", "--optionsFile", ]  # path added in test
@@ -1205,8 +1187,6 @@ class TestStopMachine(object):
         "--machineId", "some_id",
         "--apiKey", "some_key",
     ]
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Unable to stop instance: Invalid API token\n"
@@ -1229,7 +1209,7 @@ class TestStopMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -1245,7 +1225,7 @@ class TestStopMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -1262,7 +1242,7 @@ class TestStopMachine(object):
         result = cli_runner.invoke(cli.cli, command)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -1278,7 +1258,7 @@ class TestStopMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -1294,7 +1274,7 @@ class TestStopMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -1311,7 +1291,7 @@ class TestStopMachine(object):
         result = cli_runner.invoke(cli.cli, self.COMMAND)
 
         post_patched.assert_called_with(self.URL,
-                                        headers=self.EXPECTED_HEADERS,
+                                        headers=EXPECTED_HEADERS,
                                         json=None,
                                         params=None,
                                         files=None,
@@ -1328,7 +1308,6 @@ class TestUpdateMachine(object):
         "--machineName", "some_name",
     ]
     REQUEST_JSON = {"machineName": "some_name"}
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
 
     ALL_COMMANDS = [
         "machines", "update",
@@ -1358,8 +1337,6 @@ class TestUpdateMachine(object):
         "--machineName", "some_name",
         "--apiKey", "some_key",
     ]
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_STDOUT = "Machine updated\n"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
@@ -1376,7 +1353,7 @@ class TestUpdateMachine(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
                                        params=None,
                                        files=None,
@@ -1392,7 +1369,7 @@ class TestUpdateMachine(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=self.ALL_COMMANDS_REQUEST_JSON,
                                        params=None,
                                        files=None,
@@ -1407,7 +1384,7 @@ class TestUpdateMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=self.REQUEST_JSON,
                                        params=None,
                                        files=None,
@@ -1424,7 +1401,7 @@ class TestUpdateMachine(object):
         result = cli_runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=self.ALL_COMMANDS_REQUEST_JSON,
                                        params=None,
                                        files=None,
@@ -1440,7 +1417,7 @@ class TestUpdateMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
                                        params=None,
                                        files=None,
@@ -1456,7 +1433,7 @@ class TestUpdateMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
                                        params=None,
                                        files=None,
@@ -1472,7 +1449,7 @@ class TestUpdateMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON,
                                        params=None,
                                        files=None,
@@ -1483,7 +1460,6 @@ class TestUpdateMachine(object):
 
 class TestShowMachineUtilization(object):
     URL = "https://api.paperspace.io/machines/getUtilization/"
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     BASIC_COMMAND = [
         "machines", "utilization",
         "--machineId", "some_id",
@@ -1507,8 +1483,6 @@ class TestShowMachineUtilization(object):
         "--billingMonth", "2017-09",
         "--apiKey", "some_key",
     ]
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     COMMAND_WITH_OPTIONS_FILE = ["machines", "utilization", "--optionsFile", ]  # path added in test
 
@@ -1533,7 +1507,7 @@ class TestShowMachineUtilization(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.exit_code == 0
@@ -1546,7 +1520,7 @@ class TestShowMachineUtilization(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == self.EXPECTED_STDOUT
@@ -1561,7 +1535,7 @@ class TestShowMachineUtilization(object):
         result = cli_runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == self.EXPECTED_STDOUT
@@ -1575,7 +1549,7 @@ class TestShowMachineUtilization(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
@@ -1590,7 +1564,7 @@ class TestShowMachineUtilization(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
@@ -1604,7 +1578,7 @@ class TestShowMachineUtilization(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == "Failed to fetch data\n"
@@ -1613,7 +1587,6 @@ class TestShowMachineUtilization(object):
 
 class TestWaitForMachine(object):
     URL = "https://api.paperspace.io/machines/getMachinePublic/"
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
     BASIC_COMMAND = [
         "machines", "waitfor",
         "--machineId", "some_id",
@@ -1629,8 +1602,6 @@ class TestWaitForMachine(object):
         "--state", "off",
         "--apiKey", "some_key",
     ]
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     COMMAND_WITH_OPTIONS_FILE = ["machines", "waitfor", "--optionsFile", ]  # path added in test
 
@@ -1655,7 +1626,7 @@ class TestWaitForMachine(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.exit_code == 0
@@ -1668,7 +1639,7 @@ class TestWaitForMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == self.EXPECTED_STDOUT
@@ -1682,7 +1653,7 @@ class TestWaitForMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
@@ -1697,7 +1668,7 @@ class TestWaitForMachine(object):
         result = cli_runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
@@ -1712,7 +1683,7 @@ class TestWaitForMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == self.EXPECTED_STDOUT_WHEN_MACHINE_WAS_NOT_FOUND
@@ -1726,7 +1697,7 @@ class TestWaitForMachine(object):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=self.REQUEST_PARAMS)
         assert result.output == "Failed to fetch data\n"

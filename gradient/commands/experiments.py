@@ -11,10 +11,11 @@ from gradient import api_sdk, exceptions, TensorboardClient
 from gradient.api_sdk import constants, sdk_exceptions
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import urljoin
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
+from gradient.clilogger import CliLogger
+from gradient.cliutils import get_terminal_lines, none_strings_to_none_objects
 from gradient.commands import tensorboards as tensorboards_commands
 from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
-from gradient.logger import Logger
-from gradient.utils import get_terminal_lines, none_strings_to_none_objects
 
 try:
     # Python 3
@@ -27,13 +28,18 @@ except ImportError:
 @six.add_metaclass(abc.ABCMeta)
 class BaseExperimentCommand(BaseCommand):
     entity = "experiment"
+
     def _get_client(self, api_key, logger):
-        client = api_sdk.clients.ExperimentsClient(api_key=api_key, logger=logger)
+        client = api_sdk.clients.ExperimentsClient(
+            api_key=api_key,
+            logger=logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
         return client
 
 
 class TensorboardHandler(object):
-    def __init__(self, api_key, logger=Logger()):
+    def __init__(self, api_key, logger=CliLogger()):
         self.api_key = api_key
         self.logger = logger
 

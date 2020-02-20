@@ -2,7 +2,7 @@ from functools import reduce
 
 import click
 
-from gradient import utils, logger
+from gradient import cliutils, clilogger
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string
@@ -18,7 +18,7 @@ from gradient.workspace import WorkspaceHandler
 
 
 def get_workspace_handler():
-    logger_ = logger.Logger()
+    logger_ = clilogger.CliLogger()
     workspace_handler = WorkspaceHandler(logger_=logger_)
     return workspace_handler
 
@@ -298,7 +298,7 @@ def common_jobs_create_options(f):
 @click.pass_context
 def create_job(ctx, api_key, options_file, **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
-    utils.validate_workspace_input(kwargs)
+    cliutils.validate_workspace_input(kwargs)
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
 
     del_if_value_is_none(kwargs)

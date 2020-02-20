@@ -2,7 +2,7 @@ import collections
 
 import click
 
-from gradient import logger
+from gradient import clilogger
 from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
@@ -217,7 +217,7 @@ def create_machine(api_key, options_file, **kwargs):
     validate_mutually_exclusive([user_id], [email, password, first_name, last_name],
                                 "--userId is mutually exclusive with --email, --password, --firstName and --lastName")
 
-    command = machines_commands.CreateMachineCommand(api_key=api_key, logger=logger.Logger())
+    command = machines_commands.CreateMachineCommand(api_key=api_key, logger=clilogger.CliLogger())
     command.execute(kwargs)
 
 
@@ -247,7 +247,7 @@ destroy_machine_help = "Destroy the machine with the given id. When this action 
 @api_key_option
 @common.options_file
 def destroy_machine(machine_id, release_public_ip, api_key, options_file):
-    command = machines_commands.DestroyMachineCommand(api_key=api_key, logger=logger.Logger())
+    command = machines_commands.DestroyMachineCommand(api_key=api_key, logger=clilogger.CliLogger())
     command.execute(machine_id, release_public_ip)
 
 
@@ -424,7 +424,7 @@ def list_machines(api_key, params, options_file, **kwargs):
     validate_mutually_exclusive(params.values(), kwargs.values(),
                                 "You can use either --params dictionary or single filter arguments")
 
-    command = machines_commands.ListMachinesCommand(api_key=api_key, logger=logger.Logger())
+    command = machines_commands.ListMachinesCommand(api_key=api_key, logger=clilogger.CliLogger())
     filters = params or kwargs
     command.execute(**filters)
 
@@ -445,7 +445,7 @@ restart_machine_help = "Restart an individual machine. If the machine is already
 @api_key_option
 @common.options_file
 def restart_machine(machine_id, api_key, options_file):
-    command = machines_commands.RestartMachineCommand(api_key=api_key, logger=logger.Logger())
+    command = machines_commands.RestartMachineCommand(api_key=api_key, logger=clilogger.CliLogger())
     command.execute(machine_id)
 
 

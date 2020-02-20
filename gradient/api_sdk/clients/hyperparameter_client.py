@@ -106,7 +106,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
             use_dockerfile=use_dockerfile,
         )
 
-        repository = repositories.CreateHyperparameterJob(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.CreateHyperparameterJob)
         handle = repository.create(hyperparameter)
 
         if tags:
@@ -228,7 +228,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
             use_dockerfile=use_dockerfile,
         )
 
-        repository = repositories.CreateAndStartHyperparameterJob(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.CreateAndStartHyperparameterJob)
         handle = repository.create(hyperparameter)
 
         if tags:
@@ -245,7 +245,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :rtype: models.Hyperparameter
         """
 
-        repository = repositories.GetHyperparameterTuningJob(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.GetHyperparameterTuningJob)
         job = repository.get(id=id)
         return job
 
@@ -256,7 +256,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         :raises: exceptions.GradientSdkError
         """
 
-        repository = repositories.StartHyperparameterTuningJob(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.StartHyperparameterTuningJob)
         repository.start(id_=id)
 
     def list(self):
@@ -281,6 +281,6 @@ class HyperparameterJobsClient(base_client.BaseClient):
 
         :rtype: list[models.Hyperparameter]
         """
-        repository = repositories.ListHyperparameterJobs(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListHyperparameterJobs)
         experiments = repository.list()
         return experiments

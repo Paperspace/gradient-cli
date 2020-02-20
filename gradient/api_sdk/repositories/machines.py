@@ -170,10 +170,10 @@ class GetMachineUtilization(MachinesApiUrlMixin, GetResource):
 
 
 class WaitForState(object):
-    def __init__(self, api_key, logger):
+    def __init__(self, api_key, logger, ps_client_name=None):
         self.api_key = api_key
         self.logger = logger
-        self.get_machine_repository = GetMachine(api_key=api_key, logger=logger)
+        self.get_machine_repository = GetMachine(api_key=api_key, logger=logger, ps_client_name=ps_client_name)
 
     def wait_for_state(self, machine_id, state, interval=5):
 

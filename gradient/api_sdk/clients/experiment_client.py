@@ -96,7 +96,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             registry_url=registry_url,
         )
 
-        repository = repositories.CreateSingleNodeExperiment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.CreateSingleNodeExperiment)
         handle = repository.create(experiment)
 
         if tags:
@@ -224,7 +224,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_registry_url=parameter_server_registry_url,
         )
 
-        repository = repositories.CreateMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.CreateMultiNodeExperiment)
         handle = repository.create(experiment)
 
         if tags:
@@ -349,7 +349,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_registry_url=master_registry_url,
         )
 
-        repository = repositories.CreateMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.CreateMpiMultiNodeExperiment)
         handle = repository.create(experiment)
 
         if tags:
@@ -445,7 +445,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             registry_url=registry_url,
         )
 
-        repository = repositories.RunSingleNodeExperiment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.RunSingleNodeExperiment)
         handle = repository.create(experiment)
 
         if tags:
@@ -571,11 +571,12 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_registry_url=parameter_server_registry_url,
         )
 
-        repository = repositories.RunMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.RunMultiNodeExperiment)
         handle = repository.create(experiment)
 
         if tags:
             self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def run_mpi_multi_node(
@@ -695,11 +696,12 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_registry_url=master_registry_url,
         )
 
-        repository = repositories.RunMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.RunMpiMultiNodeExperiment)
         handle = repository.create(experiment)
 
         if tags:
             self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def start(self, experiment_id):
@@ -710,7 +712,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :raises: exceptions.GradientSdkError
         """
 
-        repository = repositories.StartExperiment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.StartExperiment)
         repository.start(experiment_id)
 
     def stop(self, experiment_id):
@@ -721,7 +723,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :raises: exceptions.GradientSdkError
         """
 
-        repository = repositories.StopExperiment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.StopExperiment)
         repository.stop(experiment_id)
 
     def list(self, project_id=None, offset=None, limit=None, get_meta=False, tags=None):
@@ -737,7 +739,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :rtype: list[models.SingleNodeExperiment|models.MultiNodeExperiment]|tuple[list[models.SingleNodeExperiment|models.MultiNodeExperiment],dict]
         """
 
-        repository = repositories.ListExperiments(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListExperiments)
         experiments = repository.list(project_id=project_id, limit=limit, offset=offset, get_meta=get_meta, tags=tags)
         return experiments
 
@@ -747,7 +749,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str experiment_id: Experiment ID
         :rtype: models.SingleNodeExperiment|models.MultiNodeExperiment|MpiMultiNodeExperiment
         """
-        repository = repositories.GetExperiment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.GetExperiment)
         experiment = repository.get(experiment_id=experiment_id)
         return experiment
 
@@ -762,7 +764,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :rtype: list[models.LogRow]
         """
 
-        repository = repositories.ListExperimentLogs(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListExperimentLogs)
         logs = repository.list(experiment_id, line, limit)
         return logs
 
@@ -777,12 +779,12 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :rtype: Iterator[models.LogRow]
         """
 
-        repository = repositories.ListExperimentLogs(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListExperimentLogs)
         logs_generator = repository.yield_logs(experiment_id, line, limit)
         return logs_generator
 
     def delete(self, experiment_id):
-        repository = repositories.DeleteExperiment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.DeleteExperiment)
         repository.delete(experiment_id)
 
     def _validate_arguments(self, **kwargs):

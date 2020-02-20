@@ -2,7 +2,6 @@ import marshmallow as ma
 
 from gradient.api_sdk import models
 from .base import BaseSchema
-from .tag import TagSchema
 
 
 class DeploymentSchema(BaseSchema):

@@ -2,7 +2,7 @@ import functools
 
 import click
 
-from gradient import utils, logger, workspace
+from gradient import cliutils, clilogger, workspace
 from gradient.api_sdk import constants
 from gradient.cli import common, validators
 from gradient.cli.cli import cli
@@ -25,7 +25,7 @@ MULTI_NODE_RUN_EXPERIMENT_COMMANDS = {
 
 
 def get_workspace_handler(api_key):
-    logger_ = logger.Logger()
+    logger_ = clilogger.CliLogger()
     workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(api_key=api_key, logger_=logger_)
     return workspace_handler
 
@@ -476,7 +476,7 @@ For more information, please see:
 https://docs.paperspace.com
 If you depend on functionality not listed there, please file an issue."""
 
-        logger.Logger().error(msg)
+        clilogger.CliLogger().error(msg)
 
 
 def tensorboard_option(f):
@@ -526,7 +526,7 @@ def create_multi_node(api_key, tensorboard, tensorboard_set, options_file, **kwa
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
     validators.validate_multi_node(kwargs)
-    utils.validate_workspace_input(kwargs)
+    cliutils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs)
     experiment_type = kwargs.get('experiment_type_id')
     command_class = MULTI_NODE_CREATE_EXPERIMENT_COMMANDS.get(experiment_type)
@@ -549,7 +549,7 @@ def create_single_node(api_key, tensorboard, tensorboard_set, options_file, **kw
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
-    utils.validate_workspace_input(kwargs)
+    cliutils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs)
 
     command = experiments_commands.CreateSingleNodeExperimentCommand(
@@ -582,7 +582,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, tensorboard, tensorboar
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
     validators.validate_multi_node(kwargs)
-    utils.validate_workspace_input(kwargs)
+    cliutils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs)
 
     experiment_type = kwargs.get('experiment_type_id')
@@ -620,7 +620,7 @@ def create_and_start_single_node(ctx, api_key, show_logs, tensorboard, tensorboa
     show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
-    utils.validate_workspace_input(kwargs)
+    cliutils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs)
 
     command = experiments_commands.CreateAndStartSingleNodeExperimentCommand(

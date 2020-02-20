@@ -3,7 +3,7 @@ import abc
 import halo
 import six
 
-from gradient import api_sdk, exceptions
+from gradient import api_sdk, exceptions, cli_constants
 from gradient.api_sdk import sdk_exceptions
 from gradient.api_sdk.s3_downloader import ModelFilesDownloader
 from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
@@ -13,8 +13,13 @@ from gradient.exceptions import ApplicationError
 @six.add_metaclass(abc.ABCMeta)
 class GetModelsClientMixin:
     entity = "mlModel"
+
     def _get_client(self, api_key, logger):
-        client = api_sdk.clients.ModelsClient(api_key=api_key, logger=logger)
+        client = api_sdk.clients.ModelsClient(
+            api_key=api_key,
+            logger=logger,
+            ps_client_name=cli_constants.CLI_PS_CLIENT_NAME,
+        )
         return client
 
 
@@ -80,7 +85,11 @@ class DownloadModelFiles(GetModelsClientMixin, BaseCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Downloading files..."
 
     def execute(self, model_id, destination_directory):
-        model_files_downloader = ModelFilesDownloader(self.api_key, logger=self.logger)
+        model_files_downloader = ModelFilesDownloader(
+            self.api_key,
+            logger=self.logger,
+            ps_client_name=cli_constants.CLI_PS_CLIENT_NAME,
+        )
         try:
             model_files_downloader.download(model_id, destination_directory)
         except OSError as e:

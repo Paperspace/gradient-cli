@@ -180,9 +180,12 @@ class JobsClient(BaseClient):
             registry_target_password=registry_target_password,
             build_only=build_only,
         )
-        handle = CreateJob(self.api_key, self.logger).create(job, data=data)
+        repository = self.build_repository(CreateJob)
+        handle = repository.create(job, data=data)
+
         if tags:
             self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def delete(self, job_id):
@@ -200,7 +203,8 @@ class JobsClient(BaseClient):
         :param str job_id: id of job that you want to remove
         :raises: exceptions.GradientSdkError
         """
-        DeleteJob(self.api_key, self.logger).delete(job_id)
+        repository = self.build_repository(DeleteJob)
+        repository.delete(job_id)
 
     def stop(self, job_id):
         """
@@ -217,7 +221,8 @@ class JobsClient(BaseClient):
         :param job_id: id of job that we want to stop
         :raises: exceptions.GradientSdkError
         """
-        StopJob(self.api_key, self.logger).stop(job_id)
+        repository = self.build_repository(StopJob)
+        repository.stop(job_id)
 
     def list(self, project_id=None, project=None, experiment_id=None, tags=None):
         """
@@ -247,8 +252,14 @@ class JobsClient(BaseClient):
         :returns: list of job models
         :rtype: list[Job]
         """
-        return ListJobs(self.api_key, self.logger).list(project_id=project_id, project=project,
-                                                        experiment_id=experiment_id, tags=tags)
+        repository = self.build_repository(ListJobs)
+        jobs = repository.list(
+            project_id=project_id,
+            project=project,
+            experiment_id=experiment_id,
+            tags=tags,
+        )
+        return jobs
 
     def logs(self, job_id, line=0, limit=10000):
         """
@@ -271,7 +282,8 @@ class JobsClient(BaseClient):
         :returns: list of formatted logs lines
         :rtype: list
         """
-        logs = ListJobLogs(self.api_key, self.logger).list(job_id=job_id, line=line, limit=limit)
+        repository = self.build_repository(ListJobLogs)
+        logs = repository.list(job_id=job_id, line=line, limit=limit)
         return logs
 
     def yield_logs(self, job_id, line=0, limit=10000):
@@ -295,7 +307,7 @@ class JobsClient(BaseClient):
         :rtype: Iterator[models.LogRow]
         """
 
-        repository = ListJobLogs(self.api_key, self.logger)
+        repository = self.build_repository(ListJobLogs)
         logs = repository.yield_logs(job_id=job_id, line=line, limit=limit)
         return logs
 
@@ -318,7 +330,8 @@ class JobsClient(BaseClient):
 
         :raises: exceptions.GradientSdkError
         """
-        DeleteJobArtifacts(self.api_key, self.logger).delete(id_=job_id, files=files)
+        repository = self.build_repository(DeleteJobArtifacts)
+        repository.delete(id_=job_id, files=files)
 
     def artifacts_get(self, job_id):
         """
@@ -337,7 +350,8 @@ class JobsClient(BaseClient):
         :returns: Information about artifact place
         :rtype: dict
         """
-        data = GetJobArtifacts(self.api_key, self.logger).get(jobId=job_id)
+        repository = self.build_repository(GetJobArtifacts)
+        data = repository.get(jobId=job_id)
         return data
 
     def artifacts_list(self, job_id, files=None, size=False, links=True):
@@ -363,4 +377,6 @@ class JobsClient(BaseClient):
         :returns: list of files with description if specified from job artifacts.
         :rtype: list[Artifact]
         """
-        return ListJobArtifacts(self.api_key, self.logger).list(jobId=job_id, files=files, links=links, size=size)
+        repository = self.build_repository(ListJobArtifacts)
+        artifacts = repository.list(jobId=job_id, files=files, links=links, size=size)
+        return artifacts

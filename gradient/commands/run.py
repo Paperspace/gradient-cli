@@ -1,15 +1,15 @@
 import os
 import sys
 
-from gradient.commands.jobs import RunJobCommand
 from gradient.api_sdk.constants import RunMode
-from gradient.logger import Logger
+from gradient.clilogger import CliLogger
+from gradient.commands.jobs import RunJobCommand
 from gradient.workspace import WorkspaceHandler
 
 
 class RunCommand(object):
 
-    def __init__(self, api_key=None, logger_=Logger()):
+    def __init__(self, api_key=None, logger_=CliLogger()):
         self.api_key = api_key
         self.logger = logger_
 
