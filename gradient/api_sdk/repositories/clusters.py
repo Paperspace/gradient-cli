@@ -45,11 +45,11 @@ class ListClusters(ListResources):
         filter = OrderedDict({
             "limit": kwargs.get("limit"),
             "offset": kwargs.get("offset"),
-            "where": {
-                "isPrivate": True
-            },
         })
+        filter["where"] = {
+            "isPrivate": True
+        }
 
         return {
-            "filter": json.dumps(filter)
+            "filter": json.dumps(OrderedDict(filter))
         }
