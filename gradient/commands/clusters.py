@@ -10,7 +10,7 @@ from gradient.commands.common import ListCommandMixin
 
 @six.add_metaclass(abc.ABCMeta)
 class _ClustersCommand(object):
-    def __init__(self, cluster_client, logger_=gradient_logger.Logger()):
+    def __init__(self, cluster_client, logger_=gradient_logger.CliLogger()):
         self.client = cluster_client
         self.logger = logger_
 

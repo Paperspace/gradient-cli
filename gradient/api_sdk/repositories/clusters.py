@@ -1,4 +1,5 @@
 import json
+from collections import OrderedDict
 
 from gradient.api_sdk.config import config
 from gradient.api_sdk.repositories.common import GetResource, ListResources
@@ -41,13 +42,13 @@ class ListClusters(ListResources):
         return config.CONFIG_HOST
 
     def _get_request_params(self, kwargs):
-        filter = {
+        filter = OrderedDict({
             "limit": kwargs.get("limit"),
             "offset": kwargs.get("offset"),
             "where": {
                 "isPrivate": True
             },
-        }
+        })
 
         return {
             "filter": json.dumps(filter)
