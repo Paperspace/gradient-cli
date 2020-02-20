@@ -3,7 +3,7 @@ import abc
 import six
 from halo import halo
 
-from gradient import version, logger as gradient_logger, exceptions
+from gradient import clilogger as gradient_logger, exceptions
 from gradient.api_sdk import sdk_exceptions
 from gradient.commands.common import ListCommandMixin
 
