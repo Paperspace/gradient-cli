@@ -2,7 +2,6 @@ import marshmallow
 
 from gradient.api_sdk import models
 from .base import BaseSchema
-from .tag import TagSchema
 
 
 class JobSchema(BaseSchema):
@@ -32,7 +31,8 @@ class JobSchema(BaseSchema):
     dt_created = marshmallow.fields.Str(dump_to="dtCreated", load_from="dtCreated")
     dt_modified = marshmallow.fields.Str(dump_to="dtModified", load_from="dtModified")
     dt_provisioning_started = marshmallow.fields.Str(dump_to="dtProvisioningStarted", load_from="dtProvisioningStarted")
-    dt_provisioning_finished = marshmallow.fields.Str(dump_to="dtProvisioningFinished", load_from="dtProvisioningFinished")
+    dt_provisioning_finished = marshmallow.fields.Str(dump_to="dtProvisioningFinished",
+                                                      load_from="dtProvisioningFinished")
     dt_started = marshmallow.fields.Str(dump_to="dtStarted", load_from="dtStarted")
     dt_finished = marshmallow.fields.Str(dump_to="dtFinished", load_from="dtFinished")
     dt_teardown_started = marshmallow.fields.Str(dump_to="dtTeardownStarted", load_from="dtTeardownStarted")

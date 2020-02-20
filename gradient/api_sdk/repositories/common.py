@@ -11,9 +11,10 @@ from ..utils import MessageExtractor
 class BaseRepository(object):
     VALIDATION_ERROR_MESSAGE = "Failed to fetch data"
 
-    def __init__(self, api_key, logger):
+    def __init__(self, api_key, logger, ps_client_name=None):
         self.api_key = api_key
         self.logger = logger
+        self.ps_client_name = ps_client_name
 
     @abc.abstractmethod
     def get_request_url(self, **kwargs):
@@ -36,7 +37,12 @@ class BaseRepository(object):
         :rtype: http_client.API
         """
         api_url = self._get_api_url(**kwargs)
-        client = http_client.API(api_url=api_url, api_key=self.api_key, logger=self.logger)
+        client = http_client.API(
+            api_url=api_url,
+            api_key=self.api_key,
+            logger=self.logger,
+            ps_client_name=self.ps_client_name,
+        )
         return client
 
     def _get(self, **kwargs):

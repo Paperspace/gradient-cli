@@ -4,10 +4,10 @@ import mock
 import pytest
 
 import gradient.api_sdk.utils
-from gradient import utils, exceptions
+from gradient import cliutils, exceptions
 from gradient.cli.common import validate_comma_split_option
+from gradient.cliutils import PathParser
 from gradient.exceptions import WrongPathError
-from gradient.utils import PathParser
 
 output_response = ""
 
@@ -115,19 +115,19 @@ class TestPathParser(object):
 class TestValidateAuthOptions(object):
     def test_should_not_raise_exception_when_only_generate_auth_was_set(self):
         kwargs = {"auth_username": None, "auth_password": None, "generate_auth": True}
-        utils.validate_auth_options(kwargs)
+        cliutils.validate_auth_options(kwargs)
 
     def test_should_not_raise_exception_when_username_and_password_was_set(self):
         kwargs = {"auth_username": "username", "auth_password": "password", "generate_auth": False}
-        utils.validate_auth_options(kwargs)
+        cliutils.validate_auth_options(kwargs)
 
     def test_should_not_raise_exception_when_username_was_set_but_no_password(self):
         kwargs = {"auth_username": "username", "auth_password": None, "generate_auth": False}
-        pytest.raises(exceptions.ApplicationError, utils.validate_auth_options, kwargs)
+        pytest.raises(exceptions.ApplicationError, cliutils.validate_auth_options, kwargs)
 
     def test_should_not_raise_exception_when_all_values_were_set(self):
         kwargs = {"auth_username": "username", "auth_password": "password", "generate_auth": True}
-        pytest.raises(exceptions.ApplicationError, utils.validate_auth_options, kwargs)
+        pytest.raises(exceptions.ApplicationError, cliutils.validate_auth_options, kwargs)
 
 
 class TestCommonFunction(object):

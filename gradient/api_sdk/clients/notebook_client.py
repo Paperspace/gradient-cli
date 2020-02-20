@@ -53,10 +53,12 @@ class NotebooksClient(BaseClient):
             is_preemptible=is_preemptible,
         )
 
-        repository = repositories.CreateNotebook(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.CreateNotebook)
         handle = repository.create(notebook)
+
         if tags:
             self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def get(self, id):
@@ -65,7 +67,7 @@ class NotebooksClient(BaseClient):
         :param str id: Notebook ID
         :rtype: models.Notebook
         """
-        repository = repositories.GetNotebook(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.GetNotebook)
         notebook = repository.get(id=id)
         return notebook
 
@@ -74,7 +76,7 @@ class NotebooksClient(BaseClient):
 
         :param str id: Notebook ID
         """
-        repository = repositories.DeleteNotebook(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.DeleteNotebook)
         repository.delete(id)
 
     def list(self, tags=None, limit=None, offset=None, get_meta=False):
@@ -82,6 +84,6 @@ class NotebooksClient(BaseClient):
 
         :rtype: list[models.Notebook]
         """
-        repository = repositories.ListNotebooks(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListNotebooks)
         notebooks = repository.list(tags=tags, limit=limit, offset=offset, get_meta=get_meta)
         return notebooks

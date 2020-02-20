@@ -118,7 +118,7 @@ class DeploymentsClient(BaseClient):
             auth_password=auth_password,
         )
 
-        repository = repositories.CreateDeployment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.CreateDeployment)
         deployment_id = repository.create(deployment)
         if tags:
             self.add_tags(entity_id=deployment_id, entity=self.entity, tags=tags)
@@ -132,7 +132,7 @@ class DeploymentsClient(BaseClient):
         :return: Deployment instance
         :rtype: models.Deployment
         """
-        repository = repositories.GetDeployment(self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.GetDeployment)
         deployment = repository.get(deployment_id=deployment_id)
         return deployment
 
@@ -147,7 +147,7 @@ class DeploymentsClient(BaseClient):
         :param str deployment_id: Deployment ID
         """
 
-        repository = repositories.StartDeployment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.StartDeployment)
         repository.start(deployment_id)
 
     def stop(self, deployment_id):
@@ -161,7 +161,7 @@ class DeploymentsClient(BaseClient):
         :param deployment_id: Deployment ID
         """
 
-        repository = repositories.StopDeployment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.StopDeployment)
         repository.stop(deployment_id)
 
     def list(self, state=None, project_id=None, model_id=None, tags=None):
@@ -177,12 +177,12 @@ class DeploymentsClient(BaseClient):
         :rtype: list[models.Deployment]
         """
 
-        repository = repositories.ListDeployments(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListDeployments)
         deployments = repository.list(state=state, project_id=project_id, model_id=model_id, tags=tags)
         return deployments
 
     def delete(self, deployment_id):
-        repository = repositories.DeleteDeployment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.DeleteDeployment)
         repository.delete(deployment_id)
 
     def update(
@@ -232,5 +232,5 @@ class DeploymentsClient(BaseClient):
             auth_password=auth_password,
         )
 
-        repository = repositories.UpdateDeployment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.UpdateDeployment)
         repository.update(deployment_id, deployment)

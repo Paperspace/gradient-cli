@@ -5,14 +5,20 @@ import six
 
 from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseNotebookCommand(BaseCommand):
     entity = "notebook"
+
     def _get_client(self, api_key, logger):
-        client = api_sdk.clients.NotebooksClient(api_key=api_key, logger=logger)
+        client = api_sdk.clients.NotebooksClient(
+            api_key=api_key,
+            logger=logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
         return client
 
 

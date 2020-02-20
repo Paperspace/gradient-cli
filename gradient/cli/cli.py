@@ -4,9 +4,9 @@ import click_completion
 from gradient.api_sdk.config import config
 from gradient.api_sdk.sdk_exceptions import GradientSdkError
 from gradient.cli import common
+from gradient.clilogger import CliLogger
 from gradient.commands import login as login_commands
 from gradient.exceptions import ApplicationError
-from gradient.logger import Logger
 
 click_completion.init()
 
@@ -19,7 +19,7 @@ class GradientGroup(common.ClickGroup):
             if config.DEBUG:
                 raise
 
-            Logger().error(e)
+            CliLogger().error(e)
 
 
 @click.group(cls=GradientGroup, **config.HELP_COLORS_DICT)

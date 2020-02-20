@@ -5,6 +5,7 @@ from .base_client import BaseClient
 
 class MachinesClient(BaseClient):
     entity = "machine"
+
     def create(
             self,
             name,
@@ -74,7 +75,7 @@ class MachinesClient(BaseClient):
             script_id=script_id,
         )
 
-        repository = repositories.CreateMachine(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.CreateMachine)
         handle = repository.create(instance)
         if tags:
             self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
@@ -88,7 +89,7 @@ class MachinesClient(BaseClient):
         :return: Machine instance
         :rtype: models.Machine
         """
-        repository = repositories.GetMachine(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.GetMachine)
         instance = repository.get(id=id)
         return instance
 
@@ -102,7 +103,7 @@ class MachinesClient(BaseClient):
         :rtype: bool
         """
 
-        repository = CheckMachineAvailability(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(CheckMachineAvailability)
         handle = repository.get(machine_type=machine_type, region=region)
         return handle
 
@@ -112,7 +113,7 @@ class MachinesClient(BaseClient):
         :param str id: ID of a machine [required]
         """
 
-        repository = repositories.RestartMachine(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.RestartMachine)
         repository.restart(id)
 
     def start(self, id):
@@ -121,7 +122,7 @@ class MachinesClient(BaseClient):
         :param str id: ID of a machine [required]
         """
 
-        repository = repositories.StartMachine(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.StartMachine)
         repository.start(id)
 
     def stop(self, id):
@@ -130,7 +131,7 @@ class MachinesClient(BaseClient):
         :param str id: ID of a machine [required]
         """
 
-        repository = repositories.StopMachine(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.StopMachine)
         repository.stop(id)
 
     def update(
@@ -168,7 +169,7 @@ class MachinesClient(BaseClient):
             auto_snapshot_save_count=auto_snapshot_save_count,
         )
 
-        repository = repositories.UpdateMachine(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.UpdateMachine)
         repository.update(id, instance)
 
     def get_utilization(self, id, billing_month):
@@ -180,7 +181,7 @@ class MachinesClient(BaseClient):
         :return: Machine utilization info
         :rtype: models.MachineUtilization
         """
-        repository = repositories.GetMachineUtilization(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.GetMachineUtilization)
         usage = repository.get(id=id, billing_month=billing_month)
         return usage
 
@@ -191,7 +192,7 @@ class MachinesClient(BaseClient):
         :param bool release_public_ip: If the assigned public IP should be released
         """
 
-        repository = DeleteMachine(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(DeleteMachine)
         repository.delete(machine_id, release_public_ip=release_public_ip)
 
     def wait_for_state(self, machine_id, state, interval=5):
@@ -202,7 +203,7 @@ class MachinesClient(BaseClient):
         :param int interval: interval between polls
         """
 
-        repository = WaitForState(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(WaitForState)
         repository.wait_for_state(machine_id, state, interval)
 
     def list(
@@ -263,7 +264,7 @@ class MachinesClient(BaseClient):
         :rtype: list[models.Machine]
         """
 
-        repository = ListMachines(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(ListMachines)
         machines = repository.list(
             id=id,
             name=name,

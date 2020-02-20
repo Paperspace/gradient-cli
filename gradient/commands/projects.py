@@ -7,6 +7,7 @@ from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import urljoin
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from .common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 
 
@@ -15,7 +16,11 @@ class BaseProjectCommand(BaseCommand):
     entity = "project"
 
     def _get_client(self, api_key, logger):
-        client = api_sdk.clients.ProjectsClient(api_key=api_key, logger=logger)
+        client = api_sdk.clients.ProjectsClient(
+            api_key=api_key,
+            logger=logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
         return client
 
 

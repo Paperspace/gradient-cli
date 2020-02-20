@@ -7,6 +7,7 @@ import six
 
 from gradient.api_sdk import sdk_exceptions
 from .clients import JobsClient, ModelsClient
+from .clients.base_client import BaseClient
 from .logger import MuteLogger
 
 
@@ -68,9 +69,13 @@ class S3FilesDownloader(object):
 
 @six.add_metaclass(abc.ABCMeta)
 class ResourceDownloader(object):
-    def __init__(self, api_key, logger=MuteLogger()):
+    CLIENT_CLASS = None
+
+    def __init__(self, api_key, logger=MuteLogger(), ps_client_name=None):
         self.api_key = api_key
         self.logger = logger
+        self.ps_client_name = ps_client_name
+        self.client = self._build_client(self.CLIENT_CLASS, api_key, logger=logger)
 
     def download(self, job_id, destination):
         files = self._get_files_list(job_id)
@@ -86,24 +91,31 @@ class ResourceDownloader(object):
         """
         pass
 
+    def _build_client(self, client_class, *args, **kwargs):
+        """
+        :param type[BaseClient] client_class:
+        """
+        client = client_class(*args, **kwargs)
+
+        if self.ps_client_name is not None:
+            client.ps_client_name = self.ps_client_name
+
+        return client
+
 
 class JobArtifactsDownloader(ResourceDownloader):
-    def __init__(self, api_key, logger=MuteLogger()):
-        super(JobArtifactsDownloader, self).__init__(api_key, logger=logger)
-        self.jobs_client = JobsClient(api_key, logger=logger)
+    CLIENT_CLASS = JobsClient
 
     def _get_files_list(self, job_id):
-        files = self.jobs_client.artifacts_list(job_id)
+        files = self.client.artifacts_list(job_id)
         files = tuple((f.file, f.url) for f in files)
         return files
 
 
 class ModelFilesDownloader(ResourceDownloader):
-    def __init__(self, api_key, logger=MuteLogger()):
-        super(ModelFilesDownloader, self).__init__(api_key, logger=logger)
-        self.models_client = ModelsClient(api_key, logger=logger)
+    CLIENT_CLASS = ModelsClient
 
     def _get_files_list(self, model_id):
-        files = self.models_client.get_model_files(model_id=model_id, links=True)
+        files = self.client.get_model_files(model_id=model_id, links=True)
         files = tuple((f.file, f.url) for f in files)
         return files
