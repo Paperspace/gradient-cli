@@ -382,3 +382,10 @@ def entity_tags_remove_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "entity_tags_remove.yaml"
     return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def clusters_list_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "clusters_list.yaml"
+    return str(fixture_dir.resolve())
