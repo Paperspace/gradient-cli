@@ -5,15 +5,20 @@ import halo
 import six
 import terminaltables
 
+import gradient.cli_constants
 from gradient import api_sdk
-from gradient.utils import get_terminal_lines
+from gradient.cliutils import get_terminal_lines
 from . import BaseCommand, common
 
 
 @six.add_metaclass(abc.ABCMeta)
 class GetTensorboardClientCommandMixin(BaseCommand):
     def _get_client(self, api_key, logger):
-        client = api_sdk.clients.TensorboardClient(api_key=api_key, logger=logger)
+        client = api_sdk.clients.TensorboardClient(
+            api_key=api_key,
+            logger=logger,
+            ps_client_name=gradient.cli_constants.CLI_PS_CLIENT_NAME,
+        )
         return client
 
     def _log_object(self, instance):

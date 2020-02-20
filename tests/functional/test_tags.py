@@ -2,12 +2,15 @@ import mock
 import pytest
 from click.testing import CliRunner
 
-from gradient.api_sdk.clients import http_client
+from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import example_responses, MockResponse
 
+EXPECTED_HEADERS = default_headers.copy()
+EXPECTED_HEADERS["ps_client_name"] = "gradient-cli"
 
-EXPECTED_HEADERS = http_client.default_headers.copy()
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY = EXPECTED_HEADERS.copy()
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
 
 class TestEntityAddTags(object):
@@ -21,8 +24,6 @@ class TestEntityAddTags(object):
         "some_id",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["tags", "add", "--optionsFile", ]  # path added in test
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     TAGS_JSON = {
         "entity": "",
@@ -32,8 +33,8 @@ class TestEntityAddTags(object):
     UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
     EXPECTED_STDOUT = "Tags added to %s\n"
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @pytest.mark.parametrize(
         "entity_command, entity, result_entity",
         [
@@ -71,8 +72,8 @@ class TestEntityAddTags(object):
         assert result.output == expected_result, result.exc_info
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @pytest.mark.parametrize(
         "entity_command, entity, result_entity",
         [
@@ -104,7 +105,7 @@ class TestEntityAddTags(object):
 
         put_patched.assert_called_once_with(
             self.URL,
-            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
             json=tags_json,
             params=None,
         )
@@ -123,8 +124,6 @@ class TestEntityRemoveTags(object):
         "some_id",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["tags", "remove", "--optionsFile", ]  # path added in test
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     GET_TAGS_MOCK_RESPONSE = example_responses.GET_TAGS_RESPONSE
 
@@ -136,8 +135,8 @@ class TestEntityRemoveTags(object):
     UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
     EXPECTED_STDOUT = "Tags removed from %s\n"
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @pytest.mark.parametrize(
         "entity_command, entity, result_entity",
         [
@@ -175,8 +174,8 @@ class TestEntityRemoveTags(object):
         assert result.output == expected_result, result.exc_info
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.put")
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @pytest.mark.parametrize(
         "entity_command, entity, result_entity",
         [
@@ -208,7 +207,7 @@ class TestEntityRemoveTags(object):
 
         put_patched.assert_called_once_with(
             self.URL,
-            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
             json=tags_json,
             params=None,
         )

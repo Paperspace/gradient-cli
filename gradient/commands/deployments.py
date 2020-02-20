@@ -5,23 +5,17 @@ import six
 import terminaltables
 from halo import halo
 
-from gradient import version, logger as gradient_logger, exceptions
+from gradient import clilogger as gradient_logger, exceptions
 from gradient.api_sdk import sdk_exceptions, utils, models
-from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import urljoin
+from gradient.cliutils import get_terminal_lines
 from gradient.commands.common import DetailsCommandMixin
-from gradient.utils import get_terminal_lines
-
-default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
-                   "ps_client_name": "gradient-cli",
-                   "ps_client_version": version.version}
-deployments_api = http_client.API(config.CONFIG_HOST, headers=default_headers)
 
 
 @six.add_metaclass(abc.ABCMeta)
 class _DeploymentCommand(object):
-    def __init__(self, deployment_client, logger_=gradient_logger.Logger()):
+    def __init__(self, deployment_client, logger_=gradient_logger.CliLogger()):
         self.client = deployment_client
         self.logger = logger_
         self.entity = "deployment"

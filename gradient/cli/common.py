@@ -72,7 +72,7 @@ class ReadValueFromConfigFile(click.Parameter):
                 config_data = yaml.load(f, Loader=yaml.FullLoader)
                 option_name = get_option_name(self.opts)
                 if (isinstance(self, GradientObjectListOption) and
-                    self.object_list_name in config_data):
+                        self.object_list_name in config_data):
                     value_list = []
                     for object_list_item in config_data[self.object_list_name]:
                         value_list.append(object_list_item.get(self.object_key))
@@ -147,7 +147,7 @@ def generate_options_template(ctx, param, value):
         return value
 
     params = {}
-    objects_value_lists = {} # Object list name -> object key -> list of values
+    objects_value_lists = {}  # Object list name -> object key -> list of values
     for param in ctx.command.params:
         option_name = get_option_name(param.opts)
         if option_name in (OPTIONS_FILE_OPTION_NAME, OPTIONS_DUMP_FILE_OPTION_NAME):

@@ -3,9 +3,15 @@ import json
 import mock
 from click.testing import CliRunner
 
-import gradient.api_sdk.clients.http_client
+from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import MockResponse, example_responses
+
+EXPECTED_HEADERS = default_headers.copy()
+EXPECTED_HEADERS["ps_client_name"] = "gradient-cli"
+
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY = EXPECTED_HEADERS.copy()
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
 
 # class TestNotebooksCreate(object):
@@ -66,10 +72,6 @@ from tests import MockResponse, example_responses
 #     }
 #     COMMAND_WITH_OPTIONS_FILE_USED = ["notebooks", "create", "--optionsFile", ]  # path added in test
 #
-#     EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
-#     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-#     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-#
 #     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
 #     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to create resource: Invalid API token\n"
 #
@@ -84,12 +86,12 @@ from tests import MockResponse, example_responses
 #
 #         assert result.output == self.EXPECTED_STDOUT, result.exc_info
 #         post_patched.assert_called_once_with(self.URL,
-#                                              headers=self.EXPECTED_HEADERS,
+#                                              headers=EXPECTED_HEADERS,
 #                                              json=self.EXPECTED_REQUEST_JSON,
 #                                              data=None,
 #                                              files=None,
 #                                              params=None)
-#         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+#         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 #
 #     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
 #     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -102,12 +104,12 @@ from tests import MockResponse, example_responses
 #
 #         assert result.output == self.EXPECTED_STDOUT, result.exc_info
 #         post_patched.assert_called_once_with(self.URL,
-#                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+#                                              headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
 #                                              json=self.EXPECTED_REQUEST_JSON,
 #                                              data=None,
 #                                              files=None,
 #                                              params=None)
-#         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+#         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 #
 #     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
 #     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -120,12 +122,12 @@ from tests import MockResponse, example_responses
 #
 #         assert result.output == self.EXPECTED_STDOUT, result.exc_info
 #         post_patched.assert_called_once_with(self.URL,
-#                                              headers=self.EXPECTED_HEADERS,
+#                                              headers=EXPECTED_HEADERS,
 #                                              json=self.EXPECTED_REQUEST_JSON_WITH_ALL_OPTIONS,
 #                                              data=None,
 #                                              files=None,
 #                                              params=None)
-#         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+#         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 #
 #     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
 #     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -139,12 +141,12 @@ from tests import MockResponse, example_responses
 #
 #         assert result.output == self.EXPECTED_STDOUT, result.exc_info
 #         post_patched.assert_called_once_with(self.URL,
-#                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+#                                              headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
 #                                              json=self.EXPECTED_REQUEST_JSON_WITH_ALL_OPTIONS,
 #                                              data=None,
 #                                              files=None,
 #                                              params=None)
-#         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+#         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 #
 #     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
 #     def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, post_patched):
@@ -155,7 +157,7 @@ from tests import MockResponse, example_responses
 #
 #         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
 #         post_patched.assert_called_with(self.URL,
-#                                         headers=self.EXPECTED_HEADERS,
+#                                         headers=EXPECTED_HEADERS,
 #                                         json=self.EXPECTED_REQUEST_JSON,
 #                                         data=None,
 #                                         files=None,
@@ -171,7 +173,7 @@ from tests import MockResponse, example_responses
 #
 #         assert result.output == "Failed to create resource\n", result.exc_info
 #         post_patched.assert_called_with(self.URL,
-#                                         headers=self.EXPECTED_HEADERS,
+#                                         headers=EXPECTED_HEADERS,
 #                                         json=self.EXPECTED_REQUEST_JSON,
 #                                         data=None,
 #                                         files=None,
@@ -200,10 +202,6 @@ from tests import MockResponse, example_responses
 #
 #     COMMAND_WITH_OPTIONS_FILE_USED = ["notebooks", "delete", "--optionsFile", ]  # path added in test
 #
-#     EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
-#     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-#     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-#
 #     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
 #     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to delete resource: Invalid API token\n"
 #
@@ -216,12 +214,12 @@ from tests import MockResponse, example_responses
 #
 #         assert result.output == self.EXPECTED_STDOUT, result.exc_info
 #         post_patched.assert_called_once_with(self.URL,
-#                                              headers=self.EXPECTED_HEADERS,
+#                                              headers=EXPECTED_HEADERS,
 #                                              json=self.EXPECTED_REQUEST_JSON,
 #                                              data=None,
 #                                              files=None,
 #                                              params=None)
-#         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+#         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 #
 #     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
 #     def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched):
@@ -232,12 +230,12 @@ from tests import MockResponse, example_responses
 #
 #         assert result.output == self.EXPECTED_STDOUT, result.exc_info
 #         post_patched.assert_called_once_with(self.URL,
-#                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+#                                              headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
 #                                              json=self.EXPECTED_REQUEST_JSON,
 #                                              data=None,
 #                                              files=None,
 #                                              params=None)
-#         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+#         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 #
 #     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
 #     def test_should_read_option_from_yaml_file(self, post_patched, notebooks_delete_config_path):
@@ -249,12 +247,12 @@ from tests import MockResponse, example_responses
 #
 #         assert result.output == self.EXPECTED_STDOUT, result.exc_info
 #         post_patched.assert_called_once_with(self.URL,
-#                                              headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+#                                              headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
 #                                              json=self.EXPECTED_REQUEST_JSON,
 #                                              data=None,
 #                                              files=None,
 #                                              params=None)
-#         assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+#         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 #
 #     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
 #     def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, get_patched):
@@ -265,7 +263,7 @@ from tests import MockResponse, example_responses
 #
 #         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
 #         get_patched.assert_called_with(self.URL,
-#                                        headers=self.EXPECTED_HEADERS,
+#                                        headers=EXPECTED_HEADERS,
 #                                        json=self.EXPECTED_REQUEST_JSON,
 #                                        data=None,
 #                                        files=None,
@@ -281,7 +279,7 @@ from tests import MockResponse, example_responses
 #
 #         assert result.output == "Failed to delete resource\n", result.exc_info
 #         get_patched.assert_called_with(self.URL,
-#                                        headers=self.EXPECTED_HEADERS,
+#                                        headers=EXPECTED_HEADERS,
 #                                        json=self.EXPECTED_REQUEST_JSON,
 #                                        data=None,
 #                                        files=None,
@@ -319,10 +317,6 @@ class TestNotebooksShow(object):
 
     COMMAND_WITH_OPTIONS_FILE_USED = ["notebooks", "show", "--optionsFile", ]  # path added in test
 
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
 
@@ -335,10 +329,10 @@ class TestNotebooksShow(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+                                             headers=EXPECTED_HEADERS,
                                              json={"notebookId": "some_id"},
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_post_request_and_print_notebook_details_with_tags(self, post_patched):
@@ -349,10 +343,10 @@ class TestNotebooksShow(object):
 
         assert result.output == self.EXPECTED_STDOUT_WITH_TAGS, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+                                             headers=EXPECTED_HEADERS,
                                              json={"notebookId": "some_id"},
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched):
@@ -363,10 +357,10 @@ class TestNotebooksShow(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json={"notebookId": "some_id"},
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_option_from_yaml_file(self, post_patched, notebooks_show_config_path):
@@ -378,10 +372,10 @@ class TestNotebooksShow(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json={"notebookId": "some_id"},
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, get_patched):
@@ -392,7 +386,7 @@ class TestNotebooksShow(object):
 
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json={"notebookId": "some_id"},
                                        params=None)
         assert result.exit_code == 0
@@ -406,7 +400,7 @@ class TestNotebooksShow(object):
 
         assert result.output == "Failed to fetch data\n", result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json={"notebookId": "some_id"},
                                        params=None)
         assert result.exit_code == 0
@@ -452,10 +446,6 @@ class TestNotebooksList(object):
         },
     }
 
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
 
@@ -468,7 +458,7 @@ class TestNotebooksList(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+                                             headers=EXPECTED_HEADERS,
                                              json=None,
                                              params=mock.ANY)
         params = post_patched.call_args.kwargs["params"]
@@ -476,7 +466,7 @@ class TestNotebooksList(object):
         filter_params = json.loads(filter_params)
         assert filter_params == self.EXPECTED_FILTERS
         assert "tagFilter[0]" not in params
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_post_request_and_print_notebook_details_when_filtering_by_tags(self, post_patched):
@@ -487,7 +477,7 @@ class TestNotebooksList(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+                                             headers=EXPECTED_HEADERS,
                                              json=None,
                                              params=mock.ANY)
         params = post_patched.call_args.kwargs["params"]
@@ -498,7 +488,7 @@ class TestNotebooksList(object):
         assert params["tagFilter[0]"] in ("tag1", "tag2")
         assert params["tagFilter[1]"] in ("tag1", "tag2")
         assert params["tagFilter[0]"] != params["tagFilter[1]"]
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, get_patched):
@@ -509,14 +499,14 @@ class TestNotebooksList(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=mock.ANY)
         params = get_patched.call_args.kwargs["params"]
         filter_params = params["filter"]
         filter_params = json.loads(filter_params)
         assert filter_params == self.EXPECTED_FILTERS
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_option_from_yaml_file(self, get_patched, notebooks_list_config_path):
@@ -528,14 +518,14 @@ class TestNotebooksList(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=mock.ANY)
         params = get_patched.call_args.kwargs["params"]
         filter_params = params["filter"]
         filter_params = json.loads(filter_params)
         assert filter_params == self.EXPECTED_FILTERS
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, get_patched):
@@ -546,7 +536,7 @@ class TestNotebooksList(object):
 
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=mock.ANY)
         params = get_patched.call_args.kwargs["params"]
@@ -564,7 +554,7 @@ class TestNotebooksList(object):
 
         assert result.output == "Failed to fetch data\n", result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
                                        params=mock.ANY)
         params = get_patched.call_args.kwargs["params"]

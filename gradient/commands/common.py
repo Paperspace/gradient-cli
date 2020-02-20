@@ -5,13 +5,13 @@ import six
 import terminaltables
 from halo import halo
 
-from gradient.logger import Logger
-from gradient.utils import get_terminal_lines
+from gradient.clilogger import CliLogger
+from gradient.cliutils import get_terminal_lines
 
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseCommand:
-    def __init__(self, api_key, logger=Logger()):
+    def __init__(self, api_key, logger=CliLogger()):
         self.api_key = api_key
         self.client = self._get_client(api_key, logger)
         self.logger = logger

@@ -10,6 +10,7 @@ from gradient.commands import notebooks
 def notebooks_group():
     pass
 
+
 @notebooks_group.group("tags", help="Manage notebook tags", cls=common.ClickGroup)
 def notebook_tags():
     pass

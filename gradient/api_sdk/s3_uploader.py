@@ -7,6 +7,7 @@ import zipfile
 import progressbar
 from requests_toolbelt.multipart import encoder
 
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from . import sdk_exceptions
 from .clients import http_client
 from .config import config
@@ -199,7 +200,7 @@ class S3FileUploader(object):
             raise sdk_exceptions.S3UploadFailedError(response)
 
     def _get_client(self, url):
-        client = http_client.API(url, logger=self.logger)
+        client = http_client.API(url, logger=self.logger, ps_client_name=CLI_PS_CLIENT_NAME)
         return client
 
     def _get_multipart_encoder_monitor(self, fields):
@@ -231,7 +232,12 @@ class S3ProjectFileUploader(object):
         :param Logger logger:
         """
         self.logger = logger or MuteLogger()
-        self.experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key, logger=self.logger)
+        self.experiments_api = http_client.API(
+            config.CONFIG_EXPERIMENTS_HOST,
+            api_key=api_key,
+            logger=self.logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
         self.s3uploader = s3uploader or S3FileUploader(logger=self.logger)
 
     def upload(self, file_path, project_id, cluster_id=None):
