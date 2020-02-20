@@ -42,10 +42,9 @@ class ListClusters(ListResources):
         return config.CONFIG_HOST
 
     def _get_request_params(self, kwargs):
-        filter = OrderedDict({
-            "limit": kwargs.get("limit"),
-            "offset": kwargs.get("offset"),
-        })
+        filter = OrderedDict()
+        filter["limit"] = kwargs.get("limit")
+        filter["offset"] = kwargs.get("offset")
         filter["where"] = {
             "isPrivate": True
         }
