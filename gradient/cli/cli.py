@@ -1,5 +1,6 @@
 import click
 import click_completion
+import requests
 
 from gradient.api_sdk.config import config
 from gradient.api_sdk.sdk_exceptions import GradientSdkError
@@ -15,6 +16,9 @@ class GradientGroup(common.ClickGroup):
     def main(self, *args, **kwargs):
         try:
             super(GradientGroup, self).main(*args, **kwargs)
+        except requests.exceptions.RequestException as e:
+            msg = "Can't connect to Paperspace API. Please check https://status.paperspace.com/ for more information."
+            CliLogger().error(msg)
         except (ApplicationError, GradientSdkError) as e:
             if config.DEBUG:
                 raise
