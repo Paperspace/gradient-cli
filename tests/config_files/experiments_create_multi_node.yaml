@@ -35,7 +35,6 @@ masterRegistryUrl: psrurl
 masterRegistryUsername: psrcus
 ports: '3456'
 projectId: prq70zy79
-vpc: false
 workerCommand: wcom
 workerContainer: wcon
 workerContainerUser: usr

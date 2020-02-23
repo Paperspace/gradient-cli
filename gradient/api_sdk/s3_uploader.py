@@ -1,4 +1,5 @@
 import collections
+import fnmatch
 import os
 import tempfile
 import zipfile
@@ -6,6 +7,7 @@ import zipfile
 import progressbar
 from requests_toolbelt.multipart import encoder
 
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from . import sdk_exceptions
 from .clients import http_client
 from .config import config
@@ -40,7 +42,11 @@ class MultipartEncoderWithProgressbar(MultipartEncoder):
 
 
 class ZipArchiver(object):
-    DEFAULT_EXCLUDED_PATHS = [".git", ".idea", ".pytest_cache"]
+    DEFAULT_EXCLUDED_PATHS = [
+        os.path.join(".git", "*"),
+        os.path.join(".idea", "*"),
+        os.path.join(".pytest_cache", "*"),
+    ]
 
     def __init__(self, logger=None):
         self.logger = logger or MuteLogger()
@@ -98,8 +104,6 @@ class ZipArchiver(object):
         # Read all directory, subdirectories and file lists
         for root, dirs, files in os.walk(input_path):
             relative_path = os.path.relpath(root, input_path)
-            if relative_path in excluded_paths:
-                continue
 
             for filename in files:
                 # Create the full filepath by using os module.
@@ -107,6 +111,9 @@ class ZipArchiver(object):
                     file_path = filename
                 else:
                     file_path = os.path.join(os.path.relpath(root, input_path), filename)
+
+                if any(fnmatch.fnmatch(file_path, pattern) for pattern in excluded_paths):
+                    continue
 
                 if file_path not in excluded_paths:
                     file_paths[file_path] = os.path.join(root, filename)
@@ -193,7 +200,7 @@ class S3FileUploader(object):
             raise sdk_exceptions.S3UploadFailedError(response)
 
     def _get_client(self, url):
-        client = http_client.API(url, logger=self.logger)
+        client = http_client.API(url, logger=self.logger, ps_client_name=CLI_PS_CLIENT_NAME)
         return client
 
     def _get_multipart_encoder_monitor(self, fields):
@@ -225,7 +232,12 @@ class S3ProjectFileUploader(object):
         :param Logger logger:
         """
         self.logger = logger or MuteLogger()
-        self.experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key, logger=self.logger)
+        self.experiments_api = http_client.API(
+            config.CONFIG_EXPERIMENTS_HOST,
+            api_key=api_key,
+            logger=self.logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
         self.s3uploader = s3uploader or S3FileUploader(logger=self.logger)
 
     def upload(self, file_path, project_id, cluster_id=None):

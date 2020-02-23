@@ -3,7 +3,9 @@ from .. import models, repositories
 
 
 class ProjectsClient(BaseClient):
-    def create(self, name, repository_name=None, repository_url=None):
+    entity = "project"
+
+    def create(self, name, repository_name=None, repository_url=None, tags=None, ):
         """Create new project
 
         *EXAMPLE*::
@@ -29,6 +31,7 @@ class ProjectsClient(BaseClient):
         :param str name: Name of new project [required]
         :param str repository_name: Name of the repository
         :param str repository_url: URL to the repository
+        :param list[str] tags: List of tags
 
         :returns: project ID
         :rtype: str
@@ -40,7 +43,12 @@ class ProjectsClient(BaseClient):
             repository_url=repository_url,
         )
 
-        handle = repositories.CreateProject(api_key=self.api_key, logger=self.logger).create(project)
+        repository = self.build_repository(repositories.CreateProject)
+        handle = repository.create(project)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def list(self, tags=None):
@@ -52,9 +60,15 @@ class ProjectsClient(BaseClient):
         :rtype: list[models.Project]
         """
 
-        projects = repositories.ListProjects(api_key=self.api_key, logger=self.logger).list(tags=tags)
+        repository = self.build_repository(repositories.ListProjects)
+        projects = repository.list(tags=tags)
         return projects
 
     def delete(self, project_id):
-        repository = repositories.DeleteProject(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.DeleteProject)
         repository.delete(project_id)
+
+    def get(self, project_id):
+        repository = self.build_repository(repositories.GetProject)
+        project = repository.get(id=project_id)
+        return project

@@ -965,6 +965,134 @@ LIST_OF_EXPERIMENTS_FILTERED_BUT_NONE_FOUND = {
     }
 }
 
+UPDATE_TAGS_RESPONSE = [
+    {
+        "tagId": 1,
+        "entity": "experiment",
+        "entityId": 3,
+        "dtCreated": "2020-02-01T12:46:58.506Z",
+        "dtDeleted": None,
+        "userId": 1,
+        "id": 1,
+        "entity_id": 3,
+        "tag": {
+            "name": "test0",
+            "dtCreated": "2020-02-01T12:46:58.480Z",
+            "id": 1
+        }
+    },
+    {
+        "tagId": 2,
+        "entity": "experiment",
+        "entityId": 3,
+        "dtCreated": "2020-02-01T12:46:58.507Z",
+        "dtDeleted": None,
+        "userId": 1,
+        "id": 2,
+        "entity_id": 3,
+        "tag": {
+            "name": "test2",
+            "dtCreated": "2020-02-01T12:46:58.481Z",
+            "id": 2
+        }
+    },
+    {
+        "tagId": 3,
+        "entity": "experiment",
+        "entityId": 3,
+        "dtCreated": "2020-02-01T12:46:58.509Z",
+        "dtDeleted": None,
+        "userId": 1,
+        "id": 3,
+        "entity_id": 3,
+        "tag": {
+            "name": "test1",
+            "dtCreated": "2020-02-01T12:46:58.482Z",
+            "id": 3
+        }
+    },
+    {
+        "tagId": 4,
+        "entity": "experiment",
+        "entityId": 3,
+        "dtCreated": "2020-02-01T12:46:58.510Z",
+        "dtDeleted": None,
+        "userId": 1,
+        "id": 4,
+        "entity_id": 3,
+        "tag": {
+            "name": "test3",
+            "dtCreated": "2020-02-01T12:46:58.483Z",
+            "id": 4
+        }
+    }
+]
+
+GET_TAGS_RESPONSE = {
+    "some_id": [
+        {
+            "tagId": 1,
+            "entity": "entity",
+            "entityId": 3,
+            "dtCreated": "2020-02-01T12:46:58.506Z",
+            "dtDeleted": None,
+            "userId": 1,
+            "id": 1,
+            "entity_id": 3,
+            "tag": {
+                "name": "test0",
+                "dtCreated": "2020-02-01T12:46:58.480Z",
+                "id": 1
+            }
+        },
+        {
+            "tagId": 2,
+            "entity": "entity",
+            "entityId": 3,
+            "dtCreated": "2020-02-01T12:46:58.507Z",
+            "dtDeleted": None,
+            "userId": 1,
+            "id": 2,
+            "entity_id": 3,
+            "tag": {
+                "name": "test2",
+                "dtCreated": "2020-02-01T12:46:58.481Z",
+                "id": 2
+            }
+        },
+        {
+            "tagId": 3,
+            "entity": "entity",
+            "entityId": 3,
+            "dtCreated": "2020-02-01T12:46:58.509Z",
+            "dtDeleted": None,
+            "userId": 1,
+            "id": 3,
+            "entity_id": 3,
+            "tag": {
+                "name": "test1",
+                "dtCreated": "2020-02-01T12:46:58.482Z",
+                "id": 3
+            }
+        },
+        {
+            "tagId": 4,
+            "entity": "entity",
+            "entityId": 3,
+            "dtCreated": "2020-02-01T12:46:58.510Z",
+            "dtDeleted": None,
+            "userId": 1,
+            "id": 4,
+            "entity_id": 3,
+            "tag": {
+                "name": "test3",
+                "dtCreated": "2020-02-01T12:46:58.483Z",
+                "id": 4
+            }
+        }
+    ]
+}
+
 CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE = {
     "deployment": {
         "id": "sadkfhlskdjh",
@@ -1700,7 +1828,11 @@ LIST_JOBS_RESPONSE_JSON = {
         "isPreemptible": False,
         "metricsURL": "metrics-gcp-dev.paperspace.io",
         "customMetrics": None,
-        "experimentId": "esk8lny3pxyqd6"
+        "experimentId": "esk8lny3pxyqd6",
+        "tags": [
+            "tag1",
+            "tag2",
+        ],
     },
     {
         "id": "jfl063dsv634h",
@@ -4429,6 +4561,14 @@ DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON = {
         "projectId": 612,
         "started_by_user_id": 1655,
         "state": 1,
+        "tags": [
+            {
+                "name": "tag1",
+            },
+            {
+                "name": "tag2",
+            },
+        ],
         "templateHistory": {
             "dtCreated": "2019-03-22T13:22:26.375543+00:00",
             "dtDeleted": None,
@@ -4452,50 +4592,58 @@ DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON = {
 
 DETAILS_OF_MULTI_NODE_EXPERIMENT_RESPONSE_JSON = {
   "data": {
-    "dtCreated": "2019-12-16T16:18:47.881765+00:00",
-    "dtDeleted": None,
-    "dtFinished": None,
-    "dtModified": "2019-12-16T16:18:47.881765+00:00",
-    "dtProvisioningFinished": None,
-    "dtProvisioningStarted": None,
-    "dtStarted": None,
-    "dtTeardownFinished": None,
-    "dtTeardownStarted": None,
-    "experimentError": None,
-    "experimentTemplateHistoryId": 34335,
-    "experimentTemplateId": 439,
-    "experimentTypeId": 3,
-    "handle": "emarbao6t6tsn",
-    "id": 34272,
-    "projectHandle": "pr85u3sfa",
-    "projectId": 1824,
-    "started_by_user_id": 1655,
-    "state": 10,
-    "templateHistory": {
-      "cliCommand": "gradient experiments create multinode --name some_name --projectId pr85u3sfa --experimentType MPI --workerContainer python --workerMachineType c5.xlarge --workerCommand \"echo worker\" --workerCount 2 --masterContainer python --masterMachineType c5.xlarge --masterCommand \"echo master\" --masterCount 1 --workspaceUrl some.url --workingDirectory /some/working/directory --clusterId clqr4b0ox --experimentEnv '{\"key\": \"value\"}' --ports 5000 --modelType some_type --modelPath /some/model/path",
-      "dtCreated": "2019-12-16T16:18:46.577973+00:00",
+      "dtCreated": "2019-12-16T16:18:47.881765+00:00",
       "dtDeleted": None,
+      "dtFinished": None,
+      "dtModified": "2019-12-16T16:18:47.881765+00:00",
+      "dtProvisioningFinished": None,
+      "dtProvisioningStarted": None,
+      "dtStarted": None,
+      "dtTeardownFinished": None,
+      "dtTeardownStarted": None,
+      "experimentError": None,
+      "experimentTemplateHistoryId": 34335,
       "experimentTemplateId": 439,
-      "id": 34335,
-      "params": {
-        "artifact_directory": "/some/artifact/directory",
-        "cluster_id": "clqr4b0ox",
-        "experiment_env": {
-          "key": "value"
-        },
-        "is_preemptible": False,
-        "model_path": "/some/model/path",
-        "model_type": "some_type",
-        "name": "some_name",
-        "ports": "5000",
-        "project_handle": "pr85u3sfa",
-        "version": "v2",
-        "working_directory": "/some/working/directory",
-        "workspace_url": "some.url"
-      },
-      "triggerEvent": None,
-      "triggerEventId": None
-    }
+      "experimentTypeId": 3,
+      "handle": "emarbao6t6tsn",
+      "id": 34272,
+      "projectHandle": "pr85u3sfa",
+      "projectId": 1824,
+      "started_by_user_id": 1655,
+      "state": 10,
+      "tags": [
+          {
+              "name": "tag1",
+          },
+          {
+              "name": "tag2",
+          },
+      ],
+      "templateHistory": {
+          "cliCommand": "gradient experiments create multinode --name some_name --projectId pr85u3sfa --experimentType MPI --workerContainer python --workerMachineType c5.xlarge --workerCommand \"echo worker\" --workerCount 2 --masterContainer python --masterMachineType c5.xlarge --masterCommand \"echo master\" --masterCount 1 --workspaceUrl some.url --workingDirectory /some/working/directory --clusterId clqr4b0ox --experimentEnv '{\"key\": \"value\"}' --ports 5000 --modelType some_type --modelPath /some/model/path",
+          "dtCreated": "2019-12-16T16:18:46.577973+00:00",
+          "dtDeleted": None,
+          "experimentTemplateId": 439,
+          "id": 34335,
+          "params": {
+              "artifact_directory": "/some/artifact/directory",
+              "cluster_id": "clqr4b0ox",
+              "experiment_env": {
+                  "key": "value"
+              },
+              "is_preemptible": False,
+              "model_path": "/some/model/path",
+              "model_type": "some_type",
+              "name": "some_name",
+              "ports": "5000",
+              "project_handle": "pr85u3sfa",
+              "version": "v2",
+              "working_directory": "/some/working/directory",
+              "workspace_url": "some.url"
+          },
+          "triggerEvent": None,
+          "triggerEventId": None
+      }
   },
   "message": "success"
 }
@@ -4554,45 +4702,103 @@ NOTEBOOK_GET_RESPONSE = {
     "id": 1823
 }
 
+NOTEBOOK_GET_RESPONSE_WITH_TAGS = {
+    "name": "some_name",
+    "handle": "ngw7piq9",
+    "jobHandle": "jzhmk7fpluqje",
+    "project": "Notebook-some_name",
+    "projectHandle": "prg284tu2",
+    "state": "Running",
+    "token": "dc2c331ce694ebe5a615f6e5885f6a933fcb1be49cb0d17f",
+    "container": "Paperspace + Fast.AI 1.0 (V3)",
+    "containerUrl": "paperspace/fastai:1.0-CUDA9.2-base-3.0-v1.0.6",
+    "baseContainer": "Paperspace + Fast.AI 1.0 (V3)",
+    "baseContainerUrl": "paperspace/fastai:1.0-CUDA9.2-base-3.0-v1.0.6",
+    "vmType": "K80",
+    "cluster": "PS Notebooks on GCP",
+    "clusterId": "clmtkpnm2",
+    "fqdn": "ngw7piq9.dgradient.paperspace.com",
+    "startedByUser": "first last",
+    "startedByUserId": "ukgvw4i8",
+    "namespace": "some_namespace",
+    "parentJobId": None,
+    "jobError": None,
+    "dtCreated": "2019-09-03T11:06:18.154Z",
+    "dtModified": "2019-09-03T11:06:18.154Z",
+    "dtProvisioningStarted": "2019-09-03T11:08:36.286Z",
+    "dtProvisioningFinished": "2019-09-03T11:10:36.471Z",
+    "dtStarted": "2019-09-03T11:10:36.471Z",
+    "dtFinished": None,
+    "dtTeardownStarted": None,
+    "dtTeardownFinished": None,
+    "dtDeleted": None,
+    "shutdownTimeout": 6,
+    "jobId": 20206,
+    "isPublic": False,
+    "isPreemptible": False,
+    "cpuHostname": "gradient-host-1567508793",
+    "cpuCount": 2,
+    "cpuModel": "Intel(R) Xeon(R) CPU @ 2.30GHz",
+    "cpuFlags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm invpcid_single pti ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt arat md_clear arch_capabilities",
+    "cpuMem": "12297212 kB",
+    "gpuName": "Tesla K80",
+    "gpuSerial": "0320617088427",
+    "gpuDevice": "/dev/nvidia0",
+    "gpuDriver": "418.67",
+    "gpuCount": 1,
+    "gpuMem": "11441 MiB",
+    "tpuType": None,
+    "tpuName": None,
+    "tpuGrpcUrl": None,
+    "tpuTFVersion": None,
+    "tpuDatasetDir": None,
+    "tpuModelDir": None,
+    "id": 1823,
+    "tags": [
+        "tag1",
+        "tag2"
+    ],
+}
+
 NOTEBOOKS_LIST_RESPONSE_JSON = {
-  "notebookList": [
-    {
-      "name": "job 1",
-      "handle": "n1vmfj6x",
-      "jobHandle": "jsh0692p80dphg",
-      "project": "Notebook-undefined",
-      "projectHandle": "pr231zktg",
-      "state": "Running",
-      "token": "80426c989ef8d42b4dff6806c9592b1111a47c63c0f4a36f",
-      "container": "Paperspace + Fast.AI 1.0 (V3)",
-      "containerUrl": "paperspace/fastai:1.0-CUDA9.2-base-3.0-v1.0.6",
-      "baseContainer": "Paperspace + Fast.AI 1.0 (V3)",
-      "baseContainerUrl": "paperspace/fastai:1.0-CUDA9.2-base-3.0-v1.0.6",
-      "vmType": "K80",
-      "cluster": "PS Notebooks on GCP",
-      "clusterId": "clmtkpnm2",
-      "fqdn": "n1vmfj6x.dgradient.paperspace.com",
-      "startedByUser": "first last",
-      "startedByUserId": "ukgvw4i8",
-      "namespace": "username",
-      "parentJobId": None,
-      "jobError": None,
-      "dtCreated": "2019-09-04T11:06:12.667Z",
-      "dtModified": "2019-09-04T11:06:12.667Z",
-      "dtProvisioningStarted": "2019-09-04T11:08:28.305Z",
-      "dtProvisioningFinished": "2019-09-04T11:10:30.628Z",
-      "dtStarted": "2019-09-04T11:10:30.628Z",
-      "dtFinished": None,
-      "dtTeardownStarted": None,
-      "dtTeardownFinished": None,
-      "dtDeleted": None,
-      "shutdownTimeout": None,
-      "jobId": 20221,
-      "isPublic": False,
-      "isPreemptible": False,
-      "cpuHostname": "gradient-host-1567595186",
-      "cpuCount": 2,
-      "cpuModel": "Intel(R) Xeon(R) CPU @ 2.30GHz",
+    "notebookList": [
+        {
+            "name": "job 1",
+            "handle": "n1vmfj6x",
+            "jobHandle": "jsh0692p80dphg",
+            "project": "Notebook-undefined",
+            "projectHandle": "pr231zktg",
+            "state": "Running",
+            "token": "80426c989ef8d42b4dff6806c9592b1111a47c63c0f4a36f",
+            "container": "Paperspace + Fast.AI 1.0 (V3)",
+            "containerUrl": "paperspace/fastai:1.0-CUDA9.2-base-3.0-v1.0.6",
+            "baseContainer": "Paperspace + Fast.AI 1.0 (V3)",
+            "baseContainerUrl": "paperspace/fastai:1.0-CUDA9.2-base-3.0-v1.0.6",
+            "vmType": "K80",
+            "cluster": "PS Notebooks on GCP",
+            "clusterId": "clmtkpnm2",
+            "fqdn": "n1vmfj6x.dgradient.paperspace.com",
+            "startedByUser": "first last",
+            "startedByUserId": "ukgvw4i8",
+            "namespace": "username",
+            "parentJobId": None,
+            "jobError": None,
+            "dtCreated": "2019-09-04T11:06:12.667Z",
+            "dtModified": "2019-09-04T11:06:12.667Z",
+            "dtProvisioningStarted": "2019-09-04T11:08:28.305Z",
+            "dtProvisioningFinished": "2019-09-04T11:10:30.628Z",
+            "dtStarted": "2019-09-04T11:10:30.628Z",
+            "dtFinished": None,
+            "dtTeardownStarted": None,
+            "dtTeardownFinished": None,
+            "dtDeleted": None,
+            "shutdownTimeout": None,
+            "jobId": 20221,
+            "isPublic": False,
+            "isPreemptible": False,
+            "cpuHostname": "gradient-host-1567595186",
+            "cpuCount": 2,
+            "cpuModel": "Intel(R) Xeon(R) CPU @ 2.30GHz",
       "cpuFlags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm invpcid_single pti ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt arat md_clear arch_capabilities",
       "cpuMem": "12297212 kB",
       "gpuName": "Tesla K80",
@@ -5584,6 +5790,40 @@ MODEL_DETAILS_RESPONSE_JSON = {
     "displayTotal": 1
 }
 
+MODEL_DETAILS_RESPONSE_JSON_WITH_TAGS = {
+    "modelList": [
+        {
+            "id": "some_id",
+            "projectId": "some_project_id",
+            "experimentId": "some_experiment_id",
+            "updatedByUserId": "some_user_id",
+            "updatedByUserEmail": "paperspace@paperspace.com",
+            "modelType": "Tensorflow",
+            "name": "some_name",
+            "tag": None,
+            "tags": [
+                "tag1",
+                "tag2"
+            ],
+            "summary": None,
+            "detail": None,
+            "params": None,
+            "url": "s3://ps-projects-development/asdf/some_project_id/some_experiment_id/model",
+            "notes": None,
+            "isDeleted": False,
+            "isPublic": False,
+            "dtCreated": "2019-12-13T23:00:26.077Z",
+            "dtModified": "2019-12-13T23:00:26.077Z",
+            "dtUploaded": None,
+            "dtDeleted": None,
+            "modelPath": None,
+            "deploymentState": "Stopped"
+        }
+    ],
+    "total": 96,
+    "displayTotal": 1
+}
+
 LIST_MODEL_FILES_RESPONSE_JSON = [
     {
         "file": "hello.txt",
@@ -5659,10 +5899,327 @@ GET_DEPLOYMENT_DETAILS_JSON_RESPONSE = {
             "containerUrlPath": None,
             "endpointUrlPath": None,
             "method": None,
-            "tags": None
+            "tags": ["tag1", "tag2"],
         }
     ],
     "total": 129,
     "displayTotal": 129,
     "runningTotal": 0
 }
+
+GET_CLUSTER_DETAILS_RESPONSE = {
+    "id": "some_cluster_id",
+    "name": "EKS testing",
+    "type": "Kubernetes Processing Site",
+    "region": "Private",
+    "cloud": "aws",
+    "teamId": "some_team_id",
+    "isDefault": False,
+    "dtCreated": "2019-11-21T07:27:37.010Z",
+    "dtModified": "2019-11-21T18:12:27.723Z",
+    "clusterId": 1,
+    "isPrivate": True,
+    "modelName": "team",
+    "modelId": 1,
+    "nodes": [
+        {
+            "id": "cmsq4u0gf0m971f",
+            "name": "default",
+            "clusterId": "cluwffvkb",
+            "activeJobId": None,
+            "machineId": None,
+            "dtCreated": "2019-11-21T10:06:27.602Z",
+            "dtModified": "2019-11-21T10:06:27.602Z",
+            "dtDeleted": None,
+            "dtHeartbeat": None,
+            "nodeAttrs": None
+        }
+    ]
+}
+GET_V1_CLUSTER_DETAILS_RESPONSE = {
+    "id": "some_cluster_id",
+    "name": "EKS testing",
+    "type": "Job Cluster",
+    "region": "Private",
+    "cloud": "aws",
+    "teamId": "some_team_id",
+    "isDefault": False,
+    "dtCreated": "2019-11-21T07:27:37.010Z",
+    "dtModified": "2019-11-21T18:12:27.723Z",
+    "clusterId": 1,
+    "isPrivate": True,
+    "modelName": "team",
+    "modelId": 1,
+    "nodes": [
+        {
+            "id": "some_node_id",
+            "name": "default",
+            "clusterId": "some_cluster_id",
+            "activeJobId": None,
+            "machineId": None,
+            "dtCreated": "2019-11-21T10:06:27.602Z",
+            "dtModified": "2019-11-21T10:06:27.602Z",
+            "dtDeleted": None,
+            "dtHeartbeat": None,
+            "nodeAttrs": None
+        }
+    ]
+}
+
+DETAILS_OF_PROJECT = {
+    "data": [
+        {
+            "name": "some_name",
+            "handle": "some_id",
+            "dtCreated": "2020-02-07T11:43:34.335Z",
+            "dtDeleted": None,
+            "lastJobSeqNum": 44,
+            "repoNodeId": None,
+            "repoName": None,
+            "repoUrl": None,
+            "tags": None,
+            "buildPullRequests": True,
+            "buildForks": False,
+            "buildBranches": "default",
+            "experiments": {
+                "data": [
+                    {
+                        "dtCreated": "2020-02-13T16:02:22.978027+00:00",
+                        "dtDeleted": None,
+                        "dtFinished": None,
+                        "dtModified": "2020-02-13T16:02:22.978027+00:00",
+                        "dtProvisioningFinished": None,
+                        "dtProvisioningStarted": None,
+                        "dtStarted": None,
+                        "dtTeardownFinished": None,
+                        "dtTeardownStarted": None,
+                        "experimentError": None,
+                        "experimentTemplateHistoryId": 70590,
+                        "experimentTemplateId": 7156,
+                        "experimentTypeId": 2,
+                        "handle": "some_handle",
+                        "id": 70557,
+                        "projectHandle": "some_id",
+                        "projectId": 49107,
+                        "started_by_user_id": 192354,
+                        "state": 1,
+                        "templateHistory": {
+                            "cliCommand": "gradient experiments create multinode --name some_name --projectId some_id --experimentType GRPC --workerContainer python --workerMachineType c5.xlarge --workerCommand \"python script.py\" --workerCount 2 --parameterServerContainer python --parameterServerMachineType c5.xlarge --parameterServerCommand \"python script.py\" --parameterServerCount 1 --workspaceUrl s3://some_workspace.url --clusterId some_cluster_id --ports 5000:5000",
+                            "dtCreated": "2020-02-13T16:02:21.263923+00:00",
+                            "dtDeleted": None,
+                            "experimentTemplateId": 7156,
+                            "id": 70590,
+                            "params": {
+                                "cluster_id": "some_cluster_id",
+                                "is_preemptible": False,
+                                "name": "some_name",
+                                "parameter_server_command": "python script.py",
+                                "parameter_server_container": "python",
+                                "parameter_server_count": 1,
+                                "parameter_server_machine_type": "c5.xlarge",
+                                "parameter_server_use_dockerfile": False,
+                                "ports": "5000:5000",
+                                "project_handle": "some_id",
+                                "version": "v2",
+                                "worker_command": "python script.py",
+                                "worker_container": "python",
+                                "worker_count": 2,
+                                "worker_machine_type": "c5.xlarge",
+                                "worker_use_dockerfile": False,
+                                "workspace_url": "s3://some_workspace.url"
+                            },
+                            "triggerEvent": None,
+                            "triggerEventId": None
+                        }
+                    }
+                ],
+                "meta": {
+                    "itemGroup": {
+                        "key": "projectHandle",
+                        "value": "some_id"
+                    },
+                    "totalItems": 40
+                }
+            }
+        }
+    ],
+    "meta": {
+        "where": {
+            "handle": "some_id"
+        },
+        "totalItems": 1
+    },
+    "tagFilter": []
+}
+
+DETAILS_OF_PROJECT_WITH_TAGS = {
+    "data": [
+        {
+            "name": "some_name",
+            "handle": "some_id",
+            "dtCreated": "2020-02-07T11:43:34.335Z",
+            "dtDeleted": None,
+            "lastJobSeqNum": 44,
+            "repoNodeId": None,
+            "repoName": None,
+            "repoUrl": None,
+            "tags": [
+                "tag1",
+                "tag2"
+            ],
+            "buildPullRequests": True,
+            "buildForks": False,
+            "buildBranches": "default",
+            "experiments": {
+                "data": [
+                    {
+                        "dtCreated": "2020-02-13T16:02:22.978027+00:00",
+                        "dtDeleted": None,
+                        "dtFinished": None,
+                        "dtModified": "2020-02-13T16:02:22.978027+00:00",
+                        "dtProvisioningFinished": None,
+                        "dtProvisioningStarted": None,
+                        "dtStarted": None,
+                        "dtTeardownFinished": None,
+                        "dtTeardownStarted": None,
+                        "experimentError": None,
+                        "experimentTemplateHistoryId": 70590,
+                        "experimentTemplateId": 7156,
+                        "experimentTypeId": 2,
+                        "handle": "some_handle",
+                        "id": 70557,
+                        "projectHandle": "some_id",
+                        "projectId": 49107,
+                        "started_by_user_id": 192354,
+                        "state": 1,
+                        "templateHistory": {
+                            "cliCommand": "gradient experiments create multinode --name some_name --projectId some_id --experimentType GRPC --workerContainer python --workerMachineType c5.xlarge --workerCommand \"python script.py\" --workerCount 2 --parameterServerContainer python --parameterServerMachineType c5.xlarge --parameterServerCommand \"python script.py\" --parameterServerCount 1 --workspaceUrl s3://some_workspace.url --clusterId some_cluster_id --ports 5000:5000",
+                            "dtCreated": "2020-02-13T16:02:21.263923+00:00",
+                            "dtDeleted": None,
+                            "experimentTemplateId": 7156,
+                            "id": 70590,
+                            "params": {
+                                "cluster_id": "some_cluster_id",
+                                "is_preemptible": False,
+                                "name": "some_name",
+                                "parameter_server_command": "python script.py",
+                                "parameter_server_container": "python",
+                                "parameter_server_count": 1,
+                                "parameter_server_machine_type": "c5.xlarge",
+                                "parameter_server_use_dockerfile": False,
+                                "ports": "5000:5000",
+                                "project_handle": "some_id",
+                                "version": "v2",
+                                "worker_command": "python script.py",
+                                "worker_container": "python",
+                                "worker_count": 2,
+                                "worker_machine_type": "c5.xlarge",
+                                "worker_use_dockerfile": False,
+                                "workspace_url": "s3://some_workspace.url"
+                            },
+                            "triggerEvent": None,
+                            "triggerEventId": None
+                        }
+                    }
+                ],
+                "meta": {
+                    "itemGroup": {
+                        "key": "projectHandle",
+                        "value": "some_id"
+                    },
+                    "totalItems": 40
+                }
+            }
+        }
+    ],
+    "meta": {
+        "where": {
+            "handle": "some_id"
+        },
+        "totalItems": 1
+    },
+    "tagFilter": []
+}
+
+
+EXAMPLE_CLUSTERS_LIST_RESPONSE = [
+    {
+        "id": "cluster_id_1",
+        "name": "cluster name 1",
+        "type": "Job Cluster",
+        "region": "Private",
+        "cloud": "private",
+        "teamId": "team_id",
+        "isDefault": True,
+        "dtCreated": "2019-07-05T23:28:17.416Z",
+        "dtModified": "2019-07-05T23:28:17.416Z",
+        "clusterId": 91,
+        "isPrivate": True,
+        "modelName": "team",
+        "modelId": 1170
+    },
+    {
+        "id": "cluster_id_2",
+        "name": "cluster name 2",
+        "type": "Kubernetes Processing Site",
+        "region": "Private",
+        "cloud": "aws",
+        "teamId": "team_id",
+        "isDefault": False,
+        "dtCreated": "2019-07-22T14:50:10.170Z",
+        "dtModified": "2019-11-21T18:12:27.723Z",
+        "clusterId": 92,
+        "isPrivate": True,
+        "modelName": "team",
+        "modelId": 1170
+    },
+    {
+        "id": "cluster_id_3",
+        "name": "cluster name 3",
+        "type": "Job Cluster",
+        "region": "Private",
+        "cloud": "gcp",
+        "teamId": "team_id",
+        "isDefault": False,
+        "dtCreated": "2019-10-29T18:42:50.985Z",
+        "dtModified": "2019-11-21T18:12:27.723Z",
+        "clusterId": 100,
+        "isPrivate": True,
+        "modelName": "team",
+        "modelId": 1170
+    }
+]
+
+
+LIMITED_EXAMPLE_CLUSTERS_LIST_RESPONSE = [
+    {
+        "id": "cluster_id_1",
+        "name": "cluster name 1",
+        "type": "Job Cluster",
+        "region": "Private",
+        "cloud": "private",
+        "teamId": "team_id",
+        "isDefault": True,
+        "dtCreated": "2019-07-05T23:28:17.416Z",
+        "dtModified": "2019-07-05T23:28:17.416Z",
+        "clusterId": 91,
+        "isPrivate": True,
+        "modelName": "team",
+        "modelId": 1170
+    },
+    {
+        "id": "cluster_id_2",
+        "name": "cluster name 2",
+        "type": "Kubernetes Processing Site",
+        "region": "Private",
+        "cloud": "aws",
+        "teamId": "team_id",
+        "isDefault": False,
+        "dtCreated": "2019-07-22T14:50:10.170Z",
+        "dtModified": "2019-11-21T18:12:27.723Z",
+        "clusterId": 92,
+        "isPrivate": True,
+        "modelName": "team",
+        "modelId": 1170
+    }
+]

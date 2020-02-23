@@ -1,19 +1,22 @@
 import mock
 from click.testing import CliRunner
 
-from gradient.api_sdk.clients import http_client
+from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
-from gradient.commands import deployments as deployments_commands
 from tests import example_responses, MockResponse
 
-EXPECTED_HEADERS = deployments_commands.default_headers
+EXPECTED_HEADERS = default_headers.copy()
+EXPECTED_HEADERS["ps_client_name"] = "gradient-cli"
+
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY = EXPECTED_HEADERS.copy()
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
 
 class TestDeploymentsCreate(object):
     URL = "https://api.paperspace.io/deployments/createDeployment/"
+    TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     URL_V2 = "https://api.paperspace.io/deployments/v2/createDeployment/"
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
     BASIC_OPTIONS_COMMAND = [
         "deployments", "create",
         "--deploymentType", "tfserving",
@@ -23,7 +26,7 @@ class TestDeploymentsCreate(object):
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
     ]
-    BASIC_OPTIONS_COMMAND_WITH_USE_VPC_FLAG = [
+    BASIC_OPTIONS_COMMAND_WITH_TAGS = [
         "deployments", "create",
         "--deploymentType", "tfserving",
         "--modelId", "some_model_id",
@@ -31,7 +34,19 @@ class TestDeploymentsCreate(object):
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
-        "--vpc",
+        "--tag", "test0",
+        "--tag", "test1",
+        "--tags", "test2,test3",
+    ]
+    BASIC_OPTIONS_COMMAND_WITH_CLUSTER_ID = [
+        "deployments", "create",
+        "--deploymentType", "tfserving",
+        "--modelId", "some_model_id",
+        "--name", "some_name",
+        "--machineType", "G1",
+        "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--instanceCount", "666",
+        "--clusterId", "some_cluster_id",
     ]
     BASIC_OPTIONS_COMMAND_WITH_API_KEY = [
         "deployments", "create",
@@ -66,7 +81,7 @@ class TestDeploymentsCreate(object):
         "--authPassword", "some_password",
         "--clusterId", "some_cluster_id",
         "--apiKey", "some_key",
-        "--vpc",
+        "--clusterId", "some_cluster_id",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["deployments", "create", "--optionsFile", ]  # path added in test
 
@@ -77,6 +92,20 @@ class TestDeploymentsCreate(object):
         "deploymentType": "TFServing",
         "instanceCount": 666,
         "modelId": u"some_model_id",
+    }
+    BASIC_OPTIONS_REQUEST_WHEN_CLUSTER_ID_WAS_SET = {
+        "machineType": u"G1",
+        "name": u"some_name",
+        "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "deploymentType": "TFServing",
+        "instanceCount": 666,
+        "modelId": u"some_model_id",
+        "cluster": "some_cluster_id",
+    }
+    TAGS_JSON = {
+        "entity": "deployment",
+        "entityId": "sadkfhlskdjh",
+        "tags": ["test0", "test1", "test2", "test3"]
     }
     ALL_OPTIONS_REQUEST = {
         "machineType": u"G1",
@@ -101,6 +130,7 @@ class TestDeploymentsCreate(object):
         "oauthSecret": "some_password",
     }
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
+    UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
     EXPECTED_STDOUT = "New deployment created with id: sadkfhlskdjh\n" \
                       "https://www.paperspace.com/console/deployments/sadkfhlskdjh\n"
 
@@ -108,7 +138,7 @@ class TestDeploymentsCreate(object):
     RESPONSE_CONTENT_404_MODEL_NOT_FOUND = b'{"error":{"name":"Error","status":404,"message":"Unable to find model"}}\n'
     EXPECTED_STDOUT_MODEL_NOT_FOUND = "Failed to create resource: Unable to find model\n"
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_deployment_with_basic_options(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
 
@@ -125,24 +155,24 @@ class TestDeploymentsCreate(object):
 
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
-    def test_should_send_request_to_api_v2_when_vpc_flag_was_used(self, post_patched):
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_request_to_api_v2_when_cluster_id_was_set(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_USE_VPC_FLAG)
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_CLUSTER_ID)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
-                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             json=self.BASIC_OPTIONS_REQUEST_WHEN_CLUSTER_ID_WAS_SET,
                                              params=None,
                                              files=None,
                                              data=None)
 
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_deployment_with_all_options(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
@@ -151,14 +181,14 @@ class TestDeploymentsCreate(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL_V2,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.ALL_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_different_api_key_when_api_key_parameter_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
 
@@ -167,14 +197,14 @@ class TestDeploymentsCreate(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_yaml_file(self, post_patched, deployments_create_config_path):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
         command = self.COMMAND_WITH_OPTIONS_FILE[:] + [deployments_create_config_path]
@@ -184,14 +214,14 @@ class TestDeploymentsCreate(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL_V2,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.ALL_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_wrong_model_id_was_given(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_404_MODEL_NOT_FOUND, 404,
                                                  self.RESPONSE_CONTENT_404_MODEL_NOT_FOUND)
@@ -208,6 +238,34 @@ class TestDeploymentsCreate(object):
         assert result.output == self.EXPECTED_STDOUT_MODEL_NOT_FOUND
         assert result.exit_code == 0
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_proper_data_and_tag_deployment(self, post_patched, get_patched, put_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
+        get_patched.return_value = MockResponse({}, 200, "fake content")
+        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_TAGS)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+
+        put_patched.assert_called_once_with(
+            self.TAGS_URL,
+            headers=EXPECTED_HEADERS,
+            json=self.TAGS_JSON,
+            params=None,
+        )
+
+        assert result.exit_code == 0
+
 
 class TestDeploymentsList(object):
     URL = "https://api.paperspace.io/deployments/getDeploymentList/"
@@ -217,8 +275,6 @@ class TestDeploymentsList(object):
     LIST_JSON = example_responses.LIST_DEPLOYMENTS
 
     COMMAND_WITH_API_KEY = ["deployments", "list", "--apiKey", "some_key"]
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     COMMAND_WITH_FILTER_WITH_STATE = ["deployments", "list", "--state", "Stopped"]
     LIST_WITH_FILTER_REQUEST_JSON = {"filter": {"where": {"and": [{"state": "Stopped"}]}}}
@@ -249,7 +305,7 @@ class TestDeploymentsList(object):
 +-----------+-----------------+----------------------------------------------------------------------------------+---------------+-----------------+------------------+
 """
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -262,7 +318,7 @@ class TestDeploymentsList(object):
                                             json=None,
                                             params=None)
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_with_custom_api_key_when_api_key_parameter_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
 
@@ -270,13 +326,13 @@ class TestDeploymentsList(object):
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=None)
         assert result.output == self.DETAILS_STDOUT
 
     @mock.patch("gradient.cli.deployments.deployments_commands.pydoc")
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
                                                                                                      pydoc_patched):
         list_json = {"deploymentList": self.LIST_JSON["deploymentList"] * 40}
@@ -292,7 +348,7 @@ class TestDeploymentsList(object):
         pydoc_patched.pager.assert_called_once()
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments_filtered_by_state(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON)
 
@@ -305,7 +361,7 @@ class TestDeploymentsList(object):
                                        params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(self, get_patched, deployments_list_config_path):
         get_patched.return_value = MockResponse(self.LIST_JSON)
         command = self.COMMAND_WITH_OPTIONS_FILE[:] + [deployments_list_config_path]
@@ -314,12 +370,12 @@ class TestDeploymentsList(object):
         result = runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with("https://api.paperspace.io/deployments/getDeploymentList/",
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=self.LIST_WITH_ALL_FILTERS_REQUEST_JSON,
                                        params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments_filtered_with_state_but_none_found(
             self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND, 200,
@@ -334,7 +390,7 @@ class TestDeploymentsList(object):
                                             params=None)
         assert result.output == "No data found\n"
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"},
                                                 400)
@@ -350,40 +406,19 @@ class TestDeploymentsList(object):
 
 
 class TestStartDeployment(object):
-    URL = "https://api.paperspace.io/deployments/updateDeployment/"
     URL_V2 = "https://api.paperspace.io/deployments/v2/updateDeployment/"
     COMMAND = ["deployments", "start",
                "--id", "some_id"]
-    COMMAND_WITH_VPC_FLAG = ["deployments", "start", "--id", "some_id", "--vpc"]
     COMMAND_WITH_OPTIONS_FILE = ["deployments", "start", "--optionsFile", ]  # path added in test
     REQUEST_JSON = {"isRunning": True, "id": u"some_id"}
     EXPECTED_STDOUT = "Deployment started\n"
 
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_start_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=204)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
-
-        assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=EXPECTED_HEADERS,
-                                             json=self.REQUEST_JSON,
-                                             params=None,
-                                             files=None,
-                                             data=None)
-        assert result.exit_code == 0
-
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
-    def test_should_send_request_to_api_v2_when_vpc_flag_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(status_code=204)
-
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, self.COMMAND_WITH_VPC_FLAG)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL_V2,
@@ -394,7 +429,7 @@ class TestStartDeployment(object):
                                              data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_file(self, post_patched, deployments_start_config_path):
         post_patched.return_value = MockResponse(status_code=204)
         command = self.COMMAND_WITH_OPTIONS_FILE[:] + [deployments_start_config_path]
@@ -404,7 +439,7 @@ class TestStartDeployment(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL_V2,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.REQUEST_JSON,
                                              params=None,
                                              files=None,
@@ -413,13 +448,9 @@ class TestStartDeployment(object):
 
 
 class TestStopDeployment(object):
-    URL = "https://api.paperspace.io/deployments/updateDeployment/"
     URL_V2 = "https://api.paperspace.io/deployments/v2/updateDeployment/"
     COMMAND = ["deployments", "stop",
                "--id", "some_id"]
-    COMMAND_WITH_VPC_FLAG = ["deployments", "stop",
-                             "--id", "some_id",
-                             "--vpc"]
     REQUEST_JSON = {"isRunning": False, "id": u"some_id"}
     EXPECTED_STDOUT = "Deployment stopped\n"
 
@@ -429,34 +460,16 @@ class TestStopDeployment(object):
         "--apiKey", "some_key",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["deployments", "stop", "--optionsFile", ]  # path added in test
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_400 = {"error": {"name": "Error", "status": 400, "message": "Unable to access deployment"}}
     EXPECTED_STDOUT_WITH_WRONG_ID = "Unable to stop instance: Unable to access deployment\n"
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_stop_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=204)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
-
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=EXPECTED_HEADERS,
-                                             json=self.REQUEST_JSON,
-                                             params=None,
-                                             files=None,
-                                             data=None)
-        assert result.output == self.EXPECTED_STDOUT
-        assert result.exit_code == 0
-
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
-    def test_should_send_request_to_api_v2_when_vpc_flag_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(status_code=204)
-
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, self.COMMAND_WITH_VPC_FLAG)
 
         post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
@@ -467,15 +480,15 @@ class TestStopDeployment(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_with_custom_api_key_when_api_key_parameter_was_provided(self, post_patched):
         post_patched.return_value = MockResponse(status_code=204)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.REQUEST_JSON,
                                              params=None,
                                              files=None,
@@ -483,7 +496,7 @@ class TestStopDeployment(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_file(self, post_patched, deployments_stop_config_path):
         post_patched.return_value = MockResponse(status_code=204)
         command = self.COMMAND_WITH_OPTIONS_FILE[:] + [deployments_stop_config_path]
@@ -493,7 +506,7 @@ class TestStopDeployment(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL_V2,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.REQUEST_JSON,
                                              params=None,
                                              files=None,
@@ -508,7 +521,7 @@ class TestStopDeployment(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_ID, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
                                              params=None,
@@ -518,14 +531,10 @@ class TestStopDeployment(object):
 
 
 class TestDeleteDeployment(object):
-    URL = "https://api.paperspace.io/deployments/deleteDeployment"
     URL_V2 = "https://api.paperspace.io/deployments/v2/deleteDeployment"
 
     COMMAND = ["deployments", "delete",
                "--id", "some_id"]
-    COMMAND_WITH_VPC_FLAG = ["deployments", "delete",
-                             "--id", "some_id",
-                             "--vpc"]
     COMMAND_WITH_API_KEY = [
         "deployments", "delete",
         "--id", "some_id",
@@ -540,34 +549,15 @@ class TestDeleteDeployment(object):
 
     EXPECTED_STDOUT = "Deployment deleted\n"
 
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-
     RESPONSE_JSON_400 = {"error": {"name": "Error", "status": 400, "message": "Unable to access deployment"}}
     EXPECTED_STDOUT_WITH_WRONG_ID = "Failed to delete resource: Unable to access deployment\n"
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_deployments_delete_was_used(self, post_patched):
         post_patched.return_value = MockResponse(status_code=204)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
-
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=EXPECTED_HEADERS,
-                                             json=self.REQUEST_JSON,
-                                             params=None,
-                                             files=None,
-                                             data=None)
-        assert result.output == self.EXPECTED_STDOUT
-        assert result.exit_code == 0
-
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
-    def test_should_send_request_to_api_v2_when_vpc_flag_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(status_code=204)
-
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, self.COMMAND_WITH_VPC_FLAG)
 
         post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
@@ -578,15 +568,15 @@ class TestDeleteDeployment(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_with_custom_api_key_when_api_key_parameter_was_provided(self, post_patched):
         post_patched.return_value = MockResponse(status_code=204)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.REQUEST_JSON,
                                              params=None,
                                              files=None,
@@ -594,7 +584,7 @@ class TestDeleteDeployment(object):
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_file(self, post_patched, deployments_stop_config_path):
         post_patched.return_value = MockResponse(status_code=204)
         command = self.COMMAND_WITH_OPTIONS_FILE[:] + [deployments_stop_config_path]
@@ -604,7 +594,7 @@ class TestDeleteDeployment(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL_V2,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.REQUEST_JSON,
                                              params=None,
                                              files=None,
@@ -619,7 +609,7 @@ class TestDeleteDeployment(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_ID, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.REQUEST_JSON,
                                              params=None,
@@ -629,20 +619,12 @@ class TestDeleteDeployment(object):
 
 
 class TestDeploymentsUpdate(object):
-    URL = "https://api.paperspace.io/deployments/updateDeployment"
     URL_V2 = "https://api.paperspace.io/deployments/v2/updateDeployment"
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
     BASIC_OPTIONS_COMMAND = [
         "deployments", "update",
         "--id", "some_id",
         "--deploymentType", "tfserving",
-    ]
-    BASIC_OPTIONS_COMMAND_WITH_USE_VPC_FLAG = [
-        "deployments", "update",
-        "--id", "some_id",
-        "--deploymentType", "tfserving",
-        "--vpc",
     ]
     BASIC_OPTIONS_COMMAND_WITH_API_KEY = [
         "deployments", "update",
@@ -673,7 +655,6 @@ class TestDeploymentsUpdate(object):
         "--authUsername", "some_username",
         "--authPassword", "some_password",
         "--clusterId", "some_cluster_id",
-        "--vpc",
         "--apiKey", "some_key",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["deployments", "update", "--optionsFile", ]  # path added in test
@@ -716,29 +697,14 @@ class TestDeploymentsUpdate(object):
         "error": {"name": "Error", "status": 404, "message": "Model with handle some_model_id does not exist"}}
     EXPECTED_STDOUT_MODEL_NOT_FOUND = "Failed to update resource: Model with handle some_model_id does not exist\n"
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_updated_deployment_with_basic_options(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
-
-        assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=EXPECTED_HEADERS,
-                                             json=self.BASIC_OPTIONS_REQUEST,
-                                             params=None,
-                                             files=None,
-                                             data=None)
-
-        assert result.exit_code == 0
-
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
-    def test_should_send_request_to_api_v2_when_vpc_flag_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
-
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_USE_VPC_FLAG)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL_V2,
@@ -750,7 +716,7 @@ class TestDeploymentsUpdate(object):
 
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_updated_deployment_with_all_options(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
@@ -759,14 +725,14 @@ class TestDeploymentsUpdate(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL_V2,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.ALL_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_different_api_key_when_api_key_parameter_was_used(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
@@ -774,15 +740,15 @@ class TestDeploymentsUpdate(object):
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_API_KEY)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_yaml_file(self, post_patched, deployments_update_config_path):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
         command = self.COMMAND_WITH_OPTIONS_FILE[:] + [deployments_update_config_path]
@@ -792,21 +758,21 @@ class TestDeploymentsUpdate(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL_V2,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.ALL_OPTIONS_REQUEST,
                                              params=None,
                                              files=None,
                                              data=None)
         assert result.exit_code == 0
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_wrong_model_id_was_given(self, post_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_404_MODEL_NOT_FOUND, 404)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
@@ -824,8 +790,6 @@ class TestDeploymentDetails(object):
     LIST_JSON = example_responses.GET_DEPLOYMENT_DETAILS_JSON_RESPONSE
 
     COMMAND_WITH_API_KEY = ["deployments", "details", "--id", "some_id", "--apiKey", "some_key"]
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     LIST_WITH_FILTER_REQUEST_JSON = {"filter": {"where": {"and": [{"id": "some_id"}]}}}
     LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND = {"deploymentList": [], "total": 17, "displayTotal": 0,
@@ -851,10 +815,11 @@ class TestDeploymentDetails(object):
 | Endpoint        | https://paperspace.io/model-serving/some_id:predict |
 | API type        | REST                                                |
 | Cluster ID      | some_cluster_id                                     |
+| Tags            | tag1, tag2                                          |
 +-----------------+-----------------------------------------------------+
 """
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_details_of_deployment(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON)
 
@@ -867,7 +832,7 @@ class TestDeploymentDetails(object):
                                             json=self.LIST_WITH_FILTER_REQUEST_JSON,
                                             params=None)
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_with_custom_api_key_when_api_key_parameter_was_provided(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_JSON)
 
@@ -875,15 +840,14 @@ class TestDeploymentDetails(object):
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=self.LIST_WITH_FILTER_REQUEST_JSON,
                                             params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_details_of_deployment_when_using_config_file(
             self, get_patched, deployments_details_config_path):
-
         get_patched.return_value = MockResponse(self.LIST_JSON)
         command = self.COMMAND_WITH_OPTIONS_FILE[:] + [deployments_details_config_path]
 
@@ -891,12 +855,12 @@ class TestDeploymentDetails(object):
         result = runner.invoke(cli.cli, command)
 
         get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=self.LIST_WITH_FILTER_REQUEST_JSON,
                                             params=None)
         assert result.output == self.DETAILS_STDOUT
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"}, 400)
 
@@ -909,7 +873,7 @@ class TestDeploymentDetails(object):
                                             params=None)
         assert result.output == "Failed to fetch data: Invalid API token\n", result.exc_info
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_proper_message_when_wrong_deployment_id_was_used(self, get_patched):
         get_patched.return_value = MockResponse(self.LIST_WITH_FILTER_RESPONSE_JSON_WHEN_NO_DEPLOYMENTS_FOUND)
 
@@ -922,7 +886,7 @@ class TestDeploymentDetails(object):
                                             params=None)
         assert result.output == "Deployment not found\n", result.exc_info
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_proper_message_when_error_status_was_returned_by_api_without_message(self, get_patched):
         get_patched.return_value = MockResponse(status_code=400)
 
@@ -935,7 +899,7 @@ class TestDeploymentDetails(object):
                                             params=None)
         assert result.output == "Failed to fetch data\n", result.exc_info
 
-    @mock.patch("gradient.cli.deployments.deployments_commands.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_proper_message_when_error_message_was_returned_by_api(self, get_patched):
         get_patched.return_value = MockResponse(self.RESPONSE_WITH_ERROR_MESSAGE, status_code=404)
 

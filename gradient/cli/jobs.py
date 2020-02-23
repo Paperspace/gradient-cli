@@ -2,23 +2,32 @@ from functools import reduce
 
 import click
 
-from gradient import logger
+from gradient import clilogger
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string
-from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts
+from gradient.cli.common import (
+    api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts,
+    validate_comma_split_option,
+)
 from gradient.commands import jobs as jobs_commands
+from gradient.commands.jobs import JobAddTagsCommand, JobRemoveTagsCommand
 from gradient.workspace import WorkspaceHandler
 
 
 def get_workspace_handler():
-    logger_ = logger.Logger()
+    logger_ = clilogger.CliLogger()
     workspace_handler = WorkspaceHandler(logger_=logger_)
     return workspace_handler
 
 
 @cli.group("jobs", help="Manage gradient jobs", cls=ClickGroup)
 def jobs_group():
+    pass
+
+
+@jobs_group.group("tags", help="Manage job tags", cls=ClickGroup)
+def jobs_tags():
     pass
 
 
@@ -251,6 +260,19 @@ def common_jobs_create_options(f):
             help="Determines whether to only build and not run image (default false)",
             cls=common.GradientOption,
         ),
+        click.option(
+            "--tag",
+            "tags",
+            multiple=True,
+            help="One or many tags that you want to add to experiment",
+            cls=common.GradientOption
+        ),
+        click.option(
+            "--tags",
+            "tags_comma",
+            help="Separated by comma tags that you want add to experiment",
+            cls=common.GradientOption
+        )
     ]
     return reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -261,6 +283,7 @@ def common_jobs_create_options(f):
 @common.options_file
 @click.pass_context
 def create_job(ctx, api_key, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
 
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
@@ -382,3 +405,51 @@ def list_artifacts(job_id, size, links, files, options_file, api_key=None):
 def download_artifacts(job_id, destination_directory, options_file, api_key=None):
     command = jobs_commands.DownloadArtifactsCommand(api_key=api_key)
     command.execute(job_id=job_id, destination_directory=destination_directory)
+
+
+@jobs_tags.command("add", help="Add tags to job")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to job",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to job",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def job_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = JobAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@jobs_tags.command("remove", help="Remove tags from job")
+@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to remove from job",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want to remove from job",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def job_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+
+    command = JobRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

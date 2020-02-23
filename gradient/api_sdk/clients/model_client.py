@@ -5,6 +5,8 @@ from .. import repositories, models
 
 
 class ModelsClient(BaseClient):
+    entity = "mlModel"
+
     def list(self, experiment_id=None, project_id=None, tags=None):
         """Get list of models
 
@@ -15,7 +17,7 @@ class ModelsClient(BaseClient):
         :returns: List of Model instances
         :rtype: list[models.Model]
         """
-        repository = repositories.ListModels(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListModels)
         models_list = repository.list(experiment_id=experiment_id, project_id=project_id, tags=tags)
         return models_list
 
@@ -24,10 +26,10 @@ class ModelsClient(BaseClient):
 
         :param str model_id: Model ID
         """
-        repository = repositories.DeleteModel(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.DeleteModel)
         repository.delete(model_id)
 
-    def upload(self, path, name, model_type, model_summary=None, notes=None):
+    def upload(self, path, name, model_type, model_summary=None, notes=None, tags=None, ):
         """Upload model
 
         :param file path: path to Model
@@ -35,6 +37,7 @@ class ModelsClient(BaseClient):
         :param str model_type: Model Type
         :param dict|None model_summary: Dictionary describing model parameters like loss, accuracy, etc.
         :param str|None notes: Optional model description
+        :param list[str] tags: List of tags
 
         :return: ID of new model
         :rtype: str
@@ -47,8 +50,12 @@ class ModelsClient(BaseClient):
             notes=notes,
         )
 
-        repository = repositories.UploadModel(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.UploadModel)
         model_id = repository.create(model, path=path)
+
+        if tags:
+            self.add_tags(entity_id=model_id, entity=self.entity, tags=tags)
+
         return model_id
 
     def get(self, model_id):
@@ -58,7 +65,7 @@ class ModelsClient(BaseClient):
         :return: Model instance
         :rtype: models.Model
         """
-        repository = repositories.GetModel(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.GetModel)
         model = repository.get(model_id=model_id)
         return model
 
@@ -71,6 +78,6 @@ class ModelsClient(BaseClient):
 
         :rtype: list[models.ModelFile]
         """
-        repository = repositories.ListModelFiles(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListModelFiles)
         models_list = repository.list(model_id=model_id, links=links, size=size)
         return models_list

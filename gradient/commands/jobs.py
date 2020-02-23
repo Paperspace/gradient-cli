@@ -6,21 +6,28 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import api_sdk, exceptions, Job, JobArtifactsDownloader
+from gradient import api_sdk, exceptions, Job, JobArtifactsDownloader, cli_constants
 from gradient.api_sdk import config, sdk_exceptions
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.clients.base_client import BaseClient
 from gradient.api_sdk.repositories.jobs import RunJob
 from gradient.api_sdk.utils import print_dict_recursive, urljoin
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
+from gradient.cliutils import get_terminal_lines
 from gradient.commands.common import BaseCommand
-from gradient.utils import get_terminal_lines
 from gradient.workspace import MultipartEncoder
 
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseJobCommand(BaseCommand):
+    entity = "job"
+
     def _get_client(self, api_key, logger_):
-        client = api_sdk.clients.JobsClient(api_key=api_key, logger=logger_)
+        client = api_sdk.clients.JobsClient(
+            api_key=api_key,
+            logger=logger_,
+            ps_client_name=cli_constants.CLI_PS_CLIENT_NAME,
+        )
         return client
 
 
@@ -205,6 +212,8 @@ class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
 
 
 class JobRunClient(BaseClient):
+    entity = "job"
+
     def __init__(self, http_client_, *args, **kwargs):
         super(JobRunClient, self).__init__(*args, **kwargs)
         self.client = http_client_
@@ -219,9 +228,6 @@ class JobRunClient(BaseClient):
             command=None,
             ports=None,
             is_public=None,
-            workspace=None,
-            workspace_archive=None,
-            workspace_url=None,
             working_directory=None,
             experiment_id=None,
             job_env=None,
@@ -240,6 +246,7 @@ class JobRunClient(BaseClient):
             registry_target_username=None,
             registry_target_password=None,
             build_only=False,
+            tags=None,
     ):
 
         if not build_only:
@@ -273,6 +280,8 @@ class JobRunClient(BaseClient):
             build_only=build_only,
         )
         handle = RunJob(self.api_key, self.logger, self.client).create(job, data=data)
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
 
@@ -282,7 +291,8 @@ class RunJobCommand(CreateJobCommand):
             return self.client
 
         http_client_ = http_client.API(config.config.CONFIG_HOST, api_key=api_key, logger=logger_)
-        client = JobRunClient(http_client_, api_key=api_key, logger=logger_)
+        http_client_.ps_client_name = cli_constants.CLI_PS_CLIENT_NAME
+        client = JobRunClient(http_client_, api_key=api_key, logger=logger_, ps_client_name=CLI_PS_CLIENT_NAME)
         return client
 
 
@@ -361,9 +371,25 @@ class DownloadArtifactsCommand(BaseJobCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
     def execute(self, job_id, destination_directory):
-        artifact_downloader = JobArtifactsDownloader(self.api_key, logger=self.logger)
+        artifact_downloader = JobArtifactsDownloader(
+            self.api_key,
+            logger=self.logger,
+            ps_client_name=cli_constants.CLI_PS_CLIENT_NAME,
+        )
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
             try:
                 artifact_downloader.download(job_id, destination_directory)
             except OSError as e:
                 raise sdk_exceptions.GradientSdkError(e)
+
+
+class JobAddTagsCommand(BaseJobCommand):
+    def execute(self, job_id, *args, **kwargs):
+        self.client.add_tags(job_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to job")
+
+
+class JobRemoveTagsCommand(BaseJobCommand):
+    def execute(self, job_id, *args, **kwargs):
+        self.client.remove_tags(job_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from job")

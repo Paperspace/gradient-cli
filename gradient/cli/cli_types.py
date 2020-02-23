@@ -18,7 +18,7 @@ class ChoiceType(click.Choice):
                 return val
 
         raise KeyError()
-        
+
 
 def json_string(val):
     """Wraps json.loads so the cli help shows proper option's type name instead of 'LOADS'"""

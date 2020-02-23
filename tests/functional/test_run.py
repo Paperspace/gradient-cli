@@ -7,6 +7,12 @@ from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import MockResponse
 
+EXPECTED_HEADERS = default_headers.copy()
+EXPECTED_HEADERS["ps_client_name"] = "gradient-cli"
+
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY = EXPECTED_HEADERS.copy()
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
 
 class TestRunCommand(object):
     command_name = 'run'
@@ -16,7 +22,7 @@ class TestRunCommand(object):
     COMMAND_WITH_OPTIONS_FILE = ["run", "--optionsFile", ]  # path added in test
 
     url = "https://api.paperspace.io/jobs/createJob/"
-    headers = default_headers.copy()
+    headers = EXPECTED_HEADERS_WITH_CHANGED_API_KEY.copy()
     headers["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_200 = {"id": "sadkfhlskdjh", "message": "success"}
@@ -26,7 +32,8 @@ class TestRunCommand(object):
     @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
     @mock.patch("gradient.workspace.MultipartEncoder.get_monitor")
     @mock.patch("gradient.commands.jobs.CreateJobCommand._get_files_dict")
-    def test_run_simple_file_with_args(self, get_files_patched, get_moniror_patched, workspace_zip_patched, post_patched):
+    def test_run_simple_file_with_args(self, get_files_patched, get_moniror_patched, workspace_zip_patched,
+                                       post_patched):
         get_files_patched.return_value = mock.MagicMock()
         workspace_zip_patched.return_value = '/foo/bar'
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)

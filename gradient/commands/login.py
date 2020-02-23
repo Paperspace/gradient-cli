@@ -1,11 +1,11 @@
-from gradient import logger
+from gradient import clilogger
 from gradient.login import login, logout
 from gradient.login import set_apikey
 from gradient.version import version
 
 
 class CommandBase(object):
-    def __init__(self, api=None, logger_=logger.Logger()):
+    def __init__(self, api=None, logger_=clilogger.CliLogger()):
         self.api = api
         self.logger = logger_
 

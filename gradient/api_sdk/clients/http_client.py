@@ -7,24 +7,30 @@ from .. import logger as sdk_logger
 from ..config import config
 
 default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
-                   "ps_client_name": "gradient-cli",
+                   "ps_client_name": "gradient-cli-sdk",
                    "ps_client_version": version.version}
 
 
 class API(object):
-    def __init__(self, api_url, headers=None, api_key=None, logger=sdk_logger.MuteLogger()):
+    def __init__(self, api_url, headers=None, api_key=None, ps_client_name=None, logger=sdk_logger.MuteLogger()):
         """
 
-        :type str api_url: url you want to connect
-        :type dict headers: headers
-        :type str api_key: your API key
-        :type sdk_logger.Logger logger:
+        :param str api_url: url you want to connect
+        :param dict headers: headers
+        :param str api_key: your API key
+        :param str ps_client_name: Client name
+        :param sdk_logger.Logger logger:
         """
         self.api_url = api_url
         headers = headers or default_headers
         self.headers = headers.copy()
+
         if api_key:
             self.api_key = api_key
+
+        if ps_client_name is not None:
+            self.ps_client_name = ps_client_name
+
         self.logger = logger
 
     @property
@@ -34,6 +40,14 @@ class API(object):
     @api_key.setter
     def api_key(self, value):
         self.headers["X-API-Key"] = value
+
+    @property
+    def ps_client_name(self):
+        return self.headers.get("ps_client_name")
+
+    @ps_client_name.setter
+    def ps_client_name(self, value):
+        self.headers["ps_client_name"] = value
 
     def get_path(self, url):
         api_url = self.api_url if not self.api_url.endswith("/") else self.api_url[:-1]

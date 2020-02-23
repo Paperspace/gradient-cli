@@ -17,7 +17,6 @@ projectId: testHandle
 registryPassword: passwd
 registryUrl: registryUrl
 registryUsername: userName
-vpc: true
 workingDirectory: /work/dir/
 workspace: s3://some-workspace
 workspaceArchive: null

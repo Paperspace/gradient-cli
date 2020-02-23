@@ -1,9 +1,12 @@
 from .base_client import BaseClient
 from .. import repositories, models, constants, utils
-from ..sdk_exceptions import ResourceCreatingDataError
+from ..sdk_exceptions import InvalidParametersError
+from ..validation_messages import EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
 
 
 class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
+    entity = "experiment"
+
     def create_single_node(
             self,
             project_id,
@@ -28,7 +31,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             registry_username=None,
             registry_password=None,
             registry_url=None,
-            use_vpc=False,
+            tags=None,
     ):
         """
         Create single node experiment
@@ -57,16 +60,15 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str registry_username: Registry username for accessing private docker registry container if necessary
         :param str registry_password: Registry password for accessing private docker registry container if necessary
         :param str registry_url: Registry server URL for accessing private docker registry container if necessary
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
+        :param list[str] tags: List of tags
 
         :returns: experiment handle
         :rtype: str
         """
+        self._validate_arguments(model_type=model_type, model_path=model_path)
 
         if not is_preemptible:
             is_preemptible = None
-
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment = models.SingleNodeExperiment(
             experiment_type_id=constants.ExperimentType.SINGLE_NODE,
@@ -94,8 +96,12 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             registry_url=registry_url,
         )
 
-        repository = repositories.CreateSingleNodeExperiment(api_key=self.api_key, logger=self.logger)
-        handle = repository.create(experiment, use_vpc=use_vpc)
+        repository = self.build_repository(repositories.CreateSingleNodeExperiment)
+        handle = repository.create(experiment)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def create_multi_node(
@@ -132,7 +138,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_registry_username=None,
             parameter_server_registry_password=None,
             parameter_server_registry_url=None,
-            use_vpc=False,
+            tags=None,
     ):
         """
         Create multinode experiment
@@ -171,18 +177,17 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str parameter_server_registry_username: Registry username for accessing private docker registry container if necessary
         :param str parameter_server_registry_password: Registry password for accessing private docker registry container if necessary
         :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if necessary
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
+        :param list[str] tags: List of tags
 
         :returns: experiment handle
         :rtype: str
         """
+        self._validate_arguments(model_type=model_type, model_path=model_path)
 
         experiment_type_id = self._get_experiment_type_id(experiment_type_id)
 
         if not is_preemptible:
             is_preemptible = None
-
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment = models.MultiNodeExperiment(
             name=name,
@@ -219,8 +224,11 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_registry_url=parameter_server_registry_url,
         )
 
-        repository = repositories.CreateMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
-        handle = repository.create(experiment, use_vpc=use_vpc)
+        repository = self.build_repository(repositories.CreateMultiNodeExperiment)
+        handle = repository.create(experiment)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
     def create_mpi_multi_node(
@@ -256,7 +264,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_registry_username=None,
             master_registry_password=None,
             master_registry_url=None,
-            use_vpc=False,
+            tags=None,
     ):
         """
         Create multinode experiment using MPI
@@ -294,15 +302,16 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str master_registry_username: Registry username for accessing private docker registry container if necessary
         :param str master_registry_password: Registry password for accessing private docker registry container if necessary
         :param str master_registry_url: Registry server URL for accessing private docker registry container if necessary
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
+        :param list[str] tags: List of tags
 
         :returns: experiment handle
         :rtype: str
         """
+        self._validate_arguments(model_type=model_type, model_path=model_path)
+
         if not is_preemptible:
             is_preemptible = None
 
-        datasets = self._dataset_dicts_to_instances(datasets)
         experiment_type_id = constants.ExperimentType.MPI_MULTI_NODE
 
         experiment = models.MpiMultiNodeExperiment(
@@ -340,8 +349,11 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_registry_url=master_registry_url,
         )
 
-        repository = repositories.CreateMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
-        handle = repository.create(experiment, use_vpc=use_vpc)
+        repository = self.build_repository(repositories.CreateMpiMultiNodeExperiment)
+        handle = repository.create(experiment)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
     def run_single_node(
@@ -368,7 +380,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             registry_username=None,
             registry_password=None,
             registry_url=None,
-            use_vpc=False,
+            tags=None,
     ):
         """Create and start single node experiment
 
@@ -396,16 +408,16 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str registry_username: Registry username for accessing private docker registry container if necessary
         :param str registry_password: Registry password for accessing private docker registry container if necessary
         :param str registry_url: Registry server URL for accessing private docker registry container if necessary
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
+        :param list[str] tags: List of tags
 
         :returns: experiment handle
         :rtype: str
         """
 
+        self._validate_arguments(model_type=model_type, model_path=model_path)
+
         if not is_preemptible:
             is_preemptible = None
-
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment = models.SingleNodeExperiment(
             experiment_type_id=constants.ExperimentType.SINGLE_NODE,
@@ -433,8 +445,11 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             registry_url=registry_url,
         )
 
-        repository = repositories.RunSingleNodeExperiment(api_key=self.api_key, logger=self.logger)
-        handle = repository.create(experiment, use_vpc=use_vpc)
+        repository = self.build_repository(repositories.RunSingleNodeExperiment)
+        handle = repository.create(experiment)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
         return handle
 
     def run_multi_node(
@@ -471,7 +486,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_registry_username=None,
             parameter_server_registry_password=None,
             parameter_server_registry_url=None,
-            use_vpc=False,
+            tags=None,
     ):
         """Create and start multinode experiment
 
@@ -509,18 +524,17 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str parameter_server_registry_username: Registry username for accessing private docker registry container if necessary
         :param str parameter_server_registry_password: Registry password for accessing private docker registry container if necessary
         :param str parameter_server_registry_url: Registry server URL for accessing private docker registry container if necessary
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
+        :param list[str] tags: List of tags
 
         :returns: experiment handle
         :rtype: str
         """
+        self._validate_arguments(model_type=model_type, model_path=model_path)
 
         experiment_type_id = self._get_experiment_type_id(experiment_type_id)
 
         if not is_preemptible:
             is_preemptible = None
-
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment = models.MultiNodeExperiment(
             name=name,
@@ -557,8 +571,12 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             parameter_server_registry_url=parameter_server_registry_url,
         )
 
-        repository = repositories.RunMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
-        handle = repository.create(experiment, use_vpc=use_vpc)
+        repository = self.build_repository(repositories.RunMultiNodeExperiment)
+        handle = repository.create(experiment)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def run_mpi_multi_node(
@@ -594,7 +612,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_registry_username=None,
             master_registry_password=None,
             master_registry_url=None,
-            use_vpc=False,
+            tags=None,
     ):
         """Create and start multinode experiment using MPI
 
@@ -631,15 +649,15 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str master_registry_username: Registry username for accessing private docker registry container if necessary
         :param str master_registry_password: Registry password for accessing private docker registry container if necessary
         :param str master_registry_url: Registry server URL for accessing private docker registry container if necessary
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
+        :param list[str] tags: List of tags
 
         :returns: experiment handle
         :rtype: str
         """
+        self._validate_arguments(model_type=model_type, model_path=model_path)
+
         if not is_preemptible:
             is_preemptible = None
-
-        datasets = self._dataset_dicts_to_instances(datasets)
 
         experiment_type_id = constants.ExperimentType.MPI_MULTI_NODE
 
@@ -678,33 +696,35 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             master_registry_url=master_registry_url,
         )
 
-        repository = repositories.RunMpiMultiNodeExperiment(api_key=self.api_key, logger=self.logger)
-        handle = repository.create(experiment, use_vpc=use_vpc)
+        repository = self.build_repository(repositories.RunMpiMultiNodeExperiment)
+        handle = repository.create(experiment)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
-    def start(self, experiment_id, use_vpc=False):
+    def start(self, experiment_id):
         """Start existing experiment that has not run
 
         :param str experiment_id: Experiment ID
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :raises: exceptions.GradientSdkError
         """
 
-        repository = repositories.StartExperiment(api_key=self.api_key, logger=self.logger)
-        repository.start(experiment_id, use_vpc=use_vpc)
+        repository = self.build_repository(repositories.StartExperiment)
+        repository.start(experiment_id)
 
-    def stop(self, experiment_id, use_vpc=False):
+    def stop(self, experiment_id):
         """Stop running experiment
 
         :param str experiment_id: Experiment ID
-        :param bool use_vpc: Set to True when using Virtual Private Cloud
 
         :raises: exceptions.GradientSdkError
         """
 
-        repository = repositories.StopExperiment(api_key=self.api_key, logger=self.logger)
-        repository.stop(experiment_id, use_vpc=use_vpc)
+        repository = self.build_repository(repositories.StopExperiment)
+        repository.stop(experiment_id)
 
     def list(self, project_id=None, offset=None, limit=None, get_meta=False, tags=None):
         """Get a list of experiments. Optionally filter by project ID
@@ -719,7 +739,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :rtype: list[models.SingleNodeExperiment|models.MultiNodeExperiment]|tuple[list[models.SingleNodeExperiment|models.MultiNodeExperiment],dict]
         """
 
-        repository = repositories.ListExperiments(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListExperiments)
         experiments = repository.list(project_id=project_id, limit=limit, offset=offset, get_meta=get_meta, tags=tags)
         return experiments
 
@@ -729,7 +749,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :param str experiment_id: Experiment ID
         :rtype: models.SingleNodeExperiment|models.MultiNodeExperiment|MpiMultiNodeExperiment
         """
-        repository = repositories.GetExperiment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.GetExperiment)
         experiment = repository.get(experiment_id=experiment_id)
         return experiment
 
@@ -744,7 +764,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :rtype: list[models.LogRow]
         """
 
-        repository = repositories.ListExperimentLogs(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListExperimentLogs)
         logs = repository.list(experiment_id, line, limit)
         return logs
 
@@ -759,25 +779,16 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         :rtype: Iterator[models.LogRow]
         """
 
-        repository = repositories.ListExperimentLogs(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListExperimentLogs)
         logs_generator = repository.yield_logs(experiment_id, line, limit)
         return logs_generator
 
     def delete(self, experiment_id):
-        repository = repositories.DeleteExperiment(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.DeleteExperiment)
         repository.delete(experiment_id)
 
-    def _dataset_dicts_to_instances(self, datasets):
-        if not datasets:
-            return None
-
-        if isinstance(datasets, dict):
-            datasets = [datasets]
-
-        for ds in datasets:
-            if not ds.get("uri"):
-                raise ResourceCreatingDataError("Error while creating experiment with dataset: "
-                                                "\"uri\" key is required and it's value must be a valid S3 URI")
-
-        datasets = [models.Dataset(**ds) for ds in datasets]
-        return datasets
+    def _validate_arguments(self, **kwargs):
+        if kwargs.get("model_path") and not kwargs.get("model_type"):
+            raise InvalidParametersError(
+                EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
+            )

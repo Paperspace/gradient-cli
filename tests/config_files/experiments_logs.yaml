@@ -1,4 +1,4 @@
-apiKey: some-key
+apiKey: some_key
 experimentId: some-id
 follow: 'true'
 limit: 30

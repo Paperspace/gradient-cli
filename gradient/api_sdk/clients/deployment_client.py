@@ -24,6 +24,7 @@ class DeploymentsClient(BaseClient):
         )
     """
     HOST_URL = config.config.CONFIG_HOST
+    entity = "deployment"
 
     def create(
             self,
@@ -46,7 +47,7 @@ class DeploymentsClient(BaseClient):
             cluster_id=None,
             auth_username=None,
             auth_password=None,
-            use_vpc=False,
+            tags=None,
     ):
         """
         Method to create a Deployment instance.
@@ -89,7 +90,7 @@ class DeploymentsClient(BaseClient):
         :param str cluster_id: cluster ID
         :param str auth_username: Username
         :param str auth_password: Password
-        :param bool use_vpc:
+        :param list[str] tags: List of tags
 
         :returns: Created deployment id
         :rtype: str
@@ -117,8 +118,10 @@ class DeploymentsClient(BaseClient):
             auth_password=auth_password,
         )
 
-        repository = repositories.CreateDeployment(api_key=self.api_key, logger=self.logger)
-        deployment_id = repository.create(deployment, use_vpc=use_vpc)
+        repository = self.build_repository(repositories.CreateDeployment)
+        deployment_id = repository.create(deployment)
+        if tags:
+            self.add_tags(entity_id=deployment_id, entity=self.entity, tags=tags)
         return deployment_id
 
     def get(self, deployment_id):
@@ -129,11 +132,11 @@ class DeploymentsClient(BaseClient):
         :return: Deployment instance
         :rtype: models.Deployment
         """
-        repository = repositories.GetDeployment(self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.GetDeployment)
         deployment = repository.get(deployment_id=deployment_id)
         return deployment
 
-    def start(self, deployment_id, use_vpc=False):
+    def start(self, deployment_id):
         """
         Start deployment
 
@@ -142,13 +145,12 @@ class DeploymentsClient(BaseClient):
             gradient deployments start --id <your-deployment-id>
 
         :param str deployment_id: Deployment ID
-        :param bool use_vpc:
         """
 
-        repository = repositories.StartDeployment(api_key=self.api_key, logger=self.logger)
-        repository.start(deployment_id, use_vpc=use_vpc)
+        repository = self.build_repository(repositories.StartDeployment)
+        repository.start(deployment_id)
 
-    def stop(self, deployment_id, use_vpc=False):
+    def stop(self, deployment_id):
         """
         Stop deployment
 
@@ -157,33 +159,31 @@ class DeploymentsClient(BaseClient):
             gradient deployments stop --id <your-deployment-id>
 
         :param deployment_id: Deployment ID
-        :param bool use_vpc:
         """
 
-        repository = repositories.StopDeployment(api_key=self.api_key, logger=self.logger)
-        repository.stop(deployment_id, use_vpc=use_vpc)
+        repository = self.build_repository(repositories.StopDeployment)
+        repository.stop(deployment_id)
 
-    def list(self, state=None, project_id=None, model_id=None, use_vpc=False, tags=None):
+    def list(self, state=None, project_id=None, model_id=None, tags=None):
         """
         List deployments with optional filtering
 
         :param str state: state to filter deployments
         :param str project_id: project ID to filter deployments
         :param str model_id: model ID to filter deployments
-        :param bool use_vpc:
         :param list[str]|tuple[str] tags: tags to filter deployments with OR
 
         :returns: List of Deployment model instances
         :rtype: list[models.Deployment]
         """
 
-        repository = repositories.ListDeployments(api_key=self.api_key, logger=self.logger)
-        deployments = repository.list(state=state, project_id=project_id, model_id=model_id, use_vpc=use_vpc, tags=tags)
+        repository = self.build_repository(repositories.ListDeployments)
+        deployments = repository.list(state=state, project_id=project_id, model_id=model_id, tags=tags)
         return deployments
 
-    def delete(self, deployment_id, use_vpc=False):
-        repository = repositories.DeleteDeployment(api_key=self.api_key, logger=self.logger)
-        repository.delete(deployment_id, use_vpc=use_vpc)
+    def delete(self, deployment_id):
+        repository = self.build_repository(repositories.DeleteDeployment)
+        repository.delete(deployment_id)
 
     def update(
             self,
@@ -208,7 +208,6 @@ class DeploymentsClient(BaseClient):
             cluster_id=None,
             auth_username=None,
             auth_password=None,
-            use_vpc=False,
     ):
         deployment = models.Deployment(
             deployment_type=deployment_type,
@@ -233,5 +232,5 @@ class DeploymentsClient(BaseClient):
             auth_password=auth_password,
         )
 
-        repository = repositories.UpdateDeployment(api_key=self.api_key, logger=self.logger)
-        repository.update(deployment_id, deployment, use_vpc=use_vpc)
+        repository = self.build_repository(repositories.UpdateDeployment)
+        repository.update(deployment_id, deployment)

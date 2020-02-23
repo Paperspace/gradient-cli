@@ -1,9 +1,15 @@
 import mock
 from click.testing import CliRunner
 
-import gradient.api_sdk.clients.http_client
+from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import MockResponse, example_responses
+
+EXPECTED_HEADERS = default_headers.copy()
+EXPECTED_HEADERS["ps_client_name"] = "gradient-cli"
+
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY = EXPECTED_HEADERS.copy()
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
 
 class TestTensorboardsCreate(object):
@@ -47,10 +53,6 @@ class TestTensorboardsCreate(object):
     }
     COMMAND_WITH_OPTIONS_FILE_USED = ["tensorboards", "create", "--optionsFile", ]  # path added in test
 
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"title": "Invalid credentials provided"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to create resource: Invalid credentials provided\n"
 
@@ -63,12 +65,12 @@ class TestTensorboardsCreate(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+                                             headers=EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              data=None,
                                              files=None,
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_request_with_changed_api_key_when_api_key_option_was_used(self, post_patched):
@@ -79,12 +81,12 @@ class TestTensorboardsCreate(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              data=None,
                                              files=None,
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_valid_request_when_command_was_executed_with_all_options(self, post_patched):
@@ -95,12 +97,12 @@ class TestTensorboardsCreate(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON_WITH_ALL_OPTIONS,
                                              data=None,
                                              files=None,
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_yaml_file(self, post_patched, tensorboards_create_config_path):
@@ -112,12 +114,12 @@ class TestTensorboardsCreate(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON_WITH_ALL_OPTIONS,
                                              data=None,
                                              files=None,
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
 
 class TestTensorboardsDetail(object):
@@ -152,10 +154,6 @@ class TestTensorboardsDetail(object):
     ]
     COMMAND_WITH_OPTIONS_FILE_USED = ["tensorboards", "details", "--optionsFile", ]  # path added in test
 
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"title": "Invalid credentials provided"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to create resource: Invalid credentials provided\n"
 
@@ -168,10 +166,10 @@ class TestTensorboardsDetail(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+                                             headers=EXPECTED_HEADERS,
                                              json=None,
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_request_with_changed_api_key_when_api_key_option_was_used(self, post_patched):
@@ -182,10 +180,10 @@ class TestTensorboardsDetail(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=None,
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(self, post_patched, tensorboards_details_config_path):
@@ -197,10 +195,10 @@ class TestTensorboardsDetail(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=None,
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
 
 class TestTensorboardsList(object):
@@ -220,10 +218,6 @@ class TestTensorboardsList(object):
     COMMAND_WITH_API_KEY_CHANGED = ["tensorboards", "list", "--apiKey", "some_key"]
     COMMAND_WITH_OPTIONS_FILE_USED = ["tensorboards", "list", "--optionsFile", ]  # path added in test
 
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"title": "Invalid credentials provided"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to create resource: Invalid credentials provided\n"
 
@@ -236,10 +230,10 @@ class TestTensorboardsList(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+                                             headers=EXPECTED_HEADERS,
                                              json=None,
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_request_with_changed_api_key_when_api_key_option_was_used(self, post_patched):
@@ -250,10 +244,10 @@ class TestTensorboardsList(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=None,
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(self, post_patched, tensorboards_details_config_path):
@@ -265,10 +259,10 @@ class TestTensorboardsList(object):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=None,
                                              params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
 
 class TestTensorboardsAddExperiment(object):
@@ -298,10 +292,6 @@ class TestTensorboardsAddExperiment(object):
         "--experiment", "some_third_experiment_id", "--apiKey", "some_key"
     ]
 
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"title": "Invalid credentials provided"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to update resource: Invalid credentials provided\n"
 
@@ -315,11 +305,11 @@ class TestTensorboardsAddExperiment(object):
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         put_patched.assert_called_once_with(
             self.URL,
-            headers=self.EXPECTED_HEADERS,
+            headers=EXPECTED_HEADERS,
             json=self.EXPECTED_REQUEST_JSON,
             params=None
         )
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_request_with_changed_api_key_when_api_key_option_was_used(self, put_patched):
@@ -331,7 +321,7 @@ class TestTensorboardsAddExperiment(object):
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
         put_patched.assert_called_once_with(
             self.URL,
-            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
             json=self.EXPECTED_REQUEST_JSON,
             params=None
         )
@@ -362,10 +352,6 @@ class TestTensorboardsRemoveExperiment(object):
         "--experiment", "some_other_experiment_id", "--apiKey", "some_key"
     ]
 
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
-
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"title": "Invalid credentials provided"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to update resource: Invalid credentials provided\n"
 
@@ -379,11 +365,11 @@ class TestTensorboardsRemoveExperiment(object):
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         put_patched.assert_called_once_with(
             self.URL,
-            headers=self.EXPECTED_HEADERS,
+            headers=EXPECTED_HEADERS,
             json=self.EXPECTED_REQUEST_JSON,
             params=None
         )
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_request_with_changed_api_key_when_api_key_option_was_used(self, put_patched):
@@ -395,7 +381,7 @@ class TestTensorboardsRemoveExperiment(object):
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
         put_patched.assert_called_once_with(
             self.URL,
-            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
             json=self.EXPECTED_REQUEST_JSON,
             params=None
         )
@@ -412,10 +398,6 @@ class TestTensorboardsDelete(object):
     COMMAND_WITH_API_KEY_CHANGED = [
         "tensorboards", "delete", "--id", "some_id", "--apiKey", "some_key"
     ]
-
-    EXPECTED_HEADERS = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = gradient.api_sdk.clients.http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"title": "Invalid credentials provided"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to delete resource: Invalid credentials provided\n"
@@ -438,11 +420,11 @@ class TestTensorboardsDelete(object):
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         delete_patched.assert_called_once_with(
             self.URL,
-            headers=self.EXPECTED_HEADERS,
+            headers=EXPECTED_HEADERS,
             json=None,
             params=None
         )
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.delete")
     def test_should_send_request_with_changed_api_key_when_api_key_option_was_used(self, delete_patched):
@@ -454,7 +436,7 @@ class TestTensorboardsDelete(object):
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
         delete_patched.assert_called_once_with(
             self.URL,
-            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
             json=None,
             params=None
         )
@@ -469,8 +451,8 @@ class TestTensorboardsDelete(object):
         assert result.output == self.EXPECTED_WRONG_ACCESS_RESPONSE, result.exc_info
         delete_patched.assert_called_once_with(
             self.URL,
-            headers=self.EXPECTED_HEADERS,
+            headers=EXPECTED_HEADERS,
             json=None,
             params=None
         )
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"

@@ -4,9 +4,9 @@ import tempfile
 import progressbar
 from requests_toolbelt.multipart import encoder
 
-from gradient import utils
+from gradient import cliutils
 from gradient.api_sdk import s3_uploader
-from gradient.logger import Logger
+from gradient.clilogger import CliLogger
 
 
 class MultipartEncoder(object):
@@ -44,21 +44,18 @@ class WorkspaceHandler(object):
 
         :param logger_: gradient.logger
         """
-        self.logger = logger_ or Logger()
+        self.logger = logger_ or CliLogger()
         self.archive_path = None
         self.archive_basename = None
 
     def _zip_workspace(self, workspace_path, ignore_files):
-        if not workspace_path:
-            workspace_path = '.'
-            zip_file_name = os.path.basename(os.getcwd()) + '.zip'
-        else:
-            zip_file_name = os.path.basename(workspace_path) + '.zip'
-
+        zip_file_name = 'workspace.zip'
         zip_file_path = os.path.join(tempfile.gettempdir(), zip_file_name)
 
         if ignore_files:
             ignore_files = ignore_files.split(",")
+            ignore_files = [f.strip() for f in ignore_files]
+
         zip_archiver = self._get_workspace_archiver()
         zip_archiver.archive(workspace_path, zip_file_path, exclude=ignore_files)
 
@@ -95,12 +92,12 @@ class WorkspaceHandler(object):
         workspace_url = None
 
         if workspace_path not in ("none", None):
-            path_type = utils.PathParser.parse_path(workspace_path)
+            path_type = cliutils.PathParser.parse_path(workspace_path)
 
-            if path_type != utils.PathParser.LOCAL_DIR:
-                if path_type == utils.PathParser.LOCAL_FILE:
+            if path_type != cliutils.PathParser.LOCAL_DIR:
+                if path_type == cliutils.PathParser.LOCAL_FILE:
                     workspace_archive = workspace_path
-                elif path_type in (utils.PathParser.GIT_URL, utils.PathParser.S3_URL):
+                elif path_type in (cliutils.PathParser.GIT_URL, cliutils.PathParser.S3_URL):
                     workspace_url = workspace_path
 
                 workspace_path = None
@@ -114,7 +111,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
     def __init__(self, api_key, logger_=None):
         """
         :param str api_key:
-        :param gradient.logger.Logger logger_:
+        :param gradient.clilogger.CliLogger logger_:
         """
         super(S3WorkspaceHandler, self).__init__(logger_=logger_)
         self.api_key = api_key

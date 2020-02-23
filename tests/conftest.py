@@ -19,11 +19,13 @@ def create_multi_node_experiment_config_path():
     fixture_dir = p.parent / "config_files" / "experiments_create_multi_node.yaml"
     return str(fixture_dir.resolve())
 
+
 @pytest.fixture
 def create_multi_node_experiment_ds_objects_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "experiments_create_multi_node_ds_objs.yaml"
     return str(fixture_dir.resolve())
+
 
 @pytest.fixture
 def experiment_details_config_path():
@@ -285,6 +287,13 @@ def projects_list_config_path():
 
 
 @pytest.fixture
+def projects_details_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "projects_details.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
 def projects_create_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "projects_create.yaml"
@@ -358,4 +367,25 @@ def experiments_delete_config_path():
 def models_upload_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "models_upload.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def entity_tags_add_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "entity_tags_add.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def entity_tags_remove_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "entity_tags_remove.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def clusters_list_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "clusters_list.yaml"
     return str(fixture_dir.resolve())

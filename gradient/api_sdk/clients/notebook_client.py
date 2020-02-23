@@ -3,6 +3,8 @@ from .. import repositories, models
 
 
 class NotebooksClient(BaseClient):
+    entity = "notebook"
+
     def create(
             self,
             vm_type_id,
@@ -16,6 +18,7 @@ class NotebooksClient(BaseClient):
             container_user=None,
             shutdown_timeout=None,
             is_preemptible=None,
+            tags=None,
     ):
         """Create new notebook
 
@@ -30,6 +33,7 @@ class NotebooksClient(BaseClient):
         :param str container_user:
         :param int|float shutdown_timeout:
         :param bool is_preemptible:
+        :param list[str] tags: List of tags
 
         :return: Notebook ID
         :rtype str:
@@ -49,8 +53,12 @@ class NotebooksClient(BaseClient):
             is_preemptible=is_preemptible,
         )
 
-        repository = repositories.CreateNotebook(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.CreateNotebook)
         handle = repository.create(notebook)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def get(self, id):
@@ -59,7 +67,7 @@ class NotebooksClient(BaseClient):
         :param str id: Notebook ID
         :rtype: models.Notebook
         """
-        repository = repositories.GetNotebook(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.GetNotebook)
         notebook = repository.get(id=id)
         return notebook
 
@@ -68,14 +76,14 @@ class NotebooksClient(BaseClient):
 
         :param str id: Notebook ID
         """
-        repository = repositories.DeleteNotebook(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.DeleteNotebook)
         repository.delete(id)
 
-    def list(self, **kwargs):
+    def list(self, tags=None, limit=None, offset=None, get_meta=False):
         """Get list of Notebooks
 
         :rtype: list[models.Notebook]
         """
-        repository = repositories.ListNotebooks(api_key=self.api_key, logger=self.logger)
-        notebooks = repository.list(**kwargs)
+        repository = self.build_repository(repositories.ListNotebooks)
+        notebooks = repository.list(tags=tags, limit=limit, offset=offset, get_meta=get_meta)
         return notebooks

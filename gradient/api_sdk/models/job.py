@@ -83,3 +83,4 @@ class Job(object):
     registry_target = attr.ib(type=str, default=None)
     registry_target_username = attr.ib(type=str, default=None)
     registry_target_password = attr.ib(type=str, default=None)
+    tags = attr.ib(type=list, factory=list)
