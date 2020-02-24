@@ -26,7 +26,7 @@ MULTI_NODE_RUN_EXPERIMENT_COMMANDS = {
 
 def get_workspace_handler(api_key):
     logger_ = clilogger.CliLogger()
-    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(api_key=api_key, logger_=logger_)
+    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(api_key=api_key, logger_=logger_, )
     return workspace_handler
 
 

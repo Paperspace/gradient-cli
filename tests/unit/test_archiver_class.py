@@ -160,9 +160,10 @@ class TestS3WorkspaceDirectoryUploader(object):
         s3_project_file_uploader_cls.return_value = s3_project_file_uploader
         archive_path = os.path.join(tempfile.gettempdir(), "temp.zip")
 
-        uploader = gradient.S3WorkspaceDirectoryUploader("some_api_key")
+        uploader = gradient.S3WorkspaceDirectoryUploader("some_api_key", ps_client_name="some_client_name")
         bucket_url = uploader.upload(self.WORKSPACE_DIR_PATH, "some_project_id")
 
+        s3_project_file_uploader_cls.assert_called_once_with("some_api_key", ps_client_name="some_client_name")
         zip_archiver.archive.assert_called_once_with(self.WORKSPACE_DIR_PATH, archive_path, exclude=None)
         s3_project_file_uploader.upload.assert_called_once_with(archive_path, "some_project_id")
         assert bucket_url == "s3://url/to/bucket"
