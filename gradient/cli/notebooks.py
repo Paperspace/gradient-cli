@@ -147,7 +147,7 @@ def list_notebooks(n_limit, n_offset, tags, api_key, options_file):
             click.confirm("Do you want to continue?", abort=True)
 
 
-@notebooks_group.command("show", help="Show notebook details")
+@notebooks_group.command("details", help="Show notebook details")
 @click.option(
     "--id",
     "id",
@@ -163,7 +163,12 @@ def show_notebook(id, api_key, options_file):
 
 
 @notebook_tags.command("add", help="Add tags to notebook")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    cls=common.GradientOption,
+    help="ID of the notebook",
+)
 @click.option(
     "--tag",
     "tags",
@@ -187,7 +192,12 @@ def notebook_add_tag(id, options_file, api_key, **kwargs):
 
 
 @notebook_tags.command("remove", help="Remove tags from notebook")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    cls=common.GradientOption,
+    help="ID of the model",
+)
 @click.option(
     "--tag",
     "tags",

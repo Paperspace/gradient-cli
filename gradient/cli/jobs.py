@@ -35,7 +35,7 @@ def jobs_tags():
 
 @jobs_group.command("delete", help="Delete job")
 @click.option(
-    "--jobId",
+    "--id",
     "job_id",
     required=True,
     help="Delete job with given ID",
@@ -48,7 +48,7 @@ def delete_job(job_id, api_key):
 
 @jobs_group.command("stop", help="Stop running job")
 @click.option(
-    "--jobId",
+    "--id",
     "job_id",
     required=True,
     help="Stop job with given ID",
@@ -312,7 +312,7 @@ def create_job(ctx, api_key, options_file, **kwargs):
 
 @jobs_group.command("logs", help="List job logs")
 @click.option(
-    "--jobId",
+    "--id",
     "job_id",
     required=True,
     cls=common.GradientOption,
@@ -351,7 +351,12 @@ def artifacts():
 
 
 @artifacts.command("destroy", help="Destroy job's artifacts")
-@click.argument("job_id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "job_id",
+    cls=common.GradientOption,
+    help="ID of the job",
+)
 @click.option(
     "--files",
     "files",
@@ -365,7 +370,12 @@ def destroy_artifacts(job_id, options_file, api_key=None, files=None):
 
 
 @artifacts.command("get", help="Get job's artifacts")
-@click.argument("job_id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "job_id",
+    cls=common.GradientOption,
+    help="ID of the job",
+)
 @api_key_option
 @common.options_file
 def get_artifacts(job_id, options_file, api_key=None):
@@ -374,7 +384,12 @@ def get_artifacts(job_id, options_file, api_key=None):
 
 
 @artifacts.command("list", help="List job's artifacts")
-@click.argument("job_id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "job_id",
+    cls=common.GradientOption,
+    help="ID of the job",
+)
 @click.option(
     "--size",
     "-s",
@@ -407,7 +422,7 @@ def list_artifacts(job_id, size, links, files, options_file, api_key=None):
 
 @artifacts.command("download", help="List job's artifacts")
 @click.option(
-    "--jobId",
+    "--id",
     "job_id",
     cls=common.GradientOption,
 )
@@ -424,7 +439,12 @@ def download_artifacts(job_id, destination_directory, options_file, api_key=None
 
 
 @jobs_tags.command("add", help="Add tags to job")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    cls=common.GradientOption,
+    help="ID of the job",
+)
 @click.option(
     "--tag",
     "tags",
@@ -448,7 +468,12 @@ def job_add_tag(id, options_file, api_key, **kwargs):
 
 
 @jobs_tags.command("remove", help="Remove tags from job")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    cls=common.GradientOption,
+    help="ID of the job",
+)
 @click.option(
     "--tag",
     "tags",

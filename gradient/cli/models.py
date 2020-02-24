@@ -149,7 +149,12 @@ def download_model_files(model_id, destination_directory, api_key, options_file)
 
 
 @model_tags.command("add", help="Add tags to ml model")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    cls=common.GradientOption,
+    help="ID of the model",
+)
 @click.option(
     "--tag",
     "tags",
@@ -173,7 +178,12 @@ def ml_model_add_tag(id, options_file, api_key, **kwargs):
 
 
 @model_tags.command("remove", help="Remove tags from ml model")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    cls=common.GradientOption,
+    help="ID of the model",
+)
 @click.option(
     "--tag",
     "tags",

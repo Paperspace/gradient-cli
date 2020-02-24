@@ -287,9 +287,9 @@ EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 #         assert result.exit_code == 0
 
 
-class TestNotebooksShow(object):
+class TestNotebooksdetails(object):
     URL = "https://api.paperspace.io/notebooks/getNotebook"
-    COMMAND = ["notebooks", "show", "--id", "some_id"]
+    COMMAND = ["notebooks", "details", "--id", "some_id"]
     EXPECTED_STDOUT = """+---------+-----------------------------------+
 | Name    | some_name                         |
 +---------+-----------------------------------+
@@ -313,9 +313,9 @@ class TestNotebooksShow(object):
     RESPONSE_JSON = example_responses.NOTEBOOK_GET_RESPONSE
     RESPONSE_JSON_WITH_TAGS = example_responses.NOTEBOOK_GET_RESPONSE_WITH_TAGS
 
-    COMMAND_WITH_API_KEY_USED = ["notebooks", "show", "--id", "some_id", "--apiKey", "some_key"]
+    COMMAND_WITH_API_KEY_USED = ["notebooks", "details", "--id", "some_id", "--apiKey", "some_key"]
 
-    COMMAND_WITH_OPTIONS_FILE_USED = ["notebooks", "show", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE_USED = ["notebooks", "details", "--optionsFile", ]  # path added in test
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"

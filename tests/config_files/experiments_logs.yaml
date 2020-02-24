@@ -1,5 +1,5 @@
 apiKey: some_key
-experimentId: some-id
+id: some-id
 follow: 'true'
 limit: 30
 line: 20

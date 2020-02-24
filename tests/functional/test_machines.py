@@ -393,19 +393,19 @@ class TestDestroyMachine(object):
     URL = "https://api.paperspace.io/machines/some_id/destroyMachine/"
     BASIC_COMMAND = [
         "machines", "destroy",
-        "--machineId", "some_id",
+        "--id", "some_id",
     ]
 
     ALL_COMMANDS = [
         "machines", "destroy",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--releasePublicIp",
     ]
     ALL_COMMANDS_REQUEST_JSON = {"releasePublicIp": True}
 
     BASIC_COMMAND_WITH_API_KEY = [
         "machines", "destroy",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--apiKey", "some_key",
     ]
 
@@ -564,7 +564,7 @@ class TestListMachines(object):
         "--dtCreated", "2017-09-23T05:55:00.000Z",
         "--dtLastRun", "2017-09-23T05:55:00.000Z",
         "--gpu", "some_gpu",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--name", "some_name",
         "--networkId", "some_network_id",
         "--os", "some_os",
@@ -776,13 +776,13 @@ class TestRestartMachine(object):
     URL = "https://api.paperspace.io/machines/some_id/restart/"
     COMMAND = [
         "machines", "restart",
-        "--machineId", "some_id",
+        "--id", "some_id",
     ]
     EXPECTED_STDOUT = "Machine restarted\n"
 
     COMMAND_WITH_API_KEY = [
         "machines", "restart",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--apiKey", "some_key",
     ]
 
@@ -902,7 +902,7 @@ class TestRestartMachine(object):
 
 class TestShowMachine(object):
     URL = "https://api.paperspace.io/machines/getMachinePublic/"
-    BASIC_COMMAND = ["machines", "show", "--machineId", "some_id"]
+    BASIC_COMMAND = ["machines", "details", "--id", "some_id"]
     REQUEST_PARAMS = {"machineId": "some_id"}
     EXPECTED_RESPONSE_JSON = example_responses.SHOW_MACHINE_RESPONSE
     EXPECTED_STDOUT = """+---------------------------+------------------------------------------------------------------------------------+
@@ -939,11 +939,11 @@ class TestShowMachine(object):
 """
 
     BASIC_COMMAND_WITH_API_KEY = [
-        "machines", "show",
-        "--machineId", "some_id",
+        "machines", "details",
+        "--id", "some_id",
         "--apiKey", "some_key",
     ]
-    COMMAND_WITH_OPTIONS_FILE = ["machines", "show", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "details", "--optionsFile", ]  # path added in test
 
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
@@ -1048,7 +1048,7 @@ class TestStartMachine(object):
     URL = "https://api.paperspace.io/machines/some_id/start/"
     COMMAND = [
         "machines", "start",
-        "--machineId", "some_id",
+        "--id", "some_id",
     ]
     EXPECTED_STDOUT = "Machine started\n"
 
@@ -1056,7 +1056,7 @@ class TestStartMachine(object):
 
     COMMAND_WITH_API_KEY = [
         "machines", "start",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--apiKey", "some_key",
     ]
 
@@ -1176,7 +1176,7 @@ class TestStopMachine(object):
     URL = "https://api.paperspace.io/machines/some_id/stop/"
     COMMAND = [
         "machines", "stop",
-        "--machineId", "some_id",
+        "--id", "some_id",
     ]
     EXPECTED_STDOUT = "Machine stopped\n"
 
@@ -1184,7 +1184,7 @@ class TestStopMachine(object):
 
     COMMAND_WITH_API_KEY = [
         "machines", "stop",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--apiKey", "some_key",
     ]
 
@@ -1304,14 +1304,14 @@ class TestUpdateMachine(object):
     URL = "https://api.paperspace.io/machines/some_id/updateMachinePublic/"
     BASIC_COMMAND = [
         "machines", "update",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--machineName", "some_name",
     ]
     REQUEST_JSON = {"machineName": "some_name"}
 
     ALL_COMMANDS = [
         "machines", "update",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--machineName", "some_name",
         "--shutdownTimeoutInHours", "2",
         "--shutdownTimeoutForces", "true",
@@ -1333,7 +1333,7 @@ class TestUpdateMachine(object):
 
     BASIC_COMMAND_WITH_API_KEY = [
         "machines", "update",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--machineName", "some_name",
         "--apiKey", "some_key",
     ]
@@ -1462,7 +1462,7 @@ class TestShowMachineUtilization(object):
     URL = "https://api.paperspace.io/machines/getUtilization/"
     BASIC_COMMAND = [
         "machines", "utilization",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--billingMonth", "2017-09",
     ]
     REQUEST_PARAMS = {"machineId": "some_id", "billingMonth": "2017-09"}
@@ -1479,7 +1479,7 @@ class TestShowMachineUtilization(object):
 
     BASIC_COMMAND_WITH_API_KEY = [
         "machines", "utilization",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--billingMonth", "2017-09",
         "--apiKey", "some_key",
     ]
@@ -1589,7 +1589,7 @@ class TestWaitForMachine(object):
     URL = "https://api.paperspace.io/machines/getMachinePublic/"
     BASIC_COMMAND = [
         "machines", "waitfor",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--state", "off",
     ]
     REQUEST_PARAMS = {"machineId": "some_id"}
@@ -1598,7 +1598,7 @@ class TestWaitForMachine(object):
 
     BASIC_COMMAND_WITH_API_KEY = [
         "machines", "waitfor",
-        "--machineId", "some_id",
+        "--id", "some_id",
         "--state", "off",
         "--apiKey", "some_key",
     ]

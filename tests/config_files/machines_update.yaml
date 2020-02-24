@@ -2,7 +2,7 @@ apiKey: some_key
 autoSnapshotFrequency: hour
 autoSnapshotSaveCount: 1
 dynamicPublicIp: true
-machineId: some_id
+id: some_id
 machineName: some_name
 performAutoSnapshot: true
 shutdownTimeoutForces: true

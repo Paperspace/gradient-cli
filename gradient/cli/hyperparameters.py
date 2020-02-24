@@ -198,7 +198,12 @@ def start_hyperparameter_tuning(api_key, options_file, id_):
 
 
 @hyperparameters_tags.command("add", help="Add tags to hyperparameter")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    cls=common.GradientOption,
+    help="ID of the hyperparameter",
+)
 @click.option(
     "--tag",
     "tags",
@@ -222,7 +227,12 @@ def hyperparameter_add_tag(id, options_file, api_key, **kwargs):
 
 
 @hyperparameters_tags.command("remove", help="Remove tags from hyperparameter")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    cls=common.GradientOption,
+    help="ID of the hyperparameter",
+)
 @click.option(
     "--tag",
     "tags",

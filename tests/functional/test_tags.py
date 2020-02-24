@@ -21,7 +21,7 @@ class TestEntityAddTags(object):
         "--tag", "test0",
         "--tag", "test1",
         "--tags", "test2,test3",
-        "some_id",
+        "--id", "some_id",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["tags", "add", "--optionsFile", ]  # path added in test
 
@@ -62,6 +62,7 @@ class TestEntityAddTags(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
+        assert result.output == expected_result, result.exc_info
         put_patched.assert_called_once_with(
             self.URL,
             headers=EXPECTED_HEADERS,
@@ -69,7 +70,6 @@ class TestEntityAddTags(object):
             params=None,
         )
 
-        assert result.output == expected_result, result.exc_info
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
@@ -121,7 +121,7 @@ class TestEntityRemoveTags(object):
         "tags", "remove",
         "--tag", "test0",
         "--tags", "test2",
-        "some_id",
+        "--id", "some_id",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["tags", "remove", "--optionsFile", ]  # path added in test
 
@@ -164,6 +164,7 @@ class TestEntityRemoveTags(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
+        assert result.output == expected_result, result.exc_info
         put_patched.assert_called_once_with(
             self.URL,
             headers=EXPECTED_HEADERS,
@@ -171,7 +172,6 @@ class TestEntityRemoveTags(object):
             params=None,
         )
 
-        assert result.output == expected_result, result.exc_info
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
@@ -205,6 +205,7 @@ class TestEntityRemoveTags(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
+        assert result.output == expected_result, result.exc_info
         put_patched.assert_called_once_with(
             self.URL,
             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -212,5 +213,4 @@ class TestEntityRemoveTags(object):
             params=None,
         )
 
-        assert result.output == expected_result, result.exc_info
         assert result.exit_code == 0

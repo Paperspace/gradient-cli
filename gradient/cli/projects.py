@@ -108,7 +108,12 @@ def delete_project(project_id, options_file, api_key):
 
 
 @project_tags.command("add", help="Add tags to project")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    cls=common.GradientOption,
+    help="ID of the project",
+)
 @click.option(
     "--tag",
     "tags",
@@ -132,7 +137,12 @@ def project_add_tag(id, options_file, api_key, **kwargs):
 
 
 @project_tags.command("remove", help="Remove tags from project")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    cls=common.GradientOption,
+    help="ID of the project",
+)
 @click.option(
     "--tag",
     "tags",

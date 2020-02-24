@@ -448,7 +448,12 @@ def get_deployment(deployment_id, api_key, options_file):
 
 
 @deployments_tags.command("add", help="Add tags to deployment")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    cls=common.GradientOption,
+    help="ID of the deployment",
+)
 @click.option(
     "--tag",
     "tags",
@@ -474,7 +479,12 @@ def deployment_add_tag(id, options_file, api_key, **kwargs):
 
 
 @deployments_tags.command("remove", help="Remove tags from deployment")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    cls=common.GradientOption,
+    help="ID of the deployment",
+)
 @click.option(
     "--tag",
     "tags",
