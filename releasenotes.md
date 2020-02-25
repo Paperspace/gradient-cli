@@ -1,5 +1,23 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.6.0
+##### Note: this list includes all changes made in 0.6.0a* alpha releases
+### Breaking changes
+* Removed the `--vpc` flag
+* `--name` is not required to create/run experiment. Parameters in methods for creating/running experiments have changed 
+### New features
+* Added commands to `add` and `remove` tags
+* Added filtering notebooks by tags
+* Added showing tags in `details` commands
+* Added `projects details` command
+* Datasets for experiments in YAML options file can now be defined as list of objects
+* Allow string instead of list of strings in YAML for options that take multiple values
+### Fixes
+* Removed empty lines in logs
+* Fixed `ExperimentsClient.list` parameters (not a breaking change)
+* Fix showing cluster ID in `deployments details`
+* Add filtering entities by tags in `list` commands
+
 # Release Notes for 0.6.0a2
 ### Breaking changes
 * Removed the `--vpc` flag
