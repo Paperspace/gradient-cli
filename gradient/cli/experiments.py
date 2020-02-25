@@ -636,6 +636,7 @@ def create_and_start_single_node(ctx, api_key, show_logs, tensorboard, tensorboa
 @click.option(
     "--id",
     "id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the experiment",
 )
@@ -660,6 +661,7 @@ def start_experiment(ctx, id, show_logs, api_key, options_file):
 @click.option(
     "--id",
     "id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the experiment",
 )
@@ -718,6 +720,7 @@ def list_experiments(project_ids, api_key, exp_limit, exp_offset, tags, options_
 @click.option(
     "--id",
     "id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the experiment",
 )
@@ -767,6 +770,7 @@ def list_logs(experiment_id, line, limit, follow, options_file, api_key=None):
 @click.option(
     "--id",
     "id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the experiment",
 )
@@ -781,6 +785,7 @@ def delete_experiment(id, options_file, api_key):
 @click.option(
     "--id",
     "id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the experiment",
 )
@@ -800,7 +805,7 @@ def delete_experiment(id, options_file, api_key):
 @api_key_option
 @common.options_file
 def experiment_add_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
 
     command = ExperimentAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -810,6 +815,7 @@ def experiment_add_tags(id, options_file, api_key, **kwargs):
 @click.option(
     "--id",
     "id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the experiment",
 )
@@ -829,7 +835,7 @@ def experiment_add_tags(id, options_file, api_key, **kwargs):
 @api_key_option
 @common.options_file
 def experiment_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
 
     command = ExperimentRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)

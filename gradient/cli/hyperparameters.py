@@ -201,6 +201,7 @@ def start_hyperparameter_tuning(api_key, options_file, id_):
 @click.option(
     "--id",
     "id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the hyperparameter",
 )
@@ -220,7 +221,7 @@ def start_hyperparameter_tuning(api_key, options_file, id_):
 @common.api_key_option
 @common.options_file
 def hyperparameter_add_tag(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
 
     command = HyperparameterAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -230,6 +231,7 @@ def hyperparameter_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--id",
     "id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the hyperparameter",
 )
@@ -249,7 +251,7 @@ def hyperparameter_add_tag(id, options_file, api_key, **kwargs):
 @common.api_key_option
 @common.options_file
 def hyperparameter_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
 
     command = HyperparameterRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)

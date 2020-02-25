@@ -111,6 +111,7 @@ def delete_project(project_id, options_file, api_key):
 @click.option(
     "--id",
     "id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the project",
 )
@@ -130,7 +131,7 @@ def delete_project(project_id, options_file, api_key):
 @common.api_key_option
 @common.options_file
 def project_add_tag(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
 
     command = projects_commands.ProjectAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -140,6 +141,7 @@ def project_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--id",
     "id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the project",
 )
@@ -159,7 +161,7 @@ def project_add_tag(id, options_file, api_key, **kwargs):
 @common.api_key_option
 @common.options_file
 def project_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
 
     command = projects_commands.ProjectRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)

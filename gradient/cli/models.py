@@ -49,6 +49,7 @@ def list_models(api_key, experiment_id, project_id, tags, options_file):
 @click.option(
     "--id",
     "model_id",
+    required=True,
     help="Model ID",
     cls=common.GradientOption,
 )
@@ -118,6 +119,7 @@ def upload_model(path, name, model_type, model_summary, notes, api_key, options_
 @click.option(
     "--id",
     "model_id",
+    required=True,
     help="Model ID",
     cls=common.GradientOption,
 )
@@ -132,6 +134,7 @@ def model_details(model_id, api_key, options_file):
 @click.option(
     "--id",
     "model_id",
+    required=True,
     help="Model ID",
     cls=common.GradientOption,
 )
@@ -152,6 +155,7 @@ def download_model_files(model_id, destination_directory, api_key, options_file)
 @click.option(
     "--id",
     "id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the model",
 )
@@ -171,7 +175,7 @@ def download_model_files(model_id, destination_directory, api_key, options_file)
 @common.api_key_option
 @common.options_file
 def ml_model_add_tag(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
 
     command = models_commands.MLModelAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -181,6 +185,7 @@ def ml_model_add_tag(id, options_file, api_key, **kwargs):
 @click.option(
     "--id",
     "id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the model",
 )
@@ -200,7 +205,7 @@ def ml_model_add_tag(id, options_file, api_key, **kwargs):
 @common.api_key_option
 @common.options_file
 def ml_model_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
 
     command = models_commands.MLModelRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)

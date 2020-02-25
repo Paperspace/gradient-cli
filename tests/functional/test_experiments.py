@@ -1510,7 +1510,7 @@ class TestDeleteExperiment(object):
 class TestExperimentLogs(object):
     URL = "https://logs.paperspace.io/jobs/logs"
     COMMAND = ["experiments", "logs", "--id", "some_id"]
-    COMMAND_WITH_FOLLOW = ["experiments", "logs", "--id<", "some_id", "--follow", "True"]
+    COMMAND_WITH_FOLLOW = ["experiments", "logs", "--id", "some_id", "--follow", "True"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "logs", "--optionsFile", ]  # path added in test
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
