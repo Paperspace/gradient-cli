@@ -6,7 +6,6 @@ class Job(object):
     id = attr.ib(type=str, default=None)
     name = attr.ib(type=str, default=None)
     state = attr.ib(type=str, default=None)
-    workspace_url = attr.ib(type=str, default=None)
     working_directory = attr.ib(type=str, default=None)
     artifacts_directory = attr.ib(type=str, default=None)
     entrypoint = attr.ib(type=str, default=None)
@@ -74,8 +73,6 @@ class Job(object):
     experiment_id = attr.ib(type=str, default=None)
 
     command = attr.ib(type=str, default=None)
-    workspace = attr.ib(type=str, default=None)
-    workspace_archive = attr.ib(type=str, default=None)
     workspace_file_name = attr.ib(type=str, default=None)
     use_dockerfile = attr.ib(type=str, default=None)
     rel_dockerfile_path = attr.ib(type=str, default=None)

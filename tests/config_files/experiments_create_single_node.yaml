@@ -18,9 +18,8 @@ registryPassword: passwd
 registryUrl: registryUrl
 registryUsername: userName
 workingDirectory: /work/dir/
-workspace: null
+workspace: s3://some-workspace
 workspaceArchive: null
 workspaceRef: some_branch_name
-workspaceUrl: wsp.url
 workspaceUsername: username
 workspacePassword: password

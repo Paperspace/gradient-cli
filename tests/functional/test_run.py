@@ -36,7 +36,7 @@ class TestRunCommand(object):
                                        post_patched):
         get_files_patched.return_value = mock.MagicMock()
         workspace_zip_patched.return_value = '/foo/bar'
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
         mock_monitor = mock.MagicMock()
         mock_monitor.content_type = "mock/multipart"
@@ -84,7 +84,6 @@ class TestRunCommand(object):
                                             'name': u'test',
                                             'projectId': u'projectId',
                                             'workspaceFileName': 'none',
-                                            'workspace': 'none',
                                             'command': 'python{} -c print(foo)'.format(str(sys.version_info[0])),
                                             'container': u'paperspace/tensorflow-python',
                                             'machineType': 'G1',
@@ -94,11 +93,11 @@ class TestRunCommand(object):
     @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
     def test_run_shell_command_with_args_with_s3_workspace(self, workspace_zip_patched, post_patched):
         workspace_zip_patched.return_value = '/foo/bar'
-        post_patched.return_value = MockResponse(status_code=200)
+        post_patched.return_value = MockResponse()
 
         runner = CliRunner()
         result = runner.invoke(cli.cli,
-                               [self.command_name] + self.common_commands + ["-s", "echo foo", "--workspaceUrl",
+                               [self.command_name] + self.common_commands + ["-s", "echo foo", "--workspace",
                                                                              "s3://bucket/object"])
 
         expected_headers = self.headers.copy()
@@ -111,7 +110,6 @@ class TestRunCommand(object):
                                             'name': u'test',
                                             'projectId': u'projectId',
                                             'workspaceFileName': 's3://bucket/object',
-                                            'workspaceUrl': 's3://bucket/object',
                                             'command': 'echo foo',
                                             'container': u'paperspace/tensorflow-python',
                                             'machineType': 'G1',
@@ -145,7 +143,7 @@ class TestRunCommand(object):
                                                 'clusterId': 'some_cluster_id',
                                                 'command': 'some_script.py some_other_script.py',
                                                 'experimentId': 'some_experiment_id',
-                                                'workspaceFileName': 'some.url',
+                                                'workspaceFileName': 's3://bucket/object',
                                                 'targetNodeAttrs': {'key': 'val2'},
                                                 'container': 'some_container',
                                                 'jobEnv': {'key': 'val'},
@@ -153,7 +151,6 @@ class TestRunCommand(object):
                                                 'registryTarget': 'some_registry_target',
                                                 'startedByUserId': 'some_user_id',
                                                 'ports': '8080,9000:9900',
-                                                'workspaceUrl': 'some.url',
                                                 'registryPassword': 'some_registry_password',
                                                 'registryUsername': 'some_registry_username',
                                                 })

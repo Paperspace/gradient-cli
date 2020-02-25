@@ -2,7 +2,7 @@ from functools import reduce
 
 import click
 
-from gradient import cliutils, clilogger
+from gradient import clilogger
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string
@@ -10,8 +10,6 @@ from gradient.cli.common import (
     api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts,
     validate_comma_split_option,
 )
-from gradient.cli.experiments import \
-    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used
 from gradient.commands import jobs as jobs_commands
 from gradient.commands.jobs import JobAddTagsCommand, JobRemoveTagsCommand
 from gradient.workspace import WorkspaceHandler
@@ -140,18 +138,6 @@ def common_jobs_create_options(f):
             "--workspace",
             "workspace",
             help="Path to workspace directory",
-            cls=common.GradientOption,
-        ),
-        click.option(
-            "--workspaceArchive",
-            "workspace_archive",
-            help="Path to workspace archive",
-            cls=common.GradientOption,
-        ),
-        click.option(
-            "--workspaceUrl",
-            "workspace_url",
-            help="Project git repository url",
             cls=common.GradientOption,
         ),
         click.option(
@@ -298,8 +284,6 @@ def common_jobs_create_options(f):
 @click.pass_context
 def create_job(ctx, api_key, options_file, **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
-    cliutils.validate_workspace_input(kwargs)
-    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
 
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)

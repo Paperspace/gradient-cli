@@ -58,7 +58,7 @@ class TestExperimentsCreateSingleNode(object):
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
-        "--workspaceUrl", "some-workspace",
+        "--workspace", "s3://some-workspace",
     ]
     BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE = [
         "experiments", "create", "singlenode",
@@ -72,7 +72,7 @@ class TestExperimentsCreateSingleNode(object):
         "experiments", "create", "singlenode",
         "--name", "exp1",
         "--ports", "4567",
-        "--workspaceUrl", "wsp.url",
+        "--workspace", "s3://some-workspace",
         "--workspaceRef", "some_branch_name",
         "--workspaceUsername", "username",
         "--workspacePassword", "password",
@@ -104,12 +104,12 @@ class TestExperimentsCreateSingleNode(object):
         "machineType": u"testType",
         "command": u"dGVzdENvbW1hbmQ=",
         "experimentTypeId": constants.ExperimentType.SINGLE_NODE,
-        "workspaceUrl": u"some-workspace",
+        "workspaceUrl": u"s3://some-workspace",
     }
     FULL_OPTIONS_REQUEST = {
         "name": u"exp1",
         "ports": "4567",
-        "workspaceUrl": u"wsp.url",
+        "workspaceUrl": u"s3://some-workspace",
         "workspaceRef": "some_branch_name",
         "workspaceUsername": u"username",
         "workspacePassword": u"password",
@@ -397,7 +397,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
         "experiments", "create", "multinode",
         "--name", "multinode_mpi",
         "--ports", 3456,
-        "--workspaceUrl", "wurl",
+        "--workspace", "s3://some-workspace",
         "--workspaceRef", "some_branch_name",
         "--workspaceUsername", "username",
         "--workspacePassword", "password",
@@ -462,7 +462,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
     FULL_OPTIONS_REQUEST = {
         "name": u"multinode_mpi",
         "ports": "3456",
-        "workspaceUrl": u"wurl",
+        "workspaceUrl": u"s3://some-workspace",
         "workspaceRef": "some_branch_name",
         "workspaceUsername": u"username",
         "workspacePassword": u"password",
@@ -661,7 +661,7 @@ class TestExperimentsCreateMultiNode(object):
         "experiments", "create", "multinode",
         "--name", "multinode_mpi",
         "--ports", 3456,
-        "--workspaceUrl", "wurl",
+        "--workspace", "s3://some-workspace",
         "--workspaceRef", "some_branch_name",
         "--workspaceUsername", "username",
         "--workspacePassword", "password",
@@ -726,7 +726,7 @@ class TestExperimentsCreateMultiNode(object):
     FULL_OPTIONS_REQUEST = {
         "name": u"multinode_mpi",
         "ports": "3456",
-        "workspaceUrl": u"wurl",
+        "workspaceUrl": u"s3://some-workspace",
         "workspaceRef": "some_branch_name",
         "workspaceUsername": u"username",
         "workspacePassword": u"password",
@@ -910,7 +910,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "--container", "testContainer",
         "--machineType", "testType",
         "--command", "testCommand",
-        "--workspaceUrl", "some-workspace",
+        "--workspace", "s3://some-workspace",
         "--no-logs",
     ]
     BASIC_OPTIONS_COMMAND_WITH_LOCAL_WORKSPACE = [
@@ -925,7 +925,7 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
         "experiments", "run", "singlenode",
         "--name", "exp1",
         "--ports", 4567,
-        "--workspaceUrl", "wsp.url",
+        "--workspace", "s3://some-workspace",
         "--workspaceRef", "some_branch_name",
         "--workspaceUsername", "username",
         "--workspacePassword", "password",
@@ -979,7 +979,7 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
         "experiments", "run", "multinode",
         "--name", "multinode_mpi",
         "--ports", 3456,
-        "--workspaceUrl", "wurl",
+        "--workspace", "s3://some-workspace",
         "--workspaceRef", "some_branch_name",
         "--workspaceUsername", "username",
         "--workspacePassword", "password",
@@ -1576,7 +1576,7 @@ class TestExperimentValidation(object):
                         "--container", "testContainer",
                         "--machineType", "testType",
                         "--command", "testCommand",
-                        "--workspaceUrl", "some-workspace",
+                        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
                         "--modelPath", "some/model/path"
                     ],
                     EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
@@ -1606,7 +1606,7 @@ class TestExperimentValidation(object):
                         "--container", "testContainer",
                         "--machineType", "testType",
                         "--command", "testCommand",
-                        "--workspaceUrl", "some-workspace",
+                        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
                         "--no-logs",
                         "--modelPath", "some/model/path"
                     ],

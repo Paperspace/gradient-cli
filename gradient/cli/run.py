@@ -1,6 +1,5 @@
 import click
 
-from gradient import cliutils, clilogger
 from gradient.api_sdk.constants import RunMode
 from gradient.cli import common
 from gradient.cli.cli import cli
@@ -40,11 +39,6 @@ from gradient.commands.run import RunCommand
 @common.api_key_option
 @common.options_file
 def run(api_key, options_file, **kwargs):
-    cliutils.validate_workspace_input(kwargs)
-    if kwargs["workspace_archive"] or kwargs["workspace_url"]:
-        clilogger.CliLogger().error("WARNING: --workspaceUrl and --workspaceArchive options will not be included "
-                                    "in version 0.6.0")
-
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
 

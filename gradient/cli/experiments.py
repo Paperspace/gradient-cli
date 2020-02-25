@@ -2,7 +2,7 @@ import functools
 
 import click
 
-from gradient import cliutils, clilogger, workspace
+from gradient import clilogger, workspace
 from gradient.api_sdk import constants
 from gradient.cli import common, validators
 from gradient.cli.cli import cli
@@ -26,7 +26,7 @@ MULTI_NODE_RUN_EXPERIMENT_COMMANDS = {
 
 def get_workspace_handler(api_key):
     logger_ = clilogger.CliLogger()
-    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(api_key=api_key, logger_=logger_)
+    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(api_key=api_key, logger_=logger_, )
     return workspace_handler
 
 
@@ -74,19 +74,6 @@ def common_experiments_create_options(f):
             "--workspaceRef",
             "workspace_ref",
             help="Git commit hash, branch name or tag",
-            cls=common.GradientOption,
-        ),
-        click.option(
-            "--workspaceArchive",
-            "workspace_archive",
-            help="Path to workspace .zip archive",
-            cls=common.GradientOption,
-        ),
-        click.option(
-            "--workspaceUrl",
-            "workspace_url",
-            metavar="<workspace URL>",
-            help="Project git repository url",
             cls=common.GradientOption,
         ),
         click.option(
@@ -467,18 +454,6 @@ def common_experiments_create_single_node_options(f):
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
 
-def show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs):
-    if kwargs["workspace_archive"] or kwargs["workspace_url"]:
-        msg = """DeprecatedWarning:
-WARNING: --workspaceUrl and --workspaceArchive options will not be included in version 0.6.0
-
-For more information, please see:
-https://docs.paperspace.com
-If you depend on functionality not listed there, please file an issue."""
-
-        clilogger.CliLogger().error(msg)
-
-
 def tensorboard_option(f):
     options = [
         click.option(
@@ -522,11 +497,9 @@ def parse_tensorboard_options(tensorboard, tensorboard_set):
 @common.options_file
 def create_multi_node(api_key, tensorboard, tensorboard_set, options_file, **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
-    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
     validators.validate_multi_node(kwargs)
-    cliutils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs)
     experiment_type = kwargs.get('experiment_type_id')
     command_class = MULTI_NODE_CREATE_EXPERIMENT_COMMANDS.get(experiment_type)
@@ -546,10 +519,8 @@ def create_multi_node(api_key, tensorboard, tensorboard_set, options_file, **kwa
 @common.options_file
 def create_single_node(api_key, tensorboard, tensorboard_set, options_file, **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
-    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
-    cliutils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs)
 
     command = experiments_commands.CreateSingleNodeExperimentCommand(
@@ -578,11 +549,9 @@ def create_single_node(api_key, tensorboard, tensorboard_set, options_file, **kw
 @click.pass_context
 def create_and_start_multi_node(ctx, api_key, show_logs, tensorboard, tensorboard_set, options_file, **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
-    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
     validators.validate_multi_node(kwargs)
-    cliutils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs)
 
     experiment_type = kwargs.get('experiment_type_id')
@@ -617,10 +586,8 @@ def create_and_start_multi_node(ctx, api_key, show_logs, tensorboard, tensorboar
 def create_and_start_single_node(ctx, api_key, show_logs, tensorboard, tensorboard_set, options_file,
                                  **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
-    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
-    cliutils.validate_workspace_input(kwargs)
     common.del_if_value_is_none(kwargs)
 
     command = experiments_commands.CreateAndStartSingleNodeExperimentCommand(

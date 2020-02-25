@@ -464,7 +464,6 @@ class TestJobsCreate(object):
         "--isPreemptible", "True",
         "--projectId", "some_project_id",
         "--isPublic", "True",
-        "--workspaceUrl", "s3://some.workspace.url",
         "--jobEnv", '{"key":"val"}',
         "--machineType", "K80",
         "--name", "some_name",
@@ -480,8 +479,8 @@ class TestJobsCreate(object):
         "--startedByUserId", "some_user_id",
         "--useDockerfile", "True",
         "--workingDirectory", "/some/path",
-        "--workspaceUrl", "s3://some.workspace.url",
         "--buildOnly",
+        "--workspace", "s3://some-path",
     ]
     BASIC_OPTIONS_REQUEST = {
         "name": u"exp1",
@@ -489,7 +488,6 @@ class TestJobsCreate(object):
         "container": u"testContainer",
         "machineType": u"testType",
         "command": u"testCommand",
-        "workspace": u"https://github.com/Paperspace/gradient-cli.git",
         "workspaceFileName": u"https://github.com/Paperspace/gradient-cli.git",
     }
     FULL_OPTIONS_REQUEST = {
@@ -502,12 +500,11 @@ class TestJobsCreate(object):
         "workingDirectory": "/some/path",
         "projectId": "some_project_id",
         "registryTargetUsername": "some_registry_target_username",
-        "workspaceUrl": "s3://some.workspace.url",
         "machineType": "K80",
         "registryTargetPassword": "some_registry_target_password",
         "registryTarget": "some_registry_target",
         "isPublic": True,
-        "workspaceFileName": "s3://some.workspace.url",
+        "workspaceFileName": "s3://some-path",
         "jobEnv": {"key": "val"},
         "useDockerfile": True,
         "name": "some_name",

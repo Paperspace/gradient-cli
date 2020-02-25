@@ -206,6 +206,8 @@ class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
     def _create(self, json_, data):
         # because ignore_files is used by workspace handlers and not needed anymore (will fail if not "popped")
         json_.pop("ignore_files", None)
+        json_.pop("workspace", None)
+
         return self.client.create(data=data, **json_)
 
 
@@ -226,9 +228,6 @@ class JobRunClient(BaseClient):
             command=None,
             ports=None,
             is_public=None,
-            workspace=None,
-            workspace_archive=None,
-            workspace_url=None,
             working_directory=None,
             experiment_id=None,
             job_env=None,
@@ -261,9 +260,6 @@ class JobRunClient(BaseClient):
             command=command,
             ports=ports,
             is_public=is_public,
-            workspace=workspace,
-            workspace_archive=workspace_archive,
-            workspace_url=workspace_url,
             working_directory=working_directory,
             experiment_id=experiment_id,
             job_env=job_env,
