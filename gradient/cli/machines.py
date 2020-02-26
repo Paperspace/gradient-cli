@@ -231,7 +231,7 @@ destroy_machine_help = "Destroy the machine with the given id. When this action 
 
 @machines_group.command("destroy", help=destroy_machine_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     required=True,
     help="The id of the machine to destroy",
@@ -265,7 +265,7 @@ list_machines_help = "List information about all machines available to either th
     cls=common.GradientOption,
 )
 @click.option(
-    "--machineId",
+    "--id",
     "id",
     help="Optional machine id to match on",
     cls=common.GradientOption,
@@ -436,7 +436,7 @@ restart_machine_help = "Restart an individual machine. If the machine is already
 
 @machines_group.command("restart", help=restart_machine_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to restart",
     required=True,
@@ -452,9 +452,9 @@ def restart_machine(machine_id, api_key, options_file):
 show_machine_details_help = "Show machine information for the machine with the given id."
 
 
-@machines_group.command("show", help=show_machine_details_help)
+@machines_group.command("details", help=show_machine_details_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to show",
     required=True,
@@ -472,7 +472,7 @@ update_machine_help = "Update attributes of a machine"
 
 @machines_group.command("update", help=update_machine_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to update",
     required=True,
@@ -541,7 +541,7 @@ start_machine_help = "Start up an individual machine. If the machine is already 
 
 @machines_group.command("start", help=start_machine_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to start",
     required=True,
@@ -561,7 +561,7 @@ stop_machine_help = "Stop an individual machine. If the machine is already stopp
 
 @machines_group.command("stop", help=stop_machine_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to start",
     required=True,
@@ -580,7 +580,7 @@ show_machine_utilization_help = "Get machine utilization data for the machine wi
 
 @machines_group.command("utilization", help=show_machine_utilization_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to start",
     required=True,
@@ -607,7 +607,7 @@ wait_for_machine_state_help = "Wait for the machine with the given id to enter a
 
 @machines_group.command("waitfor", help=wait_for_machine_state_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to start",
     required=True,
@@ -629,7 +629,13 @@ def wait_for_machine_state(machine_id, state, api_key, options_file):
 
 
 @machines_tags.command("add", help="Add tags to machine")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the machine",
+)
 @click.option(
     "--tag",
     "tags",
@@ -646,14 +652,20 @@ def wait_for_machine_state(machine_id, state, api_key, options_file):
 @api_key_option
 @common.options_file
 def machine_add_tag(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
 
     command = machines_commands.MachineAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
 
 
 @machines_tags.command("remove", help="Remove tags from machine")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the machine",
+)
 @click.option(
     "--tag",
     "tags",
@@ -670,7 +682,7 @@ def machine_add_tag(id, options_file, api_key, **kwargs):
 @api_key_option
 @common.options_file
 def machine_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
 
     command = machines_commands.MachineRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)

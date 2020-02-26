@@ -600,7 +600,13 @@ def create_and_start_single_node(ctx, api_key, show_logs, tensorboard, tensorboa
 
 
 @experiments_group.command("start", help="Start experiment")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
 @click.option(
     "--logs",
     "show_logs",
@@ -619,7 +625,13 @@ def start_experiment(ctx, id, show_logs, api_key, options_file):
 
 
 @experiments_group.command("stop", help="Stop experiment")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
 @api_key_option
 @common.options_file
 def stop_experiment(id, api_key, options_file):
@@ -672,7 +684,13 @@ def list_experiments(project_ids, api_key, exp_limit, exp_offset, tags, options_
 
 
 @experiments_group.command("details", help="Show detail of an experiment")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
 @api_key_option
 @common.options_file
 def get_experiment_details(id, options_file, api_key):
@@ -682,7 +700,7 @@ def get_experiment_details(id, options_file, api_key):
 
 @experiments_group.command("logs", help="List experiment logs")
 @click.option(
-    "--experimentId",
+    "--id",
     "experiment_id",
     required=True,
     cls=common.GradientOption,
@@ -716,7 +734,13 @@ def list_logs(experiment_id, line, limit, follow, options_file, api_key=None):
 
 
 @experiments_group.command("delete", help="Delete an experiment")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
 @api_key_option
 @common.options_file
 def delete_experiment(id, options_file, api_key):
@@ -725,7 +749,13 @@ def delete_experiment(id, options_file, api_key):
 
 
 @experiments_tags.command("add", help="Add tags to experiment")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
 @click.option(
     "--tag",
     "tags",
@@ -742,14 +772,20 @@ def delete_experiment(id, options_file, api_key):
 @api_key_option
 @common.options_file
 def experiment_add_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
 
     command = ExperimentAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
 
 
 @experiments_tags.command("remove", help="Remove tags from experiment")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
 @click.option(
     "--tag",
     "tags",
@@ -766,7 +802,7 @@ def experiment_add_tags(id, options_file, api_key, **kwargs):
 @api_key_option
 @common.options_file
 def experiment_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
 
     command = ExperimentRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)

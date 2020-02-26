@@ -16,6 +16,7 @@ def get_clusters_client(api_key):
 def clusters():
     pass
 
+
 @clusters.command("list", help="List your team clusters")
 @click.option(
     "--limit",

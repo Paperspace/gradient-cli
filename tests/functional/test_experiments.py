@@ -1053,8 +1053,8 @@ class TestExperimentsCreateAndStartMultiNode(TestExperimentsCreateMultiNode):
 class TestExperimentDetail(object):
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/experiment-id/"
 
-    COMMAND = ["experiments", "details", "experiment-id"]
-    COMMAND_WITH_API_KEY = ["experiments", "details", "experiment-id", "--apiKey", "some_key"]
+    COMMAND = ["experiments", "details", "--id", "experiment-id"]
+    COMMAND_WITH_API_KEY = ["experiments", "details", "--id", "experiment-id", "--apiKey", "some_key"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "details", "--optionsFile", ]  # path added in test
 
     MULTI_NODE_DETAILS_STDOUT = """+---------------------+--------------------------+
@@ -1321,9 +1321,9 @@ Aborted!
 
 class TestStartExperiment(object):
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/some-id/start/"
-    COMMAND = ["experiments", "start", "some-id"]
+    COMMAND = ["experiments", "start", "--id", "some-id"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "start", "--optionsFile", ]  # path added in test
-    COMMAND_WITH_API_KEY = ["experiments", "start", "some-id", "--apiKey", "some_key"]
+    COMMAND_WITH_API_KEY = ["experiments", "start", "--id", "some-id", "--apiKey", "some_key"]
     RESPONSE_JSON = {"message": "success"}
     START_STDOUT = "Experiment started\n"
 
@@ -1372,9 +1372,9 @@ class TestStartExperiment(object):
 
 class TestStopExperiment(object):
     URL_V2 = "https://services.paperspace.io/experiments/v2/experiments/some-id/stop/"
-    COMMAND = ["experiments", "stop", "some-id"]
+    COMMAND = ["experiments", "stop", "--id", "some-id"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "stop", "--optionsFile", ]  # path added in test
-    COMMAND_WITH_API_KEY = ["experiments", "stop", "some-id", "--apiKey", "some_key"]
+    COMMAND_WITH_API_KEY = ["experiments", "stop", "--id", "some-id", "--apiKey", "some_key"]
     RESPONSE_JSON = {"message": "success"}
     EXPECTED_STDOUT = "Experiment stopped\n"
 
@@ -1423,9 +1423,9 @@ class TestStopExperiment(object):
 
 class TestDeleteExperiment(object):
     URL = "https://services.paperspace.io/experiments/v2/experiments/some-id/"
-    COMMAND = ["experiments", "delete", "some-id"]
+    COMMAND = ["experiments", "delete", "--id", "some-id"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "delete", "--optionsFile", ]  # path added in test
-    COMMAND_WITH_API_KEY = ["experiments", "delete", "some-id", "--apiKey", "some_key"]
+    COMMAND_WITH_API_KEY = ["experiments", "delete", "--id", "some-id", "--apiKey", "some_key"]
     RESPONSE_JSON = {"message": "success"}
     EXPECTED_STDOUT = "Experiment deleted\n"
 
@@ -1509,8 +1509,8 @@ class TestDeleteExperiment(object):
 
 class TestExperimentLogs(object):
     URL = "https://logs.paperspace.io/jobs/logs"
-    COMMAND = ["experiments", "logs", "--experimentId", "some_id"]
-    COMMAND_WITH_FOLLOW = ["experiments", "logs", "--experimentId", "some_id", "--follow", "True"]
+    COMMAND = ["experiments", "logs", "--id", "some_id"]
+    COMMAND_WITH_FOLLOW = ["experiments", "logs", "--id", "some_id", "--follow", "True"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "logs", "--optionsFile", ]  # path added in test
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")

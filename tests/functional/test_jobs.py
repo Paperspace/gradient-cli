@@ -185,7 +185,7 @@ class TestJobLogs(TestJobs):
     COMMAND_WITHOUT_REQUIRED_PARAMETERS = ["jobs", "logs"]
     COMMAND_WITH_ALL_OPTIONS = [
         "jobs", "logs",
-        "--jobId", "some_id",
+        "--id", "some_id",
         "--apiKey", "some_key",
         "--line", "50",
         "--limit", "200",
@@ -198,7 +198,7 @@ class TestJobLogs(TestJobs):
     EXPECTED_STDOUT_WITHOUT_PARAMETERS = """Usage: cli jobs logs [OPTIONS]
 Try "cli jobs logs --help" for help.
 
-Error: Missing option "--jobId".
+Error: Missing option "--id".
 """
 
     EXPECTED_STDOUT = """+Job some_id logs------------------------------------------------------------------------+
@@ -296,8 +296,8 @@ class TestDestroyJobArtifactsCommands(TestJobs):
         post_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
         file_names = "some_file_names"
-        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--files", file_names, "--apiKey",
-                                              "some_key"])
+        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", "--id", job_id, "--files", file_names,
+                                              "--apiKey", "some_key"])
 
         assert result.exit_code == 0, result.exc_info
         post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy".format(self.URL, job_id),
@@ -311,7 +311,7 @@ class TestDestroyJobArtifactsCommands(TestJobs):
     def test_should_send_valid_post_request_when_destroying_artifacts_without_files_specified(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
-        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--apiKey", "some_key"])
+        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", "--id", job_id, "--apiKey", "some_key"])
 
         post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy".format(self.URL, job_id),
                                         files=None,
@@ -345,7 +345,7 @@ class TestGetJobArtifacts(TestJobs):
     def test_should_send_send_valid_get_request_and_receive_json_response(self, get_patched):
         get_patched.return_value = MockResponse()
         job_id = "some_job_id"
-        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "get", job_id, "--apiKey", "some_key"])
+        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "get", "--id", job_id, "--apiKey", "some_key"])
 
         get_patched.assert_called_with("{}/jobs/artifactsGet".format(self.URL),
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -376,7 +376,7 @@ class TestListJobArtifacts(TestJobs):
         get_patched.return_value = MockResponse()
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli,
-                                    ["jobs", "artifacts", "list", job_id, "--apiKey", "some_key", "--size", "--links",
+                                    ["jobs", "artifacts", "list", "--id", job_id, "--apiKey", "some_key", "--size", "--links",
                                      "--files", "foo"])
 
         get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
@@ -415,7 +415,7 @@ class TestListJobArtifacts(TestJobs):
         get_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli,
-                                    ["jobs", "artifacts", "list", job_id, "--apiKey", "some_key"] + [option])
+                                    ["jobs", "artifacts", "list", "--id", job_id, "--apiKey", "some_key"] + [option])
 
         get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -616,7 +616,7 @@ class TestDownloadJobArtifacts(TestJobs):
     DESTINATION_DIR_NAME = "dest"
     DESTINATION_DIR_PATH = os.path.join(tempfile.gettempdir(), "dest")
 
-    COMMAND = ["jobs", "artifacts", "download", "--jobId", "some_job_id", "--destinationDir", DESTINATION_DIR_PATH]
+    COMMAND = ["jobs", "artifacts", "download", "--id", "some_job_id", "--destinationDir", DESTINATION_DIR_PATH]
 
     @classmethod
     def teardown_method(cls):
