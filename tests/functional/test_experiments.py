@@ -1,3 +1,4 @@
+import copy
 import os
 import shutil
 import tempfile
@@ -98,6 +99,11 @@ class TestExperimentsCreateSingleNode(object):
         "experiments", "create", "singlenode",
         "--optionsFile",  # path added in test,
     ]
+    FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE_AND_SOME_VALUES_OVERWRITTEN_IN_LINE = [
+        "experiments", "create", "singlenode",
+        "--name", "some_other_name",
+        "--optionsFile",  # path added in test,
+    ]
     BASIC_OPTIONS_REQUEST = {
         "projectHandle": u"testHandle",
         "container": u"testContainer",
@@ -168,6 +174,29 @@ class TestExperimentsCreateSingleNode(object):
         post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.FULL_OPTIONS_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_options_from_config_file_and_overwrite_options_with_values_provided_in_terminal(
+            self, post_patched, create_single_node_experiment_config_path):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+        request_json = copy.deepcopy(self.FULL_OPTIONS_REQUEST)
+        request_json["name"] = "some_other_name"
+        request_json["projectHandle"] = "some_other_project_id"
+
+        command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE_AND_SOME_VALUES_OVERWRITTEN_IN_LINE[:]
+        command = command[:] + [create_single_node_experiment_config_path, "--projectId", "some_other_project_id"]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.EXPECTED_STDOUT in result.output, result.exc_info
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=request_json,
                                              params=None,
                                              files=None,
                                              data=None)
@@ -951,6 +980,11 @@ class TestExperimentsCreateAndStartSingleNode(TestExperimentsCreateSingleNode):
     ]
     FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
         "experiments", "run", "singlenode",
+        "--optionsFile",  # path added in test,
+    ]
+    FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE_AND_SOME_VALUES_OVERWRITTEN_IN_LINE = [
+        "experiments", "run", "singlenode",
+        "--name", "some_other_name",
         "--optionsFile",  # path added in test,
     ]
     EXPECTED_STDOUT = "New experiment created and started with ID: sadkfhlskdjh\n"

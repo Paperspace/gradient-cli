@@ -67,7 +67,7 @@ def get_option_name(options_strings):
 class ReadValueFromConfigFile(click.Parameter):
     def handle_parse_result(self, ctx, opts, args):
         config_file = ctx.params.get(OPTIONS_FILE_PARAMETER_NAME)
-        if config_file:
+        if self.should_read_value_from_file(opts, args, config_file):
             with open(config_file) as f:
                 config_data = yaml.load(f, Loader=yaml.FullLoader)
                 option_name = get_option_name(self.opts)
@@ -89,8 +89,15 @@ class ReadValueFromConfigFile(click.Parameter):
 
                         opts[self.name] = value
 
-        return super(ReadValueFromConfigFile, self).handle_parse_result(
+        rv = super(ReadValueFromConfigFile, self).handle_parse_result(
             ctx, opts, args)
+        return rv
+
+    def should_read_value_from_file(self, opts, args, config_file):
+        """
+        :rtype: bool
+        """
+        raise NotImplementedError
 
 
 class ColorExtrasInCommandHelpMixin(object):
@@ -127,11 +134,13 @@ class ColorExtrasInCommandHelpMixin(object):
 
 
 class GradientArgument(ColorExtrasInCommandHelpMixin, ReadValueFromConfigFile, click.Argument):
-    pass
+    def should_read_value_from_file(self, opts, args, config_file):
+        return opts.get(self.name) in (None, ()) and config_file
 
 
 class GradientOption(ColorExtrasInCommandHelpMixin, ReadValueFromConfigFile, click.Option):
-    pass
+    def should_read_value_from_file(self, opts, args, config_file):
+        return self.name not in opts and config_file
 
 
 api_key_option = click.option(
@@ -207,6 +216,7 @@ def options_file(f):
         click.option(
             "--" + OPTIONS_FILE_OPTION_NAME,
             OPTIONS_FILE_PARAMETER_NAME,
+            is_eager=True,
             help="Path to YAML file with predefined options",
             type=click.Path(exists=True, resolve_path=True)
         ),
