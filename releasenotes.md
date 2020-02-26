@@ -1,5 +1,12 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.6.1a0
+### Breaking changes
+* `--workspaceUrl` and `--workspaceArchive` replaced by `--workspace`
+### Fixes
+* Added `clusters list` command
+* Fixed URL to a newly created project
+
 # Release Notes for 0.6.0
 ##### Note: this list includes all changes made in 0.6.0a* alpha releases
 ### Breaking changes
