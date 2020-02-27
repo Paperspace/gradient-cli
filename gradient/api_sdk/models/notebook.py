@@ -23,6 +23,7 @@ class Notebook(object):
     vm_type = attr.ib(type=bool, default=None)
     fqdn = attr.ib(type=bool, default=None)
     namespace = attr.ib(type=str, default=None)
+    tags = attr.ib(type=list, factory=list)
 
     @property
     def url(self):

@@ -1,4 +1,5 @@
 import collections
+import fnmatch
 import os
 import tempfile
 import zipfile
@@ -40,7 +41,11 @@ class MultipartEncoderWithProgressbar(MultipartEncoder):
 
 
 class ZipArchiver(object):
-    DEFAULT_EXCLUDED_PATHS = [".git", ".idea", ".pytest_cache"]
+    DEFAULT_EXCLUDED_PATHS = [
+        os.path.join(".git", "*"),
+        os.path.join(".idea", "*"),
+        os.path.join(".pytest_cache", "*"),
+    ]
 
     def __init__(self, logger=None):
         self.logger = logger or MuteLogger()
@@ -98,8 +103,6 @@ class ZipArchiver(object):
         # Read all directory, subdirectories and file lists
         for root, dirs, files in os.walk(input_path):
             relative_path = os.path.relpath(root, input_path)
-            if relative_path in excluded_paths:
-                continue
 
             for filename in files:
                 # Create the full filepath by using os module.
@@ -107,6 +110,9 @@ class ZipArchiver(object):
                     file_path = filename
                 else:
                     file_path = os.path.join(os.path.relpath(root, input_path), filename)
+
+                if any(fnmatch.fnmatch(file_path, pattern) for pattern in excluded_paths):
+                    continue
 
                 if file_path not in excluded_paths:
                     file_paths[file_path] = os.path.join(root, filename)
@@ -150,13 +156,14 @@ class ZipArchiverWithProgressbar(ZipArchiver):
 class S3FileUploader(object):
     DEFAULT_MULTIPART_ENCODER_CLS = MultipartEncoder
 
-    def __init__(self, multipart_encoder_cls=None, logger=None):
+    def __init__(self, multipart_encoder_cls=None, logger=None, ps_client_name=None):
         """
         :param type(MultipartEncoder) multipart_encoder_cls:
         :param Logger logger:
         """
         self.multipart_encoder_cls = multipart_encoder_cls or self.DEFAULT_MULTIPART_ENCODER_CLS
         self.logger = logger or MuteLogger()
+        self.ps_client_name = ps_client_name
 
     def upload(self, file_path, url, bucket_name, s3_fields):
         """Upload a file to S3
@@ -193,7 +200,7 @@ class S3FileUploader(object):
             raise sdk_exceptions.S3UploadFailedError(response)
 
     def _get_client(self, url):
-        client = http_client.API(url, logger=self.logger)
+        client = http_client.API(url, logger=self.logger, ps_client_name=self.ps_client_name)
         return client
 
     def _get_multipart_encoder_monitor(self, fields):
@@ -218,15 +225,20 @@ class S3FileUploader(object):
 
 
 class S3ProjectFileUploader(object):
-    def __init__(self, api_key, s3uploader=None, logger=None):
+    def __init__(self, api_key, s3uploader=None, logger=None, ps_client_name=None):
         """
         :param str api_key:
         :param S3FileUploader s3uploader:
         :param Logger logger:
         """
         self.logger = logger or MuteLogger()
-        self.experiments_api = http_client.API(config.CONFIG_EXPERIMENTS_HOST, api_key=api_key, logger=self.logger)
-        self.s3uploader = s3uploader or S3FileUploader(logger=self.logger)
+        self.experiments_api = http_client.API(
+            config.CONFIG_EXPERIMENTS_HOST,
+            api_key=api_key,
+            logger=self.logger,
+            ps_client_name=ps_client_name,
+        )
+        self.s3uploader = s3uploader or S3FileUploader(logger=self.logger, ps_client_name=ps_client_name)
 
     def upload(self, file_path, project_id, cluster_id=None):
         """Upload file to S3 bucket for a project
@@ -282,7 +294,7 @@ class S3ProjectFileUploader(object):
 
 
 class S3WorkspaceDirectoryUploader(object):
-    def __init__(self, api_key, temp_dir=None, archiver=None, project_uploader=None):
+    def __init__(self, api_key, temp_dir=None, archiver=None, project_uploader=None, ps_client_name=None):
         """
         :param str api_key:
         :param str temp_dir:
@@ -291,7 +303,8 @@ class S3WorkspaceDirectoryUploader(object):
         """
         self.temp_dir = temp_dir or tempfile.gettempdir()
         self.archiver = archiver or ZipArchiver()
-        self.project_uploader = project_uploader or S3ProjectFileUploader(api_key)
+        self.ps_client_name = ps_client_name
+        self.project_uploader = project_uploader or S3ProjectFileUploader(api_key, ps_client_name=ps_client_name)
 
     def upload(self, workspace_dir_path, project_id, exclude=None, temp_file_name="temp.zip"):
         """Archive and upload a workspace directory

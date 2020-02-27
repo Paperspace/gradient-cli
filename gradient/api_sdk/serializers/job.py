@@ -10,7 +10,6 @@ class JobSchema(BaseSchema):
     id = marshmallow.fields.Str(dump_to="id", load_from="id")
     name = marshmallow.fields.Str(required=True)
     state = marshmallow.fields.Str()
-    workspace_url = marshmallow.fields.Str(dump_to="workspaceUrl", load_from="workspaceUrl")
     workspace_file_name = marshmallow.fields.Str(dump_to="workspaceFileName", load_from="workspaceFileName")
     working_directory = marshmallow.fields.Str(dump_to="workingDirectory", load_from="workingDirectory")
     artifacts_directory = marshmallow.fields.Str(dump_to="artifactsDirectory", load_from="artifactsDirectory")
@@ -31,7 +30,8 @@ class JobSchema(BaseSchema):
     dt_created = marshmallow.fields.Str(dump_to="dtCreated", load_from="dtCreated")
     dt_modified = marshmallow.fields.Str(dump_to="dtModified", load_from="dtModified")
     dt_provisioning_started = marshmallow.fields.Str(dump_to="dtProvisioningStarted", load_from="dtProvisioningStarted")
-    dt_provisioning_finished = marshmallow.fields.Str(dump_to="dtProvisioningFinished", load_from="dtProvisioningFinished")
+    dt_provisioning_finished = marshmallow.fields.Str(dump_to="dtProvisioningFinished",
+                                                      load_from="dtProvisioningFinished")
     dt_started = marshmallow.fields.Str(dump_to="dtStarted", load_from="dtStarted")
     dt_finished = marshmallow.fields.Str(dump_to="dtFinished", load_from="dtFinished")
     dt_teardown_started = marshmallow.fields.Str(dump_to="dtTeardownStarted", load_from="dtTeardownStarted")
@@ -79,8 +79,6 @@ class JobSchema(BaseSchema):
     experiment_id = marshmallow.fields.Str(dump_to="experimentId", load_from="experimentId")
 
     command = marshmallow.fields.Str()
-    workspace = marshmallow.fields.Str()
-    workspace_archive = marshmallow.fields.Str(dump_to="workspaceArchive", load_from="workspaceArchive")
     use_dockerfile = marshmallow.fields.Bool(dump_to="useDockerfile", load_from="useDockerfile")
     rel_dockerfile_path = marshmallow.fields.Str(dump_to="relDockerfilePath", load_from="relDockerfilePath")
     registry_username = marshmallow.fields.Str(dump_to="registryUsername", load_from="registryUsername")
@@ -92,3 +90,5 @@ class JobSchema(BaseSchema):
         dump_to="registryTargetUsername", load_from="registryTargetUsername")
     registry_target_password = marshmallow.fields.Str(
         dump_to="registryTargetPassword", load_from="registryTargetPassword")
+
+    tags = marshmallow.fields.Str(many=True, load_only=True)

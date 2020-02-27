@@ -1,12 +1,60 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.6.1a0
+### Breaking changes
+* `--workspaceUrl` and `--workspaceArchive` replaced by `--workspace`
+### Fixes
+* Added `clusters list` command
+* Fixed URL to a newly created project
+
+# Release Notes for 0.6.0
+##### Note: this list includes all changes made in 0.6.0a* alpha releases
+### Breaking changes
+* Removed the `--vpc` flag
+* `--name` is not required to create/run experiment. Parameters in methods for creating/running experiments have changed 
+### New features
+* Added commands to `add` and `remove` tags
+* Added filtering notebooks by tags
+* Added showing tags in `details` commands
+* Added `projects details` command
+* Datasets for experiments in YAML options file can now be defined as list of objects
+* Allow string instead of list of strings in YAML for options that take multiple values
+### Fixes
+* Removed empty lines in logs
+* Fixed `ExperimentsClient.list` parameters (not a breaking change)
+* Fix showing cluster ID in `deployments details`
+* Add filtering entities by tags in `list` commands
+
+# Release Notes for 0.6.0a2
+### Breaking changes
+* Removed the `--vpc` flag
+
+# Release Notes for 0.6.0a1
+### New features
+* Added commands to `add` and `remove` tags
+* Added filtering notebooks by tags
+* Added showing tags in `details` commands
+* Added `projects details` command
+
+# Release Notes for 0.6.0a0
+### Breaking changes
+* `--name` is not required to create/run experiment. Parameters in methods for creating/running experiments have changed 
+### New features
+* Datasets for experiments in YAML options file can now be defined as list of objects
+* Allow string instead of list of strings in YAML for options that take multiple values
+### Fixes
+* Removed empty lines in logs
+* Fixed `ExperimentsClient.list` parameters (not a breaking change)
+* Fix showing cluster ID in `deployments details`
+* Add filtering entities by tags in `list` commands
+
 # Release Notes for 0.5.2
 ##### Note: this list includes all changes made in 0.5.2a* alpha releases
 ### New features
 * Update `notebooks list` command accepts `--list` and `--offset` arguments and show more notebooks
 * Add `deployments details` command
 * registry target options to `run` and `jobs create` commands
-* `--workspace` option in `experiments` commands does not default to current working directory anymore and is required for MPI experiments
+* `--workspace` option in `experiments` commands does not default to current working directory anymore and is required for VPC experiments
 
 # Release Notes for 0.5.2a3
 ### New features

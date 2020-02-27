@@ -24,3 +24,4 @@ class NotebookSchema(BaseSchema):
     vm_type = marshmallow.fields.Str(load_from="vmType", dump_to="vmType")
     fqdn = marshmallow.fields.Str()
     namespace = marshmallow.fields.Str()
+    tags = marshmallow.fields.List(marshmallow.fields.Str(), load_only=True)

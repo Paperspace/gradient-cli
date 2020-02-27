@@ -1,9 +1,9 @@
-from enum import Enum
-
 import marshmallow
+from enum import Enum
 from marshmallow.validate import OneOf
 
 from .base import BaseSchema
+from .tag import TagSchema
 from .. import models
 
 
@@ -43,6 +43,7 @@ class TensorboardDetailSchema(BaseSchema):
     experiments = marshmallow.fields.List(marshmallow.fields.Nested(TBExperimentSchema))
     url = marshmallow.fields.Str()
     state = marshmallow.fields.String()
+    tags = marshmallow.fields.Nested(TagSchema, only="name", many=True, load_only=True)
 
 
 class TensorboardSchema(BaseSchema):

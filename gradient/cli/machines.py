@@ -2,12 +2,12 @@ import collections
 
 import click
 
-from gradient import logger
+from gradient import clilogger
 from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
-from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
+from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, validate_comma_split_option
 from gradient.cli.validators import validate_email, validate_mutually_exclusive
 from gradient.commands import machines as machines_commands
 
@@ -22,6 +22,11 @@ REGIONS_MAP = collections.OrderedDict(
 
 @cli.group("machines", help="Manage machines", cls=ClickGroup)
 def machines_group():
+    pass
+
+
+@machines_group.group("tags", help="Manage machine tags", cls=ClickGroup)
+def machines_tags():
     pass
 
 
@@ -180,9 +185,23 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
     help="The script id of a script to be run on startup. See the Script Guide for more info on using scripts",
     cls=common.GradientOption,
 )
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
 @api_key_option
 @common.options_file
 def create_machine(api_key, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     del_if_value_is_none(kwargs)
 
     assign_public_ip = kwargs.get("assign_public_ip")
@@ -198,7 +217,7 @@ def create_machine(api_key, options_file, **kwargs):
     validate_mutually_exclusive([user_id], [email, password, first_name, last_name],
                                 "--userId is mutually exclusive with --email, --password, --firstName and --lastName")
 
-    command = machines_commands.CreateMachineCommand(api_key=api_key, logger=logger.Logger())
+    command = machines_commands.CreateMachineCommand(api_key=api_key, logger=clilogger.CliLogger())
     command.execute(kwargs)
 
 
@@ -212,7 +231,7 @@ destroy_machine_help = "Destroy the machine with the given id. When this action 
 
 @machines_group.command("destroy", help=destroy_machine_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     required=True,
     help="The id of the machine to destroy",
@@ -228,7 +247,7 @@ destroy_machine_help = "Destroy the machine with the given id. When this action 
 @api_key_option
 @common.options_file
 def destroy_machine(machine_id, release_public_ip, api_key, options_file):
-    command = machines_commands.DestroyMachineCommand(api_key=api_key, logger=logger.Logger())
+    command = machines_commands.DestroyMachineCommand(api_key=api_key, logger=clilogger.CliLogger())
     command.execute(machine_id, release_public_ip)
 
 
@@ -246,7 +265,7 @@ list_machines_help = "List information about all machines available to either th
     cls=common.GradientOption,
 )
 @click.option(
-    "--machineId",
+    "--id",
     "id",
     help="Optional machine id to match on",
     cls=common.GradientOption,
@@ -405,7 +424,7 @@ def list_machines(api_key, params, options_file, **kwargs):
     validate_mutually_exclusive(params.values(), kwargs.values(),
                                 "You can use either --params dictionary or single filter arguments")
 
-    command = machines_commands.ListMachinesCommand(api_key=api_key, logger=logger.Logger())
+    command = machines_commands.ListMachinesCommand(api_key=api_key, logger=clilogger.CliLogger())
     filters = params or kwargs
     command.execute(**filters)
 
@@ -417,7 +436,7 @@ restart_machine_help = "Restart an individual machine. If the machine is already
 
 @machines_group.command("restart", help=restart_machine_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to restart",
     required=True,
@@ -426,16 +445,16 @@ restart_machine_help = "Restart an individual machine. If the machine is already
 @api_key_option
 @common.options_file
 def restart_machine(machine_id, api_key, options_file):
-    command = machines_commands.RestartMachineCommand(api_key=api_key, logger=logger.Logger())
+    command = machines_commands.RestartMachineCommand(api_key=api_key, logger=clilogger.CliLogger())
     command.execute(machine_id)
 
 
 show_machine_details_help = "Show machine information for the machine with the given id."
 
 
-@machines_group.command("show", help=show_machine_details_help)
+@machines_group.command("details", help=show_machine_details_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to show",
     required=True,
@@ -453,7 +472,7 @@ update_machine_help = "Update attributes of a machine"
 
 @machines_group.command("update", help=update_machine_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to update",
     required=True,
@@ -522,7 +541,7 @@ start_machine_help = "Start up an individual machine. If the machine is already 
 
 @machines_group.command("start", help=start_machine_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to start",
     required=True,
@@ -542,7 +561,7 @@ stop_machine_help = "Stop an individual machine. If the machine is already stopp
 
 @machines_group.command("stop", help=stop_machine_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to start",
     required=True,
@@ -561,7 +580,7 @@ show_machine_utilization_help = "Get machine utilization data for the machine wi
 
 @machines_group.command("utilization", help=show_machine_utilization_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to start",
     required=True,
@@ -588,7 +607,7 @@ wait_for_machine_state_help = "Wait for the machine with the given id to enter a
 
 @machines_group.command("waitfor", help=wait_for_machine_state_help)
 @click.option(
-    "--machineId",
+    "--id",
     "machine_id",
     help="Id of the machine to start",
     required=True,
@@ -607,3 +626,63 @@ wait_for_machine_state_help = "Wait for the machine with the given id to enter a
 def wait_for_machine_state(machine_id, state, api_key, options_file):
     command = machines_commands.WaitForMachineStateCommand(api_key=api_key)
     command.execute(machine_id, state)
+
+
+@machines_tags.command("add", help="Add tags to machine")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the machine",
+)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to machine",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to machine",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def machine_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
+
+    command = machines_commands.MachineAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@machines_tags.command("remove", help="Remove tags from machine")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the machine",
+)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to remove from machine",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want to remove from machine",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def machine_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
+
+    command = machines_commands.MachineRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

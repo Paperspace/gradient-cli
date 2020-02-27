@@ -44,11 +44,16 @@ class ListModels(GetBaseModelsApiUrlMixin, ParseModelDictMixin, ListResources):
         if kwargs.get("project_id"):
             filters["projectId"] = kwargs.get("project_id")
 
-        if not filters:
-            return None
+        if filters:
+            json_ = {"filter": {"where": {"and": [filters]}}}
+        else:
+            json_ = {}
 
-        json_ = {"filter": {"where": {"and": [filters]}}}
-        return json_
+        tags = kwargs.get("tags")
+        if tags:
+            json_["tagFilter"] = tags
+
+        return json_ or None
 
 
 class DeleteModel(GetBaseModelsApiUrlMixin, DeleteResource):

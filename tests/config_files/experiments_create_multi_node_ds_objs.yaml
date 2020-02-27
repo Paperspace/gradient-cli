@@ -1,0 +1,48 @@
+apiKey: some_key
+artifactDirectory: /artdir
+clusterId: 2a
+datasets:
+- uri: "s3://some.dataset/uri"
+  name: "some dataset name"
+  awsAccessKeyId: none
+  awsSecretAccessKey: none
+  versionId: version1
+  etag: "some etag"
+- uri: "s3://some.other.dataset/uri"
+  name: null
+  awsAccessKeyId: some_other_key_id
+  awsSecretAccessKey: some_other_secret
+  versionId: version2
+  etag: "some other etag"
+experimentEnv:
+  key: val
+experimentType: MPI
+ignoreFiles: file1,file2
+isPreemptible: true
+modelPath: some-model-path
+modelType: some-model-type
+name: multinode_mpi
+masterCommand: ls
+masterContainer: pscon
+masterContainerUser: pscuser
+masterCount: 2
+masterMachineType: psmtype
+masterRegistryPassword: psrpass
+masterRegistryUrl: psrurl
+masterRegistryUsername: psrcus
+ports: '3456'
+projectId: prq70zy79
+workerCommand: wcom
+workerContainer: wcon
+workerContainerUser: usr
+workerCount: 2
+workerMachineType: mty
+workerRegistryPassword: rpass
+workerRegistryUrl: rurl
+workerRegistryUsername: rusr
+workingDirectory: /dir
+workspace: s3://some-workspace
+workspaceUsername: username
+workspacePassword: password
+workspaceArchive: null
+workspaceRef: some_branch_name

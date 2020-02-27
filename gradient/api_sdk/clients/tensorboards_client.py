@@ -24,6 +24,7 @@ class TensorboardClient(BaseClient):
         )
 
     """
+
     def create(
             self,
             image=None,
@@ -97,7 +98,7 @@ class TensorboardClient(BaseClient):
             experiments=experiments,
         )
 
-        repository = repositories.CreateTensorboard(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.CreateTensorboard)
         tensorboard_id = repository.create(tensorboard)
         return tensorboard_id
 
@@ -121,7 +122,7 @@ class TensorboardClient(BaseClient):
 
         :raises: ResourceFetchingError: When there is problem with response from API
         """
-        repository = repositories.GetTensorboard(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.GetTensorboard)
         tensorboard = repository.get(id=id)
         return tensorboard
 
@@ -141,7 +142,7 @@ class TensorboardClient(BaseClient):
 
         :raises: ResourceFetchingError: When there is problem with response from API
         """
-        repository = repositories.ListTensorboards(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListTensorboards)
         tensorboards = repository.list()
         return tensorboards
 
@@ -168,7 +169,7 @@ class TensorboardClient(BaseClient):
 
         :raises: ResourceFetchingError: When there is problem with response from API
         """
-        repository = repositories.UpdateTensorboard(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.UpdateTensorboard)
         tensorboard = repository.update(id=id, added_experiments=added_experiments)
         return tensorboard
 
@@ -195,7 +196,7 @@ class TensorboardClient(BaseClient):
 
         :raises: ResourceFetchingError: When there is problem with response from API
         """
-        repository = repositories.UpdateTensorboard(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.UpdateTensorboard)
         tensorboard = repository.update(id=id, removed_experiments=removed_experiments)
         return tensorboard
 
@@ -215,5 +216,5 @@ class TensorboardClient(BaseClient):
 
         :param str id: Tensoboard id which you want to delete
         """
-        repository = repositories.DeleteTensorboard(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.DeleteTensorboard)
         repository.delete(id_=id)

@@ -4,9 +4,10 @@ import tempfile
 import progressbar
 from requests_toolbelt.multipart import encoder
 
-from gradient import utils
+from gradient import cliutils, cli_constants
 from gradient.api_sdk import s3_uploader
-from gradient.logger import Logger
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
+from gradient.clilogger import CliLogger
 
 
 class MultipartEncoder(object):
@@ -44,21 +45,18 @@ class WorkspaceHandler(object):
 
         :param logger_: gradient.logger
         """
-        self.logger = logger_ or Logger()
+        self.logger = logger_ or CliLogger()
         self.archive_path = None
         self.archive_basename = None
 
     def _zip_workspace(self, workspace_path, ignore_files):
-        if not workspace_path:
-            workspace_path = '.'
-            zip_file_name = os.path.basename(os.getcwd()) + '.zip'
-        else:
-            zip_file_name = os.path.basename(workspace_path) + '.zip'
-
+        zip_file_name = 'workspace.zip'
         zip_file_path = os.path.join(tempfile.gettempdir(), zip_file_name)
 
         if ignore_files:
             ignore_files = ignore_files.split(",")
+            ignore_files = [f.strip() for f in ignore_files]
+
         zip_archiver = self._get_workspace_archiver()
         zip_archiver.archive(workspace_path, zip_file_path, exclude=ignore_files)
 
@@ -90,19 +88,17 @@ class WorkspaceHandler(object):
 
     @staticmethod
     def _validate_input(input_data):
-        utils.validate_workspace_input(input_data)
-
-        workspace_url = input_data.get('workspaceUrl') or input_data.get("workspace_url")
         workspace_path = input_data.get('workspace')
-        workspace_archive = input_data.get('workspaceArchive') or input_data.get("workspace_archive")
+        workspace_archive = None
+        workspace_url = None
 
         if workspace_path not in ("none", None):
-            path_type = utils.PathParser.parse_path(workspace_path)
+            path_type = cliutils.PathParser.parse_path(workspace_path)
 
-            if path_type != utils.PathParser.LOCAL_DIR:
-                if path_type == utils.PathParser.LOCAL_FILE:
+            if path_type != cliutils.PathParser.LOCAL_DIR:
+                if path_type == cliutils.PathParser.LOCAL_FILE:
                     workspace_archive = workspace_path
-                elif path_type in (utils.PathParser.GIT_URL, utils.PathParser.S3_URL):
+                elif path_type in (cliutils.PathParser.GIT_URL, cliutils.PathParser.S3_URL):
                     workspace_url = workspace_path
 
                 workspace_path = None
@@ -116,7 +112,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
     def __init__(self, api_key, logger_=None):
         """
         :param str api_key:
-        :param gradient.logger.Logger logger_:
+        :param gradient.clilogger.CliLogger logger_:
         """
         super(S3WorkspaceHandler, self).__init__(logger_=logger_)
         self.api_key = api_key
@@ -138,7 +134,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
         return workspace
 
     def _get_workspace_uploader(self, api_key):
-        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(api_key, logger=self.logger)
+        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(api_key, logger=self.logger, ps_client_name=CLI_PS_CLIENT_NAME)
         return workspace_uploader
 
 
@@ -146,6 +142,15 @@ class S3WorkspaceHandlerWithProgressbar(S3WorkspaceHandler):
     WORKSPACE_ARCHIVER = s3_uploader.ZipArchiverWithProgressbar
 
     def _get_workspace_uploader(self, api_key):
-        file_uploader = s3_uploader.S3FileUploader(s3_uploader.MultipartEncoderWithProgressbar, logger=self.logger)
-        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(api_key, s3uploader=file_uploader, logger=self.logger)
+        file_uploader = s3_uploader.S3FileUploader(
+            s3_uploader.MultipartEncoderWithProgressbar,
+            logger=self.logger,
+            ps_client_name=cli_constants.CLI_PS_CLIENT_NAME,
+        )
+        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(
+            api_key,
+            s3uploader=file_uploader,
+            logger=self.logger,
+            ps_client_name=cli_constants.CLI_PS_CLIENT_NAME,
+        )
         return workspace_uploader

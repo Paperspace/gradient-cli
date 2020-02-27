@@ -1,16 +1,24 @@
-import halo
+import datetime
+
 import terminaltables
 
 from gradient import api_sdk
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import urljoin
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.commands import common, BaseCommand
 from gradient.commands.common import DetailsCommandMixin
 
 
 class GetMachinesClientMixin(object):
+    entity = "machine"
+
     def _get_client(self, api_key, logger):
-        client = api_sdk.MachinesClient(api_key=api_key, logger=logger)
+        client = api_sdk.MachinesClient(
+            api_key=api_key,
+            logger=logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
         return client
 
 
@@ -61,9 +69,15 @@ class ShowMachineCommand(DetailsCommandMixin, GetMachinesClientMixin, common.Bas
         :param api_sdk.Machine machine:
         """
         try:
-            last_event = machine.events[-1]
-            last_event_string = "name:     {}\nstate:    {}\ncreated:  {}" \
-                .format(last_event.name, last_event.state, last_event.created)
+            if machine.events:
+                sorted_events = sorted(machine.events,
+                                       key=lambda x: datetime.datetime.strptime(x.created, "%Y-%m-%dT%H:%M:%S.%fZ"))
+                last_event = sorted_events[-1]
+                last_event_string = "name:     {}\nstate:    {}\ncreated:  {}" \
+                    .format(last_event.name, last_event.state, last_event.created)
+            else:
+                last_event_string = ""
+
         except (KeyError, IndexError):
             last_event_string = None
 
@@ -158,3 +172,15 @@ class WaitForMachineStateCommand(GetMachinesClientMixin, BaseCommand):
     def execute(self, machine_id, state, interval=5):
         self.client.wait_for_state(machine_id, state, interval)
         self.logger.log("Machine state: {}".format(state))
+
+
+class MachineAddTagsCommand(GetMachinesClientMixin, BaseCommand):
+    def execute(self, machine_id, *args, **kwargs):
+        self.client.add_tags(machine_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to machine")
+
+
+class MachineRemoveTagsCommand(GetMachinesClientMixin, BaseCommand):
+    def execute(self, machine_id, *args, **kwargs):
+        self.client.remove_tags(machine_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from machine")

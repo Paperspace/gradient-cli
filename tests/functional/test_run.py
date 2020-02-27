@@ -7,6 +7,12 @@ from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import MockResponse
 
+EXPECTED_HEADERS = default_headers.copy()
+EXPECTED_HEADERS["ps_client_name"] = "gradient-cli"
+
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY = EXPECTED_HEADERS.copy()
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
 
 class TestRunCommand(object):
     command_name = 'run'
@@ -16,7 +22,7 @@ class TestRunCommand(object):
     COMMAND_WITH_OPTIONS_FILE = ["run", "--optionsFile", ]  # path added in test
 
     url = "https://api.paperspace.io/jobs/createJob/"
-    headers = default_headers.copy()
+    headers = EXPECTED_HEADERS_WITH_CHANGED_API_KEY.copy()
     headers["X-API-Key"] = "some_key"
 
     RESPONSE_JSON_200 = {"id": "sadkfhlskdjh", "message": "success"}
@@ -26,10 +32,11 @@ class TestRunCommand(object):
     @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
     @mock.patch("gradient.workspace.MultipartEncoder.get_monitor")
     @mock.patch("gradient.commands.jobs.CreateJobCommand._get_files_dict")
-    def test_run_simple_file_with_args(self, get_files_patched, get_moniror_patched, workspace_zip_patched, post_patched):
+    def test_run_simple_file_with_args(self, get_files_patched, get_moniror_patched, workspace_zip_patched,
+                                       post_patched):
         get_files_patched.return_value = mock.MagicMock()
         workspace_zip_patched.return_value = '/foo/bar'
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
         mock_monitor = mock.MagicMock()
         mock_monitor.content_type = "mock/multipart"
@@ -77,7 +84,6 @@ class TestRunCommand(object):
                                             'name': u'test',
                                             'projectId': u'projectId',
                                             'workspaceFileName': 'none',
-                                            'workspace': 'none',
                                             'command': 'python{} -c print(foo)'.format(str(sys.version_info[0])),
                                             'container': u'paperspace/tensorflow-python',
                                             'machineType': 'G1',
@@ -87,11 +93,11 @@ class TestRunCommand(object):
     @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
     def test_run_shell_command_with_args_with_s3_workspace(self, workspace_zip_patched, post_patched):
         workspace_zip_patched.return_value = '/foo/bar'
-        post_patched.return_value = MockResponse(status_code=200)
+        post_patched.return_value = MockResponse()
 
         runner = CliRunner()
         result = runner.invoke(cli.cli,
-                               [self.command_name] + self.common_commands + ["-s", "echo foo", "--workspaceUrl",
+                               [self.command_name] + self.common_commands + ["-s", "echo foo", "--workspace",
                                                                              "s3://bucket/object"])
 
         expected_headers = self.headers.copy()
@@ -104,7 +110,6 @@ class TestRunCommand(object):
                                             'name': u'test',
                                             'projectId': u'projectId',
                                             'workspaceFileName': 's3://bucket/object',
-                                            'workspaceUrl': 's3://bucket/object',
                                             'command': 'echo foo',
                                             'container': u'paperspace/tensorflow-python',
                                             'machineType': 'G1',
@@ -138,7 +143,7 @@ class TestRunCommand(object):
                                                 'clusterId': 'some_cluster_id',
                                                 'command': 'some_script.py some_other_script.py',
                                                 'experimentId': 'some_experiment_id',
-                                                'workspaceFileName': 'some.url',
+                                                'workspaceFileName': 's3://bucket/object',
                                                 'targetNodeAttrs': {'key': 'val2'},
                                                 'container': 'some_container',
                                                 'jobEnv': {'key': 'val'},
@@ -146,7 +151,6 @@ class TestRunCommand(object):
                                                 'registryTarget': 'some_registry_target',
                                                 'startedByUserId': 'some_user_id',
                                                 'ports': '8080,9000:9900',
-                                                'workspaceUrl': 'some.url',
                                                 'registryPassword': 'some_registry_password',
                                                 'registryUsername': 'some_registry_username',
                                                 })

@@ -62,6 +62,7 @@ class BaseExperiment(object):
     is_preemptible = attr.ib(type=bool, default=None)
     id = attr.ib(type=str, default=None)
     state = attr.ib(type=int, default=None)
+    tags = attr.ib(type=list, factory=list)
 
 
 @attr.s
