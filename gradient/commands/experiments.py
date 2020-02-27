@@ -115,9 +115,6 @@ class BaseCreateExperimentCommandMixin(object):
     def _handle_workspace(self, instance_dict):
         handler = self.workspace_handler.handle(instance_dict)
 
-        if instance_dict.get("cluster_id") and handler.lower() == "none":
-            raise click.UsageError('Missing option "--workspace" is required for VPC experiments')
-
         instance_dict.pop("ignore_files", None)
         instance_dict.pop("workspace", None)
         instance_dict.pop("workspace_archive", None)
