@@ -29,7 +29,7 @@ class ModelsClient(BaseClient):
         repository = self.build_repository(repositories.DeleteModel)
         repository.delete(model_id)
 
-    def upload(self, path, name, model_type, model_summary=None, notes=None, tags=None, ):
+    def upload(self, path, name, model_type, model_summary=None, notes=None, tags=None, project_id=None):
         """Upload model
 
         :param file path: path to Model
@@ -38,6 +38,7 @@ class ModelsClient(BaseClient):
         :param dict|None model_summary: Dictionary describing model parameters like loss, accuracy, etc.
         :param str|None notes: Optional model description
         :param list[str] tags: List of tags
+        :param str|None project_id: ID of a project
 
         :return: ID of new model
         :rtype: str
@@ -48,6 +49,7 @@ class ModelsClient(BaseClient):
             model_type=model_type,
             summary=json.dumps(model_summary) if model_summary else None,
             notes=notes,
+            project_id=project_id,
         )
 
         repository = self.build_repository(repositories.UploadModel)

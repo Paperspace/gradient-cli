@@ -5,3 +5,4 @@ modelSummary:
 modelType: Tensorflow
 name: some_name
 notes: some notes
+projectId: some_project_id
