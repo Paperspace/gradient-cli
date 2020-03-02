@@ -82,6 +82,12 @@ def delete_model(api_key, model_id, options_file):
     cls=common.GradientOption,
 )
 @click.option(
+    "--projectId",
+    "project_id",
+    help="ID of a project",
+    cls=common.GradientOption,
+)
+@click.option(
     "--modelSummary",
     "model_summary",
     type=json_string,
@@ -109,10 +115,10 @@ def delete_model(api_key, model_id, options_file):
 )
 @common.api_key_option
 @common.options_file
-def upload_model(path, name, model_type, model_summary, notes, api_key, options_file, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+def upload_model(api_key, options_file, **model):
+    model["tags"] = validate_comma_split_option(model.pop("tags_comma"), model.pop("tags"))
     command = models_commands.UploadModel(api_key=api_key)
-    command.execute(path, name, model_type, model_summary, notes, **kwargs)
+    command.execute(**model)
 
 
 @models_group.command("details", help="Show model details")

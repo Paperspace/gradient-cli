@@ -4,7 +4,6 @@ import tempfile
 
 import mock
 from click.testing import CliRunner
-
 from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import example_responses, MockResponse
@@ -269,12 +268,14 @@ class TestModelUpload(object):
         "--modelType", "tensorflow",
         "--modelSummary", """{"key": "value"}""",
         "--notes", "some notes",
+        "--projectId", "some_project_id",
     ]
     ALL_OPTIONS_PARAMS = {
         "name": "some_name",
         "modelType": "Tensorflow",
         "summary": """{"key": "value"}""",
         "notes": "some notes",
+        "projectId": "some_project_id",
     }
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
@@ -284,6 +285,7 @@ class TestModelUpload(object):
         "--modelType", "tensorflow",
         "--modelSummary", """{"key": "value"}""",
         "--notes", "some notes",
+        "--projectId", "some_project_id",
         "--apiKey", "some_key",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["models", "upload", "--optionsFile", ]  # path added in test
