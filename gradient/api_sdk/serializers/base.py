@@ -32,7 +32,7 @@ class BaseSchema(marshmallow.Schema):
 
     def _get_nested(self, instance, obj_dict):
         for field_name, field_type in self.fields.items():
-            if not isinstance(field_type, marshmallow.fields.Nested) or not field_type.many:
+            if not isinstance(field_type, marshmallow.fields.Nested):
                 continue
 
             load_from = field_type.load_from or field_name

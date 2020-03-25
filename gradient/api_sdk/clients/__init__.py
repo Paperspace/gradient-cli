@@ -2,6 +2,7 @@ from .deployment_client import DeploymentsClient
 from .experiment_client import ExperimentsClient
 from .hyperparameter_client import HyperparameterJobsClient
 from .job_client import JobsClient
+from .machine_types_client import MachineTypesClient
 from .machines_client import MachinesClient
 from .model_client import ModelsClient
 from .notebook_client import NotebooksClient

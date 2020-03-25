@@ -12,3 +12,4 @@ from .notebook import Notebook
 from .project import Project
 from .tag import Tag
 from .tensorboard import Instance, Tensorboard
+from .vm_type import VmType, VmTypeGpuModel
