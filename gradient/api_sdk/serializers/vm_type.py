@@ -28,6 +28,8 @@ class VmTypeSchema(BaseSchema):
 
     @ma.pre_load()
     def preprocess(self, data, **kwargs):
-        label = data["gpuModel"]["label"]
-        if not label or label == "None":
-            data["gpuModel"] = None
+        gpu_model = data["gpuModel"]
+        if gpu_model:
+            label = gpu_model.get("label")
+            if not label or label == "None":
+                data["gpuModel"] = None

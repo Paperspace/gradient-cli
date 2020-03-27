@@ -3,23 +3,24 @@ import abc
 import six
 from halo import halo
 
-from gradient import clilogger as gradient_logger, exceptions
+from gradient import exceptions, api_sdk
 from gradient.api_sdk import sdk_exceptions
-from gradient.commands.common import ListCommandMixin
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
+from gradient.commands.common import ListCommandMixin, BaseCommand
 
 
 @six.add_metaclass(abc.ABCMeta)
-class _ClustersCommand(object):
-    def __init__(self, cluster_client, logger_=gradient_logger.CliLogger()):
-        self.client = cluster_client
-        self.logger = logger_
+class ClustersCommand(BaseCommand):
+    def _get_client(self, api_key, logger):
+        client = api_sdk.clients.ClustersClient(
+            api_key=api_key,
+            logger=logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
+        return client
 
-    @abc.abstractmethod
-    def execute(self, **kwargs):
-        pass
 
-
-class ListClustersCommand(ListCommandMixin, _ClustersCommand):
+class ListClustersCommand(ListCommandMixin, ClustersCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
     def execute(self, **kwargs):
@@ -27,7 +28,7 @@ class ListClustersCommand(ListCommandMixin, _ClustersCommand):
 
     def _get_instances(self, **kwargs):
         try:
-            instances= self.client.list(**kwargs)
+            instances = self.client.list(**kwargs)
         except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
@@ -65,5 +66,3 @@ class ListClustersCommand(ListCommandMixin, _ClustersCommand):
 
             yield table_str, next_iteration
             offset += limit
-
-
