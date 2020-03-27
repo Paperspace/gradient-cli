@@ -6141,7 +6141,6 @@ DETAILS_OF_PROJECT_WITH_TAGS = {
     "tagFilter": []
 }
 
-
 EXAMPLE_CLUSTERS_LIST_RESPONSE = [
     {
         "id": "cluster_id_1",
@@ -6190,7 +6189,6 @@ EXAMPLE_CLUSTERS_LIST_RESPONSE = [
     }
 ]
 
-
 LIMITED_EXAMPLE_CLUSTERS_LIST_RESPONSE = [
     {
         "id": "cluster_id_1",
@@ -6223,3 +6221,1496 @@ LIMITED_EXAMPLE_CLUSTERS_LIST_RESPONSE = [
         "modelId": 1170
     }
 ]
+
+LIST_OF_VM_MACHINE_TYPES = {
+    "92": [
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 35,
+            "capacityId": 21,
+            "vmType": {
+                "label": "c5.xlarge",
+                "kind": "aws-cpu",
+                "cpus": 4,
+                "ram": "8589934592",
+                "gpuModelId": 6,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:12:41.506Z",
+                "dtModified": "2019-08-28T17:40:50.773Z",
+                "isPreemptible": False,
+                "deploymentType": "cpu",
+                "deploymentSize": "small",
+                "id": 35,
+                "gpuModel": {
+                    "model": "None",
+                    "label": "None",
+                    "gpuGroupId": 3,
+                    "memInBytes": "0",
+                    "memInMb": 0,
+                    "memInGb": "0",
+                    "id": 6
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 35,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:32:41.602Z",
+                        "isPreemptible": False,
+                        "id": 131,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "clqr4b0ox",
+                    "name": "KPS Jobs",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-07-22T14:50:10.170Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 92,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 36,
+            "capacityId": 22,
+            "vmType": {
+                "label": "c5.4xlarge",
+                "kind": "aws-cpu",
+                "cpus": 16,
+                "ram": "34359738368",
+                "gpuModelId": 6,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:14:06.425Z",
+                "dtModified": "2019-08-28T17:40:50.773Z",
+                "isPreemptible": False,
+                "deploymentType": "cpu",
+                "deploymentSize": "medium",
+                "id": 36,
+                "gpuModel": {
+                    "model": "None",
+                    "label": "None",
+                    "gpuGroupId": 3,
+                    "memInBytes": "0",
+                    "memInMb": 0,
+                    "memInGb": "0",
+                    "id": 6
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 36,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:32:41.602Z",
+                        "isPreemptible": False,
+                        "id": 132,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "clqr4b0ox",
+                    "name": "KPS Jobs",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-07-22T14:50:10.170Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 92,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 38,
+            "capacityId": 23,
+            "vmType": {
+                "label": "p2.xlarge",
+                "kind": "aws-gpu",
+                "cpus": 4,
+                "ram": "65498251264",
+                "gpuModelId": 11,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:20:22.108Z",
+                "dtModified": "2019-08-28T17:40:50.779Z",
+                "isPreemptible": False,
+                "deploymentType": "gpu",
+                "deploymentSize": "small",
+                "id": 38,
+                "gpuModel": {
+                    "model": "passthrough",
+                    "label": "Tesla K80",
+                    "gpuGroupId": 8,
+                    "memInBytes": "12884901888",
+                    "memInMb": 12288,
+                    "memInGb": "12",
+                    "id": 11
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 38,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:33:05.626Z",
+                        "isPreemptible": False,
+                        "id": 134,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "clqr4b0ox",
+                    "name": "KPS Jobs",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-07-22T14:50:10.170Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 92,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 39,
+            "capacityId": 24,
+            "vmType": {
+                "label": "p3.2xlarge",
+                "kind": "aws-gpu",
+                "cpus": 8,
+                "ram": "65498251264",
+                "gpuModelId": 10,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:20:22.108Z",
+                "dtModified": "2019-08-28T17:40:50.779Z",
+                "isPreemptible": False,
+                "deploymentType": "gpu",
+                "deploymentSize": "medium",
+                "id": 39,
+                "gpuModel": {
+                    "model": "passthrough",
+                    "label": "Tesla V100",
+                    "gpuGroupId": 7,
+                    "memInBytes": "17179869184",
+                    "memInMb": 16384,
+                    "memInGb": "16",
+                    "id": 10
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 39,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:33:05.626Z",
+                        "isPreemptible": False,
+                        "id": 135,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "clqr4b0ox",
+                    "name": "KPS Jobs",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-07-22T14:50:10.170Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 92,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 40,
+            "capacityId": 25,
+            "vmType": {
+                "label": "p3.16xlarge",
+                "kind": "aws-gpu",
+                "cpus": 64,
+                "ram": "523986010112",
+                "gpuModelId": 10,
+                "gpuCount": 8,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:20:22.108Z",
+                "dtModified": "2019-08-28T17:40:50.779Z",
+                "isPreemptible": False,
+                "deploymentType": "gpu",
+                "deploymentSize": "large",
+                "id": 40,
+                "gpuModel": {
+                    "model": "passthrough",
+                    "label": "Tesla V100",
+                    "gpuGroupId": 7,
+                    "memInBytes": "17179869184",
+                    "memInMb": 16384,
+                    "memInGb": "16",
+                    "id": 10
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 40,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:33:14.282Z",
+                        "isPreemptible": False,
+                        "id": 136,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "clqr4b0ox",
+                    "name": "KPS Jobs",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-07-22T14:50:10.170Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 92,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        }
+    ],
+    "102": [
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 65,
+            "capacityId": 32,
+            "vmType": {
+                "label": "Wolfpass-CPU",
+                "kind": "cpu",
+                "cpus": 24,
+                "ram": "34359738368",
+                "gpuModelId": 6,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-11-11T19:53:21.298Z",
+                "dtModified": "2019-11-19T19:09:03.288Z",
+                "isPreemptible": False,
+                "deploymentType": "cpu",
+                "deploymentSize": "small",
+                "id": 65,
+                "gpuModel": {
+                    "model": "None",
+                    "label": "None",
+                    "gpuGroupId": 3,
+                    "memInBytes": "0",
+                    "memInMb": 0,
+                    "memInGb": "0",
+                    "id": 6
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 65,
+                        "type": "hourly",
+                        "usageRateId": 18,
+                        "dtCreated": "2019-11-11T19:57:04.870Z",
+                        "isPreemptible": False,
+                        "id": 150,
+                        "usageRate": {
+                            "description": "VIP",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "VIP",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": False,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 18
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "clfe0kr2p",
+                    "name": "Intel Wolfpass KPS",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "intelwolfpass",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-11-11T16:34:29.495Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 102,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        }
+    ],
+    "103": [
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 35,
+            "capacityId": 33,
+            "vmType": {
+                "label": "c5.xlarge",
+                "kind": "aws-cpu",
+                "cpus": 4,
+                "ram": "8589934592",
+                "gpuModelId": 6,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:12:41.506Z",
+                "dtModified": "2019-08-28T17:40:50.773Z",
+                "isPreemptible": False,
+                "deploymentType": "cpu",
+                "deploymentSize": "small",
+                "id": 35,
+                "gpuModel": {
+                    "model": "None",
+                    "label": "None",
+                    "gpuGroupId": 3,
+                    "memInBytes": "0",
+                    "memInMb": 0,
+                    "memInGb": "0",
+                    "id": 6
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 35,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:32:41.602Z",
+                        "isPreemptible": False,
+                        "id": 131,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "cluwffvkb",
+                    "name": "EKS testing",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-11-21T07:27:37.010Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 103,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 36,
+            "capacityId": 34,
+            "vmType": {
+                "label": "c5.4xlarge",
+                "kind": "aws-cpu",
+                "cpus": 16,
+                "ram": "34359738368",
+                "gpuModelId": 6,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:14:06.425Z",
+                "dtModified": "2019-08-28T17:40:50.773Z",
+                "isPreemptible": False,
+                "deploymentType": "cpu",
+                "deploymentSize": "medium",
+                "id": 36,
+                "gpuModel": {
+                    "model": "None",
+                    "label": "None",
+                    "gpuGroupId": 3,
+                    "memInBytes": "0",
+                    "memInMb": 0,
+                    "memInGb": "0",
+                    "id": 6
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 36,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:32:41.602Z",
+                        "isPreemptible": False,
+                        "id": 132,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "cluwffvkb",
+                    "name": "EKS testing",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-11-21T07:27:37.010Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 103,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 37,
+            "capacityId": 35,
+            "vmType": {
+                "label": "c5.24xlarge",
+                "kind": "aws-cpu",
+                "cpus": 94,
+                "ram": "206158430208",
+                "gpuModelId": 6,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:14:06.425Z",
+                "dtModified": "2019-08-28T17:40:50.773Z",
+                "isPreemptible": False,
+                "deploymentType": "cpu",
+                "deploymentSize": "large",
+                "id": 37,
+                "gpuModel": {
+                    "model": "None",
+                    "label": "None",
+                    "gpuGroupId": 3,
+                    "memInBytes": "0",
+                    "memInMb": 0,
+                    "memInGb": "0",
+                    "id": 6
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 37,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:33:05.626Z",
+                        "isPreemptible": False,
+                        "id": 133,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "cluwffvkb",
+                    "name": "EKS testing",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-11-21T07:27:37.010Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 103,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 39,
+            "capacityId": 36,
+            "vmType": {
+                "label": "p3.2xlarge",
+                "kind": "aws-gpu",
+                "cpus": 8,
+                "ram": "65498251264",
+                "gpuModelId": 10,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:20:22.108Z",
+                "dtModified": "2019-08-28T17:40:50.779Z",
+                "isPreemptible": False,
+                "deploymentType": "gpu",
+                "deploymentSize": "medium",
+                "id": 39,
+                "gpuModel": {
+                    "model": "passthrough",
+                    "label": "Tesla V100",
+                    "gpuGroupId": 7,
+                    "memInBytes": "17179869184",
+                    "memInMb": 16384,
+                    "memInGb": "16",
+                    "id": 10
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 39,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:33:05.626Z",
+                        "isPreemptible": False,
+                        "id": 135,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "cluwffvkb",
+                    "name": "EKS testing",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-11-21T07:27:37.010Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 103,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 40,
+            "capacityId": 37,
+            "vmType": {
+                "label": "p3.16xlarge",
+                "kind": "aws-gpu",
+                "cpus": 64,
+                "ram": "523986010112",
+                "gpuModelId": 10,
+                "gpuCount": 8,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:20:22.108Z",
+                "dtModified": "2019-08-28T17:40:50.779Z",
+                "isPreemptible": False,
+                "deploymentType": "gpu",
+                "deploymentSize": "large",
+                "id": 40,
+                "gpuModel": {
+                    "model": "passthrough",
+                    "label": "Tesla V100",
+                    "gpuGroupId": 7,
+                    "memInBytes": "17179869184",
+                    "memInMb": 16384,
+                    "memInGb": "16",
+                    "id": 10
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 40,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:33:14.282Z",
+                        "isPreemptible": False,
+                        "id": 136,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "cluwffvkb",
+                    "name": "EKS testing",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-11-21T07:27:37.010Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 103,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 66,
+            "capacityId": 38,
+            "vmType": {
+                "label": "c5.xlarge",
+                "kind": "eks-cpu",
+                "cpus": 4,
+                "ram": "8589934592",
+                "gpuModelId": 6,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-11-27T11:08:38.641Z",
+                "dtModified": "2019-11-27T11:08:38.641Z",
+                "isPreemptible": False,
+                "deploymentType": "cpu",
+                "deploymentSize": "small",
+                "id": 66,
+                "gpuModel": {
+                    "model": "None",
+                    "label": "None",
+                    "gpuGroupId": 3,
+                    "memInBytes": "0",
+                    "memInMb": 0,
+                    "memInGb": "0",
+                    "id": 6
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 66,
+                        "type": "hourly",
+                        "usageRateId": 18,
+                        "dtCreated": "2019-11-27T11:59:58.059Z",
+                        "isPreemptible": False,
+                        "id": 151,
+                        "usageRate": {
+                            "description": "VIP",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "VIP",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": False,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 18
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "cluwffvkb",
+                    "name": "EKS testing",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-11-21T07:27:37.010Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 103,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 66,
+            "capacityId": 39,
+            "vmType": {
+                "label": "c5.xlarge",
+                "kind": "eks-cpu",
+                "cpus": 4,
+                "ram": "8589934592",
+                "gpuModelId": 6,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-11-27T11:08:38.641Z",
+                "dtModified": "2019-11-27T11:08:38.641Z",
+                "isPreemptible": False,
+                "deploymentType": "cpu",
+                "deploymentSize": "small",
+                "id": 66,
+                "gpuModel": {
+                    "model": "None",
+                    "label": "None",
+                    "gpuGroupId": 3,
+                    "memInBytes": "0",
+                    "memInMb": 0,
+                    "memInGb": "0",
+                    "id": 6
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 66,
+                        "type": "hourly",
+                        "usageRateId": 18,
+                        "dtCreated": "2019-11-27T11:59:58.059Z",
+                        "isPreemptible": False,
+                        "id": 151,
+                        "usageRate": {
+                            "description": "VIP",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "VIP",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": False,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 18
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "cluwffvkb",
+                    "name": "EKS testing",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2019-11-21T07:27:37.010Z",
+                    "dtModified": "2020-02-28T20:58:26.134Z",
+                    "clusterId": 103,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        }
+    ],
+    "175": [
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 35,
+            "capacityId": 134,
+            "vmType": {
+                "label": "c5.xlarge",
+                "kind": "aws-cpu",
+                "cpus": 4,
+                "ram": "8589934592",
+                "gpuModelId": 6,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:12:41.506Z",
+                "dtModified": "2019-08-28T17:40:50.773Z",
+                "isPreemptible": False,
+                "deploymentType": "cpu",
+                "deploymentSize": "small",
+                "id": 35,
+                "gpuModel": {
+                    "model": "None",
+                    "label": "None",
+                    "gpuGroupId": 3,
+                    "memInBytes": "0",
+                    "memInMb": 0,
+                    "memInGb": "0",
+                    "id": 6
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 35,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:32:41.602Z",
+                        "isPreemptible": False,
+                        "id": 131,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "clrvkwq6l",
+                    "name": "test",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2020-03-09T17:15:08.080Z",
+                    "dtModified": "2020-03-09T17:15:08.080Z",
+                    "clusterId": 175,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 36,
+            "capacityId": 135,
+            "vmType": {
+                "label": "c5.4xlarge",
+                "kind": "aws-cpu",
+                "cpus": 16,
+                "ram": "34359738368",
+                "gpuModelId": 6,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:14:06.425Z",
+                "dtModified": "2019-08-28T17:40:50.773Z",
+                "isPreemptible": False,
+                "deploymentType": "cpu",
+                "deploymentSize": "medium",
+                "id": 36,
+                "gpuModel": {
+                    "model": "None",
+                    "label": "None",
+                    "gpuGroupId": 3,
+                    "memInBytes": "0",
+                    "memInMb": 0,
+                    "memInGb": "0",
+                    "id": 6
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 36,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:32:41.602Z",
+                        "isPreemptible": False,
+                        "id": 132,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "clrvkwq6l",
+                    "name": "test",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2020-03-09T17:15:08.080Z",
+                    "dtModified": "2020-03-09T17:15:08.080Z",
+                    "clusterId": 175,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 38,
+            "capacityId": 136,
+            "vmType": {
+                "label": "p2.xlarge",
+                "kind": "aws-gpu",
+                "cpus": 4,
+                "ram": "65498251264",
+                "gpuModelId": 11,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:20:22.108Z",
+                "dtModified": "2019-08-28T17:40:50.779Z",
+                "isPreemptible": False,
+                "deploymentType": "gpu",
+                "deploymentSize": "small",
+                "id": 38,
+                "gpuModel": {
+                    "model": "passthrough",
+                    "label": "Tesla K80",
+                    "gpuGroupId": 8,
+                    "memInBytes": "12884901888",
+                    "memInMb": 12288,
+                    "memInGb": "12",
+                    "id": 11
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 38,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:33:05.626Z",
+                        "isPreemptible": False,
+                        "id": 134,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "clrvkwq6l",
+                    "name": "test",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2020-03-09T17:15:08.080Z",
+                    "dtModified": "2020-03-09T17:15:08.080Z",
+                    "clusterId": 175,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 39,
+            "capacityId": 137,
+            "vmType": {
+                "label": "p3.2xlarge",
+                "kind": "aws-gpu",
+                "cpus": 8,
+                "ram": "65498251264",
+                "gpuModelId": 10,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:20:22.108Z",
+                "dtModified": "2019-08-28T17:40:50.779Z",
+                "isPreemptible": False,
+                "deploymentType": "gpu",
+                "deploymentSize": "medium",
+                "id": 39,
+                "gpuModel": {
+                    "model": "passthrough",
+                    "label": "Tesla V100",
+                    "gpuGroupId": 7,
+                    "memInBytes": "17179869184",
+                    "memInMb": 16384,
+                    "memInGb": "16",
+                    "id": 10
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 39,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:33:05.626Z",
+                        "isPreemptible": False,
+                        "id": 135,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "clrvkwq6l",
+                    "name": "test",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2020-03-09T17:15:08.080Z",
+                    "dtModified": "2020-03-09T17:15:08.080Z",
+                    "clusterId": 175,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 40,
+            "capacityId": 138,
+            "vmType": {
+                "label": "p3.16xlarge",
+                "kind": "aws-gpu",
+                "cpus": 64,
+                "ram": "523986010112",
+                "gpuModelId": 10,
+                "gpuCount": 8,
+                "internalDescription": None,
+                "dtCreated": "2019-07-22T15:20:22.108Z",
+                "dtModified": "2019-08-28T17:40:50.779Z",
+                "isPreemptible": False,
+                "deploymentType": "gpu",
+                "deploymentSize": "large",
+                "id": 40,
+                "gpuModel": {
+                    "model": "passthrough",
+                    "label": "Tesla V100",
+                    "gpuGroupId": 7,
+                    "memInBytes": "17179869184",
+                    "memInMb": 16384,
+                    "memInGb": "16",
+                    "id": 10
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 40,
+                        "type": "hourly",
+                        "usageRateId": 10,
+                        "dtCreated": "2019-07-22T15:33:14.282Z",
+                        "isPreemptible": False,
+                        "id": 136,
+                        "usageRate": {
+                            "description": "Employee",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "Employee",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": True,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 10
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "clrvkwq6l",
+                    "name": "test",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2020-03-09T17:15:08.080Z",
+                    "dtModified": "2020-03-09T17:15:08.080Z",
+                    "clusterId": 175,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        },
+        {
+            "showDisabled": False,
+            "isAvailable": True,
+            "isPreemptible": False,
+            "vmTypeId": 66,
+            "capacityId": 139,
+            "vmType": {
+                "label": "c5.xlarge",
+                "kind": "eks-cpu",
+                "cpus": 4,
+                "ram": "8589934592",
+                "gpuModelId": 6,
+                "gpuCount": 1,
+                "internalDescription": None,
+                "dtCreated": "2019-11-27T11:08:38.641Z",
+                "dtModified": "2019-11-27T11:08:38.641Z",
+                "isPreemptible": False,
+                "deploymentType": "cpu",
+                "deploymentSize": "small",
+                "id": 66,
+                "gpuModel": {
+                    "model": "None",
+                    "label": "None",
+                    "gpuGroupId": 3,
+                    "memInBytes": "0",
+                    "memInMb": 0,
+                    "memInGb": "0",
+                    "id": 6
+                },
+                "availableTemplatesWithOperatingSystems": [],
+                "availableRegions": [],
+                "permissions": [],
+                "defaultUsageRates": [
+                    {
+                        "vmTypeId": 66,
+                        "type": "hourly",
+                        "usageRateId": 18,
+                        "dtCreated": "2019-11-27T11:59:58.059Z",
+                        "isPreemptible": False,
+                        "id": 151,
+                        "usageRate": {
+                            "description": "VIP",
+                            "rate": "0.00",
+                            "type": "monthly",
+                            "gpuModelId": 1,
+                            "rateHourly": "0.00",
+                            "rateMonthly": "0.00",
+                            "label": "VIP",
+                            "period": "monthly",
+                            "kind": "air",
+                            "isEarlyAccess": False,
+                            "isEmployeeOnly": False,
+                            "numCpus": 2,
+                            "ramInBytes": "4294967296",
+                            "id": 18
+                        }
+                    }
+                ],
+                "defaultUsageRateOverrides": []
+            },
+            "clusters": [
+                {
+                    "id": "clrvkwq6l",
+                    "name": "test",
+                    "type": "Kubernetes Processing Site",
+                    "region": "Private",
+                    "cloud": "aws",
+                    "teamId": "teo6raui0",
+                    "isDefault": False,
+                    "dtCreated": "2020-03-09T17:15:08.080Z",
+                    "dtModified": "2020-03-09T17:15:08.080Z",
+                    "clusterId": 175,
+                    "isPrivate": True,
+                    "modelName": "team",
+                    "modelId": 1170
+                }
+            ]
+        }
+    ]
+}

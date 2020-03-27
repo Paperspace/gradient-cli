@@ -389,3 +389,10 @@ def clusters_list_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "clusters_list.yaml"
     return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def vm_machine_types_list_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "vm_machine_types_list.yaml"
+    return str(fixture_dir.resolve())

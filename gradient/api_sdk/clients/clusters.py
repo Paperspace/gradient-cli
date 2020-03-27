@@ -14,6 +14,6 @@ class ClustersClient(BaseClient):
         :return: clusters
         :rtype: list
         """
-        repository = repositories.ListClusters(api_key=self.api_key, logger=self.logger)
+        repository = self.build_repository(repositories.ListClusters)
         clusters = repository.list(limit=limit, offset=offset)
         return clusters

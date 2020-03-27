@@ -198,7 +198,7 @@ class TestJobLogs(TestJobs):
     EXPECTED_STDOUT_WITHOUT_PARAMETERS = """Usage: cli jobs logs [OPTIONS]
 Try "cli jobs logs --help" for help.
 
-Error: Missing option "--id".
+Error: Missing option '--id'.
 """
 
     EXPECTED_STDOUT = """+Job some_id logs------------------------------------------------------------------------+
@@ -376,7 +376,8 @@ class TestListJobArtifacts(TestJobs):
         get_patched.return_value = MockResponse()
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli,
-                                    ["jobs", "artifacts", "list", "--id", job_id, "--apiKey", "some_key", "--size", "--links",
+                                    ["jobs", "artifacts", "list", "--id", job_id, "--apiKey", "some_key", "--size",
+                                     "--links",
                                      "--files", "foo"])
 
         get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),

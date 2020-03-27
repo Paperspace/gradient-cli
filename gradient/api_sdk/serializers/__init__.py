@@ -11,3 +11,4 @@ from .notebook import NotebookSchema
 from .project import Project
 from .tag import TagSchema
 from .tensorboard import InstanceSchema, TensorboardSchema, TensorboardDetailSchema
+from .vm_type import VmTypeSchema, VmTypeGpuModelSchema

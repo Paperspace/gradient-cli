@@ -1,15 +1,9 @@
 import click
 
-from gradient.api_sdk.clients.clusters import ClustersClient
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.common import ClickGroup, api_key_option
 from gradient.commands.clusters import ListClustersCommand
-
-
-def get_clusters_client(api_key):
-    client = ClustersClient(api_key=api_key)
-    return client
 
 
 @cli.group("clusters", help="Manage clusters", cls=ClickGroup)
@@ -36,7 +30,7 @@ def clusters():
 @api_key_option
 @common.options_file
 def get_clusters_list(api_key, cluster_limit, cluster_offset, options_file):
-    command = ListClustersCommand(cluster_client=get_clusters_client(api_key))
+    command = ListClustersCommand(api_key=api_key)
 
     res = command.execute(limit=cluster_limit, offset=cluster_offset)
 
