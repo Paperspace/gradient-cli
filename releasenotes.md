@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.6.1
+### Fixes
+* Fix raising KeyError when listing experiments
+
 # Release Notes for 0.6.1a0
 ### Breaking changes
 * `--workspaceUrl` and `--workspaceArchive` replaced by `--workspace`
