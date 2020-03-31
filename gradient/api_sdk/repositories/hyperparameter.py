@@ -22,7 +22,7 @@ class ListHyperparameterJobs(GetBaseExperimentApiUrlMixin, ParseExperimentDictMi
     def _parse_objects(self, data, **kwargs):
         experiments = []
         for experiment_dict in data["data"]:
-            experiment_dict.update(experiment_dict["templateHistory"]["params"])
+            experiment_dict.update(experiment_dict["templateHistory"].get("params", {}))
             experiment = self._parse_object(experiment_dict)
             experiments.append(experiment)
 
@@ -40,7 +40,7 @@ class GetHyperparameterTuningJob(GetBaseExperimentApiUrlMixin, ParseExperimentDi
 
     def _parse_object(self, job_dict, **kwargs):
         data = job_dict["data"]
-        data.update(data["templateHistory"]["params"])
+        data.update(data["templateHistory"].get("params", {}))
         instance = super(GetHyperparameterTuningJob, self)._parse_object(data)
         return instance
 
