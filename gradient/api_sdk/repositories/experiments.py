@@ -42,7 +42,7 @@ class ListExperiments(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, Li
         experiments_dicts = self._get_experiments_dicts_from_json_data(data, kwargs)
         experiments = []
         for experiment_dict in experiments_dicts:
-            experiment_dict.update(experiment_dict["templateHistory"]["params"])
+            experiment_dict.update(experiment_dict["templateHistory"].get("params", {}))
             experiment = self._parse_object(experiment_dict)
             experiments.append(experiment)
 
@@ -85,7 +85,7 @@ class ListExperiments(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, Li
 class GetExperiment(ParseExperimentDictMixin, GetBaseExperimentApiUrlMixin, GetResource):
     def _parse_object(self, experiment_dict, **kwargs):
         experiment_dict = experiment_dict["data"]
-        experiment_dict.update(experiment_dict["templateHistory"]["params"])
+        experiment_dict.update(experiment_dict["templateHistory"].get("params", {}))
         return super(GetExperiment, self)._parse_object(experiment_dict, **kwargs)
 
     def get_request_url(self, **kwargs):
