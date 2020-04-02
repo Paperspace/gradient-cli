@@ -4,6 +4,7 @@ import tempfile
 
 import mock
 from click.testing import CliRunner
+
 from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import example_responses, MockResponse
@@ -47,7 +48,7 @@ class TestModelsList(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON, 200, "fake content")
+        get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -62,7 +63,7 @@ class TestModelsList(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_replate_api_key_in_headers_when_api_key_parameter_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON, 200, "fake content")
+        get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
@@ -93,7 +94,7 @@ class TestModelsList(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_models_filtered_experiment_id(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON, 200)
+        get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_FILTERING_BY_EXPERIMENT_ID)
@@ -108,7 +109,7 @@ class TestModelsList(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_proper_message_when_no_models_were_found(
             self, get_patched):
-        get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND, 200)
+        get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -234,27 +235,27 @@ class TestDeleteModel(object):
 
 
 class TestModelUpload(object):
-    URL = "https://api.paperspace.io/mlModels/createModel"
+    URL = "https://api.paperspace.io/mlModels/createModelV2"
     TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     MODEL_FILE = "saved_model.pb"
     BASE_COMMAND = [
         "models", "upload",
         MODEL_FILE,
         "--name", "some_name",
-        "--modelType", "tensorflow",
+        "--modelType", "custom",
     ]
     BASE_COMMAND_WITH_TAGS = [
         "models", "upload",
         MODEL_FILE,
         "--name", "some_name",
-        "--modelType", "tensorflow",
+        "--modelType", "custom",
         "--tag", "test0",
         "--tag", "test1",
         "--tags", "test2,test3",
     ]
     BASE_PARAMS = {
         "name": "some_name",
-        "modelType": "Tensorflow",
+        "modelType": "Custom",
     }
     TAGS_JSON = {
         "entity": "mlModel",
@@ -292,12 +293,23 @@ class TestModelUpload(object):
 
     EXPECTED_STDOUT = "Model uploaded with ID: some_model_id\n"
 
+    GET_PRESIGNED_URL = "https://api.paperspace.io/mlModels/getPresignedModelUrl"
+    GET_PRESIGNED_URL_PARAMS = {"fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": ""}
+    GET_PRESIGNED_URL_RESPONSE = example_responses.MODEL_UPLOAD_GET_PRESIGNED_URL_RESPONSE
+
+    CREATE_MODEL_V2_REPONSE = example_responses.MODEL_CREATE_RESPONSE_JSON_V2
+
     EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 400, "message": "Invalid API token"}
     UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_send_post_request_when_models_update_command_was_used_with_basic_options(self, post_patched):
-        post_patched.return_value = MockResponse(json_data=example_responses.MODEL_UPLOAD_RESPONSE_JSON)
+    def test_should_send_post_request_when_models_update_command_was_used_with_basic_options(
+            self, post_patched, put_patched, get_patched):
+        post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
+        put_patched.return_value = MockResponse()
+        get_patched.return_value = MockResponse(self.GET_PRESIGNED_URL_RESPONSE)
 
         runner = CliRunner()
         with runner.isolated_filesystem():
@@ -307,18 +319,34 @@ class TestModelUpload(object):
             result = runner.invoke(cli.cli, self.BASE_COMMAND)
 
             assert result.output == self.EXPECTED_STDOUT, result.exc_info
-            post_patched.assert_called_once_with(self.URL,
-                                                 headers=EXPECTED_HEADERS,
-                                                 json=None,
-                                                 files=[(self.MODEL_FILE, mock.ANY)],
-                                                 data=None,
-                                                 params=self.BASE_PARAMS)
-            assert post_patched.call_args.kwargs["files"][0][1].name == self.MODEL_FILE
+            post_patched.assert_called_with(self.URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=None,
+                                            files=None,
+                                            data=None,
+                                            params=self.BASE_PARAMS)
+            get_patched.assert_called_once_with(self.GET_PRESIGNED_URL,
+                                                headers=EXPECTED_HEADERS,
+                                                params=self.GET_PRESIGNED_URL_PARAMS,
+                                                json=None,
+                                                )
+            put_patched.assert_called_once_with(self.GET_PRESIGNED_URL_RESPONSE,
+                                                headers={"Content-Type": ""},
+                                                json=None,
+                                                params=None,
+                                                data=mock.ANY)
+            assert put_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
+
             assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_send_post_request_when_models_update_command_was_used_with_all_options(self, post_patched):
-        post_patched.return_value = MockResponse(json_data=example_responses.MODEL_UPLOAD_RESPONSE_JSON)
+    def test_should_send_post_request_when_models_update_command_was_used_with_all_options(
+            self, post_patched, put_patched, get_patched):
+        post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
+        put_patched.return_value = MockResponse()
+        get_patched.return_value = MockResponse(self.GET_PRESIGNED_URL_RESPONSE)
 
         runner = CliRunner()
         with runner.isolated_filesystem():
@@ -328,18 +356,34 @@ class TestModelUpload(object):
             result = runner.invoke(cli.cli, self.COMMAND_WITH_ALL_OPTIONS)
 
             assert result.output == self.EXPECTED_STDOUT, result.exc_info
-            post_patched.assert_called_once_with(self.URL,
-                                                 headers=EXPECTED_HEADERS,
-                                                 json=None,
-                                                 files=[(self.MODEL_FILE, mock.ANY)],
-                                                 data=None,
-                                                 params=self.ALL_OPTIONS_PARAMS)
+            post_patched.assert_called_with(self.URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=None,
+                                            files=None,
+                                            data=None,
+                                            params=self.ALL_OPTIONS_PARAMS)
+            get_patched.assert_called_once_with(self.GET_PRESIGNED_URL,
+                                                headers=EXPECTED_HEADERS,
+                                                params=self.GET_PRESIGNED_URL_PARAMS,
+                                                json=None,
+                                                )
+            put_patched.assert_called_once_with(self.GET_PRESIGNED_URL_RESPONSE,
+                                                headers={"Content-Type": ""},
+                                                json=None,
+                                                params=None,
+                                                data=mock.ANY)
+            assert put_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
 
             assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(json_data=example_responses.MODEL_UPLOAD_RESPONSE_JSON)
+    def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(
+            self, post_patched, put_patched, get_patched):
+        post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
+        put_patched.return_value = MockResponse()
+        get_patched.return_value = MockResponse(self.GET_PRESIGNED_URL_RESPONSE)
 
         runner = CliRunner()
         with runner.isolated_filesystem():
@@ -348,19 +392,35 @@ class TestModelUpload(object):
 
             result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
-            post_patched.assert_called_once_with(self.URL,
-                                                 headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
-                                                 json=None,
-                                                 files=[(self.MODEL_FILE, mock.ANY)],
-                                                 data=None,
-                                                 params=self.ALL_OPTIONS_PARAMS)
+            assert result.output == self.EXPECTED_STDOUT, result.exc_info
+            post_patched.assert_called_with(self.URL,
+                                            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=None,
+                                            files=None,
+                                            data=None,
+                                            params=self.ALL_OPTIONS_PARAMS)
+            get_patched.assert_called_once_with(self.GET_PRESIGNED_URL,
+                                                headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                                params=self.GET_PRESIGNED_URL_PARAMS,
+                                                json=None,
+                                                )
+            put_patched.assert_called_once_with(self.GET_PRESIGNED_URL_RESPONSE,
+                                                headers={"Content-Type": ""},
+                                                json=None,
+                                                params=None,
+                                                data=mock.ANY)
+            assert put_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
 
-            assert result.output == self.EXPECTED_STDOUT
             assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_read_options_from_yaml_file(self, post_patched, models_upload_config_path):
-        post_patched.return_value = MockResponse(json_data=example_responses.MODEL_UPLOAD_RESPONSE_JSON)
+    def test_should_read_options_from_yaml_file(
+            self, post_patched, put_patched, get_patched, models_upload_config_path):
+        post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
+        put_patched.return_value = MockResponse()
+        get_patched.return_value = MockResponse(self.GET_PRESIGNED_URL_RESPONSE)
         command = self.COMMAND_WITH_OPTIONS_FILE[:] + [models_upload_config_path]
 
         runner = CliRunner()
@@ -370,14 +430,25 @@ class TestModelUpload(object):
 
             result = runner.invoke(cli.cli, command)
 
-            post_patched.assert_called_once_with(self.URL,
-                                                 headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
-                                                 json=None,
-                                                 files=[(self.MODEL_FILE, mock.ANY)],
-                                                 data=None,
-                                                 params=self.ALL_OPTIONS_PARAMS)
+            assert result.output == self.EXPECTED_STDOUT, result.exc_info
+            post_patched.assert_called_with(self.URL,
+                                            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                            json=None,
+                                            files=None,
+                                            data=None,
+                                            params=self.ALL_OPTIONS_PARAMS)
+            get_patched.assert_called_once_with(self.GET_PRESIGNED_URL,
+                                                headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                                params=self.GET_PRESIGNED_URL_PARAMS,
+                                                json=None,
+                                                )
+            put_patched.assert_called_once_with(self.GET_PRESIGNED_URL_RESPONSE,
+                                                headers={"Content-Type": ""},
+                                                json=None,
+                                                params=None,
+                                                data=mock.ANY)
+            assert put_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
 
-            assert result.output == self.EXPECTED_STDOUT
             assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -391,22 +462,25 @@ class TestModelUpload(object):
 
             result = runner.invoke(cli.cli, self.BASE_COMMAND)
 
-            post_patched.assert_called_once_with(self.URL,
-                                                 headers=EXPECTED_HEADERS,
-                                                 json=None,
-                                                 files=[(self.MODEL_FILE, mock.ANY)],
-                                                 data=None,
-                                                 params=self.BASE_PARAMS)
+            assert result.output == "Failed to create resource: Invalid API token\n", result.exc_info
+            post_patched.assert_called_with(self.URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=None,
+                                            files=None,
+                                            data=None,
+                                            params=self.BASE_PARAMS)
 
-            assert result.output == "Failed to create resource: Invalid API token\n"
+            assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_send_proper_data_and_tag_machine(self, post_patched, get_patched, put_patched):
-        post_patched.return_value = MockResponse(json_data=example_responses.MODEL_UPLOAD_RESPONSE_JSON)
-        get_patched.return_value = MockResponse({}, 200)
-        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200)
+    def test_should_send_proper_data_and_tag_machine(
+            self, post_patched, put_patched, get_patched):
+        post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
+        put_patched.return_value = MockResponse()
+        get_patched.side_effect = [MockResponse(self.GET_PRESIGNED_URL_RESPONSE),
+                                   MockResponse({})]
 
         runner = CliRunner()
         with runner.isolated_filesystem():
@@ -415,25 +489,45 @@ class TestModelUpload(object):
 
             result = runner.invoke(cli.cli, self.BASE_COMMAND_WITH_TAGS)
 
-            post_patched.assert_called_once_with(self.URL,
-                                                 headers=EXPECTED_HEADERS,
-                                                 json=None,
-                                                 files=[(self.MODEL_FILE, mock.ANY)],
-                                                 data=None,
-                                                 params=self.BASE_PARAMS)
-
-            assert post_patched.call_args.kwargs["files"][0][1].name == self.MODEL_FILE
-            assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
-
-            put_patched.assert_called_once_with(
-                self.TAGS_URL,
+            assert result.output == self.EXPECTED_STDOUT, result.exc_info
+            post_patched.assert_called_with(
+                self.URL,
                 headers=EXPECTED_HEADERS,
-                json=self.TAGS_JSON,
-                params=None,
+                json=None,
+                files=None,
+                data=None,
+                params=self.BASE_PARAMS,
+            )
+            get_patched.assert_has_calls(
+                [
+                    mock.call(
+                        self.GET_PRESIGNED_URL,
+                        headers=EXPECTED_HEADERS,
+                        params=self.GET_PRESIGNED_URL_PARAMS,
+                        json=None,
+                    ),
+                ]
+            )
+            put_patched.assert_has_calls(
+                [
+                    mock.call(
+                        self.GET_PRESIGNED_URL_RESPONSE,
+                        headers={"Content-Type": ""},
+                        json=None,
+                        params=None,
+                        data=mock.ANY,
+                    ),
+                    mock.call(
+                        self.TAGS_URL,
+                        headers=EXPECTED_HEADERS,
+                        json=self.TAGS_JSON,
+                        params=None,
+                        data=None,
+                    ),
+                ]
             )
 
-            assert result.output == self.EXPECTED_STDOUT, result.exc_info
-            assert result.exit_code == 0
+            assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
 
 class TestModelDetails(object):
@@ -539,7 +633,7 @@ class TestModelDetails(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_proper_message_when_no_models_were_found(
             self, get_patched):
-        get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND, 200)
+        get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)

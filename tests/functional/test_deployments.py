@@ -262,6 +262,7 @@ class TestDeploymentsCreate(object):
             headers=EXPECTED_HEADERS,
             json=self.TAGS_JSON,
             params=None,
+            data=None,
         )
 
         assert result.exit_code == 0

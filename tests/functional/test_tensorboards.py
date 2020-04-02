@@ -307,7 +307,8 @@ class TestTensorboardsAddExperiment(object):
             self.URL,
             headers=EXPECTED_HEADERS,
             json=self.EXPECTED_REQUEST_JSON,
-            params=None
+            params=None,
+            data=None,
         )
         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
@@ -323,7 +324,8 @@ class TestTensorboardsAddExperiment(object):
             self.URL,
             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
             json=self.EXPECTED_REQUEST_JSON,
-            params=None
+            params=None,
+            data=None,
         )
 
 
@@ -367,7 +369,8 @@ class TestTensorboardsRemoveExperiment(object):
             self.URL,
             headers=EXPECTED_HEADERS,
             json=self.EXPECTED_REQUEST_JSON,
-            params=None
+            params=None,
+            data=None,
         )
         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
@@ -383,7 +386,8 @@ class TestTensorboardsRemoveExperiment(object):
             self.URL,
             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
             json=self.EXPECTED_REQUEST_JSON,
-            params=None
+            params=None,
+            data=None,
         )
 
 

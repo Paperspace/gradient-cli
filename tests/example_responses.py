@@ -5737,6 +5737,35 @@ DELETE_MODEL_404_RESPONSE_JSON = {
     },
 }
 
+MODEL_CREATE_RESPONSE_JSON_V2 = {
+    "id": "some_model_id",
+    "projectId": None,
+    "experimentId": None,
+    "updatedByUserId": "ukgvw4i8",
+    "updatedByUserEmail": "asd@paperspace.com",
+    "modelType": "Custom",
+    "name": "some_name",
+    "tag": None,
+    "summary": None,
+    "detail": None,
+    "params": None,
+    "url": None,
+    "notes": None,
+    "isDeleted": False,
+    "isPublic": False,
+    "dtCreated": "2020-04-01T14:15:39.371Z",
+    "dtModified": "2020-04-01T14:15:39.371Z",
+    "dtUploaded": None,
+    "dtDeleted": None,
+    "modelPath": None,
+    "deploymentState": None,
+    "tags": None
+}
+
+MODEL_UPLOAD_GET_PRESIGNED_URL_RESPONSE = "https://ps-customstorage-development.s3.amazonaws.com/teo6raui0/models/" \
+                                          "moslrdsp1q4z4a2/keton.txt?AWSAccessKeyId=AKIAVWO7J5OJXEKIB7EJ&Content-Typ" \
+                                          "e=text%2Fplain&Expires=1585779340&Signature=82UPgvg0yBayLJCLMiNq6jc4mys%3D"
+
 MODEL_UPLOAD_RESPONSE_JSON = {
     "id": "some_model_id",
     "projectId": None,
