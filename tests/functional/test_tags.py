@@ -68,6 +68,7 @@ class TestEntityAddTags(object):
             headers=EXPECTED_HEADERS,
             json=tags_json,
             params=None,
+            data=None,
         )
 
         assert result.exit_code == 0
@@ -108,6 +109,7 @@ class TestEntityAddTags(object):
             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
             json=tags_json,
             params=None,
+            data=None,
         )
 
         assert result.output == expected_result, result.exc_info
@@ -170,6 +172,7 @@ class TestEntityRemoveTags(object):
             headers=EXPECTED_HEADERS,
             json=tags_json,
             params=None,
+            data=None,
         )
 
         assert result.exit_code == 0
@@ -211,6 +214,7 @@ class TestEntityRemoveTags(object):
             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
             json=tags_json,
             params=None,
+            data=None,
         )
 
         assert result.exit_code == 0

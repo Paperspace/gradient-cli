@@ -302,6 +302,7 @@ class TestCreateHyperparameters(object):
             headers=EXPECTED_HEADERS,
             json=self.TAGS_JSON,
             params=None,
+            data=None,
         )
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
@@ -587,7 +588,9 @@ class TestStartHyperparameters(object):
         post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=None,
-                                             params=None)
+                                             params=None,
+                                             data=None,
+                                             )
         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
@@ -600,7 +603,9 @@ class TestStartHyperparameters(object):
         post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=None,
-                                             params=None)
+                                             params=None,
+                                             data=None,
+                                             )
 
         assert result.output == self.EXPECTED_STDOUT
         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -617,7 +622,9 @@ class TestStartHyperparameters(object):
         post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=None,
-                                             params=None)
+                                             params=None,
+                                             data=None,
+                                             )
 
         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
@@ -631,7 +638,9 @@ class TestStartHyperparameters(object):
         put_patched.assert_called_once_with(self.URL_V2,
                                             headers=EXPECTED_HEADERS,
                                             json=None,
-                                            params=None)
+                                            params=None,
+                                            data=None,
+                                            )
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_ERROR_RECEIVED
 
@@ -645,7 +654,9 @@ class TestStartHyperparameters(object):
         put_patched.assert_called_once_with(self.URL_V2,
                                             headers=EXPECTED_HEADERS,
                                             json=None,
-                                            params=None)
+                                            params=None,
+                                            data=None,
+                                            )
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -660,7 +671,9 @@ class TestStartHyperparameters(object):
         put_patched.assert_called_once_with(self.URL_V2,
                                             headers=EXPECTED_HEADERS,
                                             json=None,
-                                            params=None)
+                                            params=None,
+                                            data=None,
+                                            )
 
         assert result.output == "Failed to start hyperparameter tuning job\n"
         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"

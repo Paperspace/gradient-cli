@@ -371,6 +371,7 @@ class TestCreateProject(object):
             headers=EXPECTED_HEADERS,
             json=self.TAGS_JSON,
             params=None,
+            data=None,
         )
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info

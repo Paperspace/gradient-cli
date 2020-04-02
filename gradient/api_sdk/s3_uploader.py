@@ -1,5 +1,6 @@
 import collections
 import fnmatch
+import mimetypes
 import os
 import tempfile
 import zipfile
@@ -291,6 +292,104 @@ class S3ProjectFileUploader(object):
             raise sdk_exceptions.PresignedUrlMalformedResponseError("Response malformed")
 
         return url, bucket_name, s3_fields
+
+
+class S3ModelFileUploader(object):
+    DEFAULT_MULTIPART_ENCODER_CLS = MultipartEncoderWithProgressbar
+
+    def __init__(self, api_key, multipart_encoder_cls=None, logger=None, ps_client_name=None):
+        """
+        :param str api_key:
+        :param Logger logger:
+        """
+        self.logger = logger or MuteLogger()
+        self.multipart_encoder_cls = multipart_encoder_cls or self.DEFAULT_MULTIPART_ENCODER_CLS
+        self.client = self._get_client(
+            config.CONFIG_HOST,
+            api_key=api_key,
+            ps_client_name=ps_client_name,
+        )
+
+    def upload(self, file_path, model_id):
+        """Upload file to S3 bucket for a project
+
+        :param str file_path:
+        :param str model_id:
+
+        :rtype: str
+        :return: S3 bucket's URL
+        """
+        url = self._get_upload_data(file_path, model_id)
+        bucket_url = self._upload(file_path, url)
+        return bucket_url
+
+    def _get_upload_data(self, file_path, model_id):
+        """Ask API for data required to upload a file to S3
+
+        :param str file_path:
+        :param str model_id:
+
+        :rtype: str
+        :return: URL to which send the file, name of the bucket and a dictionary required by S3 service
+        """
+        file_name = os.path.basename(file_path)
+        params = {
+            "fileName": file_name,
+            "modelHandle": model_id,
+            "contentType": mimetypes.guess_type(file_path)[0] or "",
+        }
+
+        response = self.client.get("/mlModels/getPresignedModelUrl", params=params)
+        if not response.ok:
+            raise sdk_exceptions.PresignedUrlConnectionError(response.reason)
+
+        try:
+            url = response.json()
+        except (KeyError, ValueError):
+            raise sdk_exceptions.PresignedUrlMalformedResponseError("Response malformed")
+
+        return url
+
+    def _upload(self, file_path, url):
+        """Upload a file to S3
+
+        :param str file_path:
+        :param str url:
+
+        :rtype: str
+        :return: URL to S3 bucket
+        """
+        # the S3 service requires the file field be the last one in sent object so dict needs to be ordered
+        ordered_s3_fields = collections.OrderedDict()
+
+        client = self._get_client(url)
+        client.headers = {"Content-Type": mimetypes.guess_type(file_path)[0] or ""}
+        with open(file_path, "rb") as file_handle:
+            ordered_s3_fields["file"] = (file_path, file_handle)
+            multipart_encoder_monitor = self._get_multipart_encoder_monitor(ordered_s3_fields)
+            response = self._send_upload_request(client, data=multipart_encoder_monitor)
+            if not response.ok:
+                raise sdk_exceptions.S3UploadFailedError(response)
+            self.logger.debug("Uploading completed")
+
+        return url
+
+    def _get_multipart_encoder_monitor(self, fields):
+        """
+        :param dict fields:
+        :rtype: encoder.MultipartEncoderMonitor
+        """
+        multipart_encoder = self.multipart_encoder_cls(fields)
+        monitor = multipart_encoder.get_monitor()
+        return monitor
+
+    def _send_upload_request(self, client, data):
+        response = client.put("", data=data)
+        return response
+
+    def _get_client(self, url, ps_client_name=None, api_key=None):
+        client = http_client.API(url, logger=self.logger, ps_client_name=ps_client_name, api_key=api_key)
+        return client
 
 
 class S3WorkspaceDirectoryUploader(object):

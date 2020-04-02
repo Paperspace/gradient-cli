@@ -1374,7 +1374,9 @@ class TestStartExperiment(object):
         put_patched.assert_called_once_with(self.URL_V2,
                                             headers=EXPECTED_HEADERS,
                                             json=None,
-                                            params=None)
+                                            params=None,
+                                            data=None,
+                                            )
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_put_request_with_changed_api_key_when_api_key_option_was_provided(self, put_patched):
@@ -1387,7 +1389,9 @@ class TestStartExperiment(object):
         put_patched.assert_called_once_with(self.URL_V2,
                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
-                                            params=None)
+                                            params=None,
+                                            data=None,
+                                            )
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_read_options_from_config_file(self, put_patched, experiments_start_config_path):
@@ -1401,7 +1405,9 @@ class TestStartExperiment(object):
         put_patched.assert_called_once_with(self.URL_V2,
                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
-                                            params=None)
+                                            params=None,
+                                            data=None,
+                                            )
 
 
 class TestStopExperiment(object):
@@ -1425,7 +1431,9 @@ class TestStopExperiment(object):
         put_patched.assert_called_once_with(self.URL_V2,
                                             headers=EXPECTED_HEADERS,
                                             json=None,
-                                            params=None)
+                                            params=None,
+                                            data=None,
+                                            )
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_put_request_with_changed_api_key_when_api_key_option_was_provided(self, put_patched):
@@ -1438,7 +1446,9 @@ class TestStopExperiment(object):
         put_patched.assert_called_once_with(self.URL_V2,
                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
-                                            params=None)
+                                            params=None,
+                                            data=None,
+                                            )
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_read_options_from_config_file(self, put_patched, experiments_stop_config_path):
@@ -1452,7 +1462,9 @@ class TestStopExperiment(object):
         put_patched.assert_called_once_with(self.URL_V2,
                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
-                                            params=None)
+                                            params=None,
+                                            data=None,
+                                            )
 
 
 class TestDeleteExperiment(object):
