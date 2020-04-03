@@ -1,6 +1,10 @@
 # Gradient CLI Release Notes
 
 # Release Notes for 0.6.1
+### New features
+* Overwriting options provided in YAML file with values passed in terminal
+* Added `--projectId` option to `models upload` command
+* Added `clusters machineTypes list` command
 ### Fixes
 * Fix raising KeyError when listing experiments
 
