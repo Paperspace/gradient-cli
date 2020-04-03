@@ -1,12 +1,22 @@
 # Gradient CLI Release Notes
 
 # Release Notes for 0.6.1
+##### Note: this list includes all changes made in 0.6.1a* alpha releases
+### Breaking changes
+* `--workspaceUrl` and `--workspaceArchive` replaced by `--workspace`
 ### New features
-* Overwriting options provided in YAML file with values passed in terminal
-* Added `--projectId` option to `models upload` command
 * Added `clusters machineTypes list` command
+* Added `--projectId` option to `models upload` command
+* Overwriting options provided in YAML file with values passed in terminal
 ### Fixes
 * Fix raising KeyError when listing experiments
+* Added `clusters list` command
+* Fixed URL to a newly created project
+
+# Release Notes for 0.6.1a1
+### New features
+* Added `--projectId` option to `models upload` command
+* Overwriting options provided in YAML file with values passed in terminal
 
 # Release Notes for 0.6.1a0
 ### Breaking changes
