@@ -4,7 +4,7 @@ import terminaltables
 
 from gradient import api_sdk
 from gradient.api_sdk.config import config
-from gradient.api_sdk.utils import urljoin
+from gradient.api_sdk.utils import concatenate_urls
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.commands import common, BaseCommand
 from gradient.commands.common import DetailsCommandMixin
@@ -35,7 +35,7 @@ class CreateMachineCommand(GetMachinesClientMixin, BaseCommand):
         self.logger.log(self.get_instance_url(handle))
 
     def get_instance_url(self, machine_id):
-        url = urljoin(config.WEB_URL, "console/machines/{}".format(machine_id))
+        url = concatenate_urls(config.WEB_URL, "console/machines/{}".format(machine_id))
         return url
 
 

@@ -10,7 +10,7 @@ from halo import halo
 from gradient import api_sdk, exceptions, TensorboardClient
 from gradient.api_sdk import constants, sdk_exceptions
 from gradient.api_sdk.config import config
-from gradient.api_sdk.utils import urljoin
+from gradient.api_sdk.utils import concatenate_urls
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.clilogger import CliLogger
 from gradient.cliutils import get_terminal_lines, none_strings_to_none_objects
@@ -109,7 +109,7 @@ class BaseCreateExperimentCommandMixin(object):
         return experiment_id
 
     def get_instance_url(self, instance_id, project_id):
-        url = urljoin(config.WEB_URL, "console/projects/{}/experiments/{}".format(project_id, instance_id))
+        url = concatenate_urls(config.WEB_URL, "console/projects/{}/experiments/{}".format(project_id, instance_id))
         return url
 
     def _handle_workspace(self, instance_dict):

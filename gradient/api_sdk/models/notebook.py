@@ -1,7 +1,7 @@
 import attr
 
 from gradient.api_sdk.config import config
-from gradient.api_sdk.utils import urljoin
+from gradient.api_sdk.utils import concatenate_urls
 
 
 @attr.s
@@ -27,5 +27,5 @@ class Notebook(object):
 
     @property
     def url(self):
-        url = urljoin(config.WEB_URL, "/console/{}/notebook/{}".format(self.namespace, self.project_id))
+        url = concatenate_urls(config.WEB_URL, "/console/{}/notebook/{}".format(self.namespace, self.project_id))
         return url

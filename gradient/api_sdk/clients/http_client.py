@@ -3,6 +3,7 @@ import copy
 import requests
 
 from gradient import version
+from gradient.api_sdk import utils
 from .. import logger as sdk_logger
 from ..config import config
 
@@ -53,9 +54,8 @@ class API(object):
         if not url:
             return self.api_url
 
-        api_url = self.api_url if not self.api_url.endswith("/") else self.api_url[:-1]
-        template = "{}{}" if url.startswith("/") else "{}/{}"
-        return template.format(api_url, url)
+        full_path = utils.concatenate_urls(self.api_url, url)
+        return full_path
 
     def post(self, url, json=None, params=None, files=None, data=None):
         path = self.get_path(url)
