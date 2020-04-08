@@ -1,3 +1,5 @@
+import datetime
+
 from .base_client import BaseClient
 from .. import repositories, models, constants, utils
 from ..sdk_exceptions import InvalidParametersError
@@ -792,3 +794,28 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             raise InvalidParametersError(
                 EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
             )
+
+    def get_metrics(self, experiment_id, start=None, end=None, interval="30s", built_in_metrics=None):
+        """Get experiment metrics
+
+        :param str experiment_id: ID of experiment
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+                    Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
+                                            gpuTemp, gpuUtilization, gpuMemoryUtilization
+        :param datetime.datetime|str start:
+        :param datetime.datetime|str end:
+        :param str interval:
+
+        :returns:
+        :rtype: dict[str,dict[str,list[dict]]]
+        """
+
+        repository = self.build_repository(repositories.GetExperimentMetrics)
+        metrics = repository.get(
+            id=experiment_id,
+            start=start,
+            end=end,
+            interval=interval,
+            built_in_metrics=built_in_metrics,
+        )
+        return metrics

@@ -2,7 +2,9 @@ import abc
 
 import six
 
-from .common import ListResources, GetResource, CreateResource, StartResource, StopResource, DeleteResource
+from gradient.api_sdk.repositories.jobs import ListJobs
+from gradient.api_sdk.utils import concatenate_urls
+from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource, GetResource, GetMetrics
 from .. import config, serializers
 from ..serializers import utils
 
@@ -195,3 +197,24 @@ class DeleteExperiment(GetBaseExperimentApiUrlMixin, DeleteResource):
     def get_request_url(self, **kwargs):
         experiment_id = kwargs["id"]
         return "/experiments/{}/".format(experiment_id)
+
+
+class GetRawExperimentJson(GetExperiment):
+    def _parse_object(self, experiment_dict, **kwargs):
+        return experiment_dict
+
+
+class GetExperimentMetrics(GetMetrics):
+    OBJECT_TYPE = "experiment"
+
+    def _get_instance_dict(self, instance_id, kwargs):
+        repository = GetRawExperimentJson(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        instance_dict = repository.get(experiment_id=instance_id)
+        return instance_dict["data"]
+
+    def _get_metrics_api_url(self, instance_dict, kwargs):
+        experiment_id = kwargs["id"]
+        repository = ListJobs(api_key=self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        job = repository.list(experiment_id=experiment_id)[0]
+        metrics_api_url = concatenate_urls("https://", job.metrics_url)
+        return metrics_api_url

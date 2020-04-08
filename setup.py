@@ -74,6 +74,7 @@ setup(
         'marshmallow<3.0',
         'attrs<=19',
         'PyYAML==5.*',
+        'python-dateutil==2.*',
     ],
     entry_points={'console_scripts': [
         'gradient = gradient:main.main',

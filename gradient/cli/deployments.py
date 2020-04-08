@@ -471,7 +471,7 @@ def get_deployment(deployment_id, api_key, options_file):
 @api_key_option
 @common.options_file
 def deployment_add_tag(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     deployment_client = get_deployment_client(api_key)
 
@@ -503,7 +503,7 @@ def deployment_add_tag(id, options_file, api_key, **kwargs):
 @api_key_option
 @common.options_file
 def deployment_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     deployment_client = get_deployment_client(api_key)
 

@@ -446,7 +446,7 @@ def download_artifacts(job_id, destination_directory, options_file, api_key=None
 @api_key_option
 @common.options_file
 def job_add_tag(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = JobAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -476,7 +476,7 @@ def job_add_tag(id, options_file, api_key, **kwargs):
 @api_key_option
 @common.options_file
 def job_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = JobRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)

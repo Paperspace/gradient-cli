@@ -11,7 +11,8 @@ from gradient.cli.common import api_key_option, ClickGroup, validate_comma_split
 from gradient.cli.utils.flag_with_value import GradientRegisterReaderOption, GradientRegisterWriterOption, \
     GradientRegisterWriterCommand
 from gradient.commands import experiments as experiments_commands
-from gradient.commands.experiments import ExperimentAddTagsCommand, ExperimentRemoveTagsCommand
+from gradient.commands.experiments import ExperimentAddTagsCommand, ExperimentRemoveTagsCommand, \
+    GetExperimentMetricsCommand
 
 MULTI_NODE_CREATE_EXPERIMENT_COMMANDS = {
     constants.ExperimentType.GRPC_MULTI_NODE: experiments_commands.CreateMultiNodeExperimentCommand,
@@ -47,6 +48,11 @@ def create_and_start_experiment():
 
 @experiments_group.group(name="tags", help="Manage tags for experiment", cls=ClickGroup)
 def experiments_tags():
+    pass
+
+
+@experiments_group.group(name="metrics", help="Read experiment metrics", cls=ClickGroup)
+def experiments_metrics():
     pass
 
 
@@ -772,7 +778,7 @@ def delete_experiment(id, options_file, api_key):
 @api_key_option
 @common.options_file
 def experiment_add_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = ExperimentAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -802,7 +808,63 @@ def experiment_add_tags(id, options_file, api_key, **kwargs):
 @api_key_option
 @common.options_file
 def experiment_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = ExperimentRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
+
+
+@experiments_metrics.command(
+    "get",
+    short_help="Get experiment metrics",
+    help="Get experiment metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
+@click.option(
+    "--metric",
+    "metrics_list",
+    multiple=True,
+    type=ChoiceType(constants.REGIONS_MAP, case_sensitive=False),
+    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    cls=common.GradientOption
+)
+@click.option(
+    "--metrics",
+    "comma_separated_metrics",
+    help="Comma-separated metrics that you want to read",
+    cls=common.GradientOption
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--start",
+    "start",
+    type=click.DateTime(),
+    help="Read metrics starting from this datestamp",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--end",
+    "end",
+    type=click.DateTime(),
+    help="Read metrics ending from this datestamp",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def get_experiment_metrics(id, metrics_list, interval, comma_separated_metrics, start, end, options_file, api_key):
+    metrics_list = validate_comma_split_option(comma_separated_metrics, metrics_list)
+
+    command = GetExperimentMetricsCommand(api_key=api_key)
+    command.execute(id, start, end, interval, built_in_metrics=metrics_list)

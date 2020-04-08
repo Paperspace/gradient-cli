@@ -1,4 +1,5 @@
 import abc
+import json
 import pydoc
 
 import click
@@ -428,3 +429,16 @@ class ExperimentRemoveTagsCommand(BaseExperimentCommand):
     def execute(self, experiment_id, *args, **kwargs):
         self.client.remove_tags(experiment_id, entity=self.entity, **kwargs)
         self.logger.log("Tags removed from experiment")
+
+
+class GetExperimentMetricsCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, start, end, interval, built_in_metrics, *args, **kwargs):
+        metrics = self.client.get_metrics(
+            experiment_id,
+            start=start,
+            end=end,
+            built_in_metrics=built_in_metrics,
+            interval=interval,
+        )
+        formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
+        self.logger.log(formatted_metrics)

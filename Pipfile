@@ -19,6 +19,7 @@ colorama = "*"
 click-completion = "*"
 halo = "*"
 pyyaml = "*"
+python-dateutil = ">=2.0,<3.0"
 
 [dev-packages]
 twine = "*"
