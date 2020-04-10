@@ -136,6 +136,7 @@ class GetDeploymentDetails(DetailsCommandMixin, _DeploymentCommand):
             ("State", instance.state),
             ("Machine type", instance.machine_type),
             ("Instance count", instance.instance_count),
+            ("Command", instance.command),
             ("Deployment type", instance.deployment_type),
             ("Model ID", instance.model_id),
             ("Project ID", instance.project_id),

@@ -66,6 +66,7 @@ class TestDeploymentsCreate(object):
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
+        "--command", "some deployment command",
         "--containerModelPath", "some/container/model/path",
         "--imageUsername", "some_image_username",
         "--imagePassword", "some_image_password",
@@ -113,6 +114,7 @@ class TestDeploymentsCreate(object):
         "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "deploymentType": "TFServing",
         "instanceCount": 666,
+        "command": "some deployment command",
         "modelId": u"some_model_id",
         "cluster": "some_cluster_id",
         "containerModelPath": "some/container/model/path",
@@ -810,6 +812,7 @@ class TestDeploymentDetails(object):
 | State           | Stopped                                             |
 | Machine type    | p3.2xlarge                                          |
 | Instance count  | 1                                                   |
+| Command         | some deployment command                             |
 | Deployment type | TFServing                                           |
 | Model ID        | some_model_id                                       |
 | Project ID      | some_project_id                                     |

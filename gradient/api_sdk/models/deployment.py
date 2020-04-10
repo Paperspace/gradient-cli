@@ -74,3 +74,4 @@ class Deployment(object):
     auth_password = attr.ib(type=str, default=None)
     cluster_id = attr.ib(type=int, default=None)
     tags = attr.ib(type=list, factory=list)
+    command = attr.ib(type=str, default=None)

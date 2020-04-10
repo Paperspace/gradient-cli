@@ -1,5 +1,10 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.6.2
+#### New features
+* Added support for uploading 100MB+ models
+* Added `command` option/parameter to `depoyments create` command and SDK method
+
 # Release Notes for 0.6.1
 ##### Note: this list includes all changes made in 0.6.1a* alpha releases
 ### Breaking changes
