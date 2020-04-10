@@ -5921,7 +5921,7 @@ GET_DEPLOYMENT_DETAILS_JSON_RESPONSE = {
             "isDeleted": False,
             "modelType": "Tensorflow",
             "modelPath": None,
-            "command": None,
+            "command": "some deployment command",
             "args": None,
             "env": None,
             "containerModelPath": None,

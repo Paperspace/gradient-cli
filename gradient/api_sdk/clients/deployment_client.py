@@ -48,6 +48,7 @@ class DeploymentsClient(BaseClient):
             auth_username=None,
             auth_password=None,
             tags=None,
+            command=None,
     ):
         """
         Method to create a Deployment instance.
@@ -91,6 +92,7 @@ class DeploymentsClient(BaseClient):
         :param str auth_username: Username
         :param str auth_password: Password
         :param list[str] tags: List of tags
+        :param str command: Deployment command
 
         :returns: Created deployment id
         :rtype: str
@@ -116,6 +118,7 @@ class DeploymentsClient(BaseClient):
             cluster_id=cluster_id,
             auth_username=auth_username,
             auth_password=auth_password,
+            command=command,
         )
 
         repository = self.build_repository(repositories.CreateDeployment)
