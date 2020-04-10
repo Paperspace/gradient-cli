@@ -3,6 +3,7 @@ authPassword: some_password
 apiKey: some_key
 apiType: REST
 clusterId: some_cluster_id
+command: some deployment command
 containerModelPath: some/container/model/path
 containerUrlPath: some/container/url/path
 deploymentType: TFSERVING

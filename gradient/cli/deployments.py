@@ -74,6 +74,12 @@ def get_deployment_client(api_key):
     cls=common.GradientOption,
 )
 @click.option(
+    "--command",
+    "command",
+    help="Deployment command",
+    cls=common.GradientOption,
+)
+@click.option(
     "--containerModelPath",
     "container_model_path",
     help="Container model path",
