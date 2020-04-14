@@ -70,7 +70,6 @@ setup(
         'requests-toolbelt',
         'progressbar2',
         'halo',
-        'prompt_toolkit<3.0',
         'marshmallow<3.0',
         'attrs<=19',
         'PyYAML==5.*',
