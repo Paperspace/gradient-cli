@@ -54,7 +54,7 @@ class CreateDeployment(GetBaseDeploymentApiUrlMixin, CreateResource):
     SERIALIZER_CLS = serializers.DeploymentSchema
 
     def get_request_url(self, **kwargs):
-        if kwargs.get("cluster"):
+        if kwargs.get("clusterId"):
             return "/deployments/v2/createDeployment/"
 
         return "/deployments/createDeployment/"

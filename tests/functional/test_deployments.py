@@ -101,7 +101,7 @@ class TestDeploymentsCreate(object):
         "deploymentType": "TFServing",
         "instanceCount": 666,
         "modelId": u"some_model_id",
-        "cluster": "some_cluster_id",
+        "clusterId": "some_cluster_id",
     }
     TAGS_JSON = {
         "entity": "deployment",
@@ -116,7 +116,7 @@ class TestDeploymentsCreate(object):
         "instanceCount": 666,
         "command": "some deployment command",
         "modelId": u"some_model_id",
-        "cluster": "some_cluster_id",
+        "clusterId": "some_cluster_id",
         "containerModelPath": "some/container/model/path",
         "imageUsername": "some_image_username",
         "imagePassword": "some_image_password",
@@ -677,7 +677,7 @@ class TestDeploymentsUpdate(object):
             "deploymentType": "TFServing",
             "instanceCount": 666,
             "modelId": u"some_model_id",
-            "cluster": "some_cluster_id",
+            "clusterId": "some_cluster_id",
             "containerModelPath": "some/container/model/path",
             "imageUsername": "some_image_username",
             "imagePassword": "some_image_password",
