@@ -819,3 +819,24 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
             built_in_metrics=built_in_metrics,
         )
         return metrics
+
+    def stream_metrics(self, experiment_id, interval="30s", built_in_metrics=None):
+        """Stream live experiment metrics
+
+        :param str experiment_id: ID of experiment
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+                    Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
+                                            gpuTemp, gpuUtilization, gpuMemoryUtilization
+        :param str interval:
+
+        :returns:
+        :rtype: dict[str,dict[str,list[dict]]]
+        """
+
+        repository = self.build_repository(repositories.StreamExperimentMetrics)
+        metrics = repository.stream(
+            id=experiment_id,
+            interval=interval,
+            built_in_metrics=built_in_metrics,
+        )
+        return metrics

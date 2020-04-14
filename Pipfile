@@ -20,6 +20,7 @@ click-completion = "*"
 halo = "*"
 pyyaml = "*"
 python-dateutil = ">=2.0,<3.0"
+websocket-client = "*"
 
 [dev-packages]
 twine = "*"

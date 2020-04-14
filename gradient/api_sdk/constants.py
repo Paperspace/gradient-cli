@@ -124,7 +124,7 @@ class BuiltinMetrics:
     gpu_memory_utilization = "gpuMemoryUtilization"
 
 
-REGIONS_MAP = collections.OrderedDict(
+METRICS_MAP = collections.OrderedDict(
     (
         ("cpuPercentage", BuiltinMetrics.cpu_percentage),
         ("memoryUsage", BuiltinMetrics.memory_usage),

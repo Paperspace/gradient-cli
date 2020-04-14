@@ -12,7 +12,7 @@ from gradient.cli.utils.flag_with_value import GradientRegisterReaderOption, Gra
     GradientRegisterWriterCommand
 from gradient.commands import experiments as experiments_commands
 from gradient.commands.experiments import ExperimentAddTagsCommand, ExperimentRemoveTagsCommand, \
-    GetExperimentMetricsCommand
+    GetExperimentMetricsCommand, StreamExperimentMetricsCommand
 
 MULTI_NODE_CREATE_EXPERIMENT_COMMANDS = {
     constants.ExperimentType.GRPC_MULTI_NODE: experiments_commands.CreateMultiNodeExperimentCommand,
@@ -821,7 +821,7 @@ def experiment_remove_tags(id, options_file, api_key, **kwargs):
 )
 @click.option(
     "--id",
-    "id",
+    "experiment_id",
     required=True,
     cls=common.GradientOption,
     help="ID of the experiment",
@@ -830,15 +830,10 @@ def experiment_remove_tags(id, options_file, api_key, **kwargs):
     "--metric",
     "metrics_list",
     multiple=True,
-    type=ChoiceType(constants.REGIONS_MAP, case_sensitive=False),
+    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
     help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
-    cls=common.GradientOption
-)
-@click.option(
-    "--metrics",
-    "comma_separated_metrics",
-    help="Comma-separated metrics that you want to read",
-    cls=common.GradientOption
+    cls=common.GradientOption,
 )
 @click.option(
     "--interval",
@@ -863,8 +858,41 @@ def experiment_remove_tags(id, options_file, api_key, **kwargs):
 )
 @api_key_option
 @common.options_file
-def get_experiment_metrics(id, metrics_list, interval, comma_separated_metrics, start, end, options_file, api_key):
-    metrics_list = validate_comma_split_option(comma_separated_metrics, metrics_list)
-
+def get_experiment_metrics(experiment_id, metrics_list, interval, start, end, options_file, api_key):
     command = GetExperimentMetricsCommand(api_key=api_key)
-    command.execute(id, start, end, interval, built_in_metrics=metrics_list)
+    command.execute(experiment_id, start, end, interval, built_in_metrics=metrics_list)
+
+
+@experiments_metrics.command(
+    "stream",
+    short_help="Watch live experiment metrics",
+    help="Watch live experiment metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "experiment_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
+@click.option(
+    "--metric",
+    "metrics_list",
+    multiple=True,
+    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
+    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def get_experiment_metrics_stream(experiment_id, metrics_list, interval, options_file, api_key):
+    command = StreamExperimentMetricsCommand(api_key=api_key)
+    command.execute(experiment_id=experiment_id, interval=interval, built_in_metrics=metrics_list)
