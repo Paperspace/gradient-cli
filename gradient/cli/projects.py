@@ -4,7 +4,6 @@ from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.common import validate_comma_split_option
 from gradient.commands import projects as projects_commands
-from gradient.wizards.projects import run_create_project_wizard
 
 
 @cli.group("projects", help="Manage projects", cls=common.ClickGroup)
@@ -85,11 +84,6 @@ def create_project(api_key, options_file, **project):
 def create_project(project_id, api_key, options_file):
     command = projects_commands.ShowProjectDetailsCommand(api_key)
     command.execute(project_id)
-
-
-@projects_group.command("wizard", help="Run create project wizard")
-def create_project_wizard():
-    run_create_project_wizard()
 
 
 @projects_group.command("delete", help="Delete project and all its experiments")
