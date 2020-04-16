@@ -186,7 +186,7 @@ def show_notebook(id, api_key, options_file):
 @common.api_key_option
 @common.options_file
 def notebook_add_tag(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = notebooks.NotebookAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -216,7 +216,7 @@ def notebook_add_tag(id, options_file, api_key, **kwargs):
 @common.api_key_option
 @common.options_file
 def notebook_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = notebooks.NotebookRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)

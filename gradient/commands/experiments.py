@@ -1,4 +1,6 @@
 import abc
+import collections
+import json
 import pydoc
 
 import click
@@ -10,7 +12,7 @@ from halo import halo
 from gradient import api_sdk, exceptions, TensorboardClient
 from gradient.api_sdk import constants, sdk_exceptions
 from gradient.api_sdk.config import config
-from gradient.api_sdk.utils import urljoin
+from gradient.api_sdk.utils import concatenate_urls
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.clilogger import CliLogger
 from gradient.cliutils import get_terminal_lines, none_strings_to_none_objects
@@ -109,7 +111,7 @@ class BaseCreateExperimentCommandMixin(object):
         return experiment_id
 
     def get_instance_url(self, instance_id, project_id):
-        url = urljoin(config.WEB_URL, "console/projects/{}/experiments/{}".format(project_id, instance_id))
+        url = concatenate_urls(config.WEB_URL, "console/projects/{}/experiments/{}".format(project_id, instance_id))
         return url
 
     def _handle_workspace(self, instance_dict):
@@ -428,3 +430,74 @@ class ExperimentRemoveTagsCommand(BaseExperimentCommand):
     def execute(self, experiment_id, *args, **kwargs):
         self.client.remove_tags(experiment_id, entity=self.entity, **kwargs)
         self.logger.log("Tags removed from experiment")
+
+
+class GetExperimentMetricsCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, start, end, interval, built_in_metrics, *args, **kwargs):
+        metrics = self.client.get_metrics(
+            experiment_id,
+            start=start,
+            end=end,
+            built_in_metrics=built_in_metrics,
+            interval=interval,
+        )
+        formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
+        self.logger.log(formatted_metrics)
+
+
+class StreamExperimentMetricsCommand(ListCommandMixin, BaseExperimentCommand):
+    def __init__(self, *args, **kwargs):
+        super(StreamExperimentMetricsCommand, self).__init__(*args, **kwargs)
+        # {"metricName": {"pod_id": "value"}}
+        self._recent_values = collections.OrderedDict()
+
+    def execute(self, **kwargs):
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            instances = self._get_instances(kwargs)
+
+        self._log_objects_list(instances)
+
+    def _get_instances(self, kwargs):
+        metrics_stream = self.client.stream_metrics(**kwargs)
+        self._prepare_recent_values(kwargs["built_in_metrics"])
+        return metrics_stream
+
+    def _prepare_recent_values(self, builtin_metrics_names):
+        for name in builtin_metrics_names:
+            self._recent_values[name] = collections.OrderedDict()
+
+    def _log_objects_list(self, metrics_stream):
+        for raw_metric_date_response in metrics_stream:
+            metric_data = json.loads(raw_metric_date_response)
+            self._update_recent_values(metric_data)
+            super(StreamExperimentMetricsCommand, self)._log_objects_list(raw_metric_date_response)
+
+    def _update_recent_values(self, metric_data):
+        metric_name = metric_data["chart_name"]
+        metrics = metric_data["pod_metrics"]
+        for pod_name, data in metrics.items():
+            self._recent_values[metric_name][pod_name] = data["value"]
+
+    def _print_table_to_terminal(self, table_str):
+        click.clear()
+        self.logger.log(table_str)
+
+    def _get_table_data(self, objects):
+        metrics = list(self._recent_values.keys())
+        table_ = ["Pod"] + metrics
+        table_data = [table_]
+        values = collections.OrderedDict()  # {pod_name: {metricName: value}}
+        for metric_name, data in self._recent_values.items():
+            for pod_name, value in data.items():
+                pod_metrics = values.setdefault(pod_name, collections.OrderedDict())
+                pod_metrics[metric_name] = value
+
+        for pod_name, pod_metrics in values.items():
+            row = [pod_name]
+            for metric_name in metrics:
+                value = pod_metrics.get(metric_name, "")
+                row.append(value)
+
+            table_data.append(row)
+
+        return table_data

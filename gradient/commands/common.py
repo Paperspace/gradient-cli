@@ -51,6 +51,9 @@ class ListCommandMixin(object):
 
         table_data = self._get_table_data(objects)
         table_str = self._make_list_table(table_data)
+        self._print_table_to_terminal(table_str)
+
+    def _print_table_to_terminal(self, table_str):
         if len(table_str.splitlines()) > get_terminal_lines():
             pydoc.pager(table_str)
         else:

@@ -8,7 +8,7 @@ from halo import halo
 from gradient import clilogger as gradient_logger, exceptions
 from gradient.api_sdk import sdk_exceptions, utils, models
 from gradient.api_sdk.config import config
-from gradient.api_sdk.utils import urljoin
+from gradient.api_sdk.utils import concatenate_urls
 from gradient.cliutils import get_terminal_lines
 from gradient.commands.common import DetailsCommandMixin
 
@@ -36,7 +36,7 @@ class CreateDeploymentCommand(_DeploymentCommand):
         self.logger.log(self.get_instance_url(deployment_id))
 
     def get_instance_url(self, instance_id):
-        url = urljoin(config.WEB_URL, "/console/deployments/{}".format(instance_id))
+        url = concatenate_urls(config.WEB_URL, "/console/deployments/{}".format(instance_id))
         return url
 
     def _handle_auth(self, kwargs):

@@ -11,7 +11,7 @@ from gradient.api_sdk import config, sdk_exceptions
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.clients.base_client import BaseClient
 from gradient.api_sdk.repositories.jobs import RunJob
-from gradient.api_sdk.utils import print_dict_recursive, urljoin
+from gradient.api_sdk.utils import print_dict_recursive, concatenate_urls
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.cliutils import get_terminal_lines
 from gradient.commands.common import BaseCommand
@@ -51,7 +51,7 @@ class BaseCreateJobCommandMixin(object):
 
     @staticmethod
     def get_instance_url(instance_id):
-        url = urljoin(config.config.WEB_URL, "console/jobs/{}".format(instance_id))
+        url = concatenate_urls(config.config.WEB_URL, "console/jobs/{}".format(instance_id))
         return url
 
     def _handle_workspace(self, instance_dict):

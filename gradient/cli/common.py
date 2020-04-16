@@ -254,8 +254,8 @@ class GradientDatasetOption(GradientObjectListOption):
         super(GradientDatasetOption, self).__init__("dataset", param_decls, **kwargs)
 
 
-def validate_comma_split_option(comma_option_value, option_value, raise_if_no_tags=False):
-    if raise_if_no_tags and not any((comma_option_value, option_value)):
+def validate_comma_split_option(comma_option_value, option_value, raise_if_no_values=False):
+    if raise_if_no_values and not any((comma_option_value, option_value)):
         raise click.UsageError("No tags provided")
 
     if comma_option_value or option_value:

@@ -6,7 +6,7 @@ import six
 from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
 from gradient.api_sdk.config import config
-from gradient.api_sdk.utils import urljoin
+from gradient.api_sdk.utils import concatenate_urls
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from .common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 
@@ -36,7 +36,7 @@ class CreateProjectCommand(BaseProjectCommand):
         self.logger.log(self.get_instance_url(project_id))
 
     def get_instance_url(self, project_id):
-        url = urljoin(config.WEB_URL, "console/projects/{}".format(project_id))
+        url = concatenate_urls(config.WEB_URL, "console/projects/{}".format(project_id))
         return url
 
 

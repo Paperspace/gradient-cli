@@ -652,7 +652,7 @@ def wait_for_machine_state(machine_id, state, api_key, options_file):
 @api_key_option
 @common.options_file
 def machine_add_tag(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = machines_commands.MachineAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -682,7 +682,7 @@ def machine_add_tag(id, options_file, api_key, **kwargs):
 @api_key_option
 @common.options_file
 def machine_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_tags=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = machines_commands.MachineRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
