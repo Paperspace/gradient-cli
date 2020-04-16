@@ -217,7 +217,11 @@ class GetExperimentMetrics(GetMetrics):
 
     def _get_metrics_api_url(self, instance_id, protocol="https"):
         repository = ListJobs(api_key=self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
-        job = repository.list(experiment_id=instance_id)[0]
+        try:
+            job = repository.list(experiment_id=instance_id)[0]
+        except IndexError:
+            raise sdk_exceptions.GradientSdkError("Experiment has not started yet")
+
         metrics_api_url = concatenate_urls(protocol + "://", job.metrics_url)
         return metrics_api_url
 

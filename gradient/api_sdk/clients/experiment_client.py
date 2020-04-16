@@ -799,14 +799,14 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         """Get experiment metrics
 
         :param str experiment_id: ID of experiment
-        :param list[str] built_in_metrics: List of metrics to get if different than default
-                    Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
-                                            gpuTemp, gpuUtilization, gpuMemoryUtilization
         :param datetime.datetime|str start:
         :param datetime.datetime|str end:
         :param str interval:
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+                    Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
+                                            gpuTemp, gpuUtilization, gpuMemoryUtilization
 
-        :returns:
+        :returns: Metrics of and experiment
         :rtype: dict[str,dict[str,list[dict]]]
         """
 
@@ -824,13 +824,13 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         """Stream live experiment metrics
 
         :param str experiment_id: ID of experiment
+        :param str interval:
         :param list[str] built_in_metrics: List of metrics to get if different than default
                     Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
                                             gpuTemp, gpuUtilization, gpuMemoryUtilization
-        :param str interval:
 
-        :returns:
-        :rtype: dict[str,dict[str,list[dict]]]
+        :returns: Generator object yielding live experiment metrics
+        :rtype: Iterable[dict]
         """
 
         repository = self.build_repository(repositories.StreamExperimentMetrics)
