@@ -1,5 +1,13 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.7.0a0
+#### Breaking changes
+* Removed experimental `projects wizard` command
+#### New features
+* Added commands for reading experiment metrics
+#### Fixes
+* Fix request field name for `deployment create` command
+
 # Release Notes for 0.6.3
 #### Fixes
 * Fix request field name for `deployment create` command
