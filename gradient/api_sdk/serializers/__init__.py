@@ -1,5 +1,5 @@
 from .artifact import ArtifactSchema
-from .deployment import DeploymentSchema
+from .deployment import DeploymentSchema, DeploymentCreateSchema
 from .experiment import BaseExperimentSchema, MultiNodeExperimentSchema, SingleNodeExperimentSchema, \
     MpiMultiNodeExperimentSchema
 from .hyperparameter import HyperparameterSchema
