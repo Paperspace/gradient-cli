@@ -51,10 +51,10 @@ class ListDeployments(GetBaseDeploymentApiUrlMixin, ListResources):
 
 
 class CreateDeployment(GetBaseDeploymentApiUrlMixin, CreateResource):
-    SERIALIZER_CLS = serializers.DeploymentSchema
+    SERIALIZER_CLS = serializers.DeploymentCreateSchema
 
     def get_request_url(self, **kwargs):
-        if kwargs.get("clusterId"):
+        if kwargs.get("cluster"):
             return "/deployments/v2/createDeployment/"
 
         return "/deployments/createDeployment/"

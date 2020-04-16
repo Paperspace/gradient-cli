@@ -82,7 +82,6 @@ class TestDeploymentsCreate(object):
         "--authPassword", "some_password",
         "--clusterId", "some_cluster_id",
         "--apiKey", "some_key",
-        "--clusterId", "some_cluster_id",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["deployments", "create", "--optionsFile", ]  # path added in test
 
@@ -101,7 +100,7 @@ class TestDeploymentsCreate(object):
         "deploymentType": "TFServing",
         "instanceCount": 666,
         "modelId": u"some_model_id",
-        "clusterId": "some_cluster_id",
+        "cluster": "some_cluster_id",
     }
     TAGS_JSON = {
         "entity": "deployment",
@@ -116,7 +115,7 @@ class TestDeploymentsCreate(object):
         "instanceCount": 666,
         "command": "some deployment command",
         "modelId": u"some_model_id",
-        "clusterId": "some_cluster_id",
+        "cluster": "some_cluster_id",
         "containerModelPath": "some/container/model/path",
         "imageUsername": "some_image_username",
         "imagePassword": "some_image_password",

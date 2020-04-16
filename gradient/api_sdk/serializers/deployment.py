@@ -36,3 +36,7 @@ class DeploymentSchema(BaseSchema):
     cluster_id = ma.fields.Str(dump_to="clusterId", load_from="clusterId")
     tags = ma.fields.List(ma.fields.Str(), load_only=True)
     command = ma.fields.Str()
+
+
+class DeploymentCreateSchema(DeploymentSchema):
+    cluster_id = ma.fields.Str(dump_to="cluster", load_from="clusterId")
