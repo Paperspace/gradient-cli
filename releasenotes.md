@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.6.3
+#### Fixes
+* Fix request field name for `deployment create` command
+
 # Release Notes for 0.6.2
 #### New features
 * Added support for uploading 100MB+ models
