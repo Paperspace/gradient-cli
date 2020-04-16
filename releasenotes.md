@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.6.4
+#### Fixes
+* Fix cluster ID field again
+
 # Release Notes for 0.6.3
 #### Fixes
 * Fix request field name for `deployment create` command
