@@ -37,6 +37,12 @@ class DeploymentSchema(BaseSchema):
     tags = ma.fields.List(ma.fields.Str(), load_only=True)
     command = ma.fields.Str()
 
+    dt_created = ma.fields.DateTime(dump_to="dtCreated", load_from="dtCreated")
+    dt_modified = ma.fields.DateTime(dump_to="dtModified", load_from="dtModified")
+    dt_started = ma.fields.DateTime(dump_to="dtStarted", load_from="dtStarted")
+    dt_stopped = ma.fields.DateTime(dump_to="dtStopped", load_from="dtStopped")
+    dt_deleted = ma.fields.DateTime(dump_to="dtDeleted", load_from="dtDeleted")
+
 
 class DeploymentCreateSchema(DeploymentSchema):
     cluster_id = ma.fields.Str(dump_to="cluster", load_from="clusterId")
