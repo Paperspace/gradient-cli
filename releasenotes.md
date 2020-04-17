@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.7.0a1
+#### Fixes
+* Fix cluster ID field again
+
 # Release Notes for 0.7.0a0
 #### Breaking changes
 * Removed experimental `projects wizard` command
