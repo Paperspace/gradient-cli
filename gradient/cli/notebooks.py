@@ -24,15 +24,23 @@ def notebook_metrics():
     pass
 
 
-# @notebooks_group.command("create", help="Create new notebook")
-# @click.option(
-#     "--vmTypeId",
-#     "vm_type_id",
-#     type=int,
-#     required=True,
-#     help="Type of Virtual Machine",
-#     cls=common.GradientOption,
-# )
+@notebooks_group.command("create", help="Create new notebook")
+@click.option(
+    "--vmTypeId",
+    "vm_type_id",
+    type=int,
+    required=False,
+    help="Type of Virtual Machine",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--vmTypeLabel",
+    "vm_type_label",
+    type=int,
+    required=False,
+    help="Label of Virtual Machine (ex: P5000)",
+    cls=common.GradientOption,
+)
 @click.option(
     "--containerId",
     "container_id",
@@ -118,6 +126,118 @@ def notebook_metrics():
 def create_notebook(api_key, options_file, **notebook):
     notebook["tags"] = validate_comma_split_option(notebook.pop("tags_comma"), notebook.pop("tags"))
     command = notebooks.CreateNotebookCommand(api_key=api_key)
+    command.execute(**notebook)
+
+@notebooks_group.command("start", help="Start notebook")
+@click.option(
+    "--id",
+    "id",
+    type=str,
+    required=False,
+    help="Notebook ID",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--vmTypeId",
+    "vm_type_id",
+    type=int,
+    required=False,
+    help="Type of Virtual Machine",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--vmTypeLabel",
+    "vm_type_label",
+    type=int,
+    required=False,
+    help="Type of Virtual Machine",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--containerId",
+    "container_id",
+    type=int,
+    required=True,
+    help="Container ID",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--clusterId",
+    "cluster_id",
+    type=int,
+    required=True,
+    help="Cluster ID",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--containerName",
+    "container_name",
+    help="Container name",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--name",
+    "name",
+    help="Notebook name",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--registryUsername",
+    "registry_username",
+    help="Registry username",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--registryPassword",
+    "registry_password",
+    help="Registry password",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--defaultEntrypoint",
+    "default_entrypoint",
+    help="Default entrypoint",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--containerUser",
+    "container_user",
+    help="Container user",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--shutdownTimeout",
+    "shutdown_timeout",
+    help="Shutdown timeout in hours",
+    type=float,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--isPreemptible",
+    "is_preemptible",
+    help="Is preemptible",
+    is_flag=True,
+    type=bool,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def start_notebook(api_key, options_file, **notebook):
+    notebook["tags"] = validate_comma_split_option(notebook.pop("tags_comma"), notebook.pop("tags"))
+    command = notebooks.StartNotebookCommand(api_key=api_key)
     command.execute(**notebook)
 
 

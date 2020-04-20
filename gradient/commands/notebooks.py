@@ -37,6 +37,19 @@ class CreateNotebookCommand(BaseNotebookCommand):
         notebook = self.client.get(notebook_id)
         return notebook.url
 
+class StartNotebookCommand(BaseNotebookCommand):
+    SPINNER_MESSAGE = "Starting notebook"
+        print(kwargs)
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
+            notebook_id = self.client.start(**kwargs)
+
+        self.logger.log("Started notebook with id: {}".format(notebook_id))
+        self.logger.log(self.get_instance_url(notebook_id))
+
+    def get_instance_url(self, notebook_id):
+        notebook = self.client.get(notebook_id)
+        return notebook.url
+
 
 class DeleteNotebookCommand(BaseNotebookCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Deleting notebook"

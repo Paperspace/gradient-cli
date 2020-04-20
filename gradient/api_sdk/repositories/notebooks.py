@@ -1,6 +1,7 @@
 import json
 
-from .common import CreateResource, DeleteResource, ListResources, GetResource, GetMetrics, StreamMetrics
+from .common import CreateResource, DeleteResource, ListResources, GetResource, StartResource, \
+    StopResource, GetMetrics, StreamMetrics
 from .. import config
 from .. import serializers, sdk_exceptions
 
@@ -14,7 +15,18 @@ class CreateNotebook(GetNotebookApiUrlMixin, CreateResource):
     SERIALIZER_CLS = serializers.NotebookSchema
 
     def get_request_url(self, **kwargs):
-        return "notebooks/createNotebook"
+        return "notebooks/createNotebook/v2"
+
+    def _process_instance_dict(self, instance_dict):
+        # the API requires this field but marshmallow does not create it if it's value is None
+        instance_dict.setdefault("containerId")
+        return instance_dict
+
+class StartNotebook(GetNotebookApiUrlMixin, StartResource):
+    SERIALIZER_CLS = serializers.NotebookSchema
+
+    def get_request_url(self, **kwargs):
+        return "notebooks/startNotebookV2"
 
     def _process_instance_dict(self, instance_dict):
         # the API requires this field but marshmallow does not create it if it's value is None
@@ -54,6 +66,21 @@ class GetNotebook(GetNotebookApiUrlMixin, GetResource):
         notebook_id = kwargs["id"]
         j = {"notebookId": notebook_id}
         return j
+
+class stopNotebook(GetNotebookApiUrlMixin, StopResource):
+
+    def get_request_url(self, **kwargs):
+        return "notebooks/v2/stopNotebook"
+
+    def _get_request_json(self, kwargs):
+        notebook_id = kwargs["id"]
+        d = {"notebookId": notebook_id}
+        return d
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response
+
 
 
 class ListNotebooks(GetNotebookApiUrlMixin, ListResources):
