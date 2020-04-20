@@ -7,7 +7,7 @@ class NotebooksClient(BaseClient):
 
     def create(
             self,
-            vm_type_id,
+            vm_type_label,
             container_id,
             cluster_id,
             container_name=None,
@@ -22,7 +22,7 @@ class NotebooksClient(BaseClient):
     ):
         """Create new notebook
 
-        :param int vm_type_id:
+        :param str vm_type_label:
         :param int container_id:
         :param int cluster_id:
         :param str container_name:
@@ -40,7 +40,7 @@ class NotebooksClient(BaseClient):
         """
 
         notebook = models.Notebook(
-            vm_type_id=vm_type_id,
+            vm_type_label=vm_type_label,
             container_id=container_id,
             cluster_id=cluster_id,
             container_name=container_name,

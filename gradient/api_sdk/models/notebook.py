@@ -9,7 +9,7 @@ from ..utils import concatenate_urls
 @attr.s
 class Notebook(object):
     id = attr.ib(type=str, default=None)
-    vm_type_id = attr.ib(type=int, default=None)
+    vm_type_label = attr.ib(type=str, default=None)
     container_id = attr.ib(type=int, default=None)
     container_name = attr.ib(type=str, default=None)
     name = attr.ib(type=str, default=None)
