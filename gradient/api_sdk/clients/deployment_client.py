@@ -29,10 +29,11 @@ class DeploymentsClient(BaseClient):
     def create(
             self,
             deployment_type,
-            model_id, name,
+            name,
             machine_type,
             image_url,
             instance_count,
+            model_id=None,
             container_model_path=None,
             image_username=None,
             image_password=None,
