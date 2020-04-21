@@ -195,12 +195,6 @@ class TestJobLogs(TestJobs):
     COMMAND_WITH_OPTIONS_FILE = ["jobs", "logs", "--optionsFile", ]  # path added in test
     REQUEST_WITH_OPTIONS_FILE = {"jobId": "some_id", "line": 50, "limit": 200}
 
-    EXPECTED_STDOUT_WITHOUT_PARAMETERS = """Usage: cli jobs logs [OPTIONS]
-Try "cli jobs logs --help" for help.
-
-Error: Missing option '--id'.
-"""
-
     EXPECTED_STDOUT = """+Job some_id logs------------------------------------------------------------------------+
 | LINE | MESSAGE                                                                         |
 +------+---------------------------------------------------------------------------------+
@@ -219,15 +213,6 @@ Error: Missing option '--id'.
 """
 
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
-
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
-    def test_command_should_not_send_request_without_required_parameters(self, get_patched):
-        cli_runner = CliRunner()
-        result = cli_runner.invoke(cli.cli, self.COMMAND_WITHOUT_REQUIRED_PARAMETERS)
-
-        get_patched.assert_not_called()
-        assert result.exit_code == 2
-        assert result.output == self.EXPECTED_STDOUT_WITHOUT_PARAMETERS
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_get_request_and_print_available_logs(self, get_patched):
