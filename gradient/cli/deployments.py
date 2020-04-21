@@ -40,7 +40,6 @@ def get_deployment_client(api_key):
 @click.option(
     "--modelId",
     "model_id",
-    required=False,
     help="ID of a trained model",
     cls=common.GradientOption,
 )
