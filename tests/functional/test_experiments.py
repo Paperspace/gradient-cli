@@ -1,4 +1,5 @@
 import copy
+import json
 import os
 import shutil
 import tempfile
@@ -243,7 +244,7 @@ class TestExperimentsCreateSingleNode(object):
     def test_should_use_tensorboard_handler_with_true_value_when_tensorboard_option_was_used_without_value(
             self, post_patched, tensorboard_handler_class, get_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
-        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard=some_tensorboard_id"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -270,7 +271,7 @@ class TestExperimentsCreateSingleNode(object):
     def test_should_use_tensorboard_handler_with_tb_id_when_tensorboard_option_was_used_with_tb_id(
             self, post_patched, tensorboard_handler_class, get_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
-        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -297,7 +298,7 @@ class TestExperimentsCreateSingleNode(object):
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(
             self, post_patched, tensorboard_handler_class, get_patched):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
-        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE, 200)
+        get_patched.return_value = MockResponse(example_responses.GET_V1_CLUSTER_DETAILS_RESPONSE)
         command = self.FULL_OPTIONS_COMMAND[:] + ["--tensorboard"]
         tensorboard_handler = mock.MagicMock()
         tensorboard_handler_class.return_value = tensorboard_handler
@@ -543,7 +544,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
@@ -560,7 +561,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_config_file(
             self, post_patched, create_multi_node_experiment_ds_objects_config_path):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
         command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [create_multi_node_experiment_ds_objects_config_path]
 
         runner = CliRunner()
@@ -578,7 +579,7 @@ class TestExperimentsCreateMultiNodeDatasetObjects(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(self,
                                                                                                         post_patched):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.FULL_OPTIONS_COMMAND)
@@ -805,7 +806,7 @@ class TestExperimentsCreateMultiNode(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_basic_options(self,
                                                                                                          post_patched):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
@@ -822,7 +823,7 @@ class TestExperimentsCreateMultiNode(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_config_file(
             self, post_patched, create_multi_node_experiment_config_path):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
         command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [create_multi_node_experiment_config_path]
 
         runner = CliRunner()
@@ -840,7 +841,7 @@ class TestExperimentsCreateMultiNode(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_print_message_when_create_experiment_was_run_with_full_options(self,
                                                                                                         post_patched):
-        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.FULL_OPTIONS_COMMAND)
@@ -1153,8 +1154,7 @@ class TestExperimentDetail(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_with_api_key_passed_in_terminal(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON,
-                                                200, "fake content")
+        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON)
         expected_headers = EXPECTED_HEADERS.copy()
         expected_headers["X-API-Key"] = "some_key"
 
@@ -1172,8 +1172,7 @@ class TestExperimentDetail(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_read_options_from_config_file(self, get_patched, experiment_details_config_path):
-        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON,
-                                                200, "fake content")
+        get_patched.return_value = MockResponse(example_responses.DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON)
         expected_headers = EXPECTED_HEADERS.copy()
         expected_headers["X-API-Key"] = "some_key"
         command = self.COMMAND_WITH_OPTIONS_FILE[:] + [experiment_details_config_path]
@@ -1207,7 +1206,7 @@ class TestExperimentDetail(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_request_content_when_response_data_was_malformed(self, get_patched):
-        get_patched.return_value = MockResponse({}, 200, "fake content")
+        get_patched.return_value = MockResponse({}, content="fake content")
         expected_output = "Error parsing response data: fake content\n"
 
         runner = CliRunner()
@@ -1243,7 +1242,7 @@ Aborted!
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments(self, get_patched):
-        get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
+        get_patched.return_value = MockResponse(self.LIST_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -1261,7 +1260,7 @@ Aborted!
     def test_should_send_get_request_and_paginate_list_when_output_table_len_is_gt_lines_in_terminal(self, get_patched,
                                                                                                      pydoc_patched):
         list_json = {"data": self.LIST_JSON["data"] * 40}
-        get_patched.return_value = MockResponse(list_json, 200, "")
+        get_patched.return_value = MockResponse(list_json)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -1275,8 +1274,7 @@ Aborted!
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments_filtered_with_two_projects(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.LIST_OF_EXPERIMENTS_FILTERED_WITH_TWO_PROJECTS, 200,
-                                                "fake content")
+        get_patched.return_value = MockResponse(example_responses.LIST_OF_EXPERIMENTS_FILTERED_WITH_TWO_PROJECTS)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, ["experiments", "list", "--projectId", "handle1", "-p", "handle2"])
@@ -1294,8 +1292,7 @@ Aborted!
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_experiments_filtered_with_two_projects_but_none_found(
             self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.LIST_OF_EXPERIMENTS_FILTERED_BUT_NONE_FOUND, 200,
-                                                "fake content")
+        get_patched.return_value = MockResponse(example_responses.LIST_OF_EXPERIMENTS_FILTERED_BUT_NONE_FOUND)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, ["experiments", "list", "--projectId", "handle1", "-p", "handle2",
@@ -1561,8 +1558,7 @@ class TestExperimentLogs(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_all_received_logs_when_logs_command_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=example_responses.LIST_OF_LOGS_FOR_EXPERIMENT,
-                                                status_code=200)
+        get_patched.return_value = MockResponse(json_data=example_responses.LIST_OF_LOGS_FOR_EXPERIMENT)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -1591,8 +1587,7 @@ class TestExperimentLogs(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_all_received_logs_when_logs_command_was_used_with_follow_flag(
             self, get_patched):
-        get_patched.return_value = MockResponse(json_data=example_responses.LIST_OF_LOGS_FOR_EXPERIMENT,
-                                                status_code=200)
+        get_patched.return_value = MockResponse(json_data=example_responses.LIST_OF_LOGS_FOR_EXPERIMENT)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_FOLLOW)
@@ -1684,3 +1679,361 @@ class TestExperimentValidation(object):
         result = runner.invoke(cli.cli, command)
 
         assert expected_message in result.output
+
+
+class TestExperimentsMetricsGetCommand(object):
+    GET_EXPERIMENT_URL = "https://services.paperspace.io/experiments/v2/experiments/esro6mbmiulvbl/"
+    LIST_JOBS_URL = "https://api.paperspace.io/jobs/getJobList/"
+    GET_METRICS_URL = "https://aws-testing.paperspace.io/metrics/api/v1/range"
+    BASIC_OPTIONS_COMMAND = [
+        "experiments", "metrics", "get",
+        "--id", "esro6mbmiulvbl",
+    ]
+    ALL_OPTIONS_COMMAND = [
+        "experiments", "metrics", "get",
+        "--id", "esro6mbmiulvbl",
+        "--metric", "gpuMemoryFree",
+        "--metric", "gpuMemoryUsed",
+        "--interval", "20s",
+        "--start", "2020-04-01",
+        "--end", "2020-04-02 21:37:00",
+        "--apiKey", "some_key",
+    ]
+    FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
+        "experiments", "metrics", "get",
+        "--optionsFile",  # path added in test,
+    ]
+
+    GET_JOB_LIST_REQUEST_PARAMS = {'filter': '{"filter": {"where": {"experimentId": "esro6mbmiulvbl"}}}'}
+    BASIC_COMMAND_GET_METRICS_REQUEST_PARAMS = {
+        "start": "2020-04-02T21:37:00Z",
+        "handle": "esro6mbmiulvbl",
+        "interval": "30s",
+        "charts": "cpuPercentage,memoryUsage",
+        "objecttype": "experiment",
+    }
+    ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS = {
+        "start": "2020-04-01T00:00:00Z",
+        "handle": "esro6mbmiulvbl",
+        "interval": "20s",
+        "charts": "gpuMemoryFree,gpuMemoryUsed",
+        "objecttype": "experiment",
+        "end": "2020-04-02T21:37:00Z",
+    }
+
+    GET_EXPERIMENT_RESPONSE_JSON = example_responses.DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON
+    GET_LIST_OF_JOBS_RESPONSE_JSON = example_responses.LIST_JOBS_RESPONSE_JSON
+    GET_METRICS_RESPONSE_JSON = example_responses.EXPERIMENTS_METRICS_GET_RESPONSE
+
+    EXPECTED_STDOUT = """{
+  "cpuPercentage": {
+    "mljob-esro6mbmiulvbl-0-worker": [
+      {
+        "time_stamp": 1587375065, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587375095, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587375125, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587375155, 
+        "value": "0"
+      }
+    ], 
+    "mljob-esro6mbmiulvbl-1-worker": [
+      {
+        "time_stamp": 1587375065, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587375095, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587375125, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587375155, 
+        "value": "0"
+      }
+    ]
+  }, 
+  "memoryUsage": {
+    "mljob-esro6mbmiulvbl-0-worker": [
+      {
+        "time_stamp": 1587375005, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587375035, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587375065, 
+        "value": "761856"
+      }, 
+      {
+        "time_stamp": 1587375095, 
+        "value": "761856"
+      }, 
+      {
+        "time_stamp": 1587375125, 
+        "value": "761856"
+      }
+    ], 
+    "mljob-esro6mbmiulvbl-1-worker": [
+      {
+        "time_stamp": 1587375005, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587375035, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587375065, 
+        "value": "761856"
+      }, 
+      {
+        "time_stamp": 1587375095, 
+        "value": "761856"
+      }, 
+      {
+        "time_stamp": 1587375125, 
+        "value": "761856"
+      }
+    ]
+  }
+}
+"""
+
+    EXPECTED_STDOUT_WHEN_INVALID_API_KEY_WAS_USED = "Failed to fetch data: Incorrect API Key provided\nForbidden\n"
+    EXPECTED_STDOUT_WHEN_EXPERIMENT_WAS_NOT_FOUND = "Failed to fetch data: Experiment not found\nObject not found\n"
+    EXPECTED_STDOUT_WHEN_EXPERIMENT_WAS_NOT_STARTED = "Experiment has not started yet\n"
+    EXPECTED_STDOUT_WHEN_NO_METRICS_WERE_FOUND = "{}\n"
+    EXPECTED_STDOUT_WHEN_ERROR_CODE_WAS_RETURNED_WITHOUT_ERROR_MESSAGE = "Failed to fetch data\n"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_all_available_metrics_when_metrics_get_command_was_used_with_basic_options(self, get_patched):
+        get_patched.side_effect = [
+            MockResponse(self.GET_EXPERIMENT_RESPONSE_JSON),
+            MockResponse(self.GET_LIST_OF_JOBS_RESPONSE_JSON),
+            MockResponse(self.GET_METRICS_RESPONSE_JSON),
+        ]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
+
+        assert json.loads(result.output.strip()) == json.loads(self.EXPECTED_STDOUT.strip()), result.exc_info
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_EXPERIMENT_URL,
+                    json=None,
+                    params=None,
+                    headers=EXPECTED_HEADERS,
+                ),
+                mock.call(
+                    self.LIST_JOBS_URL,
+                    json=None,
+                    params=self.GET_JOB_LIST_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS,
+                ),
+                mock.call(
+                    self.GET_METRICS_URL,
+                    json=None,
+                    params=self.BASIC_COMMAND_GET_METRICS_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_metrics_when_metrics_get_command_was_used_with_all_options(self, get_patched):
+        get_patched.side_effect = [
+            MockResponse(self.GET_EXPERIMENT_RESPONSE_JSON),
+            MockResponse(self.GET_LIST_OF_JOBS_RESPONSE_JSON),
+            MockResponse(self.GET_METRICS_RESPONSE_JSON),
+        ]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        # comparing objects instead of strings because Py2 and Py3 produce slightly different outputs
+        assert json.loads(result.output.strip()) == json.loads(self.EXPECTED_STDOUT.strip()), result.exc_info
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_EXPERIMENT_URL,
+                    json=None,
+                    params=None,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+                mock.call(
+                    self.LIST_JOBS_URL,
+                    json=None,
+                    params=self.GET_JOB_LIST_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+                mock.call(
+                    self.GET_METRICS_URL,
+                    json=None,
+                    params=self.ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_invalid_api_key_was_used(self, get_patched):
+        get_patched.return_value = MockResponse({"details": "Incorrect API Key provided", "error": "Forbidden"},
+                                                status_code=403)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_INVALID_API_KEY_WAS_USED, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.GET_EXPERIMENT_URL,
+            json=None,
+            params=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_experiment_was_not_found(self, get_patched):
+        get_patched.side_effect = [
+            MockResponse({"details": "Experiment not found", "error": "Object not found"}, 404),
+        ]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_EXPERIMENT_WAS_NOT_FOUND, result.exc_info
+
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_EXPERIMENT_URL,
+                    json=None,
+                    params=None,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_experiment_was_not_started_and_no_jobs_were_found(self, get_patched):
+        get_patched.side_effect = [
+            MockResponse(self.GET_EXPERIMENT_RESPONSE_JSON),
+            MockResponse({"jobList": []}),
+        ]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_EXPERIMENT_WAS_NOT_STARTED, result.exc_info
+
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_EXPERIMENT_URL,
+                    json=None,
+                    params=None,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_message_when_experiment_was_no_metrics_were_returned(self, get_patched):
+        get_patched.side_effect = [
+            MockResponse(self.GET_EXPERIMENT_RESPONSE_JSON),
+            MockResponse(self.GET_LIST_OF_JOBS_RESPONSE_JSON),
+            MockResponse(example_responses.EXPERIMENTS_METRICS_GET_RESPONSE_WHEN_NO_DATA_WAS_FOUND),
+        ]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_NO_METRICS_WERE_FOUND, result.exc_info
+
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_EXPERIMENT_URL,
+                    json=None,
+                    params=None,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+                mock.call(
+                    self.LIST_JOBS_URL,
+                    json=None,
+                    params=self.GET_JOB_LIST_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+                mock.call(
+                    self.GET_METRICS_URL,
+                    json=None,
+                    params=self.ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_error_code_was_returned_without_error_message(self, get_patched):
+        get_patched.side_effect = [
+            MockResponse(self.GET_EXPERIMENT_RESPONSE_JSON),
+            MockResponse(self.GET_LIST_OF_JOBS_RESPONSE_JSON),
+            MockResponse(status_code=500),
+        ]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_ERROR_CODE_WAS_RETURNED_WITHOUT_ERROR_MESSAGE, result.exc_info
+
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_EXPERIMENT_URL,
+                    json=None,
+                    params=None,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+                mock.call(
+                    self.LIST_JOBS_URL,
+                    json=None,
+                    params=self.GET_JOB_LIST_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+                mock.call(
+                    self.GET_METRICS_URL,
+                    json=None,
+                    params=self.ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info

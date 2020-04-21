@@ -1,13 +1,11 @@
 import abc
-import json
 
 import six
-import websocket as websocket
 
-from gradient.api_sdk import utils
 from gradient.api_sdk.repositories.jobs import ListJobs
 from gradient.api_sdk.utils import concatenate_urls
-from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource, GetResource, GetMetrics
+from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource, GetResource, GetMetrics, \
+    StreamMetrics
 from .. import config, serializers, sdk_exceptions
 from ..serializers import utils as serializers_utils
 
@@ -202,20 +200,9 @@ class DeleteExperiment(GetBaseExperimentApiUrlMixin, DeleteResource):
         return "/experiments/{}/".format(experiment_id)
 
 
-class GetRawExperimentJson(GetExperiment):
-    def _parse_object(self, experiment_dict, **kwargs):
-        return experiment_dict
-
-
-class GetExperimentMetrics(GetMetrics):
-    OBJECT_TYPE = "experiment"
-
-    def _get_instance_dict(self, instance_id, kwargs):
-        repository = GetRawExperimentJson(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
-        instance_dict = repository.get(experiment_id=instance_id)
-        return instance_dict["data"]
-
-    def _get_metrics_api_url(self, instance_id, protocol="https"):
+class GetExperimentMetricsApiUrlMixin(object):
+    def _get_metrics_api_url(self, instance, protocol="https"):
+        instance_id = getattr(instance, "id", instance)
         repository = ListJobs(api_key=self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
         try:
             job = repository.list(experiment_id=instance_id)[0]
@@ -225,62 +212,22 @@ class GetExperimentMetrics(GetMetrics):
         metrics_api_url = concatenate_urls(protocol + "://", job.metrics_url)
         return metrics_api_url
 
-    def _get_started_date(self, instance_dict, kwargs):
-        rv = super(GetExperimentMetrics, self)._get_started_date(instance_dict, kwargs)
+
+class GetExperimentMetrics(GetExperimentMetricsApiUrlMixin, GetMetrics):
+    OBJECT_TYPE = "experiment"
+
+    def _get_instance_by_id(self, instance_id, **kwargs):
+        repository = GetExperiment(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        instance = repository.get(experiment_id=instance_id)
+        return instance
+
+    def _get_start_date(self, instance, kwargs):
+        rv = super(GetExperimentMetrics, self)._get_start_date(instance, kwargs)
         if rv is None:
             raise sdk_exceptions.GradientSdkError("Experiment has not started yet")
 
         return rv
 
 
-class StreamExperimentMetrics(GetExperimentMetrics):
-    def stream(self, **kwargs):
-        while True:
-            try:
-                connection = self._get_connection(kwargs)
-                self._send_chart_descriptor(connection, kwargs)
-                stream_generator = self._get_stream_generator(connection)
-                for data in stream_generator:
-                    self.logger.debug("Metrics data: {}".format(data))
-                    yield data
-            except websocket.WebSocketConnectionClosedException as e:
-                self.logger.debug("WebSocketConnectionClosedException: {}".format(e))
-
-    def _get_connection(self, kwargs):
-        url = self._get_full_url(kwargs)
-        self.logger.debug("(Re)opening websocket connection to: {}".format(url))
-        ws = websocket.create_connection(url)
-        self.logger.debug("Connected")
-        return ws
-
-    def _get_full_url(self, kwargs):
-        instance_id = kwargs["id"]
-        metrics_api_url = self._get_metrics_api_url(instance_id, protocol="wss")
-        url = utils.concatenate_urls(metrics_api_url, self.get_request_url())
-        return url
-
-    def get_request_url(self, **kwargs):
-        return "metrics/api/v1/stream"
-
-    def _get_request_json(self, kwargs):
-        instance_id = kwargs["id"]
-        built_in_metrics = self._get_built_in_metrics_list(kwargs)
-        interval = kwargs.get("interval") or self.DEFAULT_INTERVAL
-        new_kwargs = {
-            "chart_names": built_in_metrics,
-            "handles": [instance_id],
-            "object_type": self.OBJECT_TYPE,
-            "poll_interval": interval,
-        }
-        return new_kwargs
-
-    def _send_chart_descriptor(self, connection, kwargs):
-        descriptor_json = self._get_request_json(kwargs)
-        descriptor = json.dumps(descriptor_json)
-        self.logger.debug("Sending chart descriptor: {}".format(descriptor))
-        response = connection.send(descriptor)
-        self.logger.debug("Chart descriptor sent: {}".format(response))
-
-    def _get_stream_generator(self, connection):
-        for response in connection:
-            yield response
+class StreamExperimentMetrics(GetExperimentMetricsApiUrlMixin, StreamMetrics):
+    OBJECT_TYPE = "experiment"

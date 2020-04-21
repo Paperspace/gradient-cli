@@ -237,3 +237,49 @@ class DeploymentsClient(BaseClient):
 
         repository = self.build_repository(repositories.UpdateDeployment)
         repository.update(deployment_id, deployment)
+
+    def get_metrics(self, deployment_id, start=None, end=None, interval="30s", built_in_metrics=None):
+        """Get model deployment metrics
+
+        :param str deployment_id: ID of deployment
+        :param datetime.datetime|str start:
+        :param datetime.datetime|str end:
+        :param str interval:
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+                    Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
+                                            gpuTemp, gpuUtilization, gpuMemoryUtilization
+
+        :returns: Metrics of a model deployment job
+        :rtype: dict[str,dict[str,list[dict]]]
+        """
+
+        repository = self.build_repository(repositories.GetDeploymentMetrics)
+        metrics = repository.get(
+            id=deployment_id,
+            start=start,
+            end=end,
+            interval=interval,
+            built_in_metrics=built_in_metrics,
+        )
+        return metrics
+
+    def stream_metrics(self, deployment_id, interval="30s", built_in_metrics=None):
+        """Stream live model deployment metrics
+
+        :param str deployment_id: ID of model deployment
+        :param str interval:
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+                    Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
+                                            gpuTemp, gpuUtilization, gpuMemoryUtilization
+
+        :returns: Generator object yielding live model deployment metrics
+        :rtype: Iterable[dict]
+        """
+
+        repository = self.build_repository(repositories.StreamDeploymentMetrics)
+        metrics = repository.stream(
+            id=deployment_id,
+            interval=interval,
+            built_in_metrics=built_in_metrics,
+        )
+        return metrics

@@ -1,6 +1,9 @@
 import abc
+import collections
+import json
 import pydoc
 
+import click
 import six
 import terminaltables
 from halo import halo
@@ -120,3 +123,55 @@ class DetailsCommandMixin(object):
     @abc.abstractmethod
     def _get_table_data(self, instance):
         pass
+
+
+class StreamMetricsCommand(ListCommandMixin):
+    def __init__(self, *args, **kwargs):
+        super(StreamMetricsCommand, self).__init__(*args, **kwargs)
+        # {"metricName": {"pod_id": "value"}}
+        self._recent_values = collections.OrderedDict()
+
+    def _get_instances(self, kwargs):
+        metrics_stream = self.client.stream_metrics(**kwargs)
+        self._prepare_recent_values(kwargs["built_in_metrics"])
+        return metrics_stream
+
+    def _prepare_recent_values(self, builtin_metrics_names):
+        for name in builtin_metrics_names:
+            self._recent_values[name] = collections.OrderedDict()
+
+    def _log_objects_list(self, metrics_stream):
+        for raw_metric_date_response in metrics_stream:
+            metric_data = json.loads(raw_metric_date_response)
+            self._update_recent_values(metric_data)
+            super(StreamMetricsCommand, self)._log_objects_list(raw_metric_date_response)
+
+    def _update_recent_values(self, metric_data):
+        metric_name = metric_data["chart_name"]
+        metrics = metric_data["pod_metrics"]
+        for pod_name, data in metrics.items():
+            self._recent_values[metric_name][pod_name] = data["value"]
+
+    def _print_table_to_terminal(self, table_str):
+        click.clear()
+        super(StreamMetricsCommand, self)._print_table_to_terminal(table_str)
+
+    def _get_table_data(self, objects):
+        metrics = list(self._recent_values.keys())
+        table_ = ["Pod"] + metrics
+        table_data = [table_]
+        values = collections.OrderedDict()  # {pod_name: {metricName: value}}
+        for metric_name, data in self._recent_values.items():
+            for pod_name, value in data.items():
+                pod_metrics = values.setdefault(pod_name, collections.OrderedDict())
+                pod_metrics[metric_name] = value
+
+        for pod_name, pod_metrics in values.items():
+            row = [pod_name]
+            for metric_name in metrics:
+                value = pod_metrics.get(metric_name, "")
+                row.append(value)
+
+            table_data.append(row)
+
+        return table_data
