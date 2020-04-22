@@ -1895,6 +1895,45 @@ class TestExperimentsMetricsGetCommand(object):
         assert result.exit_code == 0, result.exc_info
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_metrics_when_metrics_get_was_executed_and_options_file_was_used(
+            self, get_patched, experiments_metrics_get_config_path):
+        get_patched.side_effect = [
+            MockResponse(self.GET_EXPERIMENT_RESPONSE_JSON),
+            MockResponse(self.GET_LIST_OF_JOBS_RESPONSE_JSON),
+            MockResponse(self.GET_METRICS_RESPONSE_JSON),
+        ]
+        command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [experiments_metrics_get_config_path]
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        # comparing objects instead of strings because Py2 and Py3 produce slightly different outputs
+        assert json.loads(result.output.strip()) == json.loads(self.EXPECTED_STDOUT.strip()), result.exc_info
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_EXPERIMENT_URL,
+                    json=None,
+                    params=None,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+                mock.call(
+                    self.LIST_JOBS_URL,
+                    json=None,
+                    params=self.GET_JOB_LIST_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+                mock.call(
+                    self.GET_METRICS_URL,
+                    json=None,
+                    params=self.ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_valid_error_message_when_invalid_api_key_was_used(self, get_patched):
         get_patched.return_value = MockResponse({"details": "Incorrect API Key provided", "error": "Forbidden"},
                                                 status_code=403)

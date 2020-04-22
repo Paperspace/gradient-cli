@@ -210,6 +210,9 @@ class GetExperimentMetricsApiUrlMixin(object):
             raise sdk_exceptions.GradientSdkError("Experiment has not started yet")
 
         metrics_api_url = concatenate_urls(protocol + "://", job.metrics_url)
+        if not job.metrics_url:
+            raise sdk_exceptions.GradientSdkError("Metrics API url not found")
+
         return metrics_api_url
 
 

@@ -1190,7 +1190,8 @@ LIST_DEPLOYMENTS = {
             "dtTeardownFinished": None,
             "dtStopped": "2019-04-04T10:53:56.711Z",
             "dtDeleted": None,
-            "isDeleted": False
+            "isDeleted": False,
+            "metricsURL": "aws-testing.paperspace.io",
         },
         {
             "id": "desanw1jptk7woh",
@@ -7786,4 +7787,55 @@ EXPERIMENTS_METRICS_GET_RESPONSE_WHEN_NO_DATA_WAS_FOUND = {
     "handle": "ess57ozwb5ijpt",
     "object_type": "experiment",
     "charts": {},
+}
+
+DEPLOYMENTS_METRICS_GET_RESPONSE = {
+    "handle": "desgffa3mtgepvm",
+    "object_type": "modelDeployment",
+    "charts": {
+        "cpuPercentage": {
+            "desgffa3mtgepvm-0": [
+                {"time_stamp": 1587340800, "value": "0.0388702066666724"},
+                {"time_stamp": 1587370800, "value": "0.04452898888887249"},
+                {"time_stamp": 1587400800, "value": "0.044658617777757724"},
+                {"time_stamp": 1587430800, "value": "0.04922275555555997"},
+                {"time_stamp": 1587460800, "value": "0.0589409911111084"},
+                {"time_stamp": 1587490800, "value": "0.02873176888891117"},
+                {"time_stamp": 1587520800, "value": "0.042048226666666876"},
+                {"time_stamp": 1587550800, "value": "0.04952780222222625"},
+            ],
+            "desgffa3mtgepvm-1": [
+                {"time_stamp": 1587340800, "value": "0.05044751111111307"},
+                {"time_stamp": 1587370800, "value": "0.04381767555555724"},
+                {"time_stamp": 1587400800, "value": "0.03436263111110646"},
+                {"time_stamp": 1587430800, "value": "0.048889264444432624"},
+                {"time_stamp": 1587460800, "value": "0.041525960000020255"},
+                {"time_stamp": 1587490800, "value": "0.04574227333332853"},
+                {"time_stamp": 1587520800, "value": "0.03383691777780011"},
+                {"time_stamp": 1587550800, "value": "0.045942304444426756"},
+            ],
+        },
+        "memoryUsage": {
+            "desgffa3mtgepvm-0": [
+                {"time_stamp": 1587340800, "value": "34910208"},
+                {"time_stamp": 1587370800, "value": "34910208"},
+                {"time_stamp": 1587400800, "value": "34914304"},
+                {"time_stamp": 1587430800, "value": "34914304"},
+                {"time_stamp": 1587460800, "value": "34914304"},
+                {"time_stamp": 1587490800, "value": "34914304"},
+                {"time_stamp": 1587520800, "value": "34914304"},
+                {"time_stamp": 1587550800, "value": "34914304"},
+            ],
+            "desgffa3mtgepvm-1": [
+                {"time_stamp": 1587340800, "value": "35942400"},
+                {"time_stamp": 1587370800, "value": "35942400"},
+                {"time_stamp": 1587400800, "value": "35942400"},
+                {"time_stamp": 1587430800, "value": "35942400"},
+                {"time_stamp": 1587460800, "value": "35942400"},
+                {"time_stamp": 1587490800, "value": "35942400"},
+                {"time_stamp": 1587520800, "value": "35942400"},
+                {"time_stamp": 1587550800, "value": "35942400"},
+            ],
+        },
+    },
 }

@@ -290,6 +290,9 @@ class GetMetrics(GetResource):
         pass
 
     def _get_metrics_api_url(self, instance, protocol="https"):
+        if not instance.metrics_url:
+            raise GradientSdkError("Metrics API url not found")
+
         metrics_api_url = concatenate_urls(protocol + "://", instance.metrics_url)
         return metrics_api_url
 
@@ -376,6 +379,9 @@ class StreamMetrics(BaseRepository):
     DEFAULT_METRICS = ["cpuPercentage", "memoryUsage"]
 
     def _get_metrics_api_url(self, instance, protocol="https"):
+        if not instance.metrics_url:
+            raise GradientSdkError("Metrics API url not found")
+
         metrics_api_url = concatenate_urls(protocol + "://", instance.metrics_url)
         return metrics_api_url
 
