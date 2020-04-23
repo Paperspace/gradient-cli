@@ -9,7 +9,7 @@ import mock
 import pytest
 from click.testing import CliRunner
 
-from gradient.api_sdk import constants
+from gradient.api_sdk import constants, sdk_exceptions
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.clients.http_client import default_headers
 from gradient.api_sdk.validation_messages import EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
@@ -49,6 +49,72 @@ def temporary_zip_file_path():
         os.remove(zip_file_path)
     except OSError:
         pass
+
+
+@pytest.fixture
+def basic_options_metrics_stream_websocket_connection_iterator():
+    def generator(self):
+        yield """{"handle": "esba290c1osdth",
+               "object_type": "experiment",
+               "chart_name": "memoryUsage",
+               "pod_metrics": {"mljob-esba290c1osdth-0-ps": {"time_stamp": 1587640736, "value": "0"},
+                               "mljob-esba290c1osdth-1-worker": {"time_stamp": 1587640736, "value": "0"}}}"""
+        yield """{"handle": "esba290c1osdth",
+               "object_type": "experiment",
+               "chart_name": "memoryUsage",
+               "pod_metrics": {"mljob-esba290c1osdth-0-ps": {"time_stamp": 1587640738, "value": "0"},
+                               "mljob-esba290c1osdth-1-worker": {"time_stamp": 1587640738, "value": "0"}}}"""
+        yield """{"handle": "esba290c1osdth",
+               "object_type": "experiment",
+               "chart_name": "cpuPercentage",
+               "pod_metrics": {"mljob-esba290c1osdth-0-ps": {"time_stamp": 1587640958, "value": "0.004048304444444915"},
+                               "mljob-esba290c1osdth-0-worker": {"time_stamp": 1587640958,
+                                                                 "value": "33.81072210402445"},
+                               "mljob-esba290c1osdth-1-worker": {"time_stamp": 1587640958,
+                                                                 "value": "62.25938679226199"}}}"""
+        yield """{"handle": "esba290c1osdth",
+               "object_type": "experiment",
+               "chart_name": "memoryUsage",
+               "pod_metrics": {"mljob-esba290c1osdth-0-ps": {"time_stamp": 1587640960, "value": "236097536"},
+                               "mljob-esba290c1osdth-0-worker": {"time_stamp": 1587640960, "value": "165785600"},
+                               "mljob-esba290c1osdth-1-worker": {"time_stamp": 1587640960, "value": "130957312"}}}"""
+
+        raise sdk_exceptions.GradientSdkError("keton")
+
+    return generator
+
+
+@pytest.fixture
+def all_options_metrics_stream_websocket_connection_iterator():
+    def generator(self):
+        yield """{"handle": "esba290c1osdth",
+               "object_type": "experiment",
+               "chart_name": "gpuMemoryUsed",
+               "pod_metrics": {"mljob-esba290c1osdth-0-ps": {"time_stamp": 1587640736, "value": "0"},
+                               "mljob-esba290c1osdth-1-worker": {"time_stamp": 1587640736, "value": "0"}}}"""
+        yield """{"handle": "esba290c1osdth",
+               "object_type": "experiment",
+               "chart_name": "gpuMemoryUsed",
+               "pod_metrics": {"mljob-esba290c1osdth-0-ps": {"time_stamp": 1587640738, "value": "0"},
+                               "mljob-esba290c1osdth-1-worker": {"time_stamp": 1587640738, "value": "0"}}}"""
+        yield """{"handle": "esba290c1osdth",
+               "object_type": "experiment",
+               "chart_name": "gpuMemoryFree",
+               "pod_metrics": {"mljob-esba290c1osdth-0-ps": {"time_stamp": 1587640958, "value": "1234"},
+                               "mljob-esba290c1osdth-0-worker": {"time_stamp": 1587640958,
+                                                                 "value": "234"},
+                               "mljob-esba290c1osdth-1-worker": {"time_stamp": 1587640958,
+                                                                 "value": "345"}}}"""
+        yield """{"handle": "esba290c1osdth",
+               "object_type": "experiment",
+               "chart_name": "gpuMemoryUsed",
+               "pod_metrics": {"mljob-esba290c1osdth-0-ps": {"time_stamp": 1587640960, "value": "236097536"},
+                               "mljob-esba290c1osdth-0-worker": {"time_stamp": 1587640960, "value": "165785600"},
+                               "mljob-esba290c1osdth-1-worker": {"time_stamp": 1587640960, "value": "130957312"}}}"""
+
+        raise sdk_exceptions.GradientSdkError("keton")
+
+    return generator
 
 
 class TestExperimentsCreateSingleNode(object):
@@ -2075,4 +2141,253 @@ class TestExperimentsMetricsGetCommand(object):
             ]
         )
 
+        assert result.exit_code == 0, result.exc_info
+
+
+class TestExperimentsMetricsStreamCommand(object):
+    LIST_JOBS_URL = "https://api.paperspace.io/jobs/getJobList/"
+    GET_METRICS_URL = "https://aws-testing.paperspace.io/metrics/api/v1/stream"
+    BASIC_OPTIONS_COMMAND = [
+        "experiments", "metrics", "stream",
+        "--id", "esro6mbmiulvbl",
+    ]
+    ALL_OPTIONS_COMMAND = [
+        "experiments", "metrics", "stream",
+        "--id", "esro6mbmiulvbl",
+        "--metric", "gpuMemoryFree",
+        "--metric", "gpuMemoryUsed",
+        "--interval", "20s",
+        "--apiKey", "some_key",
+    ]
+    ALL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
+        "experiments", "metrics", "stream",
+        "--optionsFile",  # path added in test,
+    ]
+
+    GET_JOB_LIST_REQUEST_PARAMS = {'filter': '{"filter": {"where": {"experimentId": "esro6mbmiulvbl"}}}'}
+    BASIC_COMMAND_CHART_DESCRIPTOR = '{"chart_names": ["cpuPercentage", "memoryUsage"], "handles": ["esro6mbmiulvbl"]' \
+                                     ', "object_type": "experiment", "poll_interval": "30s"}'
+
+    ALL_COMMANDS_CHART_DESCRIPTOR = '{"chart_names": ["gpuMemoryFree", "gpuMemoryUsed"], "handles": ["esro6mbmiulvbl"' \
+                                    '], "object_type": "experiment", "poll_interval": "20s"}'
+
+    GET_LIST_OF_JOBS_RESPONSE_JSON = example_responses.LIST_JOBS_RESPONSE_JSON
+    GET_METRICS_RESPONSE_JSON = example_responses.EXPERIMENTS_METRICS_GET_RESPONSE
+
+    EXPECTED_TABLE_1 = """+-------------------------------+---------------+-------------+
+| Pod                           | cpuPercentage | memoryUsage |
++-------------------------------+---------------+-------------+
+| mljob-esba290c1osdth-0-ps     |               | 0           |
+| mljob-esba290c1osdth-1-worker |               | 0           |
++-------------------------------+---------------+-------------+
+"""
+    EXPECTED_TABLE_2 = """+-------------------------------+---------------+-------------+
+| Pod                           | cpuPercentage | memoryUsage |
++-------------------------------+---------------+-------------+
+| mljob-esba290c1osdth-0-ps     |               | 0           |
+| mljob-esba290c1osdth-1-worker |               | 0           |
++-------------------------------+---------------+-------------+
+"""
+    EXPECTED_TABLE_3 = """+-------------------------------+----------------------+-------------+
+| Pod                           | cpuPercentage        | memoryUsage |
++-------------------------------+----------------------+-------------+
+| mljob-esba290c1osdth-0-ps     | 0.004048304444444915 | 0           |
+| mljob-esba290c1osdth-0-worker | 33.81072210402445    |             |
+| mljob-esba290c1osdth-1-worker | 62.25938679226199    | 0           |
++-------------------------------+----------------------+-------------+
+"""
+    EXPECTED_TABLE_4 = """+-------------------------------+----------------------+-------------+
+| Pod                           | cpuPercentage        | memoryUsage |
++-------------------------------+----------------------+-------------+
+| mljob-esba290c1osdth-0-ps     | 0.004048304444444915 | 236097536   |
+| mljob-esba290c1osdth-0-worker | 33.81072210402445    | 165785600   |
+| mljob-esba290c1osdth-1-worker | 62.25938679226199    | 130957312   |
++-------------------------------+----------------------+-------------+
+"""
+
+    ALL_OPTIONS_EXPECTED_TABLE_1 = """+-------------------------------+---------------+---------------+
+| Pod                           | gpuMemoryFree | gpuMemoryUsed |
++-------------------------------+---------------+---------------+
+| mljob-esba290c1osdth-0-ps     |               | 0             |
+| mljob-esba290c1osdth-1-worker |               | 0             |
++-------------------------------+---------------+---------------+
+"""
+    ALL_OPTIONS_EXPECTED_TABLE_2 = """+-------------------------------+---------------+---------------+
+| Pod                           | gpuMemoryFree | gpuMemoryUsed |
++-------------------------------+---------------+---------------+
+| mljob-esba290c1osdth-0-ps     |               | 0             |
+| mljob-esba290c1osdth-1-worker |               | 0             |
++-------------------------------+---------------+---------------+
+"""
+    ALL_OPTIONS_EXPECTED_TABLE_3 = """+-------------------------------+---------------+---------------+
+| Pod                           | gpuMemoryFree | gpuMemoryUsed |
++-------------------------------+---------------+---------------+
+| mljob-esba290c1osdth-0-ps     | 1234          | 0             |
+| mljob-esba290c1osdth-0-worker | 234           |               |
+| mljob-esba290c1osdth-1-worker | 345           | 0             |
++-------------------------------+---------------+---------------+
+"""
+    ALL_OPTIONS_EXPECTED_TABLE_4 = """+-------------------------------+---------------+---------------+
+| Pod                           | gpuMemoryFree | gpuMemoryUsed |
++-------------------------------+---------------+---------------+
+| mljob-esba290c1osdth-0-ps     | 1234          | 236097536     |
+| mljob-esba290c1osdth-0-worker | 234           | 165785600     |
+| mljob-esba290c1osdth-1-worker | 345           | 130957312     |
++-------------------------------+---------------+---------------+
+"""
+
+    EXPECTED_STDOUT_WHEN_INVALID_API_KEY_WAS_USED = "Failed to fetch data: Incorrect API Key provided\nForbidden\n"
+    EXPECTED_STDOUT_WHEN_EXPERIMENT_WAS_NOT_FOUND = "Experiment has not started yet\n"
+    EXPECTED_STDOUT_WHEN_EXPERIMENT_WAS_NOT_STARTED = "Experiment has not started yet\n"
+    EXPECTED_STDOUT_WHEN_NO_METRICS_WERE_FOUND = "{}\n"
+    EXPECTED_STDOUT_WHEN_ERROR_CODE_WAS_RETURNED_WITHOUT_ERROR_MESSAGE = "Failed to fetch data\n"
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_all_available_metrics_when_metrics_get_command_was_used_with_basic_options(
+            self, get_patched, create_ws_connection_patched,
+            basic_options_metrics_stream_websocket_connection_iterator):
+        get_patched.return_value = MockResponse(self.GET_LIST_OF_JOBS_RESPONSE_JSON)
+
+        ws_connection_instance_mock = mock.MagicMock()
+        ws_connection_instance_mock.__iter__ = basic_options_metrics_stream_websocket_connection_iterator
+        create_ws_connection_patched.return_value = ws_connection_instance_mock
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
+
+        assert self.EXPECTED_TABLE_1 in result.output, result.exc_info
+        assert self.EXPECTED_TABLE_2 in result.output, result.exc_info
+        assert self.EXPECTED_TABLE_3 in result.output, result.exc_info
+        assert self.EXPECTED_TABLE_4 in result.output, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.LIST_JOBS_URL,
+            json=None,
+            params=self.GET_JOB_LIST_REQUEST_PARAMS,
+            headers=EXPECTED_HEADERS,
+        )
+        ws_connection_instance_mock.send.assert_called_once_with(self.BASIC_COMMAND_CHART_DESCRIPTOR)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_metrics_when_metrics_get_command_was_used_with_all_options(
+            self, get_patched, create_ws_connection_patched,
+            all_options_metrics_stream_websocket_connection_iterator):
+        get_patched.return_value = MockResponse(self.GET_LIST_OF_JOBS_RESPONSE_JSON)
+
+        ws_connection_instance_mock = mock.MagicMock()
+        ws_connection_instance_mock.__iter__ = all_options_metrics_stream_websocket_connection_iterator
+        create_ws_connection_patched.return_value = ws_connection_instance_mock
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_1 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_2 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_3 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_4 in result.output, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.LIST_JOBS_URL,
+            json=None,
+            params=self.GET_JOB_LIST_REQUEST_PARAMS,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        ws_connection_instance_mock.send.assert_called_once_with(self.ALL_COMMANDS_CHART_DESCRIPTOR)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_metrics_when_metrics_get_was_executed_and_options_file_was_used(
+            self, get_patched, create_ws_connection_patched,
+            all_options_metrics_stream_websocket_connection_iterator,
+            experiments_metrics_stream_config_path):
+        get_patched.return_value = MockResponse(self.GET_LIST_OF_JOBS_RESPONSE_JSON)
+        ws_connection_instance_mock = mock.MagicMock()
+        ws_connection_instance_mock.__iter__ = all_options_metrics_stream_websocket_connection_iterator
+        create_ws_connection_patched.return_value = ws_connection_instance_mock
+
+        command = self.ALL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [experiments_metrics_stream_config_path]
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_1 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_2 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_3 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_4 in result.output, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.LIST_JOBS_URL,
+            json=None,
+            params=self.GET_JOB_LIST_REQUEST_PARAMS,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        ws_connection_instance_mock.send.assert_called_once_with(self.ALL_COMMANDS_CHART_DESCRIPTOR)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_invalid_api_key_was_used(
+            self, get_patched, create_ws_connection_patched):
+        get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"}, 400)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert "Failed to fetch data: Invalid API token\n" == result.output, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.LIST_JOBS_URL,
+            json=None,
+            params=self.GET_JOB_LIST_REQUEST_PARAMS,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        create_ws_connection_patched.assert_not_called()
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_experiment_was_not_found(
+            self, get_patched, create_ws_connection_patched):
+        get_patched.return_value = MockResponse({"jobList": []})
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_EXPERIMENT_WAS_NOT_FOUND, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.LIST_JOBS_URL,
+            json=None,
+            params=self.GET_JOB_LIST_REQUEST_PARAMS,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        create_ws_connection_patched.assert_not_called()
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_experiment_was_not_started_and_no_jobs_were_found(
+            self, get_patched, create_ws_connection_patched):
+        get_patched.return_value = MockResponse({"jobList": []})
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_EXPERIMENT_WAS_NOT_FOUND, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.LIST_JOBS_URL,
+            json=None,
+            params=self.GET_JOB_LIST_REQUEST_PARAMS,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        create_ws_connection_patched.assert_not_called()
         assert result.exit_code == 0, result.exc_info

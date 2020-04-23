@@ -166,7 +166,7 @@ class StreamMetricsCommand(ListCommandMixin):
                 pod_metrics = values.setdefault(pod_name, collections.OrderedDict())
                 pod_metrics[metric_name] = value
 
-        for pod_name, pod_metrics in values.items():
+        for pod_name, pod_metrics in sorted(values.items()):
             row = [pod_name]
             for metric_name in metrics:
                 value = pod_metrics.get(metric_name, "")

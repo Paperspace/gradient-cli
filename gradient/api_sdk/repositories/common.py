@@ -1,4 +1,5 @@
 import abc
+import collections
 import datetime
 import json
 
@@ -417,29 +418,32 @@ class StreamMetrics(BaseRepository):
     def get_request_url(self, **kwargs):
         return "metrics/api/v1/stream"
 
-    def _get_request_json(self, kwargs):
+    def _get_chart_descriptor(self, kwargs):
         instance_id = kwargs["id"]
         built_in_metrics = self._get_built_in_metrics_list(kwargs)
         interval = kwargs.get("interval") or self.DEFAULT_INTERVAL
-        new_kwargs = {
-            "chart_names": built_in_metrics,
-            "handles": [instance_id],
-            "object_type": self.OBJECT_TYPE,
-            "poll_interval": interval,
-        }
-        return new_kwargs
+        descriptor_json = collections.OrderedDict(
+            (
+                ("chart_names", built_in_metrics),
+                ("handles", [instance_id]),
+                ("object_type", self.OBJECT_TYPE),
+                ("poll_interval", interval),
+            )
+        )
+
+        descriptor = json.dumps(descriptor_json)
+
+        return descriptor
 
     def _get_built_in_metrics_list(self, kwargs):
         metrics = kwargs.get("built_in_metrics") or self.DEFAULT_METRICS
         return metrics
 
     def _send_chart_descriptor(self, connection, kwargs):
-        descriptor_json = self._get_request_json(kwargs)
-        descriptor = json.dumps(descriptor_json)
+        descriptor = self._get_chart_descriptor(kwargs)
         self.logger.debug("Sending chart descriptor: {}".format(descriptor))
         response = connection.send(descriptor)
         self.logger.debug("Chart descriptor sent. Response: {}".format(response))
 
     def _get_stream_generator(self, connection):
-        for response in connection:
-            yield response
+        return connection
