@@ -1,8 +1,10 @@
 import json
 
 import mock
+import pytest
 from click.testing import CliRunner
 
+from gradient.api_sdk import sdk_exceptions
 from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import example_responses, MockResponse
@@ -12,6 +14,48 @@ EXPECTED_HEADERS["ps_client_name"] = "gradient-cli"
 
 EXPECTED_HEADERS_WITH_CHANGED_API_KEY = EXPECTED_HEADERS.copy()
 EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+
+@pytest.fixture
+def basic_options_metrics_stream_websocket_connection_iterator():
+    def generator(self):
+        yield """{"handle": "desgffa3mtgepvm", "object_type": "modelDeployment", "chart_name": "memoryUsage",
+               "pod_metrics": {"desgffa3mtgepvm-0": {"time_stamp": 1587673818, "value": "34914304"},
+                               "desgffa3mtgepvm-1": {"time_stamp": 1587673818, "value": "35942400"}}}"""
+        yield """{"handle": "desgffa3mtgepvm", "object_type": "modelDeployment", "chart_name": "cpuPercentage",
+               "pod_metrics": {"desgffa3mtgepvm-0": {"time_stamp": 1587673818, "value": "0.044894188888835944"},
+                               "desgffa3mtgepvm-1": {"time_stamp": 1587673818, "value": "0.048185748888916656"}}}"""
+        yield """{"handle": "desgffa3mtgepvm", "object_type": "modelDeployment", "chart_name": "memoryUsage",
+               "pod_metrics": {"desgffa3mtgepvm-0": {"time_stamp": 1587673820, "value": "34914304"},
+                               "desgffa3mtgepvm-1": {"time_stamp": 1587673820, "value": "35942400"}}}"""
+
+        raise sdk_exceptions.GradientSdkError()
+
+    return generator
+
+
+@pytest.fixture
+def all_options_metrics_stream_websocket_connection_iterator():
+    def generator(self):
+        yield """{"handle": "desgffa3mtgepvm",
+               "object_type": "modelDeployment",
+               "chart_name": "gpuMemoryUsed",
+               "pod_metrics": {"desgffa3mtgepvm-0": {"time_stamp": 1587640736, "value": "0"},
+                               "desgffa3mtgepvm-1": {"time_stamp": 1587640736, "value": "0"}}}"""
+        yield """{"handle": "desgffa3mtgepvm",
+               "object_type": "modelDeployment",
+               "chart_name": "gpuMemoryUsed",
+               "pod_metrics": {"desgffa3mtgepvm-0": {"time_stamp": 1587640738, "value": "321"},
+                               "desgffa3mtgepvm-1": {"time_stamp": 1587640738, "value": "432"}}}"""
+        yield """{"handle": "desgffa3mtgepvm",
+               "object_type": "modelDeployment",
+               "chart_name": "gpuMemoryFree",
+               "pod_metrics": {"desgffa3mtgepvm-0": {"time_stamp": 1587640740, "value": "1234"},
+                               "desgffa3mtgepvm-1": {"time_stamp": 1587640740, "value": "234"}}}"""
+
+        raise sdk_exceptions.GradientSdkError()
+
+    return generator
 
 
 class TestDeploymentsCreate(object):
@@ -1249,7 +1293,7 @@ class TestDeploymentsMetricsGetCommand(object):
         assert result.exit_code == 0, result.exc_info
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
-    def test_should_print_valid_message_when_experiment_was_no_metrics_were_returned(self, get_patched):
+    def test_should_print_valid_message_when_was_no_metrics_were_returned(self, get_patched):
         get_patched.side_effect = [
             MockResponse(self.GET_DEPLOYMENTS_RESPONSE_JSON),
             MockResponse(example_responses.EXPERIMENTS_METRICS_GET_RESPONSE_WHEN_NO_DATA_WAS_FOUND),
@@ -1308,4 +1352,207 @@ class TestDeploymentsMetricsGetCommand(object):
             ]
         )
 
+        assert result.exit_code == 0, result.exc_info
+
+
+class TestExperimentsMetricsStreamCommand(object):
+    LIST_DEPLOYMENTS_URL = "https://api.paperspace.io/deployments/getDeploymentList/"
+    GET_METRICS_URL = "https://aws-testing.paperspace.io/metrics/api/v1/stream"
+    BASIC_OPTIONS_COMMAND = [
+        "deployments", "metrics", "stream",
+        "--id", "dev61ity7lx232",
+    ]
+    ALL_OPTIONS_COMMAND = [
+        "deployments", "metrics", "stream",
+        "--id", "dev61ity7lx232",
+        "--metric", "gpuMemoryFree",
+        "--metric", "gpuMemoryUsed",
+        "--interval", "20s",
+        "--apiKey", "some_key",
+    ]
+    ALL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
+        "deployments", "metrics", "stream",
+        "--optionsFile",  # path added in test,
+    ]
+
+    GET_DEPLOYMENTS_LIST_REQUEST_JSON = {"filter": {"where": {"and": [{"id": "dev61ity7lx232"}]}}}
+    BASIC_COMMAND_CHART_DESCRIPTOR = '{"chart_names": ["cpuPercentage", "memoryUsage"], "handles": ["dev61ity7lx232"' \
+                                     '], "object_type": "modelDeployment", "poll_interval": "30s"}'
+
+    ALL_COMMANDS_CHART_DESCRIPTOR = '{"chart_names": ["gpuMemoryFree", "gpuMemoryUsed"], "handles": ["dev61ity7lx232' \
+                                    '"], "object_type": "modelDeployment", "poll_interval": "20s"}'
+
+    GET_LIST_OF_DEPLOYMENTS_RESPONSE_JSON = example_responses.LIST_DEPLOYMENTS
+
+    EXPECTED_TABLE_1 = """+-------------------+---------------+-------------+
+| Pod               | cpuPercentage | memoryUsage |
++-------------------+---------------+-------------+
+| desgffa3mtgepvm-0 |               | 34914304    |
+| desgffa3mtgepvm-1 |               | 35942400    |
++-------------------+---------------+-------------+
+"""
+    EXPECTED_TABLE_2 = """+-------------------+----------------------+-------------+
+| Pod               | cpuPercentage        | memoryUsage |
++-------------------+----------------------+-------------+
+| desgffa3mtgepvm-0 | 0.044894188888835944 | 34914304    |
+| desgffa3mtgepvm-1 | 0.048185748888916656 | 35942400    |
++-------------------+----------------------+-------------+
+"""
+    EXPECTED_TABLE_3 = """+-------------------+----------------------+-------------+
+| Pod               | cpuPercentage        | memoryUsage |
++-------------------+----------------------+-------------+
+| desgffa3mtgepvm-0 | 0.044894188888835944 | 34914304    |
+| desgffa3mtgepvm-1 | 0.048185748888916656 | 35942400    |
++-------------------+----------------------+-------------+
+"""
+
+    ALL_OPTIONS_EXPECTED_TABLE_1 = """+-------------------+---------------+---------------+
+| Pod               | gpuMemoryFree | gpuMemoryUsed |
++-------------------+---------------+---------------+
+| desgffa3mtgepvm-0 |               | 0             |
+| desgffa3mtgepvm-1 |               | 0             |
++-------------------+---------------+---------------+
+"""
+    ALL_OPTIONS_EXPECTED_TABLE_2 = """+-------------------+---------------+---------------+
+| Pod               | gpuMemoryFree | gpuMemoryUsed |
++-------------------+---------------+---------------+
+| desgffa3mtgepvm-0 |               | 321           |
+| desgffa3mtgepvm-1 |               | 432           |
++-------------------+---------------+---------------+
+"""
+    ALL_OPTIONS_EXPECTED_TABLE_3 = """+-------------------+---------------+---------------+
+| Pod               | gpuMemoryFree | gpuMemoryUsed |
++-------------------+---------------+---------------+
+| desgffa3mtgepvm-0 | 1234          | 321           |
+| desgffa3mtgepvm-1 | 234           | 432           |
++-------------------+---------------+---------------+
+"""
+
+    EXPECTED_STDOUT_WHEN_INVALID_API_KEY_WAS_USED = "Failed to fetch data: Incorrect API Key provided\nForbidden\n"
+    EXPECTED_STDOUT_WHEN_DEPLOYMENT_WAS_NOT_FOUND = "Deployment not found\n"
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_all_available_metrics_when_metrics_get_command_was_used_with_basic_options(
+            self, get_patched, create_ws_connection_patched,
+            basic_options_metrics_stream_websocket_connection_iterator):
+        get_patched.return_value = MockResponse(self.GET_LIST_OF_DEPLOYMENTS_RESPONSE_JSON)
+
+        ws_connection_instance_mock = mock.MagicMock()
+        ws_connection_instance_mock.__iter__ = basic_options_metrics_stream_websocket_connection_iterator
+        create_ws_connection_patched.return_value = ws_connection_instance_mock
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
+
+        assert self.EXPECTED_TABLE_1 in result.output, result.exc_info
+        assert self.EXPECTED_TABLE_2 in result.output, result.exc_info
+        assert self.EXPECTED_TABLE_3 in result.output, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.LIST_DEPLOYMENTS_URL,
+            json=self.GET_DEPLOYMENTS_LIST_REQUEST_JSON,
+            params=None,
+            headers=EXPECTED_HEADERS,
+        )
+        ws_connection_instance_mock.send.assert_called_once_with(self.BASIC_COMMAND_CHART_DESCRIPTOR)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_metrics_when_metrics_get_command_was_used_with_all_options(
+            self, get_patched, create_ws_connection_patched,
+            all_options_metrics_stream_websocket_connection_iterator):
+        get_patched.return_value = MockResponse(self.GET_LIST_OF_DEPLOYMENTS_RESPONSE_JSON)
+
+        ws_connection_instance_mock = mock.MagicMock()
+        ws_connection_instance_mock.__iter__ = all_options_metrics_stream_websocket_connection_iterator
+        create_ws_connection_patched.return_value = ws_connection_instance_mock
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_1 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_2 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_3 in result.output, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.LIST_DEPLOYMENTS_URL,
+            json=self.GET_DEPLOYMENTS_LIST_REQUEST_JSON,
+            params=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        ws_connection_instance_mock.send.assert_called_once_with(self.ALL_COMMANDS_CHART_DESCRIPTOR)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_metrics_when_metrics_get_was_executed_and_options_file_was_used(
+            self, get_patched, create_ws_connection_patched,
+            all_options_metrics_stream_websocket_connection_iterator,
+            deployments_metrics_stream_config_path):
+        get_patched.return_value = MockResponse(self.GET_LIST_OF_DEPLOYMENTS_RESPONSE_JSON)
+        ws_connection_instance_mock = mock.MagicMock()
+        ws_connection_instance_mock.__iter__ = all_options_metrics_stream_websocket_connection_iterator
+        create_ws_connection_patched.return_value = ws_connection_instance_mock
+
+        command = self.ALL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [deployments_metrics_stream_config_path]
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_1 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_2 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_3 in result.output, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.LIST_DEPLOYMENTS_URL,
+            json=self.GET_DEPLOYMENTS_LIST_REQUEST_JSON,
+            params=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        ws_connection_instance_mock.send.assert_called_once_with(self.ALL_COMMANDS_CHART_DESCRIPTOR)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_invalid_api_key_was_used(
+            self, get_patched, create_ws_connection_patched):
+        get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"}, 400)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert "Failed to fetch data: Invalid API token\n" == result.output, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.LIST_DEPLOYMENTS_URL,
+            json=self.GET_DEPLOYMENTS_LIST_REQUEST_JSON,
+            params=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        create_ws_connection_patched.assert_not_called()
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_deployment_was_not_found(
+            self, get_patched, create_ws_connection_patched):
+        get_patched.return_value = MockResponse({"deploymentList": []})
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_DEPLOYMENT_WAS_NOT_FOUND, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.LIST_DEPLOYMENTS_URL,
+            json=self.GET_DEPLOYMENTS_LIST_REQUEST_JSON,
+            params=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        create_ws_connection_patched.assert_not_called()
         assert result.exit_code == 0, result.exc_info

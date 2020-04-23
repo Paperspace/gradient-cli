@@ -2172,7 +2172,6 @@ class TestExperimentsMetricsStreamCommand(object):
                                     '], "object_type": "experiment", "poll_interval": "20s"}'
 
     GET_LIST_OF_JOBS_RESPONSE_JSON = example_responses.LIST_JOBS_RESPONSE_JSON
-    GET_METRICS_RESPONSE_JSON = example_responses.EXPERIMENTS_METRICS_GET_RESPONSE
 
     EXPECTED_TABLE_1 = """+-------------------------------+---------------+-------------+
 | Pod                           | cpuPercentage | memoryUsage |
