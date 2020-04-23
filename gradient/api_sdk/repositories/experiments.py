@@ -1,6 +1,7 @@
 import abc
 
 import six
+import websocket
 
 from gradient.api_sdk.repositories.jobs import ListJobs
 from gradient.api_sdk.utils import concatenate_urls
@@ -231,6 +232,30 @@ class GetExperimentMetrics(GetExperimentMetricsApiUrlMixin, GetMetrics):
 
         return rv
 
+    def _get_instance(self, response, **kwargs):
+        try:
+            rv = super(GetExperimentMetrics, self)._get_instance(response, **kwargs)
+        except sdk_exceptions.ResourceFetchingError as e:
+            if '{"version":' in str(e):
+                # TODO: metrics are not working for v1 experiments at the moment
+                raise sdk_exceptions.GradientSdkError("Metrics are available for private clusters only")
+            else:
+                raise
+
+        return rv
+
 
 class StreamExperimentMetrics(GetExperimentMetricsApiUrlMixin, StreamMetrics):
     OBJECT_TYPE = "experiment"
+
+    def _get_connection(self, kwargs):
+        try:
+            ws = super(StreamExperimentMetrics, self)._get_connection(kwargs)
+        except websocket.WebSocketBadStatusException as e:
+            if "Handshake status 200 OK" in str(e):
+                # TODO: metrics are not working for v1 experiments at the moment
+                raise sdk_exceptions.GradientSdkError("Metrics are available for private clusters only")
+            else:
+                raise
+
+        return ws
