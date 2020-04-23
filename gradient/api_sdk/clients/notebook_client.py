@@ -55,7 +55,7 @@ class NotebooksClient(BaseClient):
             shutdown_timeout=shutdown_timeout,
             is_preemptible=is_preemptible,
         )
-        
+
         repository = self.build_repository(repositories.CreateNotebook)
         handle = repository.create(notebook)
 
@@ -66,9 +66,9 @@ class NotebooksClient(BaseClient):
 
     def start(
             self,
-            id,
+            notebook_id,
             vm_type_id,
-            container_id,
+            vm_type_label,
             cluster_id,
             container_name=None,
             name=None,
@@ -80,12 +80,11 @@ class NotebooksClient(BaseClient):
             is_preemptible=None,
             tags=None,
     ):
-        """Start new notebook
-        :param str|int id
+        """Start existing notebook
+        :param str|int notebook_id
         :param int vm_type_id:
-        :param int container_id:
-        :param int cluster_id:
-        :param str container_name:
+        :param str vm_type_label:
+        :param str cluster_id:
         :param str name:
         :param str registry_username:
         :param str registry_password:
@@ -100,12 +99,11 @@ class NotebooksClient(BaseClient):
         """
         # JSON body for creating a notebook
         # May need a model for start since may not be a 1:1 match
-        notebook = models.Notebook(
-            id=id,
+        notebook = models.NotebookStart(
+            notebook_id=notebook_id,
             vm_type_id=vm_type_id,
-            container_id=container_id,
+            vm_type_label=vm_type_label,
             cluster_id=cluster_id,
-            container_name=container_name,
             name=name,
             registry_username=registry_username,
             registry_password=registry_password,
@@ -116,7 +114,8 @@ class NotebooksClient(BaseClient):
         )
 
         repository = self.build_repository(repositories.StartNotebook)
-        print('Requesting start')
+        
+        # handle = repository.start(None, notebook) # Figure out how to properly pass kwargs 
         handle = repository.start(notebook)
 
         if tags:

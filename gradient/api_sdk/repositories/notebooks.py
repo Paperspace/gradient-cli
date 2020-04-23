@@ -23,10 +23,10 @@ class CreateNotebook(GetNotebookApiUrlMixin, CreateResource):
         return instance_dict
 
 class StartNotebook(GetNotebookApiUrlMixin, StartResource):
-    SERIALIZER_CLS = serializers.NotebookSchema
+    SERIALIZER_CLS = serializers.NotebookStartSchema
 
     def get_request_url(self, **kwargs):
-        return "notebooks/startNotebookV2"
+        return "notebooks/v2/startNotebook"
 
     def _process_instance_dict(self, instance_dict):
         # the API requires this field but marshmallow does not create it if it's value is None

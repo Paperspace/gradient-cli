@@ -130,10 +130,10 @@ def create_notebook(api_key, options_file, **notebook):
 
 @notebooks_group.command("start", help="Start notebook")
 @click.option(
-    "--id",
-    "id",
+    "--notebookId",
+    "notebook_id",
     type=str,
-    required=False,
+    required=True,
     help="Notebook ID",
     cls=common.GradientOption,
 )
@@ -148,37 +148,17 @@ def create_notebook(api_key, options_file, **notebook):
 @click.option(
     "--vmTypeLabel",
     "vm_type_label",
-    type=int,
+    type=str,
     required=False,
-    help="Type of Virtual Machine",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--containerId",
-    "container_id",
-    type=int,
-    required=True,
-    help="Container ID",
+    help="Label of Virtual Machine (ex: P5000)",
     cls=common.GradientOption,
 )
 @click.option(
     "--clusterId",
     "cluster_id",
-    type=int,
+    type=str,
     required=True,
     help="Cluster ID",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--containerName",
-    "container_name",
-    help="Container name",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--name",
-    "name",
-    help="Notebook name",
     cls=common.GradientOption,
 )
 @click.option(
