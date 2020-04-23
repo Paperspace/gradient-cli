@@ -36,7 +36,7 @@ def notebook_metrics():
 @click.option(
     "--vmTypeLabel",
     "vm_type_label",
-    type=int,
+    type=str,
     required=False,
     help="Label of Virtual Machine (ex: P5000)",
     cls=common.GradientOption,
@@ -52,7 +52,7 @@ def notebook_metrics():
 @click.option(
     "--clusterId",
     "cluster_id",
-    type=int,
+    type=str,
     required=True,
     help="Cluster ID",
     cls=common.GradientOption,

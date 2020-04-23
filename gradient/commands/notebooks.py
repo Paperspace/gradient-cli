@@ -39,7 +39,7 @@ class CreateNotebookCommand(BaseNotebookCommand):
 
 class StartNotebookCommand(BaseNotebookCommand):
     SPINNER_MESSAGE = "Starting notebook"
-        print(kwargs)
+    def execute(self, **kwargs):
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
             notebook_id = self.client.start(**kwargs)
 

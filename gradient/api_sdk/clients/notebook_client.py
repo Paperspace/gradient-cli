@@ -26,7 +26,7 @@ class NotebooksClient(BaseClient):
         :param int vm_type_id:
         :param str vm_type_label:
         :param int container_id:
-        :param int cluster_id:
+        :param str cluster_id:
         :param str container_name:
         :param str name:
         :param str registry_username:
@@ -40,7 +40,7 @@ class NotebooksClient(BaseClient):
         :return: Notebook ID
         :rtype str:
         """
-
+        
         notebook = models.Notebook(
             vm_type_id=vm_type_id,
             vm_type_label=vm_type_label,
@@ -55,7 +55,7 @@ class NotebooksClient(BaseClient):
             shutdown_timeout=shutdown_timeout,
             is_preemptible=is_preemptible,
         )
-
+        
         repository = self.build_repository(repositories.CreateNotebook)
         handle = repository.create(notebook)
 
