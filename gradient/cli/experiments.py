@@ -846,14 +846,14 @@ def experiment_remove_tags(id, options_file, api_key, **kwargs):
     "--start",
     "start",
     type=click.DateTime(),
-    help="Read metrics starting from this datestamp",
+    help="Timestamp of first time series metric to collect",
     cls=common.GradientOption,
 )
 @click.option(
     "--end",
     "end",
     type=click.DateTime(),
-    help="Read metrics ending from this datestamp",
+    help="Timestamp of last time series metric to collect",
     cls=common.GradientOption,
 )
 @api_key_option

@@ -4,13 +4,14 @@ import click
 
 from gradient import cliutils
 from gradient import exceptions, clilogger, DEPLOYMENT_TYPES_MAP
-from gradient.api_sdk import DeploymentsClient
+from gradient.api_sdk import DeploymentsClient, constants
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, validate_comma_split_option
 from gradient.commands import deployments as deployments_commands
-from gradient.commands.deployments import DeploymentRemoveTagsCommand, DeploymentAddTagsCommand
+from gradient.commands.deployments import DeploymentRemoveTagsCommand, DeploymentAddTagsCommand, \
+    GetDeploymentMetricsCommand, StreamDeploymentMetricsCommand
 
 
 @cli.group("deployments", help="Manage deployments", cls=ClickGroup)
@@ -20,6 +21,11 @@ def deployments():
 
 @deployments.group("tags", help="Manage deployments tags", cls=ClickGroup)
 def deployments_tags():
+    pass
+
+
+@deployments.group(name="metrics", help="Read model deployment metrics", cls=ClickGroup)
+def deployments_metrics():
     pass
 
 
@@ -175,13 +181,13 @@ def get_deployment_client(api_key):
     "--tag",
     "tags",
     multiple=True,
-    help="One or many tags that you want to add to experiment",
+    help="One or many tags that you want to add to model deployment job",
     cls=common.GradientOption
 )
 @click.option(
     "--tags",
     "tags_comma",
-    help="Separated by comma tags that you want add to experiment",
+    help="Separated by comma tags that you want add to model deployment job",
     cls=common.GradientOption
 )
 @api_key_option
@@ -514,3 +520,89 @@ def deployment_remove_tags(id, options_file, api_key, **kwargs):
 
     command = DeploymentRemoveTagsCommand(deployment_client=deployment_client)
     command.execute(id, **kwargs)
+
+
+@deployments_metrics.command(
+    "get",
+    short_help="Get model deployment metrics",
+    help="Get model deployment metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "deployment_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the model deployment",
+)
+@click.option(
+    "--metric",
+    "metrics_list",
+    multiple=True,
+    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
+    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--start",
+    "start",
+    type=click.DateTime(),
+    help="Timestamp of first time series metric to collect",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--end",
+    "end",
+    type=click.DateTime(),
+    help="Timestamp of last time series metric to collect",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def get_deployment_metrics(deployment_id, metrics_list, interval, start, end, options_file, api_key):
+    deployment_client = get_deployment_client(api_key)
+    command = GetDeploymentMetricsCommand(deployment_client=deployment_client)
+    command.execute(deployment_id, start, end, interval, built_in_metrics=metrics_list)
+
+
+@deployments_metrics.command(
+    "stream",
+    short_help="Watch live model deployment metrics",
+    help="Watch live model deployment metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "deployment_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the model deployment",
+)
+@click.option(
+    "--metric",
+    "metrics_list",
+    multiple=True,
+    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
+    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def stream_model_deployment_metrics(deployment_id, metrics_list, interval, options_file, api_key):
+    deployment_client = get_deployment_client(api_key)
+    command = StreamDeploymentMetricsCommand(deployment_client=deployment_client)
+    command.execute(deployment_id=deployment_id, interval=interval, built_in_metrics=metrics_list)

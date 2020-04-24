@@ -1,4 +1,5 @@
 import abc
+import json
 import pydoc
 
 import six
@@ -10,7 +11,7 @@ from gradient.api_sdk import sdk_exceptions, utils, models
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import concatenate_urls
 from gradient.cliutils import get_terminal_lines
-from gradient.commands.common import DetailsCommandMixin
+from gradient.commands.common import DetailsCommandMixin, StreamMetricsCommand
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -158,3 +159,20 @@ class DeploymentRemoveTagsCommand(_DeploymentCommand):
     def execute(self, deployment_id, *args, **kwargs):
         self.client.remove_tags(deployment_id, entity=self.entity, **kwargs)
         self.logger.log("Tags removed from deployment")
+
+
+class GetDeploymentMetricsCommand(_DeploymentCommand):
+    def execute(self, deployment_id, start, end, interval, built_in_metrics, *args, **kwargs):
+        metrics = self.client.get_metrics(
+            deployment_id,
+            start=start,
+            end=end,
+            built_in_metrics=built_in_metrics,
+            interval=interval,
+        )
+        formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
+        self.logger.log(formatted_metrics)
+
+
+class StreamDeploymentMetricsCommand(StreamMetricsCommand, _DeploymentCommand):
+    pass

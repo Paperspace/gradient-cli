@@ -1,3 +1,5 @@
+import datetime
+
 import attr
 
 
@@ -75,3 +77,10 @@ class Deployment(object):
     cluster_id = attr.ib(type=int, default=None)
     tags = attr.ib(type=list, factory=list)
     command = attr.ib(type=str, default=None)
+    metrics_url = attr.ib(type=str, default=None)
+
+    dt_created = attr.ib(type=datetime.datetime, default=None)
+    dt_modified = attr.ib(type=datetime.datetime, default=None)
+    dt_started = attr.ib(type=datetime.datetime, default=None)
+    dt_stopped = attr.ib(type=datetime.datetime, default=None)
+    dt_deleted = attr.ib(type=datetime.datetime, default=None)
