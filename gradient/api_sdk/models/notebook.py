@@ -1,3 +1,5 @@
+import datetime
+
 import attr
 
 from gradient.api_sdk.config import config
@@ -24,6 +26,13 @@ class Notebook(object):
     fqdn = attr.ib(type=bool, default=None)
     namespace = attr.ib(type=str, default=None)
     tags = attr.ib(type=list, factory=list)
+    metrics_url = attr.ib(type=str, default=None)
+
+    dt_created = attr.ib(type=datetime.datetime, default=None)
+    dt_modified = attr.ib(type=datetime.datetime, default=None)
+    dt_started = attr.ib(type=datetime.datetime, default=None)
+    dt_stopped = attr.ib(type=datetime.datetime, default=None)
+    dt_deleted = attr.ib(type=datetime.datetime, default=None)
 
     @property
     def url(self):
