@@ -276,7 +276,7 @@ def notebook_remove_tags(id, options_file, api_key, **kwargs):
 @common.options_file
 def get_deployment_metrics(notebook_id, metrics_list, interval, start, end, options_file, api_key):
     command = GetNotebookMetricsCommand(api_key=api_key)
-    command.exescute(notebook_id, start, end, interval, built_in_metrics=metrics_list)
+    command.execute(notebook_id, start, end, interval, built_in_metrics=metrics_list)
 
 
 @notebook_metrics.command(

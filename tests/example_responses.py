@@ -4700,7 +4700,8 @@ NOTEBOOK_GET_RESPONSE = {
     "tpuTFVersion": None,
     "tpuDatasetDir": None,
     "tpuModelDir": None,
-    "id": 1823
+    "id": 1823,
+    "metricsURL": "aws-testing.paperspace.io",
 }
 
 NOTEBOOK_GET_RESPONSE_WITH_TAGS = {
@@ -7838,4 +7839,52 @@ DEPLOYMENTS_METRICS_GET_RESPONSE = {
             ],
         },
     },
+}
+
+NOTEBOOKS_METRICS_GET_RESPONSE = {
+    "handle": "npmnnm6e",
+    "object_type": "notebook",
+    "charts": {
+        "cpuPercentage": {
+            "npmnnm6e": [
+                {"time_stamp": 1587993000, "value": "0"},
+                {"time_stamp": 1587993030, "value": "0"},
+                {"time_stamp": 1587993060, "value": "0"},
+                {"time_stamp": 1587993090, "value": "0"},
+                {"time_stamp": 1587993120, "value": "0"},
+                {"time_stamp": 1587993150, "value": "0"},
+                {"time_stamp": 1587993180, "value": "0"},
+                {"time_stamp": 1587993210, "value": "0"},
+                {"time_stamp": 1587993240, "value": "0"},
+                {"time_stamp": 1587993270, "value": "0"},
+                {"time_stamp": 1587993300, "value": "0"},
+                {"time_stamp": 1587993330, "value": "0"},
+                {"time_stamp": 1587993360, "value": "0"},
+            ],
+        },
+        "memoryUsage": {
+            "npmnnm6e": [
+                {"time_stamp": 1587992970, "value": "0"},
+                {"time_stamp": 1587993000, "value": "782336"},
+                {"time_stamp": 1587993030, "value": "782336"},
+                {"time_stamp": 1587993060, "value": "782336"},
+                {"time_stamp": 1587993090, "value": "782336"},
+                {"time_stamp": 1587993120, "value": "782336"},
+                {"time_stamp": 1587993150, "value": "782336"},
+                {"time_stamp": 1587993180, "value": "782336"},
+                {"time_stamp": 1587993210, "value": "782336"},
+                {"time_stamp": 1587993240, "value": "782336"},
+                {"time_stamp": 1587993270, "value": "782336"},
+                {"time_stamp": 1587993300, "value": "782336"},
+                {"time_stamp": 1587993330, "value": "782336"},
+                {"time_stamp": 1587993360, "value": "782336"},
+            ],
+        },
+    },
+}
+
+NOTEBOOKS_METRICS_GET_RESPONSE_WHEN_NO_METRICS_WERE_FOUND = {
+    "handle": "nrwed38p",
+    "object_type": "notebook",
+    "charts": {"cpuPercentage": None, "memoryUsage": None},
 }
