@@ -87,3 +87,49 @@ class NotebooksClient(BaseClient):
         repository = self.build_repository(repositories.ListNotebooks)
         notebooks = repository.list(tags=tags, limit=limit, offset=offset, get_meta=get_meta)
         return notebooks
+
+    def get_metrics(self, notebook_id, start=None, end=None, interval="30s", built_in_metrics=None):
+        """Get notebook metrics
+
+        :param str notebook_id: notebook ID
+        :param datetime.datetime|str start:
+        :param datetime.datetime|str end:
+        :param str interval:
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+                    Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
+                                            gpuTemp, gpuUtilization, gpuMemoryUtilization
+
+        :returns: Metrics of a notebook
+        :rtype: dict[str,dict[str,list[dict]]]
+        """
+
+        repository = self.build_repository(repositories.GetNotebookMetrics)
+        metrics = repository.get(
+            id=notebook_id,
+            start=start,
+            end=end,
+            interval=interval,
+            built_in_metrics=built_in_metrics,
+        )
+        return metrics
+
+    def stream_metrics(self, notebook_id, interval="30s", built_in_metrics=None):
+        """Stream live notebook metrics
+
+        :param str notebook_id: notebook ID
+        :param str interval:
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+                    Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
+                                            gpuTemp, gpuUtilization, gpuMemoryUtilization
+
+        :returns: Generator object yielding live notebook metrics
+        :rtype: Iterable[dict]
+        """
+
+        repository = self.build_repository(repositories.StreamNotebookMetrics)
+        metrics = repository.stream(
+            id=notebook_id,
+            interval=interval,
+            built_in_metrics=built_in_metrics,
+        )
+        return metrics
