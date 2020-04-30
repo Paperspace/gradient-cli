@@ -4,7 +4,7 @@ import sys
 from gradient.api_sdk.constants import RunMode
 from gradient.clilogger import CliLogger
 from gradient.commands.jobs import RunJobCommand
-from gradient.workspace import WorkspaceHandler
+from gradient.api_sdk.workspace import WorkspaceHandler
 
 
 class RunCommand(object):

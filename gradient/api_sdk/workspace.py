@@ -1,44 +1,14 @@
 import os
 import tempfile
 
-import progressbar
-from requests_toolbelt.multipart import encoder
-
 from gradient import cliutils, cli_constants
-from gradient.api_sdk import s3_uploader
+from gradient.api_sdk import s3_uploader, archivers
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.clilogger import CliLogger
 
 
-class MultipartEncoder(object):
-    def __init__(self, fields):
-        mp_encoder = encoder.MultipartEncoder(fields=fields)
-        self.monitor = encoder.MultipartEncoderMonitor(mp_encoder, callback=self._create_callback(mp_encoder))
-
-    def get_monitor(self):
-        return self.monitor
-
-    @staticmethod
-    def _create_callback(encoder_obj):
-        pass
-
-
-class MultipartEncoderWithProgressbar(MultipartEncoder):
-    @staticmethod
-    def _create_callback(encoder_obj):
-        bar = progressbar.ProgressBar(max_value=encoder_obj.len)
-
-        def callback(monitor):
-            if monitor.bytes_read == bar.max_value:
-                bar.finish()
-            else:
-                bar.update(monitor.bytes_read)
-
-        return callback
-
-
 class WorkspaceHandler(object):
-    WORKSPACE_ARCHIVER_CLS = s3_uploader.ZipArchiver
+    WORKSPACE_ARCHIVER_CLS = archivers.ZipArchiver
 
     def __init__(self, logger_=None):
         """
@@ -139,7 +109,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
 
 
 class S3WorkspaceHandlerWithProgressbar(S3WorkspaceHandler):
-    WORKSPACE_ARCHIVER = s3_uploader.ZipArchiverWithProgressbar
+    WORKSPACE_ARCHIVER = archivers.ZipArchiverWithProgressbar
 
     def _get_workspace_uploader(self, api_key):
         file_uploader = s3_uploader.S3FileUploader(

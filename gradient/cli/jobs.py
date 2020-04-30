@@ -12,7 +12,7 @@ from gradient.cli.common import (
 )
 from gradient.commands import jobs as jobs_commands
 from gradient.commands.jobs import JobAddTagsCommand, JobRemoveTagsCommand
-from gradient.workspace import WorkspaceHandler
+from gradient.api_sdk.workspace import WorkspaceHandler
 
 
 def get_workspace_handler():
