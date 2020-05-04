@@ -3,7 +3,9 @@ import random
 import string
 from collections import OrderedDict
 
+import progressbar
 import six
+from requests_toolbelt.multipart import encoder
 
 from . import constants, sdk_exceptions
 
@@ -112,3 +114,30 @@ def concatenate_urls(fst_part, snd_part):
     template = "{}{}" if snd_part.startswith("/") else "{}/{}"
     concatenated = template.format(fst_part, snd_part)
     return concatenated
+
+
+class MultipartEncoder(object):
+    def __init__(self, fields):
+        mp_encoder = encoder.MultipartEncoder(fields=fields)
+        self.monitor = encoder.MultipartEncoderMonitor(mp_encoder, callback=self._create_callback(mp_encoder))
+
+    def get_monitor(self):
+        return self.monitor
+
+    @staticmethod
+    def _create_callback(encoder_obj):
+        pass
+
+
+class MultipartEncoderWithProgressbar(MultipartEncoder):
+    @staticmethod
+    def _create_callback(encoder_obj):
+        bar = progressbar.ProgressBar(max_value=encoder_obj.len)
+
+        def callback(monitor):
+            if monitor.bytes_read == bar.max_value:
+                bar.finish()
+            else:
+                bar.update(monitor.bytes_read)
+
+        return callback

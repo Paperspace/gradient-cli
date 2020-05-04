@@ -12,11 +12,10 @@ from gradient.api_sdk import config, sdk_exceptions
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.clients.base_client import BaseClient
 from gradient.api_sdk.repositories.jobs import RunJob
-from gradient.api_sdk.utils import print_dict_recursive, concatenate_urls
+from gradient.api_sdk.utils import print_dict_recursive, concatenate_urls, MultipartEncoder
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.cliutils import get_terminal_lines
 from gradient.commands.common import BaseCommand, StreamMetricsCommand
-from gradient.workspace import MultipartEncoder
 
 
 @six.add_metaclass(abc.ABCMeta)

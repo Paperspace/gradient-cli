@@ -5,7 +5,7 @@ import time
 import requests
 import six
 
-from gradient.api_sdk import sdk_exceptions
+from . import sdk_exceptions
 from .clients import JobsClient, ModelsClient
 from .clients.base_client import BaseClient
 from .logger import MuteLogger

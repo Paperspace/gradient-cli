@@ -5,6 +5,7 @@ import zipfile
 
 import mock
 
+import gradient.api_sdk.archivers
 import gradient.api_sdk.s3_uploader
 
 
@@ -49,7 +50,7 @@ def create_test_dir_tree(dir_path=None):
 
 class TestZipArchiver(object):
     def test_should_get_valid_excluded_paths_when_empty_list_was_passed_to_get_excluded_paths(self):
-        archiver = gradient.api_sdk.s3_uploader.ZipArchiver()
+        archiver = gradient.api_sdk.archivers.ZipArchiver()
 
         excluded = archiver.get_excluded_paths()
 
@@ -60,7 +61,7 @@ class TestZipArchiver(object):
         }
 
     def test_should_get_valid_excluded_paths_when_list_of_files_was_passed_to_get_excluded_paths(self):
-        archiver = gradient.api_sdk.s3_uploader.ZipArchiver()
+        archiver = gradient.api_sdk.archivers.ZipArchiver()
 
         excluded = archiver.get_excluded_paths(["some_file", "some_dir/some_other_file"])
 
@@ -84,7 +85,7 @@ class TestZipArchiver(object):
         }
 
         try:
-            paths = gradient.api_sdk.s3_uploader.ZipArchiver.get_file_paths(
+            paths = gradient.api_sdk.archivers.ZipArchiver.get_file_paths(
                 test_dir,
                 excluded_paths=["file2",
                                 os.path.join("subdir2", "file4"),
@@ -118,13 +119,13 @@ class TestZipArchiver(object):
         }
 
         try:
-            archiver = gradient.api_sdk.s3_uploader.ZipArchiver()
+            archiver = gradient.api_sdk.archivers.ZipArchiver()
             archiver.archive(temp_input_dir, archive_file_path,
                              exclude=["file2", os.path.join("subdir2", "file4"), os.path.join("subdir3", "*")])
 
             zip_file = zipfile.ZipFile(archive_file_path)
             zip_file.extractall(temp_dir_for_extracted_files)
-            archiver2 = gradient.api_sdk.s3_uploader.ZipArchiver()
+            archiver2 = gradient.api_sdk.archivers.ZipArchiver()
             archiver2.default_excluded_paths = []
             paths_in_extracted_dir = archiver2.get_file_paths(temp_dir_for_extracted_files)
 
@@ -140,10 +141,9 @@ class TestS3FileUploader(object):
         _, file_path = tempfile.mkstemp()
         uploader = gradient.api_sdk.s3_uploader.S3FileUploader()
 
-        bucket_url = uploader.upload(file_path, "s3://some.url", "some_bucket_name", {"key": "some_key"})
+        uploader.upload(file_path, "s3://some.url", {"key": "some_key"})
 
         post_patched.assert_called_once()
-        assert bucket_url == "s3://some_bucket_name/some_key"
 
 
 class TestS3WorkspaceDirectoryUploader(object):

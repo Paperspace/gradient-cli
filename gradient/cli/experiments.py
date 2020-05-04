@@ -2,14 +2,15 @@ import functools
 
 import click
 
-from gradient import clilogger, workspace
-from gradient.api_sdk import constants
+from gradient import clilogger
+from gradient.api_sdk import constants, workspace
 from gradient.cli import common, validators
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
 from gradient.cli.common import api_key_option, ClickGroup, validate_comma_split_option
 from gradient.cli.utils.flag_with_value import GradientRegisterReaderOption, GradientRegisterWriterOption, \
     GradientRegisterWriterCommand
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.commands import experiments as experiments_commands
 from gradient.commands.experiments import ExperimentAddTagsCommand, ExperimentRemoveTagsCommand, \
     GetExperimentMetricsCommand, StreamExperimentMetricsCommand
@@ -27,7 +28,8 @@ MULTI_NODE_RUN_EXPERIMENT_COMMANDS = {
 
 def get_workspace_handler(api_key):
     logger_ = clilogger.CliLogger()
-    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(api_key=api_key, logger_=logger_, )
+    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(api_key=api_key, logger_=logger_,
+                                                                    client_name=CLI_PS_CLIENT_NAME)
     return workspace_handler
 
 

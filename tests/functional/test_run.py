@@ -29,8 +29,8 @@ class TestRunCommand(object):
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
-    @mock.patch("gradient.workspace.MultipartEncoder.get_monitor")
+    @mock.patch("gradient.api_sdk.workspace.WorkspaceHandler._zip_workspace")
+    @mock.patch("gradient.api_sdk.utils.MultipartEncoder.get_monitor")
     @mock.patch("gradient.commands.jobs.CreateJobCommand._get_files_dict")
     def test_run_simple_file_with_args(self, get_files_patched, get_moniror_patched, workspace_zip_patched,
                                        post_patched):
@@ -90,7 +90,7 @@ class TestRunCommand(object):
                                         })
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
+    @mock.patch("gradient.api_sdk.workspace.WorkspaceHandler._zip_workspace")
     def test_run_shell_command_with_args_with_s3_workspace(self, workspace_zip_patched, post_patched):
         workspace_zip_patched.return_value = '/foo/bar'
         post_patched.return_value = MockResponse()
@@ -116,7 +116,7 @@ class TestRunCommand(object):
                                         })
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    @mock.patch("gradient.workspace.WorkspaceHandler._zip_workspace")
+    @mock.patch("gradient.api_sdk.workspace.WorkspaceHandler._zip_workspace")
     def test_should_read_options_from_yaml_file(self, workspace_zip_patched, post_patched, run_config_path):
         workspace_zip_patched.return_value = '/foo/bar'
         post_patched.return_value = MockResponse()

@@ -4,7 +4,8 @@ import mock
 import pytest
 
 import gradient.cliutils
-from gradient.workspace import S3WorkspaceHandler
+from gradient.api_sdk.workspace import S3WorkspaceHandler
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 
 MOCK_BUCKET_NAME = 'bucket_name'
 MOCK_OBJECT_KEY = 'object_key'
@@ -23,14 +24,14 @@ mock_upload_response = {
 
 @pytest.fixture
 def workspace_handler():
-    s3_workspace_handler = S3WorkspaceHandler("some_key")
+    s3_workspace_handler = S3WorkspaceHandler("some_key", client_name=CLI_PS_CLIENT_NAME)
     s3_workspace_handler._upload = mock.MagicMock(return_value="s3://{}/{}".format(MOCK_BUCKET_NAME, MOCK_OBJECT_KEY))
     return s3_workspace_handler
 
 
 class TestWorkspace(object):
     @mock.patch("gradient.cliutils.PathParser.parse_path", return_value=gradient.cliutils.PathParser.S3_URL)
-    @mock.patch("gradient.workspace.S3WorkspaceHandler._upload")
+    @mock.patch("gradient.api_sdk.workspace.S3WorkspaceHandler._upload")
     def test_dont_upload_if_s3_url_provided(self, _, __, workspace_handler):
         workspace_handler._upload = mock.MagicMock()
 

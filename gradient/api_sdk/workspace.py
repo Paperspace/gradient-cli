@@ -1,51 +1,22 @@
 import os
 import tempfile
 
-import progressbar
-from requests_toolbelt.multipart import encoder
-
 from gradient import cliutils, cli_constants
-from gradient.api_sdk import s3_uploader
-from gradient.cli_constants import CLI_PS_CLIENT_NAME
-from gradient.clilogger import CliLogger
+from gradient.api_sdk import s3_uploader, archivers
 
-
-class MultipartEncoder(object):
-    def __init__(self, fields):
-        mp_encoder = encoder.MultipartEncoder(fields=fields)
-        self.monitor = encoder.MultipartEncoderMonitor(mp_encoder, callback=self._create_callback(mp_encoder))
-
-    def get_monitor(self):
-        return self.monitor
-
-    @staticmethod
-    def _create_callback(encoder_obj):
-        pass
-
-
-class MultipartEncoderWithProgressbar(MultipartEncoder):
-    @staticmethod
-    def _create_callback(encoder_obj):
-        bar = progressbar.ProgressBar(max_value=encoder_obj.len)
-
-        def callback(monitor):
-            if monitor.bytes_read == bar.max_value:
-                bar.finish()
-            else:
-                bar.update(monitor.bytes_read)
-
-        return callback
+from . import s3_uploader, archivers, utils
+from .logger import MuteLogger
 
 
 class WorkspaceHandler(object):
-    WORKSPACE_ARCHIVER_CLS = s3_uploader.ZipArchiver
+    WORKSPACE_ARCHIVER_CLS = archivers.ZipArchiver
 
     def __init__(self, logger_=None):
         """
 
         :param logger_: gradient.logger
         """
-        self.logger = logger_ or CliLogger()
+        self.logger = logger_ or MuteLogger()
         self.archive_path = None
         self.archive_basename = None
 
@@ -109,13 +80,14 @@ class WorkspaceHandler(object):
 class S3WorkspaceHandler(WorkspaceHandler):
     WORKSPACE_UPLOADER_CLS = s3_uploader.S3ProjectFileUploader
 
-    def __init__(self, api_key, logger_=None):
+    def __init__(self, api_key, logger_=None, client_name=None):
         """
         :param str api_key:
-        :param gradient.clilogger.CliLogger logger_:
+        :param gradient.logger logger_:
         """
         super(S3WorkspaceHandler, self).__init__(logger_=logger_)
         self.api_key = api_key
+        self.client_name = client_name
 
     def handle(self, input_data):
         workspace = super(S3WorkspaceHandler, self).handle(input_data)
@@ -139,18 +111,18 @@ class S3WorkspaceHandler(WorkspaceHandler):
 
 
 class S3WorkspaceHandlerWithProgressbar(S3WorkspaceHandler):
-    WORKSPACE_ARCHIVER = s3_uploader.ZipArchiverWithProgressbar
+    WORKSPACE_ARCHIVER_CLS = archivers.ZipArchiverWithProgressbar
 
     def _get_workspace_uploader(self, api_key):
         file_uploader = s3_uploader.S3FileUploader(
             s3_uploader.MultipartEncoderWithProgressbar,
             logger=self.logger,
-            ps_client_name=cli_constants.CLI_PS_CLIENT_NAME,
+            ps_client_name=self.client_name,
         )
         workspace_uploader = self.WORKSPACE_UPLOADER_CLS(
             api_key,
             s3uploader=file_uploader,
             logger=self.logger,
-            ps_client_name=cli_constants.CLI_PS_CLIENT_NAME,
+            ps_client_name=self.client_name
         )
         return workspace_uploader

@@ -385,7 +385,7 @@ class TestExperimentsCreateSingleNode(object):
         tensorboard_handler_class.assert_called_once_with("some_key")
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
 
-    @mock.patch("gradient.workspace.s3_uploader.MultipartEncoderWithProgressbar")
+    @mock.patch("gradient.api_sdk.workspace.s3_uploader.MultipartEncoderWithProgressbar")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_zip_and_upload_local_workspace_when_local_path_was_passed_to_workspace_option(
@@ -403,8 +403,9 @@ class TestExperimentsCreateSingleNode(object):
         multipart_encoder_patched.get_monitor.return_value = multipart_monitor
         multipart_encoder_cls_patched.return_value = multipart_encoder_patched
 
-        headers_for_uploading_to_s3 = EXPECTED_HEADERS.copy()
-        headers_for_uploading_to_s3["Content-Type"] = multipart_encoder_content_type
+        headers_for_uploading_to_s3 = {
+            "Content-Type": multipart_encoder_content_type
+        }
 
         get_patched.return_value = MockResponse(example_responses.GET_PRESIGNED_URL_FOR_S3_BUCKET_RESPONSE_JSON)
         post_patched.side_effect = [
