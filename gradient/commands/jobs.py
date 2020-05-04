@@ -1,4 +1,5 @@
 import abc
+import json
 import pydoc
 
 import six
@@ -14,7 +15,7 @@ from gradient.api_sdk.repositories.jobs import RunJob
 from gradient.api_sdk.utils import print_dict_recursive, concatenate_urls, MultipartEncoder
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.cliutils import get_terminal_lines
-from gradient.commands.common import BaseCommand
+from gradient.commands.common import BaseCommand, StreamMetricsCommand
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -392,3 +393,20 @@ class JobRemoveTagsCommand(BaseJobCommand):
     def execute(self, job_id, *args, **kwargs):
         self.client.remove_tags(job_id, entity=self.entity, **kwargs)
         self.logger.log("Tags removed from job")
+
+
+class GetJobMetricsCommand(BaseJobCommand):
+    def execute(self, deployment_id, start, end, interval, built_in_metrics, *args, **kwargs):
+        metrics = self.client.get_metrics(
+            deployment_id,
+            start=start,
+            end=end,
+            built_in_metrics=built_in_metrics,
+            interval=interval,
+        )
+        formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
+        self.logger.log(formatted_metrics)
+
+
+class StreamJobMetricsCommand(StreamMetricsCommand, BaseJobCommand):
+    pass
