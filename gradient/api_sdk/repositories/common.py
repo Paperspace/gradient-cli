@@ -55,10 +55,14 @@ class BaseRepository(object):
         params = self._get_request_params(kwargs)
         url = self.get_request_url(**kwargs)
         client = self._get_client(**kwargs)
-        response = client.get(url, json=json_, params=params)
+        response = self._send_request(client, url, json=json_, params=params)
         gradient_response = http_client.GradientResponse.interpret_response(response)
 
         return gradient_response
+
+    def _send_request(self, client, url, json=None, params=None):
+        response = client.get(url, json=json, params=params)
+        return response
 
     def _validate_response(self, response):
         if not response.ok:
