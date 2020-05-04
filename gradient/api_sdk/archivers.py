@@ -4,7 +4,7 @@ import zipfile
 
 import progressbar
 
-from gradient.api_sdk.logger import MuteLogger
+from .logger import MuteLogger
 
 
 class ZipArchiver(object):

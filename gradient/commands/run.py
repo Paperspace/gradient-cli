@@ -53,5 +53,5 @@ class RunCommand(object):
         command = self._create_command(mode, script)
         json_['command'] = command
 
-        command = RunJobCommand(api_key=self.api_key, workspace_handler=WorkspaceHandler())
+        command = RunJobCommand(api_key=self.api_key, workspace_handler=WorkspaceHandler(logger_=CliLogger()))
         command.execute(json_)
