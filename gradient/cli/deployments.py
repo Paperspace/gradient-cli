@@ -184,6 +184,32 @@ def get_deployment_client(api_key):
     help="Separated by comma tags that you want add to experiment",
     cls=common.GradientOption
 )
+@click.option(
+    "--workspace",
+    "workspace",
+    help="Path to workspace directory, archive, S3 or git repository",
+    default="none",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--workspaceRef",
+    "workspace_ref",
+    help="Git commit hash, branch name or tag",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--workspaceUsername",
+    "workspace_username",
+    metavar="<username>",
+    help="Workspace username",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--workspacePassword",
+    "workspace_password",
+    help="Workspace password",
+    cls=common.GradientOption,
+)
 @api_key_option
 @common.options_file
 def create_deployment(api_key, options_file, **kwargs):
