@@ -12,6 +12,7 @@ from .machine_types import ListMachineTypes
 from .machines import CheckMachineAvailability, CreateMachine, CreateResource, StartMachine, StopMachine, \
     RestartMachine, GetMachine, UpdateMachine, GetMachineUtilization
 from .models import DeleteModel, ListModels, UploadModel, GetModel, ListModelFiles
-from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks
+from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks, GetNotebookMetrics, \
+    StreamNotebookMetrics
 from .projects import CreateProject, ListProjects, DeleteProject, GetProject
 from .tensorboards import CreateTensorboard, GetTensorboard, ListTensorboards, UpdateTensorboard, DeleteTensorboard

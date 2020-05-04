@@ -1,8 +1,10 @@
 import json
 
 import mock
+import pytest
 from click.testing import CliRunner
 
+from gradient.api_sdk import sdk_exceptions
 from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import MockResponse, example_responses
@@ -12,6 +14,36 @@ EXPECTED_HEADERS["ps_client_name"] = "gradient-cli"
 
 EXPECTED_HEADERS_WITH_CHANGED_API_KEY = EXPECTED_HEADERS.copy()
 EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+
+@pytest.fixture
+def basic_options_metrics_stream_websocket_connection_iterator():
+    def generator(self):
+        yield """{"handle":"nrwed38p","object_type":"notebook","chart_name":"memoryUsage",
+        "pod_metrics":{"nrwed38p":{"time_stamp":1588066152,"value":"54013952"}}}"""
+        yield """{"handle":"nrwed38p","object_type":"notebook","chart_name":"cpuPercentage",
+        "pod_metrics":{"nrwed38p":{"time_stamp":1588066152,"value":"0.006907773333334353"}}}"""
+        yield """{"handle":"nrwed38p","object_type":"notebook","chart_name":"memoryUsage",
+        "pod_metrics":{"nrwed38p":{"time_stamp":1588066155,"value":"12345667"}}}"""
+
+        raise sdk_exceptions.GradientSdkError()
+
+    return generator
+
+
+@pytest.fixture
+def all_options_metrics_stream_websocket_connection_iterator():
+    def generator(self):
+        yield """{"handle":"nrwed38p","object_type":"notebook","chart_name":"gpuMemoryFree",
+        "pod_metrics":{"nrwed38p":{"time_stamp":1588068626,"value":"1234"}}}"""
+        yield """{"handle":"nrwed38p","object_type":"notebook","chart_name":"gpuMemoryUsed",
+        "pod_metrics":{"nrwed38p":{"time_stamp":1588068646,"value":"32"}}}"""
+        yield """{"handle":"nrwed38p","object_type":"notebook","chart_name":"gpuMemoryFree",
+        "pod_metrics":{"nrwed38p":{"time_stamp":1588068646,"value":"2345"}}}"""
+
+        raise sdk_exceptions.GradientSdkError()
+
+    return generator
 
 
 # class TestNotebooksCreate(object):
@@ -562,3 +594,582 @@ class TestNotebooksList(object):
         filter_params = json.loads(filter_params)
         assert filter_params == self.EXPECTED_FILTERS
         assert result.exit_code == 0
+
+
+class TestNotebooksMetricsGetCommand(object):
+    GET_NOTEBOOK_URL = "https://api.paperspace.io/notebooks/getNotebook"
+    GET_METRICS_URL = "https://aws-testing.paperspace.io/metrics/api/v1/range"
+    BASIC_OPTIONS_COMMAND = [
+        "notebooks", "metrics", "get",
+        "--id", "ngw7piq9",
+    ]
+    ALL_OPTIONS_COMMAND = [
+        "notebooks", "metrics", "get",
+        "--id", "ngw7piq9",
+        "--metric", "gpuMemoryFree",
+        "--metric", "gpuMemoryUsed",
+        "--interval", "20s",
+        "--start", "2020-04-01",
+        "--end", "2020-04-02 21:37:00",
+        "--apiKey", "some_key",
+    ]
+    FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
+        "notebooks", "metrics", "get",
+        "--optionsFile",  # path added in test,
+    ]
+
+    GET_NOTEBOOK_REQUEST_JSON = {"notebookId": "ngw7piq9"}
+    BASIC_COMMAND_GET_METRICS_REQUEST_PARAMS = {
+        "start": "2019-09-03T11:10:36Z",
+        "handle": "ngw7piq9",
+        "interval": "30s",
+        "charts": "cpuPercentage,memoryUsage",
+        "objecttype": "notebook",
+    }
+    ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS = {
+        "start": "2020-04-01T00:00:00Z",
+        "handle": "ngw7piq9",
+        "interval": "20s",
+        "charts": "gpuMemoryFree,gpuMemoryUsed",
+        "objecttype": "notebook",
+        "end": "2020-04-02T21:37:00Z",
+    }
+
+    GET_NOTEBOOK_RESPONSE_JSON = example_responses.NOTEBOOK_GET_RESPONSE
+    GET_METRICS_RESPONSE_JSON = example_responses.NOTEBOOKS_METRICS_GET_RESPONSE
+
+    EXPECTED_STDOUT = """{
+  "cpuPercentage": {
+    "npmnnm6e": [
+      {
+        "time_stamp": 1587993000, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993030, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993060, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993090, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993120, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993150, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993180, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993210, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993240, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993270, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993300, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993330, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993360, 
+        "value": "0"
+      }
+    ]
+  }, 
+  "memoryUsage": {
+    "npmnnm6e": [
+      {
+        "time_stamp": 1587992970, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1587993000, 
+        "value": "782336"
+      }, 
+      {
+        "time_stamp": 1587993030, 
+        "value": "782336"
+      }, 
+      {
+        "time_stamp": 1587993060, 
+        "value": "782336"
+      }, 
+      {
+        "time_stamp": 1587993090, 
+        "value": "782336"
+      }, 
+      {
+        "time_stamp": 1587993120, 
+        "value": "782336"
+      }, 
+      {
+        "time_stamp": 1587993150, 
+        "value": "782336"
+      }, 
+      {
+        "time_stamp": 1587993180, 
+        "value": "782336"
+      }, 
+      {
+        "time_stamp": 1587993210, 
+        "value": "782336"
+      }, 
+      {
+        "time_stamp": 1587993240, 
+        "value": "782336"
+      }, 
+      {
+        "time_stamp": 1587993270, 
+        "value": "782336"
+      }, 
+      {
+        "time_stamp": 1587993300, 
+        "value": "782336"
+      }, 
+      {
+        "time_stamp": 1587993330, 
+        "value": "782336"
+      }, 
+      {
+        "time_stamp": 1587993360, 
+        "value": "782336"
+      }
+    ]
+  }
+}
+"""
+
+    EXPECTED_STDOUT_WHEN_INVALID_API_KEY_WAS_USED = "Failed to fetch data: Invalid API token\n"
+    EXPECTED_STDOUT_WHEN_EXPERIMENT_WAS_NOT_FOUND = "Failed to fetch data: Not found. " \
+                                                    "Please contact support@paperspace.com for help.\n"
+    EXPECTED_STDOUT_WHEN_NO_METRICS_WERE_FOUND = """{
+  "cpuPercentage": null, 
+  "memoryUsage": null
+}
+"""
+    EXPECTED_STDOUT_WHEN_ERROR_CODE_WAS_RETURNED_WITHOUT_ERROR_MESSAGE = "Failed to fetch data\n"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_all_available_metrics_when_metrics_get_command_was_used_with_basic_options(self, get_patched):
+        get_patched.side_effect = [
+            MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON),
+            MockResponse(self.GET_METRICS_RESPONSE_JSON),
+        ]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
+
+        assert json.loads(result.output.strip()) == json.loads(self.EXPECTED_STDOUT.strip()), \
+            str(result.output) + str(result.exc_info)
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_NOTEBOOK_URL,
+                    json=self.GET_NOTEBOOK_REQUEST_JSON,
+                    params=None,
+                    headers=EXPECTED_HEADERS,
+                ),
+                mock.call(
+                    self.GET_METRICS_URL,
+                    json=None,
+                    params=self.BASIC_COMMAND_GET_METRICS_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_metrics_when_metrics_get_command_was_used_with_all_options(self, get_patched):
+        get_patched.side_effect = [
+            MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON),
+            MockResponse(self.GET_METRICS_RESPONSE_JSON),
+        ]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        # comparing objects instead of strings because Py2 and Py3 produce slightly different outputs
+        assert json.loads(result.output.strip()) == json.loads(self.EXPECTED_STDOUT.strip()), result.exc_info
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_NOTEBOOK_URL,
+                    json=self.GET_NOTEBOOK_REQUEST_JSON,
+                    params=None,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+                mock.call(
+                    self.GET_METRICS_URL,
+                    json=None,
+                    params=self.ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_metrics_when_metrics_get_was_executed_and_options_file_was_used(
+            self, get_patched, notebooks_metrics_get_config_path):
+        get_patched.side_effect = [
+            MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON),
+            MockResponse(self.GET_METRICS_RESPONSE_JSON),
+        ]
+        command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [notebooks_metrics_get_config_path]
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        # comparing objects instead of strings because Py2 and Py3 produce slightly different outputs
+        assert json.loads(result.output.strip()) == json.loads(self.EXPECTED_STDOUT.strip()), result.exc_info
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_NOTEBOOK_URL,
+                    json=self.GET_NOTEBOOK_REQUEST_JSON,
+                    params=None,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+                mock.call(
+                    self.GET_METRICS_URL,
+                    json=None,
+                    params=self.ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_invalid_api_key_was_used(self, get_patched):
+        get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"},
+                                                status_code=403)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_INVALID_API_KEY_WAS_USED, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.GET_NOTEBOOK_URL,
+            json=self.GET_NOTEBOOK_REQUEST_JSON,
+            params=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_deployment_was_not_found(self, get_patched):
+        get_patched.side_effect = [
+            MockResponse({"error": {"name": "ApplicationError", "status": 404,
+                                    "message": "Not found. Please contact support@paperspace.com for help."}},
+                         status_code=404),
+        ]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_EXPERIMENT_WAS_NOT_FOUND, result.exc_info
+
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_NOTEBOOK_URL,
+                    json=self.GET_NOTEBOOK_REQUEST_JSON,
+                    params=None,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_message_when_was_no_metrics_were_returned(self, get_patched):
+        get_patched.side_effect = [
+            MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON),
+            MockResponse(example_responses.NOTEBOOKS_METRICS_GET_RESPONSE_WHEN_NO_METRICS_WERE_FOUND),
+        ]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert json.loads(result.output.strip()) == json.loads(self.EXPECTED_STDOUT_WHEN_NO_METRICS_WERE_FOUND.strip()) \
+            , str(result.output) + str(result.exc_info)
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_NOTEBOOK_URL,
+                    json=self.GET_NOTEBOOK_REQUEST_JSON,
+                    params=None,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+                mock.call(
+                    self.GET_METRICS_URL,
+                    json=None,
+                    params=self.ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_error_code_was_returned_without_error_message(self, get_patched):
+        get_patched.side_effect = [
+            MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON),
+            MockResponse(status_code=500),
+        ]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_ERROR_CODE_WAS_RETURNED_WITHOUT_ERROR_MESSAGE, result.exc_info
+
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_NOTEBOOK_URL,
+                    json=self.GET_NOTEBOOK_REQUEST_JSON,
+                    params=None,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+                mock.call(
+                    self.GET_METRICS_URL,
+                    json=None,
+                    params=self.ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS,
+                    headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                ),
+            ]
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+
+class TestExperimentsMetricsStreamCommand(object):
+    GET_NOTEBOOK_URL = "https://api.paperspace.io/notebooks/getNotebook"
+    GET_METRICS_URL = "https://aws-testing.paperspace.io/metrics/api/v1/stream"
+    BASIC_OPTIONS_COMMAND = [
+        "notebooks", "metrics", "stream",
+        "--id", "ngw7piq9",
+    ]
+    ALL_OPTIONS_COMMAND = [
+        "notebooks", "metrics", "stream",
+        "--id", "ngw7piq9",
+        "--metric", "gpuMemoryFree",
+        "--metric", "gpuMemoryUsed",
+        "--interval", "20s",
+        "--apiKey", "some_key",
+    ]
+    ALL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
+        "notebooks", "metrics", "stream",
+        "--optionsFile",  # path added in test,
+    ]
+
+    GET_NOTEBOOK_REQUEST_JSON = {"notebookId": "ngw7piq9"}
+    BASIC_COMMAND_CHART_DESCRIPTOR = '{"chart_names": ["cpuPercentage", "memoryUsage"], "handles": ["ngw7piq9"' \
+                                     '], "object_type": "notebook", "poll_interval": "30s"}'
+
+    ALL_COMMANDS_CHART_DESCRIPTOR = '{"chart_names": ["gpuMemoryFree", "gpuMemoryUsed"], "handles": ["ngw7piq9' \
+                                    '"], "object_type": "notebook", "poll_interval": "20s"}'
+
+    GET_NOTEBOOK_RESPONSE_JSON = example_responses.NOTEBOOK_GET_RESPONSE
+    GET_NOTEBOOK_RESPONSE_JSON_WHEN_NOTEBOOK_NOT_FOUND = {
+        "error": {
+            "name": "ApplicationError",
+            "status": 404,
+            "message": "Not found. Please contact support@paperspace.com for help.",
+        },
+    }
+
+    EXPECTED_TABLE_1 = """+----------+---------------+-------------+
+| Pod      | cpuPercentage | memoryUsage |
++----------+---------------+-------------+
+| nrwed38p |               | 54013952    |
++----------+---------------+-------------+
+"""
+    EXPECTED_TABLE_2 = """+----------+----------------------+-------------+
+| Pod      | cpuPercentage        | memoryUsage |
++----------+----------------------+-------------+
+| nrwed38p | 0.006907773333334353 | 54013952    |
++----------+----------------------+-------------+
+"""
+    EXPECTED_TABLE_3 = """+----------+----------------------+-------------+
+| Pod      | cpuPercentage        | memoryUsage |
++----------+----------------------+-------------+
+| nrwed38p | 0.006907773333334353 | 12345667    |
++----------+----------------------+-------------+
+"""
+
+    ALL_OPTIONS_EXPECTED_TABLE_1 = """+----------+---------------+---------------+
+| Pod      | gpuMemoryFree | gpuMemoryUsed |
++----------+---------------+---------------+
+| nrwed38p | 1234          |               |
++----------+---------------+---------------+
+"""
+    ALL_OPTIONS_EXPECTED_TABLE_2 = """+----------+---------------+---------------+
+| Pod      | gpuMemoryFree | gpuMemoryUsed |
++----------+---------------+---------------+
+| nrwed38p | 1234          |               |
++----------+---------------+---------------+
+"""
+    ALL_OPTIONS_EXPECTED_TABLE_3 = """+----------+---------------+---------------+
+| Pod      | gpuMemoryFree | gpuMemoryUsed |
++----------+---------------+---------------+
+| nrwed38p | 2345          | 32            |
++----------+---------------+---------------+
+"""
+
+    EXPECTED_STDOUT_WHEN_INVALID_API_KEY_WAS_USED = "Failed to fetch data: Incorrect API Key provided\nForbidden\n"
+    EXPECTED_STDOUT_WHEN_DEPLOYMENT_WAS_NOT_FOUND = "Failed to fetch data: Not found. Please contact " \
+                                                    "support@paperspace.com for help.\n"
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_all_available_metrics_when_metrics_get_command_was_used_with_basic_options(
+            self, get_patched, create_ws_connection_patched,
+            basic_options_metrics_stream_websocket_connection_iterator):
+        get_patched.return_value = MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON)
+
+        ws_connection_instance_mock = mock.MagicMock()
+        ws_connection_instance_mock.__iter__ = basic_options_metrics_stream_websocket_connection_iterator
+        create_ws_connection_patched.return_value = ws_connection_instance_mock
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
+
+        assert self.EXPECTED_TABLE_1 in result.output, result.exc_info
+        assert self.EXPECTED_TABLE_2 in result.output, result.exc_info
+        assert self.EXPECTED_TABLE_3 in result.output, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.GET_NOTEBOOK_URL,
+            json=self.GET_NOTEBOOK_REQUEST_JSON,
+            params=None,
+            headers=EXPECTED_HEADERS,
+        )
+        ws_connection_instance_mock.send.assert_called_once_with(self.BASIC_COMMAND_CHART_DESCRIPTOR)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_metrics_when_metrics_get_command_was_used_with_all_options(
+            self, get_patched, create_ws_connection_patched,
+            all_options_metrics_stream_websocket_connection_iterator):
+        get_patched.return_value = MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON)
+
+        ws_connection_instance_mock = mock.MagicMock()
+        ws_connection_instance_mock.__iter__ = all_options_metrics_stream_websocket_connection_iterator
+        create_ws_connection_patched.return_value = ws_connection_instance_mock
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_1 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_2 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_3 in result.output, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.GET_NOTEBOOK_URL,
+            json=self.GET_NOTEBOOK_REQUEST_JSON,
+            params=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        ws_connection_instance_mock.send.assert_called_once_with(self.ALL_COMMANDS_CHART_DESCRIPTOR)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_read_metrics_when_metrics_get_was_executed_and_options_file_was_used(
+            self, get_patched, create_ws_connection_patched,
+            all_options_metrics_stream_websocket_connection_iterator,
+            notebooks_metrics_stream_config_path):
+        get_patched.return_value = MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON)
+        ws_connection_instance_mock = mock.MagicMock()
+        ws_connection_instance_mock.__iter__ = all_options_metrics_stream_websocket_connection_iterator
+        create_ws_connection_patched.return_value = ws_connection_instance_mock
+
+        command = self.ALL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [notebooks_metrics_stream_config_path]
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_1 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_2 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_3 in result.output, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.GET_NOTEBOOK_URL,
+            json=self.GET_NOTEBOOK_REQUEST_JSON,
+            params=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        ws_connection_instance_mock.send.assert_called_once_with(self.ALL_COMMANDS_CHART_DESCRIPTOR)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_invalid_api_key_was_used(
+            self, get_patched, create_ws_connection_patched):
+        get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"}, 400)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert "Failed to fetch data: Invalid API token\n" == result.output, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.GET_NOTEBOOK_URL,
+            json=self.GET_NOTEBOOK_REQUEST_JSON,
+            params=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        create_ws_connection_patched.assert_not_called()
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_print_valid_error_message_when_deployment_was_not_found(
+            self, get_patched, create_ws_connection_patched):
+        get_patched.return_value = MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON_WHEN_NOTEBOOK_NOT_FOUND, 404)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_DEPLOYMENT_WAS_NOT_FOUND, result.exc_info
+
+        get_patched.assert_called_once_with(
+            self.GET_NOTEBOOK_URL,
+            json=self.GET_NOTEBOOK_REQUEST_JSON,
+            params=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        create_ws_connection_patched.assert_not_called()
+        assert result.exit_code == 0, result.exc_info

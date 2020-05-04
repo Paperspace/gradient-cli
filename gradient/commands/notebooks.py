@@ -1,4 +1,5 @@
 import abc
+import json
 
 import halo
 import six
@@ -6,7 +7,7 @@ import six
 from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
-from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
+from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin, StreamMetricsCommand
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -99,3 +100,20 @@ class NotebookRemoveTagsCommand(BaseNotebookCommand):
     def execute(self, notebook_id, *args, **kwargs):
         self.client.remove_tags(notebook_id, entity=self.entity, **kwargs)
         self.logger.log("Tags removed from notebook")
+
+
+class GetNotebookMetricsCommand(BaseNotebookCommand):
+    def execute(self, notebook_id, start, end, interval, built_in_metrics, *args, **kwargs):
+        metrics = self.client.get_metrics(
+            notebook_id,
+            start=start,
+            end=end,
+            built_in_metrics=built_in_metrics,
+            interval=interval,
+        )
+        formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
+        self.logger.log(formatted_metrics)
+
+
+class StreamNotebookMetricsCommand(StreamMetricsCommand, BaseNotebookCommand):
+    pass

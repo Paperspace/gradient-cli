@@ -1,8 +1,8 @@
 import json
 
 import gradient.api_sdk.config
-from .common import CreateResource, DeleteResource, ListResources, GetResource
-from .. import serializers
+from .common import CreateResource, DeleteResource, ListResources, GetResource, GetMetrics, StreamMetrics
+from .. import serializers, sdk_exceptions
 
 
 class GetNotebookApiUrlMixin(object):
@@ -102,3 +102,30 @@ class ListNotebooks(GetNotebookApiUrlMixin, ListResources):
             params[key] = tag
 
         return params
+
+
+class GetNotebookMetrics(GetMetrics):
+    OBJECT_TYPE = "notebook"
+
+    def _get_instance_by_id(self, instance_id, **kwargs):
+        repository = GetNotebook(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        instance = repository.get(id=instance_id)
+        return instance
+
+    def _get_start_date(self, instance, kwargs):
+        rv = super(GetNotebookMetrics, self)._get_start_date(instance, kwargs)
+        if rv is None:
+            raise sdk_exceptions.GradientSdkError("Notebook has not started yet")
+
+        return rv
+
+
+class StreamNotebookMetrics(StreamMetrics):
+    OBJECT_TYPE = "notebook"
+
+    def _get_metrics_api_url(self, instance_id, protocol="https"):
+        repository = GetNotebook(api_key=self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        deployment = repository.get(id=instance_id)
+
+        metrics_api_url = super(StreamNotebookMetrics, self)._get_metrics_api_url(deployment, protocol="wss")
+        return metrics_api_url
