@@ -3,15 +3,17 @@ from functools import reduce
 import click
 
 from gradient import clilogger
+from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
-from gradient.cli.cli_types import json_string
+from gradient.cli.cli_types import json_string, ChoiceType
 from gradient.cli.common import (
     api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts,
     validate_comma_split_option,
 )
 from gradient.commands import jobs as jobs_commands
-from gradient.commands.jobs import JobAddTagsCommand, JobRemoveTagsCommand
+from gradient.commands.jobs import JobAddTagsCommand, JobRemoveTagsCommand, StreamJobMetricsCommand, \
+    GetJobMetricsCommand
 from gradient.workspace import WorkspaceHandler
 
 
@@ -28,6 +30,11 @@ def jobs_group():
 
 @jobs_group.group("tags", help="Manage job tags", cls=ClickGroup)
 def jobs_tags():
+    pass
+
+
+@jobs_group.group(name="metrics", help="Read job metrics", cls=ClickGroup)
+def jobs_metrics():
     pass
 
 
@@ -480,3 +487,88 @@ def job_remove_tags(id, options_file, api_key, **kwargs):
 
     command = JobRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
+
+
+
+@jobs_metrics.command(
+    "get",
+    short_help="Get job metrics",
+    help="Get job metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "job_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the job",
+)
+@click.option(
+    "--metric",
+    "metrics_list",
+    multiple=True,
+    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
+    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--start",
+    "start",
+    type=click.DateTime(),
+    help="Timestamp of first time series metric to collect",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--end",
+    "end",
+    type=click.DateTime(),
+    help="Timestamp of last time series metric to collect",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def get_job_metrics(job_id, metrics_list, interval, start, end, options_file, api_key):
+    command = GetJobMetricsCommand(api_key=api_key)
+    command.execute(job_id, start, end, interval, built_in_metrics=metrics_list)
+
+
+@jobs_metrics.command(
+    "stream",
+    short_help="Watch live job metrics",
+    help="Watch live job metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "job_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the job",
+)
+@click.option(
+    "--metric",
+    "metrics_list",
+    multiple=True,
+    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
+    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def stream_job_metrics(job_id, metrics_list, interval, options_file, api_key):
+    command = StreamJobMetricsCommand(api_key=api_key)
+    command.execute(job_id=job_id, interval=interval, built_in_metrics=metrics_list)

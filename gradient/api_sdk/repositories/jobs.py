@@ -1,9 +1,9 @@
 import json
 
 import gradient.api_sdk.config
-from gradient.api_sdk import serializers
+from gradient.api_sdk import serializers, sdk_exceptions
 from gradient.api_sdk.clients import http_client
-from .common import ListResources, CreateResource, GetResource, DeleteResource, StopResource
+from .common import ListResources, CreateResource, GetResource, DeleteResource, StopResource, GetMetrics, StreamMetrics
 from ..serializers import JobSchema, LogRowSchema
 
 
@@ -139,6 +139,26 @@ class StopJob(GetBaseJobApiUrlMixin, StopResource):
         return response
 
 
+class GetJob(GetBaseJobApiUrlMixin, GetResource):
+    def get_request_url(self, **kwargs):
+        return "/jobs/getPublicJob"
+
+    def _get_request_json(self, kwargs):
+        json_ = {
+            "jobId": kwargs["job_id"]
+        }
+        return json_
+
+    def _send_request(self, client, url, json=None, params=None):
+        response = client.post(url, json=json, params=params)
+        return response
+
+    def _parse_object(self, instance_dict, **kwargs):
+        instance_dict = instance_dict["job"]
+        job = serializers.JobSchema().get_instance(instance_dict)
+        return job
+
+
 class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
     def _parse_objects(self, data, **kwargs):
         serializer = serializers.ArtifactSchema()
@@ -202,3 +222,30 @@ class GetJobArtifacts(GetBaseJobApiUrlMixin, GetResource):
 
     def get_request_url(self, **kwargs):
         return "/jobs/artifactsGet"
+
+
+class GetJobMetrics(GetMetrics):
+    OBJECT_TYPE = "mljob"
+
+    def _get_instance_by_id(self, instance_id, **kwargs):
+        repository = GetJob(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        instance = repository.get(job_id=instance_id)
+        return instance
+
+    def _get_start_date(self, instance, kwargs):
+        rv = super(GetJobMetrics, self)._get_start_date(instance, kwargs)
+        if rv is None:
+            raise sdk_exceptions.GradientSdkError("Job has not started yet")
+
+        return rv
+
+
+class StreamJobMetrics(StreamMetrics):
+    OBJECT_TYPE = "mljob"
+
+    def _get_metrics_api_url(self, instance_id, protocol="https"):
+        repository = GetJob(api_key=self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        instance = repository.get(job_id=instance_id)
+
+        metrics_api_url = super(StreamJobMetrics, self)._get_metrics_api_url(instance, protocol="wss")
+        return metrics_api_url

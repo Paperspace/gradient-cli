@@ -210,6 +210,20 @@ def jobs_create_config_path():
 
 
 @pytest.fixture
+def jobs_metrics_get_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "jobs_metrics_get.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def jobs_metrics_stream_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "jobs_metrics_stream.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
 def machines_availability_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "machines_availability.yaml"
