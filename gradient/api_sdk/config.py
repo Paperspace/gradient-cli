@@ -1,8 +1,6 @@
 import json
 import os
 
-from gradient.config import get_help_colors_dict
-
 
 # TODO: this function is copy-pasted from login.py;
 #  there is something weird going one with imports in __init__.py and I'm unable to import apikey now
@@ -27,6 +25,17 @@ _DEFAULT_CONFIG_FILE_NAME = os.path.expanduser("config.json")
 _DEFAULT_HELP_HEADERS_COLOR = "yellow"
 _DEFAULT_HELP_OPTIONS_COLOR = "green"
 _DEFAULT_USE_CONSOLE_COLORS = True
+
+
+def get_help_colors_dict(use_colors, help_headers_color, help_options_color):
+    if not use_colors:
+        return {}
+
+    d = {
+        "help_headers_color": help_headers_color,
+        "help_options_color": help_options_color,
+    }
+    return d
 
 
 class config(object):

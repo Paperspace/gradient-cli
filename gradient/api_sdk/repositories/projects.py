@@ -1,4 +1,4 @@
-import gradient.api_sdk.config
+from .. import config
 from .. import serializers
 from ..repositories.common import CreateResource, ListResources, DeleteResource, GetResource
 from ..sdk_exceptions import ResourceFetchingError
@@ -6,7 +6,7 @@ from ..sdk_exceptions import ResourceFetchingError
 
 class GetBaseProjectsApiUrlMixin(object):
     def _get_api_url(self, **_):
-        return gradient.api_sdk.config.config.CONFIG_HOST
+        return config.config.CONFIG_HOST
 
 
 class CreateProject(GetBaseProjectsApiUrlMixin, CreateResource):

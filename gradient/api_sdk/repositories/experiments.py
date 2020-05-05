@@ -3,12 +3,12 @@ import abc
 import six
 import websocket
 
-from gradient.api_sdk.repositories.jobs import ListJobs
-from gradient.api_sdk.utils import concatenate_urls
 from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource, GetResource, GetMetrics, \
     StreamMetrics
 from .. import config, serializers, sdk_exceptions
+from ..repositories.jobs import ListJobs
 from ..serializers import utils as serializers_utils
+from ..utils import concatenate_urls
 
 
 class GetBaseExperimentApiUrlMixin(object):

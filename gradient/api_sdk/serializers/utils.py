@@ -1,7 +1,6 @@
-from gradient.api_sdk.serializers import MpiMultiNodeExperimentSchema
-
 from ..sdk_exceptions import GradientSdkError
-from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema, HyperparameterSchema
+from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema, HyperparameterSchema, \
+    MpiMultiNodeExperimentSchema
 
 EXPERIMENT_ID_TO_EXPERIMENT_SERIALIZER_MAPPING = {
     1: SingleNodeExperimentSchema,
