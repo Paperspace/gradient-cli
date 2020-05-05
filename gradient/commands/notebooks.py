@@ -1,13 +1,18 @@
 import abc
 import json
+import pydoc
 
 import halo
 import six
+import terminaltables
+from click import style
 
 from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin, StreamMetricsCommand
+from gradient.cliutils import get_terminal_lines
+from gradient.api_sdk.utils import print_dict_recursive
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -37,6 +42,17 @@ class CreateNotebookCommand(BaseNotebookCommand):
         notebook = self.client.get(notebook_id)
         return notebook.url
 
+
+class StopNotebookCommand(BaseNotebookCommand):
+    SPINNER_MESSAGE = "Stopping notebook"
+
+    def execute(self, id):
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
+            self.client.stop(id)
+
+        self.logger.log("Stopping notebook with id: {}".format(id))
+
+
 class StartNotebookCommand(BaseNotebookCommand):
     SPINNER_MESSAGE = "Starting notebook"
     def execute(self, **kwargs):
@@ -56,9 +72,9 @@ class ForkNotebookCommand(BaseNotebookCommand):
 
     def execute(self, id_):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            self.client.delete(id_)
+            handle = self.client.fork(id_)
 
-        self.logger.log("Notebook forked")
+        self.logger.log("Notebook forked to id: {}".format(handle))
 
 
 class DeleteNotebookCommand(BaseNotebookCommand):
@@ -140,3 +156,98 @@ class GetNotebookMetricsCommand(BaseNotebookCommand):
 
 class StreamNotebookMetricsCommand(StreamMetricsCommand, BaseNotebookCommand):
     pass
+
+class NotebookLogsCommand(BaseNotebookCommand):
+
+    def execute(self, notebook_id, line, limit, follow):
+        if follow:
+            self.logger.log("Awaiting logs...")
+            self._log_logs_continuously(notebook_id, line, limit)
+        else:
+            self._log_table_of_logs(notebook_id, line, limit)
+
+    def _log_table_of_logs(self, notebook_id, line, limit):
+        logs = self.client.logs(notebook_id, line, limit)
+        if not logs:
+            self.logger.log("No logs found")
+            return
+
+        table_str = self._make_table(logs, notebook_id)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
+
+    def _log_logs_continuously(self, notebook_id, line, limit):
+        logs_gen = self.client.yield_logs(notebook_id, line, limit)
+        for log in logs_gen:
+            log_msg = "{}\t{}".format(*self._format_row(log))
+            self.logger.log(log_msg)
+
+    @staticmethod
+    def _format_row(log_row):
+        return (style(fg="red", text=str(log_row.line)),
+                log_row.message)
+
+    def _make_table(self, logs, notebook_id):
+        table_title = "Notebook %s logs" % notebook_id
+        table_data = [("LINE", "MESSAGE")]
+        table = terminaltables.AsciiTable(table_data, title=table_title)
+
+        for log in logs:
+            table_data.append(self._format_row(log))
+
+        return table.table
+
+
+class ArtifactsListCommand(BaseNotebookCommand):
+    WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
+
+    def execute(self, **kwargs):
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            try:
+                instances = self.client.artifacts_list(**kwargs)
+            except sdk_exceptions.GradientSdkError as e:
+                raise exceptions.ReceivingDataFailedError(e)
+
+        self._log_objects_list(instances, kwargs)
+
+    def _get_table_data(self, artifacts, kwargs):
+        columns = ['Files']
+
+        show_size = "size" in kwargs
+        show_url = "url" in kwargs
+
+        if show_size:
+            columns.append('Size (in bytes)')
+        if show_url:
+            columns.append('URL')
+
+        data = [tuple(columns)]
+        for artifact in artifacts:
+            row = [artifact.file]
+            if show_size:
+                row.append(artifact.size)
+            if show_url:
+                row.append(artifact.url)
+            data.append(tuple(row))
+        return data
+
+    def _log_objects_list(self, objects, kwargs):
+        if not objects:
+            self.logger.warning("No data found")
+            return
+
+        table_data = self._get_table_data(objects, kwargs)
+        table_str = self._make_table(table_data)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
+
+    @staticmethod
+    def _make_table(table_data):
+        ascii_table = terminaltables.AsciiTable(table_data)
+        table_string = ascii_table.table
+        return table_string
+
