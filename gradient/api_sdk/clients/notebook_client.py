@@ -7,9 +7,10 @@ class NotebooksClient(BaseClient):
 
     def create(
             self,
-            vm_type,
             container_id,
             cluster_id,
+            vm_type_id=None,
+            vm_type_label=None,
             container_name=None,
             name=None,
             registry_username=None,
@@ -22,9 +23,10 @@ class NotebooksClient(BaseClient):
     ):
         """Create new notebook
 
-        :param str|int vm_type:
         :param int container_id:
         :param str cluster_id:
+        :param str vm_type_id;
+        :param int vm_type_label:
         :param str container_name:
         :param str name:
         :param str registry_username:
@@ -50,12 +52,9 @@ class NotebooksClient(BaseClient):
             container_user=container_user,
             shutdown_timeout=shutdown_timeout,
             is_preemptible=is_preemptible,
+            vm_type_label = vm_type_label,
+            vm_type_id = vm_type_id,
         )
-
-        if vm_type is int:
-            notebook.vm_type_id = vm_type
-        else:
-            notebook.vm_type_label = vm_type
 
         repository = self.build_repository(repositories.CreateNotebook)
         handle = repository.create(notebook)
@@ -68,8 +67,9 @@ class NotebooksClient(BaseClient):
     def start(
             self,
             notebook_id,
-            vm_type,
             cluster_id,
+            vm_type_id=None,
+            vm_type_label=None,
             name=None,
             shutdown_timeout=None,
             is_preemptible=None,
@@ -77,8 +77,9 @@ class NotebooksClient(BaseClient):
     ):
         """Start existing notebook
         :param str|int notebook_id
-        :param str|int vm_type:
         :param str cluster_id:
+        :param str vm_type_id:
+        :param int vm_type_label:
         :param str name:
         :param int|float shutdown_timeout:
         :param bool is_preemptible:
@@ -90,16 +91,14 @@ class NotebooksClient(BaseClient):
         # JSON body for creating a notebook
         # May need a model for start since may not be a 1:1 match
         notebook = models.NotebookStart(
+            vm_type_id=vm_type_id,
+            vm_type_label=vm_type_label,
             notebook_id=notebook_id,
             cluster_id=cluster_id,
             name=name,
             shutdown_timeout=shutdown_timeout,
             is_preemptible=is_preemptible,
         )
-        if vm_type is int:
-            notebook.vm_type_id = vm_type
-        else:
-            notebook.vm_type_label = vm_type
 
         repository = self.build_repository(repositories.StartNotebook)
 
