@@ -2,8 +2,8 @@ import datetime
 
 import attr
 
-from gradient.api_sdk.config import config
-from gradient.api_sdk.utils import concatenate_urls
+from ..config import config
+from ..utils import concatenate_urls
 
 
 @attr.s

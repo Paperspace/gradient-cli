@@ -1,6 +1,6 @@
-from gradient.api_sdk import repositories
+from .. import repositories
 
-from gradient.api_sdk.clients.base_client import BaseClient
+from ..clients.base_client import BaseClient
 
 
 class MachineTypesClient(BaseClient):

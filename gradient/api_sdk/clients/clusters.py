@@ -1,6 +1,5 @@
-from gradient.api_sdk import repositories
-
-from gradient.api_sdk.clients.base_client import BaseClient
+from .base_client import BaseClient
+from .. import repositories
 
 
 class ClustersClient(BaseClient):

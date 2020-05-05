@@ -1,7 +1,7 @@
 import copy
 
-from gradient.api_sdk.repositories.common import BaseRepository
 from .. import logger as sdk_logger
+from ..repositories.common import BaseRepository
 from ..repositories.tags import ListTagRepository, UpdateTagRepository
 from ...exceptions import ReceivingDataFailedError
 

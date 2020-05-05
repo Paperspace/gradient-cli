@@ -3,6 +3,7 @@ import os
 import mock
 import pytest
 
+import gradient.api_sdk.utils
 import gradient.cliutils
 from gradient.api_sdk.workspace import S3WorkspaceHandler
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
@@ -30,7 +31,7 @@ def workspace_handler():
 
 
 class TestWorkspace(object):
-    @mock.patch("gradient.cliutils.PathParser.parse_path", return_value=gradient.cliutils.PathParser.S3_URL)
+    @mock.patch("gradient.utils.PathParser.parse_path", return_value=gradient.api_sdk.utils.PathParser.S3_URL)
     @mock.patch("gradient.api_sdk.workspace.S3WorkspaceHandler._upload")
     def test_dont_upload_if_s3_url_provided(self, _, __, workspace_handler):
         workspace_handler._upload = mock.MagicMock()
@@ -39,7 +40,7 @@ class TestWorkspace(object):
 
         workspace_handler._upload.assert_not_called()
 
-    @mock.patch("gradient.cliutils.PathParser.parse_path", return_value=None)
+    @mock.patch("gradient.utils.PathParser.parse_path", return_value=None)
     def test_zip_files_and_receive_s3_response_when_no_dir_provided(self, _, workspace_handler):
         archive_name = 'foo.zip'
 
@@ -53,8 +54,8 @@ class TestWorkspace(object):
         workspace_handler._upload.assert_called_with(archive_name, "some_project_id", cluster_id=None)
         assert response_url == 's3://{}/{}'.format(MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
 
-    @mock.patch("gradient.cliutils.PathParser.parse_path",
-                return_value=gradient.cliutils.PathParser.LOCAL_DIR)
+    @mock.patch("gradient.utils.PathParser.parse_path",
+                return_value=gradient.api_sdk.utils.PathParser.LOCAL_DIR)
     def test_zip_files_and_receive_s3_response_when_workspace_dir_provided(self, _, workspace_handler):
         archive_name = 'foo.zip'
 
@@ -68,8 +69,8 @@ class TestWorkspace(object):
         workspace_handler._upload.assert_called_with(archive_name, "some_project_id", cluster_id=None)
         assert response_url == 's3://{}/{}'.format(MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
 
-    @mock.patch("gradient.cliutils.PathParser.parse_path",
-                return_value=gradient.cliutils.PathParser.LOCAL_FILE)
+    @mock.patch("gradient.utils.PathParser.parse_path",
+                return_value=gradient.api_sdk.utils.PathParser.LOCAL_FILE)
     def test_dont_zip_files_and_receive_s3_response_when_workspace_archive_provided(self, _, workspace_handler):
         workspace_handler._zip_workspace = mock.MagicMock()
 
@@ -80,8 +81,8 @@ class TestWorkspace(object):
         workspace_handler._upload.assert_called_with(os.path.abspath('foo.zip'), "some_project_id", cluster_id=None)
         assert response_url == 's3://{}/{}'.format(MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
 
-    @mock.patch("gradient.cliutils.PathParser.parse_path",
-                return_value=gradient.cliutils.PathParser.LOCAL_FILE)
+    @mock.patch("gradient.utils.PathParser.parse_path",
+                return_value=gradient.api_sdk.utils.PathParser.LOCAL_FILE)
     def test_dont_zip_files_and_receive_s3_response_when_workspace_archive_provided_with_workspace(self, _,
                                                                                                    workspace_handler):
         workspace_handler._zip_workspace = mock.MagicMock()
@@ -93,8 +94,8 @@ class TestWorkspace(object):
         workspace_handler._upload.assert_called_with(os.path.abspath('foo.zip'), mock_upload_data)
         assert response_url == 's3://{}/{}'.format(MOCK_BUCKET_NAME, MOCK_OBJECT_KEY)
 
-    @mock.patch("gradient.cliutils.PathParser.parse_path",
-                return_value=gradient.cliutils.PathParser.LOCAL_FILE)
+    @mock.patch("gradient.utils.PathParser.parse_path",
+                return_value=gradient.api_sdk.utils.PathParser.LOCAL_FILE)
     def test_dont_zip_files_and_receive_s3_response_when_workspace_archive_provided_with_workspace(self, _,
                                                                                                    workspace_handler):
         workspace_handler._zip_workspace = mock.MagicMock()

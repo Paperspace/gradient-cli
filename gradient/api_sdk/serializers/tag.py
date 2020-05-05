@@ -1,7 +1,7 @@
 import marshmallow as ma
 
-from gradient.api_sdk.serializers.base import BaseSchema
 from .. import models
+from ..serializers.base import BaseSchema
 
 
 class TagSchema(BaseSchema):

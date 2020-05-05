@@ -1,7 +1,7 @@
 from operator import itemgetter
 
-from gradient.api_sdk import config, serializers
-from gradient.api_sdk.repositories.common import ListResources
+from .. import config, serializers
+from ..repositories.common import ListResources
 
 
 class ListMachineTypes(ListResources):

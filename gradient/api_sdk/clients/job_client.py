@@ -3,12 +3,10 @@ Jobs related client handler logic.
 
 Remember that in code snippets all highlighted lines are required other lines are optional.
 """
-from gradient.api_sdk import repositories
-
 from .base_client import BaseClient
 from ..models import Artifact, Job
 from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts, CreateJob, DeleteJob, StopJob, \
-    DeleteJobArtifacts, GetJobArtifacts
+    DeleteJobArtifacts, GetJobArtifacts, GetJobMetrics, StreamJobMetrics
 
 
 class JobsClient(BaseClient):
@@ -386,7 +384,7 @@ class JobsClient(BaseClient):
         :rtype: dict[str,dict[str,list[dict]]]
         """
 
-        repository = self.build_repository(repositories.GetJobMetrics)
+        repository = self.build_repository(GetJobMetrics)
         metrics = repository.get(
             id=job_id,
             start=start,
@@ -409,7 +407,7 @@ class JobsClient(BaseClient):
         :rtype: Iterable[dict]
         """
 
-        repository = self.build_repository(repositories.StreamJobMetrics)
+        repository = self.build_repository(StreamJobMetrics)
         metrics = repository.stream(
             id=job_id,
             interval=interval,
