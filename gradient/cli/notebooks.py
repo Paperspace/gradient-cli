@@ -26,19 +26,10 @@ def notebook_metrics():
 
 @notebooks_group.command("create", help="Create new notebook")
 @click.option(
-    "--vmTypeId",
-    "vm_type_id",
-    type=int,
-    required=False,
-    help="Type of Virtual Machine",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--vmTypeLabel",
-    "vm_type_label",
-    type=str,
-    required=False,
-    help="Label of Virtual Machine (ex: P5000)",
+    "--vmType",
+    "vm_type",
+    required=True,
+    help="Label or type id of Virtual Machine",
     cls=common.GradientOption,
 )
 @click.option(
@@ -138,19 +129,10 @@ def create_notebook(api_key, options_file, **notebook):
     cls=common.GradientOption,
 )
 @click.option(
-    "--vmTypeId",
-    "vm_type_id",
-    type=int,
+    "--vmType",
+    "vm_type",
     required=False,
-    help="Type of Virtual Machine",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--vmTypeLabel",
-    "vm_type_label",
-    type=str,
-    required=False,
-    help="Label of Virtual Machine (ex: P5000)",
+    help="Type id or label of Virtual Machine",
     cls=common.GradientOption,
 )
 @click.option(
@@ -159,30 +141,6 @@ def create_notebook(api_key, options_file, **notebook):
     type=str,
     required=True,
     help="Cluster ID",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--registryUsername",
-    "registry_username",
-    help="Registry username",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--registryPassword",
-    "registry_password",
-    help="Registry password",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--defaultEntrypoint",
-    "default_entrypoint",
-    help="Default entrypoint",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--containerUser",
-    "container_user",
-    help="Container user",
     cls=common.GradientOption,
 )
 @click.option(

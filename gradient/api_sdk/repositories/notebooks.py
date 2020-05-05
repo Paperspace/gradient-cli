@@ -16,11 +16,7 @@ class CreateNotebook(GetNotebookApiUrlMixin, CreateResource):
 
     def get_request_url(self, **kwargs):
         return "notebooks/v2/createNotebook"
-    
-    def _process_instance_dict(self, instance_dict):
-        # the API requires this field but marshmallow does not create it if it's value is None
-        instance_dict.setdefault("containerId")
-        return instance_dict
+
 
 class StartNotebook(GetNotebookApiUrlMixin, StartResource):
     SERIALIZER_CLS = serializers.NotebookStartSchema
@@ -28,10 +24,15 @@ class StartNotebook(GetNotebookApiUrlMixin, StartResource):
     def get_request_url(self, **kwargs):
         return "notebooks/v2/startNotebook"
 
-    def _process_instance_dict(self, instance_dict):
-        # the API requires this field but marshmallow does not create it if it's value is None
-        instance_dict.setdefault("containerId")
-        return instance_dict
+    def _parse_object(self, data, **kwargs):
+        # this ugly hack is here because marshmallow disallows reading value into `id` field
+        # if JSON's field was named differently (despite using load_from in schema definition)
+        data["id"] = data["handle"]
+
+        serializer = serializers.NotebookSchema()
+        notebook = serializer.get_instance(data)
+        return notebook
+
 
 
 class DeleteNotebook(GetNotebookApiUrlMixin, DeleteResource):

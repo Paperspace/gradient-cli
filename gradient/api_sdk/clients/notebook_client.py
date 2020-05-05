@@ -7,8 +7,7 @@ class NotebooksClient(BaseClient):
 
     def create(
             self,
-            vm_type_id,
-            vm_type_label,
+            vm_type,
             container_id,
             cluster_id,
             container_name=None,
@@ -23,8 +22,7 @@ class NotebooksClient(BaseClient):
     ):
         """Create new notebook
 
-        :param int vm_type_id:
-        :param str vm_type_label:
+        :param str|int vm_type:
         :param int container_id:
         :param str cluster_id:
         :param str container_name:
@@ -40,10 +38,8 @@ class NotebooksClient(BaseClient):
         :return: Notebook ID
         :rtype str:
         """
-        
+
         notebook = models.Notebook(
-            vm_type_id=vm_type_id,
-            vm_type_label=vm_type_label,
             container_id=container_id,
             cluster_id=cluster_id,
             container_name=container_name,
@@ -56,6 +52,11 @@ class NotebooksClient(BaseClient):
             is_preemptible=is_preemptible,
         )
 
+        if vm_type is int:
+            notebook.vm_type_id = vm_type
+        else:
+            notebook.vm_type_label = vm_type
+
         repository = self.build_repository(repositories.CreateNotebook)
         handle = repository.create(notebook)
 
@@ -67,29 +68,18 @@ class NotebooksClient(BaseClient):
     def start(
             self,
             notebook_id,
-            vm_type_id,
-            vm_type_label,
+            vm_type,
             cluster_id,
-            container_name=None,
             name=None,
-            registry_username=None,
-            registry_password=None,
-            default_entrypoint=None,
-            container_user=None,
             shutdown_timeout=None,
             is_preemptible=None,
             tags=None,
     ):
         """Start existing notebook
         :param str|int notebook_id
-        :param int vm_type_id:
-        :param str vm_type_label:
+        :param str|int vm_type:
         :param str cluster_id:
         :param str name:
-        :param str registry_username:
-        :param str registry_password:
-        :param str default_entrypoint:
-        :param str container_user:
         :param int|float shutdown_timeout:
         :param bool is_preemptible:
         :param list[str] tags: List of tags
@@ -101,22 +91,20 @@ class NotebooksClient(BaseClient):
         # May need a model for start since may not be a 1:1 match
         notebook = models.NotebookStart(
             notebook_id=notebook_id,
-            vm_type_id=vm_type_id,
-            vm_type_label=vm_type_label,
             cluster_id=cluster_id,
             name=name,
-            registry_username=registry_username,
-            registry_password=registry_password,
-            default_entrypoint=default_entrypoint,
-            container_user=container_user,
             shutdown_timeout=shutdown_timeout,
             is_preemptible=is_preemptible,
         )
+        if vm_type is int:
+            notebook.vm_type_id = vm_type
+        else:
+            notebook.vm_type_label = vm_type
 
         repository = self.build_repository(repositories.StartNotebook)
-        
-        # handle = repository.start(None, notebook) # Figure out how to properly pass kwargs 
-        handle = repository.start(notebook)
+
+        started_notebook = repository.start(notebook)
+        handle = started_notebook.handle
 
         if tags:
             self.add_tags(entity_id=handle, entity=self.entity, tags=tags)

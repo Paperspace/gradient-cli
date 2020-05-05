@@ -27,9 +27,19 @@ class NotebookSchema(BaseSchema):
     namespace = marshmallow.fields.Str()
     tags = marshmallow.fields.List(marshmallow.fields.Str(), load_only=True)
     metrics_url = marshmallow.fields.Str(dump_to="metricsURL", load_from="metricsURL")
-
     dt_created = marshmallow.fields.DateTime(dump_to="dtCreated", load_from="dtCreated")
     dt_modified = marshmallow.fields.DateTime(dump_to="dtModified", load_from="dtModified")
     dt_started = marshmallow.fields.DateTime(dump_to="dtStarted", load_from="dtStarted")
     dt_stopped = marshmallow.fields.DateTime(dump_to="dtStopped", load_from="dtStopped")
     dt_deleted = marshmallow.fields.DateTime(dump_to="dtDeleted", load_from="dtDeleted")
+
+class NotebookStartSchema(BaseSchema):
+    MODEL = models.NotebookStart
+
+    notebook_id = marshmallow.fields.Str(load_from="notebookId", dump_to="notebookId")
+    vm_type_id = marshmallow.fields.Int(load_from="vmTypeId", dump_to="vmTypeId")
+    vm_type_label = marshmallow.fields.Str(load_from="vmTypeLabel", dump_to="vmTypeLabel")
+    name = marshmallow.fields.Str(load_from="notebookName", dump_to="notebookName")
+    cluster_id = marshmallow.fields.Str(load_from="clusterId", dump_to="clusterId")
+    shutdown_timeout = marshmallow.fields.Int(load_from="shutdownTimeout", dump_to="shutdownTimeout")
+    is_preemptible = marshmallow.fields.Bool(load_from="isPreemptible", dump_to="isPreemptible")
