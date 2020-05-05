@@ -25,3 +25,10 @@ class NotebookSchema(BaseSchema):
     fqdn = marshmallow.fields.Str()
     namespace = marshmallow.fields.Str()
     tags = marshmallow.fields.List(marshmallow.fields.Str(), load_only=True)
+    metrics_url = marshmallow.fields.Str(dump_to="metricsURL", load_from="metricsURL")
+
+    dt_created = marshmallow.fields.DateTime(dump_to="dtCreated", load_from="dtCreated")
+    dt_modified = marshmallow.fields.DateTime(dump_to="dtModified", load_from="dtModified")
+    dt_started = marshmallow.fields.DateTime(dump_to="dtStarted", load_from="dtStarted")
+    dt_stopped = marshmallow.fields.DateTime(dump_to="dtStopped", load_from="dtStopped")
+    dt_deleted = marshmallow.fields.DateTime(dump_to="dtDeleted", load_from="dtDeleted")

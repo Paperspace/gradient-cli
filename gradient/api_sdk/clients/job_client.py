@@ -3,6 +3,8 @@ Jobs related client handler logic.
 
 Remember that in code snippets all highlighted lines are required other lines are optional.
 """
+from gradient.api_sdk import repositories
+
 from .base_client import BaseClient
 from ..models import Artifact, Job
 from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts, CreateJob, DeleteJob, StopJob, \
@@ -368,3 +370,49 @@ class JobsClient(BaseClient):
         repository = self.build_repository(ListJobArtifacts)
         artifacts = repository.list(jobId=job_id, files=files, links=links, size=size)
         return artifacts
+
+    def get_metrics(self, job_id, start=None, end=None, interval="30s", built_in_metrics=None):
+        """Get job metrics
+
+        :param str job_id: ID of a job
+        :param datetime.datetime|str start:
+        :param datetime.datetime|str end:
+        :param str interval:
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+                    Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
+                                            gpuTemp, gpuUtilization, gpuMemoryUtilization
+
+        :returns: Metrics of a job
+        :rtype: dict[str,dict[str,list[dict]]]
+        """
+
+        repository = self.build_repository(repositories.GetJobMetrics)
+        metrics = repository.get(
+            id=job_id,
+            start=start,
+            end=end,
+            interval=interval,
+            built_in_metrics=built_in_metrics,
+        )
+        return metrics
+
+    def stream_metrics(self, job_id, interval="30s", built_in_metrics=None):
+        """Stream live job metrics
+
+        :param str job_id: ID of a job
+        :param str interval:
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+                    Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
+                                            gpuTemp, gpuUtilization, gpuMemoryUtilization
+
+        :returns: Generator object yielding live job metrics
+        :rtype: Iterable[dict]
+        """
+
+        repository = self.build_repository(repositories.StreamJobMetrics)
+        metrics = repository.stream(
+            id=job_id,
+            interval=interval,
+            built_in_metrics=built_in_metrics,
+        )
+        return metrics

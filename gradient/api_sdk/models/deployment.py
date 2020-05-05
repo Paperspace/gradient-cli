@@ -1,3 +1,5 @@
+import datetime
+
 import attr
 
 
@@ -79,3 +81,10 @@ class Deployment(object):
     workspace_ref = attr.ib(type=str, default=None)
     workspace_username = attr.ib(type=str, default=None)
     workspace_password = attr.ib(type=str, default=None)
+    metrics_url = attr.ib(type=str, default=None)
+
+    dt_created = attr.ib(type=datetime.datetime, default=None)
+    dt_modified = attr.ib(type=datetime.datetime, default=None)
+    dt_started = attr.ib(type=datetime.datetime, default=None)
+    dt_stopped = attr.ib(type=datetime.datetime, default=None)
+    dt_deleted = attr.ib(type=datetime.datetime, default=None)

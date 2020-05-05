@@ -1,5 +1,12 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.7.1a0
+#### New features
+* streaming metrics 
+* local workspace upload for deployments
+#### Fixes
+* major refactor of workspace uploader
+
 # Release Notes for 0.7.0a1
 #### Fixes
 * Fix cluster ID field again

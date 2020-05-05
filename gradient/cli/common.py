@@ -1,3 +1,4 @@
+import datetime
 import functools
 import json
 import re
@@ -86,6 +87,9 @@ class ReadValueFromConfigFile(click.Parameter):
                             value = json.dumps(value)
                         elif self.multiple and isinstance(value, six.string_types):
                             value = (value,)
+                        # yaml.load turns datetime strings into datetime instances so we turn it back to a string
+                        elif isinstance(value, datetime.datetime):
+                            value = value.strftime("%Y-%m-%dT%H:%M:%S")
 
                         opts[self.name] = value
 

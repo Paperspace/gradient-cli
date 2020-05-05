@@ -63,6 +63,20 @@ def experiments_logs_config_path():
 
 
 @pytest.fixture
+def experiments_metrics_get_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "experiments_metrics_get.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def experiments_metrics_stream_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "experiments_metrics_stream.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
 def deployments_create_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "deployments_create.yaml"
@@ -108,6 +122,20 @@ def deployments_delete_config_path():
 def deployments_details_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "deployments_details.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def deployments_metrics_get_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "deployments_metrics_get.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def deployments_metrics_stream_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "deployments_metrics_stream.yaml"
     return str(fixture_dir.resolve())
 
 
@@ -178,6 +206,20 @@ def jobs_artifacts_list_config_path():
 def jobs_create_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "jobs_create.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def jobs_metrics_get_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "jobs_metrics_get.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def jobs_metrics_stream_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "jobs_metrics_stream.yaml"
     return str(fixture_dir.resolve())
 
 
@@ -339,6 +381,20 @@ def notebooks_show_config_path():
 def notebooks_list_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "notebooks_list.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def notebooks_metrics_get_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "notebooks_metrics_get.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
+def notebooks_metrics_stream_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "notebooks_metrics_stream.yaml"
     return str(fixture_dir.resolve())
 
 

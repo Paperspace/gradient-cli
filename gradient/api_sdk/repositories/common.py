@@ -1,12 +1,15 @@
 import abc
+import collections
 import datetime
+import json
 
 import dateutil
 import six
+import websocket
 
 from ..clients import http_client
 from ..sdk_exceptions import ResourceFetchingError, ResourceCreatingDataError, ResourceCreatingError, GradientSdkError
-from ..utils import MessageExtractor
+from ..utils import MessageExtractor, concatenate_urls
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -52,10 +55,14 @@ class BaseRepository(object):
         params = self._get_request_params(kwargs)
         url = self.get_request_url(**kwargs)
         client = self._get_client(**kwargs)
-        response = client.get(url, json=json_, params=params)
+        response = self._send_request(client, url, json=json_, params=params)
         gradient_response = http_client.GradientResponse.interpret_response(response)
 
         return gradient_response
+
+    def _send_request(self, client, url, json=None, params=None):
+        response = client.get(url, json=json, params=params)
+        return response
 
     def _validate_response(self, response):
         if not response.ok:
@@ -280,16 +287,19 @@ class StopResource(AlterResource):
 class GetMetrics(GetResource):
     OBJECT_TYPE = None
 
-    DEFAULT_INTERVAL = "5s"
+    DEFAULT_INTERVAL = "30s"
     DEFAULT_METRICS = ["cpuPercentage", "memoryUsage"]
 
     @abc.abstractmethod
-    def _get_instance_dict(self, instance_id, kwargs):
+    def _get_instance_by_id(self, instance_id, **kwargs):
         pass
 
-    @abc.abstractmethod
-    def _get_metrics_api_url(self, instance_id):
-        pass
+    def _get_metrics_api_url(self, instance, protocol="https"):
+        if not instance.metrics_url:
+            raise GradientSdkError("Metrics API url not found")
+
+        metrics_api_url = concatenate_urls(protocol + "://", instance.metrics_url)
+        return metrics_api_url
 
     def _get(self, **kwargs):
         new_kwargs = self._get_kwargs(kwargs)
@@ -299,11 +309,11 @@ class GetMetrics(GetResource):
     def _get_kwargs(self, kwargs):
         instance_id = kwargs["id"]
         built_in_metrics = self._get_built_in_metrics_comma_separated(kwargs)
-        instance_dict = self._get_instance_dict(instance_id, kwargs)
-        started_date = self._get_started_date(instance_dict, kwargs)
-        end = self._get_finished_date(instance_dict, kwargs)
+        instance = self._get_instance_by_id(instance_id)
+        started_date = self._get_start_date(instance, kwargs)
+        end = self._get_end_date(instance, kwargs)
         interval = kwargs.get("interval") or self.DEFAULT_INTERVAL
-        metrics_api_url = self._get_metrics_api_url(instance_id)
+        metrics_api_url = self._get_metrics_api_url(instance)
         new_kwargs = {
             "charts": built_in_metrics,
             "start": started_date,
@@ -333,16 +343,16 @@ class GetMetrics(GetResource):
         metrics = kwargs.get("built_in_metrics") or self.DEFAULT_METRICS
         return metrics
 
-    def _get_started_date(self, instance_dict, kwargs):
-        datetime_string = kwargs.get("start") or instance_dict.get("dtStarted")
+    def _get_start_date(self, instance, kwargs):
+        datetime_string = kwargs.get("start") or instance.dt_started or instance.dt_created
         if not datetime_string:
             return None
 
         datetime_string = self._format_datetime(datetime_string)
         return datetime_string
 
-    def _get_finished_date(self, instance_dict, kwargs):
-        datetime_string = kwargs.get("end") or instance_dict.get("dtFinished")
+    def _get_end_date(self, instance, kwargs):
+        datetime_string = kwargs.get("end")
         if not datetime_string:
             return None
 
@@ -364,3 +374,80 @@ class GetMetrics(GetResource):
 
         datetime_str = some_datetime.strftime("%Y-%m-%dT%H:%M:%SZ")
         return datetime_str
+
+
+@six.add_metaclass(abc.ABCMeta)
+class StreamMetrics(BaseRepository):
+    OBJECT_TYPE = None
+
+    DEFAULT_INTERVAL = "30s"
+    DEFAULT_METRICS = ["cpuPercentage", "memoryUsage"]
+
+    def _get_metrics_api_url(self, instance, protocol="https"):
+        if not instance.metrics_url:
+            raise GradientSdkError("Metrics API url not found")
+
+        metrics_api_url = concatenate_urls(protocol + "://", instance.metrics_url)
+        return metrics_api_url
+
+    def _get_api_url(self, **kwargs):
+        api_url = kwargs["metrics_api_url"]
+        return api_url
+
+    def stream(self, **kwargs):
+        while True:
+            try:
+                connection = self._get_connection(kwargs)
+                self._send_chart_descriptor(connection, kwargs)
+                stream_generator = self._get_stream_generator(connection)
+                for data in stream_generator:
+                    self.logger.debug("Metrics data: {}".format(data))
+                    yield data
+            except websocket.WebSocketConnectionClosedException as e:
+                self.logger.debug("WebSocketConnectionClosedException: {}".format(e))
+
+    def _get_connection(self, kwargs):
+        url = self._get_full_url(kwargs)
+        self.logger.debug("(Re)opening websocket connection to: {}".format(url))
+        ws = websocket.create_connection(url)
+        self.logger.debug("Connected")
+        return ws
+
+    def _get_full_url(self, kwargs):
+        instance_id = kwargs["id"]
+        metrics_api_url = self._get_metrics_api_url(instance_id, protocol="wss")
+        url = concatenate_urls(metrics_api_url, self.get_request_url())
+        return url
+
+    def get_request_url(self, **kwargs):
+        return "metrics/api/v1/stream"
+
+    def _get_chart_descriptor(self, kwargs):
+        instance_id = kwargs["id"]
+        built_in_metrics = self._get_built_in_metrics_list(kwargs)
+        interval = kwargs.get("interval") or self.DEFAULT_INTERVAL
+        descriptor_json = collections.OrderedDict(
+            (
+                ("chart_names", built_in_metrics),
+                ("handles", [instance_id]),
+                ("object_type", self.OBJECT_TYPE),
+                ("poll_interval", interval),
+            )
+        )
+
+        descriptor = json.dumps(descriptor_json)
+
+        return descriptor
+
+    def _get_built_in_metrics_list(self, kwargs):
+        metrics = kwargs.get("built_in_metrics") or self.DEFAULT_METRICS
+        return metrics
+
+    def _send_chart_descriptor(self, connection, kwargs):
+        descriptor = self._get_chart_descriptor(kwargs)
+        self.logger.debug("Sending chart descriptor: {}".format(descriptor))
+        response = connection.send(descriptor)
+        self.logger.debug("Chart descriptor sent. Response: {}".format(response))
+
+    def _get_stream_generator(self, connection):
+        return connection

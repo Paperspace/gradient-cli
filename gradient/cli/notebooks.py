@@ -1,9 +1,12 @@
 import click
 
+from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
-from gradient.cli.common import validate_comma_split_option
+from gradient.cli.cli_types import ChoiceType
+from gradient.cli.common import validate_comma_split_option, api_key_option
 from gradient.commands import notebooks
+from gradient.commands.notebooks import GetNotebookMetricsCommand, StreamNotebookMetricsCommand
 
 
 @cli.group("notebooks", help="Manage notebooks", cls=common.ClickGroup)
@@ -13,6 +16,11 @@ def notebooks_group():
 
 @notebooks_group.group("tags", help="Manage notebook tags", cls=common.ClickGroup)
 def notebook_tags():
+    pass
+
+
+@notebooks_group.group(name="metrics", help="Read notebook metrics", cls=common.ClickGroup)
+def notebook_metrics():
     pass
 
 
@@ -220,3 +228,87 @@ def notebook_remove_tags(id, options_file, api_key, **kwargs):
 
     command = notebooks.NotebookRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
+
+
+@notebook_metrics.command(
+    "get",
+    short_help="Get notebook metrics",
+    help="Get notebook metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "notebook_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the notebook",
+)
+@click.option(
+    "--metric",
+    "metrics_list",
+    multiple=True,
+    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
+    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--start",
+    "start",
+    type=click.DateTime(),
+    help="Timestamp of first time series metric to collect",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--end",
+    "end",
+    type=click.DateTime(),
+    help="Timestamp of last time series metric to collect",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def get_deployment_metrics(notebook_id, metrics_list, interval, start, end, options_file, api_key):
+    command = GetNotebookMetricsCommand(api_key=api_key)
+    command.execute(notebook_id, start, end, interval, built_in_metrics=metrics_list)
+
+
+@notebook_metrics.command(
+    "stream",
+    short_help="Watch live notebook metrics",
+    help="Watch live notebook metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "notebook_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the notebook",
+)
+@click.option(
+    "--metric",
+    "metrics_list",
+    multiple=True,
+    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
+    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def stream_model_deployment_metrics(notebook_id, metrics_list, interval, options_file, api_key):
+    command = StreamNotebookMetricsCommand(api_key=api_key)
+    command.execute(notebook_id=notebook_id, interval=interval, built_in_metrics=metrics_list)
