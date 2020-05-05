@@ -264,7 +264,7 @@ class StartResource(AlterResource):
     VALIDATION_ERROR_MESSAGE = "Unable to start instance"
 
     def start(self, id_):
-        return self._run(id=id_)
+        self._run(id=id_)
 
     def _send_request(self, client, url, json_data=None):
         response = client.put(url, json=json_data)
