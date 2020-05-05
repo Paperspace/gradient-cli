@@ -1,13 +1,13 @@
 import json
 
-import gradient.api_sdk.config
 from .common import CreateResource, DeleteResource, ListResources, GetResource, GetMetrics, StreamMetrics
+from .. import config
 from .. import serializers, sdk_exceptions
 
 
 class GetNotebookApiUrlMixin(object):
     def _get_api_url(self, **kwargs):
-        return gradient.api_sdk.config.config.CONFIG_HOST
+        return config.config.CONFIG_HOST
 
 
 class CreateNotebook(GetNotebookApiUrlMixin, CreateResource):

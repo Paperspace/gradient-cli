@@ -1,10 +1,10 @@
 import time
 
-from gradient.api_sdk.config import config
-from gradient.api_sdk.serializers import MachineSchema
 from .common import BaseRepository, CreateResource, DeleteResource, ListResources, StartResource, StopResource, \
     GetResource, AlterResource
 from .. import serializers, models
+from ..config import config
+from ..serializers import MachineSchema
 
 
 class MachinesApiUrlMixin(object):

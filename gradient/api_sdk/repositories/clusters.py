@@ -1,10 +1,10 @@
 import json
 from collections import OrderedDict
 
-from gradient.api_sdk.config import config
-from gradient.api_sdk.repositories.common import GetResource, ListResources
-from gradient.api_sdk.sdk_exceptions import MalformedResponseError
-from gradient.api_sdk.serializers.cluster import ClusterSchema
+from ..config import config
+from ..repositories.common import GetResource, ListResources
+from ..sdk_exceptions import MalformedResponseError
+from ..serializers.cluster import ClusterSchema
 
 
 class ValidateClusterRepository(GetResource):

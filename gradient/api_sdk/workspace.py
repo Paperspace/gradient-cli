@@ -1,9 +1,6 @@
 import os
 import tempfile
 
-from gradient import cliutils, cli_constants
-from gradient.api_sdk import s3_uploader, archivers
-
 from . import s3_uploader, archivers, utils
 from .logger import MuteLogger
 
@@ -64,12 +61,12 @@ class WorkspaceHandler(object):
         workspace_url = None
 
         if workspace_path not in ("none", None):
-            path_type = cliutils.PathParser.parse_path(workspace_path)
+            path_type = utils.PathParser.parse_path(workspace_path)
 
-            if path_type != cliutils.PathParser.LOCAL_DIR:
-                if path_type == cliutils.PathParser.LOCAL_FILE:
+            if path_type != utils.PathParser.LOCAL_DIR:
+                if path_type == utils.PathParser.LOCAL_FILE:
                     workspace_archive = workspace_path
-                elif path_type in (cliutils.PathParser.GIT_URL, cliutils.PathParser.S3_URL):
+                elif path_type in (utils.PathParser.GIT_URL, utils.PathParser.S3_URL):
                     workspace_url = workspace_path
 
                 workspace_path = None
@@ -106,7 +103,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
         return workspace
 
     def _get_workspace_uploader(self, api_key):
-        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(api_key, logger=self.logger, ps_client_name=CLI_PS_CLIENT_NAME)
+        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(api_key, logger=self.logger, ps_client_name=self.client_name)
         return workspace_uploader
 
 

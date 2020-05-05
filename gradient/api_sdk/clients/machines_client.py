@@ -1,6 +1,6 @@
-from gradient.api_sdk import repositories, models
-from gradient.api_sdk.repositories.machines import CheckMachineAvailability, DeleteMachine, ListMachines, WaitForState
 from .base_client import BaseClient
+from .. import repositories, models
+from ..repositories.machines import CheckMachineAvailability, DeleteMachine, ListMachines, WaitForState
 
 
 class MachinesClient(BaseClient):

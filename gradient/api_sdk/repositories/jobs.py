@@ -1,9 +1,9 @@
 import json
 
 import gradient.api_sdk.config
-from gradient.api_sdk import serializers, sdk_exceptions
-from gradient.api_sdk.clients import http_client
 from .common import ListResources, CreateResource, GetResource, DeleteResource, StopResource, GetMetrics, StreamMetrics
+from .. import serializers, sdk_exceptions
+from ..clients import http_client
 from ..serializers import JobSchema, LogRowSchema
 
 

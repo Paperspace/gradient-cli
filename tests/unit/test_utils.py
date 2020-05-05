@@ -5,9 +5,9 @@ import pytest
 
 import gradient.api_sdk.utils
 from gradient import cliutils, exceptions
+from gradient.api_sdk.sdk_exceptions import WrongPathError
+from gradient.api_sdk.utils import PathParser
 from gradient.cli.common import validate_comma_split_option
-from gradient.cliutils import PathParser
-from gradient.exceptions import WrongPathError
 
 output_response = ""
 

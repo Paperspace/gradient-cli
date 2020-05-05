@@ -1,6 +1,6 @@
 import marshmallow
 
-from gradient.api_sdk import models
+from .. import models
 from .base import BaseSchema
 
 
