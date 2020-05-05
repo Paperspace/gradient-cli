@@ -37,7 +37,7 @@ class Notebook(object):
 
     @property
     def url(self):
-        url = concatenate_urls(config.WEB_URL, "/console/{}/notebook/{}".format(self.namespace, self.project_id))
+        url = concatenate_urls(config.WEB_URL, "/{}/notebook/{}".format(self.namespace, self.project_id))
         return url
 
 
@@ -49,4 +49,5 @@ class NotebookStart(object):
     cluster_id = attr.ib(type=str, default=None)
     shutdown_timeout = attr.ib(type=int, default=None)
     is_preemptible = attr.ib(type=bool, default=None)
+    notebook_name = attr.ib(type=str, default=None)
 

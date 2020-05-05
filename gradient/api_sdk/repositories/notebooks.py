@@ -18,18 +18,31 @@ class CreateNotebook(GetNotebookApiUrlMixin, CreateResource):
         return "notebooks/v2/createNotebook"
 
 
-class StartNotebook(GetNotebookApiUrlMixin, StartResource):
+class StartNotebook(GetNotebookApiUrlMixin, CreateResource):
     SERIALIZER_CLS = serializers.NotebookStartSchema
 
-    def start(self, id_):
-        response = self._run(id=id_)
-        try:
-            return response.data["handle"]
-        except Exception as e:
-            raise ResourceCreatingError(e)
+    def start(self, instance, data=None, path=None):
+        # notebook start is more like a create than a true start
+        # as it posts and you need to send more data than just a
+        # handle
+        return self.create(instance, data=data, path=path)
 
     def get_request_url(self, **kwargs):
         return "notebooks/v2/startNotebook"
+
+
+class ForkNotebook(GetNotebookApiUrlMixin, CreateResource):
+    def get_request_url(self, **kwargs):
+        return "notebooks/v2/forkNotebook"
+
+    def _get_request_json(self, kwargs):
+        notebook_id = kwargs["id"]
+        d = {"notebookId": notebook_id}
+        return d
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response
 
 
 class DeleteNotebook(GetNotebookApiUrlMixin, DeleteResource):

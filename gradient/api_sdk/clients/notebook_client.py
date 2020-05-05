@@ -33,7 +33,7 @@ class NotebooksClient(BaseClient):
         :param str registry_password:
         :param str default_entrypoint:
         :param str container_user:
-        :param int|float shutdown_timeout:
+        :param int shutdown_timeout:
         :param bool is_preemptible:
         :param list[str] tags: List of tags
 
@@ -66,7 +66,7 @@ class NotebooksClient(BaseClient):
 
     def start(
             self,
-            notebook_id,
+            id,
             cluster_id,
             vm_type_id=None,
             vm_type_label=None,
@@ -76,34 +76,47 @@ class NotebooksClient(BaseClient):
             tags=None,
     ):
         """Start existing notebook
-        :param str|int notebook_id
+        :param str|int id
         :param str cluster_id:
         :param str vm_type_id:
         :param int vm_type_label:
         :param str name:
-        :param int|float shutdown_timeout:
+        :param int shutdown_timeout:
         :param bool is_preemptible:
         :param list[str] tags: List of tags
 
         :return: Notebook ID
         :rtype str:
         """
-        # JSON body for creating a notebook
-        # May need a model for start since may not be a 1:1 match
         notebook = models.NotebookStart(
+            notebook_id=id,
             vm_type_id=vm_type_id,
             vm_type_label=vm_type_label,
-            notebook_id=notebook_id,
             cluster_id=cluster_id,
-            name=name,
+            notebook_name=name,
             shutdown_timeout=shutdown_timeout,
             is_preemptible=is_preemptible,
         )
 
         repository = self.build_repository(repositories.StartNotebook)
 
-        started_notebook = repository.start(notebook)
-        handle = started_notebook.handle
+        handle = repository.start(notebook)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
+        return handle
+
+    def fork(self, id, tags=None):
+        """Fork an existing notebook
+        :param str|int id:
+        :param list[str] tags: List of tags
+
+        :return: Notebook ID
+        :rtype str:
+        """
+        repository = self.build_repository(repositories.ForkNotebook)
+        handle = repository.fork(id=id)
 
         if tags:
             self.add_tags(entity_id=handle, entity=self.entity, tags=tags)

@@ -51,6 +51,16 @@ class StartNotebookCommand(BaseNotebookCommand):
         return notebook.url
 
 
+class ForkNotebookCommand(BaseNotebookCommand):
+    WAITING_FOR_RESPONSE_MESSAGE = "Forking notebook"
+
+    def execute(self, id_):
+        with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+            self.client.delete(id_)
+
+        self.logger.log("Notebook forked")
+
+
 class DeleteNotebookCommand(BaseNotebookCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Deleting notebook"
 

@@ -95,7 +95,7 @@ def notebook_metrics():
     "--shutdownTimeout",
     "shutdown_timeout",
     help="Shutdown timeout in hours",
-    type=float,
+    type=int,
     cls=common.GradientOption,
 )
 @click.option(
@@ -128,8 +128,8 @@ def create_notebook(api_key, options_file, **notebook):
 
 @notebooks_group.command("start", help="Start notebook")
 @click.option(
-    "--notebookId",
-    "notebook_id",
+    "--id",
+    "id",
     type=str,
     required=True,
     help="Notebook ID",
@@ -158,10 +158,16 @@ def create_notebook(api_key, options_file, **notebook):
     cls=common.GradientOption,
 )
 @click.option(
+    "--name",
+    "name",
+    help="Notebook name",
+    cls=common.GradientOption,
+)
+@click.option(
     "--shutdownTimeout",
     "shutdown_timeout",
     help="Shutdown timeout in hours",
-    type=float,
+    type=int,
     cls=common.GradientOption,
 )
 @click.option(
@@ -185,12 +191,26 @@ def create_notebook(api_key, options_file, **notebook):
     help="Separated by comma tags that you want add to experiment",
     cls=common.GradientOption
 )
+
 @common.api_key_option
 @common.options_file
 def start_notebook(api_key, options_file, **notebook):
     notebook["tags"] = validate_comma_split_option(notebook.pop("tags_comma"), notebook.pop("tags"))
     command = notebooks.StartNotebookCommand(api_key=api_key)
     command.execute(**notebook)
+
+@notebooks_group.command("fork", help="Fork existing notebook")
+@click.option(
+    "--id",
+    "id_",
+    help="Notebook ID",
+    cls=common.GradientOption,
+)
+@common.api_key_option
+@common.options_file
+def delete_notebook(id_, api_key, options_file):
+    command = notebooks.ForkNotebookCommand(api_key=api_key)
+    command.execute(id_=id_)
 
 
 @notebooks_group.command("delete", help="Delete existing notebook")
