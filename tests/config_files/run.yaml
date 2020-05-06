@@ -31,6 +31,4 @@ shell: 3
 startedByUserId: some_user_id
 useDockerfile: 'true'
 workingDirectory: /some/directory
-workspace: null
-workspaceArchive: null
-workspaceUrl: some.url
+workspace: s3://bucket/object

@@ -1,4 +1,5 @@
 import abc
+import json
 import pydoc
 
 import click
@@ -10,11 +11,12 @@ from halo import halo
 from gradient import api_sdk, exceptions, TensorboardClient
 from gradient.api_sdk import constants, sdk_exceptions
 from gradient.api_sdk.config import config
-from gradient.api_sdk.utils import urljoin
+from gradient.api_sdk.utils import concatenate_urls
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
+from gradient.clilogger import CliLogger
+from gradient.cliutils import get_terminal_lines, none_strings_to_none_objects
 from gradient.commands import tensorboards as tensorboards_commands
-from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
-from gradient.logger import Logger
-from gradient.utils import get_terminal_lines, none_strings_to_none_objects
+from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin, StreamMetricsCommand
 
 try:
     # Python 3
@@ -26,13 +28,19 @@ except ImportError:
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseExperimentCommand(BaseCommand):
+    entity = "experiment"
+
     def _get_client(self, api_key, logger):
-        client = api_sdk.clients.ExperimentsClient(api_key=api_key, logger=logger)
+        client = api_sdk.clients.ExperimentsClient(
+            api_key=api_key,
+            logger=logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
         return client
 
 
 class TensorboardHandler(object):
-    def __init__(self, api_key, logger=Logger()):
+    def __init__(self, api_key, logger=CliLogger()):
         self.api_key = api_key
         self.logger = logger
 
@@ -88,12 +96,12 @@ class BaseCreateExperimentCommandMixin(object):
         super(BaseCreateExperimentCommandMixin, self).__init__(*args, **kwargs)
         self.workspace_handler = workspace_handler
 
-    def execute(self, json_, add_to_tensorboard=False, use_vpc=False):
+    def execute(self, json_, add_to_tensorboard=False):
         self._handle_workspace(json_)
         self._handle_dataset_data(json_)
 
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
-            experiment_id = self._create(json_, use_vpc=use_vpc)
+            experiment_id = self._create(json_)
 
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(experiment_id))
         self.logger.log(self.get_instance_url(experiment_id, json_["project_id"]))
@@ -102,14 +110,11 @@ class BaseCreateExperimentCommandMixin(object):
         return experiment_id
 
     def get_instance_url(self, instance_id, project_id):
-        url = urljoin(config.WEB_URL, "console/projects/{}/experiments/{}".format(project_id, instance_id))
+        url = concatenate_urls(config.WEB_URL, "console/projects/{}/experiments/{}".format(project_id, instance_id))
         return url
 
     def _handle_workspace(self, instance_dict):
         handler = self.workspace_handler.handle(instance_dict)
-
-        if (instance_dict.get("cluster_id") or instance_dict.get("use_vpc")) and handler.lower() == "none":
-            raise click.UsageError('Missing option "--workspace" is required for VPC experiments')
 
         instance_dict.pop("ignore_files", None)
         instance_dict.pop("workspace", None)
@@ -169,26 +174,26 @@ class BaseCreateExperimentCommandMixin(object):
         json_["datasets"] = datasets
 
     @abc.abstractmethod
-    def _create(self, json_, use_vpc):
+    def _create(self, json_):
         pass
 
 
 class CreateSingleNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
-    def _create(self, json_, use_vpc=False):
-        handle = self.client.create_single_node(use_vpc=use_vpc, **json_)
+    def _create(self, json_):
+        handle = self.client.create_single_node(**json_)
         return handle
 
 
 class CreateMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
-    def _create(self, json_, use_vpc=False):
-        handle = self.client.create_multi_node(use_vpc=use_vpc, **json_)
+    def _create(self, json_):
+        handle = self.client.create_multi_node(**json_)
         return handle
 
 
 class CreateMpiMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
-    def _create(self, json_, use_vpc=False):
+    def _create(self, json_):
         json_.pop("experiment_type_id", None)  # for MPI there is no experiment_type_id parameter in client method
-        handle = self.client.create_mpi_multi_node(use_vpc=use_vpc, **json_)
+        handle = self.client.create_mpi_multi_node(**json_)
         return handle
 
 
@@ -196,8 +201,8 @@ class CreateAndStartMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin,
     SPINNER_MESSAGE = "Creating and starting new experiment"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
 
-    def _create(self, json_, use_vpc=False):
-        handle = self.client.run_multi_node(use_vpc=use_vpc, **json_)
+    def _create(self, json_):
+        handle = self.client.run_multi_node(**json_)
         return handle
 
 
@@ -205,9 +210,9 @@ class CreateAndStartMpiMultiNodeExperimentCommand(BaseCreateExperimentCommandMix
     SPINNER_MESSAGE = "Creating and starting new experiment"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
 
-    def _create(self, json_, use_vpc=False):
+    def _create(self, json_):
         json_.pop("experiment_type_id", None)  # for MPI there is no experiment_type_id parameter in client method
-        handle = self.client.run_mpi_multi_node(use_vpc=use_vpc, **json_)
+        handle = self.client.run_mpi_multi_node(**json_)
         return handle
 
 
@@ -215,40 +220,35 @@ class CreateAndStartSingleNodeExperimentCommand(BaseCreateExperimentCommandMixin
     SPINNER_MESSAGE = "Creating and starting new experiment"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
 
-    def _create(self, json_, use_vpc=False):
-        handle = self.client.run_single_node(use_vpc=use_vpc, **json_)
+    def _create(self, json_):
+        handle = self.client.run_single_node(**json_)
         return handle
 
 
 class StartExperimentCommand(BaseExperimentCommand):
-    def execute(self, experiment_id, use_vpc=False):
+    def execute(self, experiment_id):
         """
         :param str experiment_id:
-        :param bool use_vpc:
         """
-        self.client.start(experiment_id, use_vpc=use_vpc)
+        self.client.start(experiment_id)
         self.logger.log("Experiment started")
 
 
 class StopExperimentCommand(BaseExperimentCommand):
-    def execute(self, experiment_id, use_vpc=False):
+    def execute(self, experiment_id):
         """
         :param str experiment_id:
-        :param str use_vpc:
         """
-        self.client.stop(experiment_id, use_vpc=use_vpc)
+        self.client.stop(experiment_id)
         self.logger.log("Experiment stopped")
 
 
 class ListExperimentsCommand(ListCommandMixin, BaseExperimentCommand):
     TOTAL_ITEMS_KEY = "totalItems"
+
     def _get_instances(self, **kwargs):
-        project_id = kwargs.get("project_id")
-        limit = kwargs.get("limit")
-        offset = kwargs.get("offset")
-        get_meta = True
         try:
-            instances, meta_data = self.client.list(project_id, get_meta=get_meta, limit=limit, offset=offset)
+            instances, meta_data = self.client.list(get_meta=True, **kwargs)
         except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
@@ -288,6 +288,8 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
         """
         :param api_sdk.SingleNodeExperiment experiment:
         """
+
+        tags_string = ", ".join(experiment.tags)
         data = (
             ("Name", experiment.name),
             ("ID", experiment.id),
@@ -301,6 +303,7 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
             ("Workspace URL", experiment.workspace_url),
             ("Model Type", experiment.model_type),
             ("Model Path", experiment.model_path),
+            ("Tags", tags_string),
         )
         return data
 
@@ -309,6 +312,8 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
         """
         :param api_sdk.MultiNodeExperiment experiment:
         """
+
+        tags_string = ", ".join(experiment.tags)
         data = (
             ("Name", experiment.name),
             ("ID", experiment.id),
@@ -331,6 +336,7 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
             ("Worker Machine Type", experiment.worker_machine_type),
             ("Working Directory", experiment.working_directory),
             ("Workspace URL", experiment.workspace_url),
+            ("Tags", tags_string),
         )
         return data
 
@@ -339,6 +345,8 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
         """
         :param api_sdk.MpiMultiNodeExperiment experiment:
         """
+
+        tags_string = ", ".join(experiment.tags)
         data = (
             ("Name", experiment.name),
             ("ID", experiment.id),
@@ -361,6 +369,7 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
             ("Worker Machine Type", experiment.worker_machine_type),
             ("Working Directory", experiment.working_directory),
             ("Workspace URL", experiment.workspace_url),
+            ("Tags", tags_string),
         )
         return data
 
@@ -412,3 +421,32 @@ class DeleteExperimentCommand(BaseExperimentCommand):
     def execute(self, experiment_id, *args, **kwargs):
         self.client.delete(experiment_id)
         self.logger.log("Experiment deleted")
+
+
+class ExperimentAddTagsCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, *args, **kwargs):
+        self.client.add_tags(experiment_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to experiment")
+
+
+class ExperimentRemoveTagsCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, *args, **kwargs):
+        self.client.remove_tags(experiment_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from experiment")
+
+
+class GetExperimentMetricsCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, start, end, interval, built_in_metrics, *args, **kwargs):
+        metrics = self.client.get_metrics(
+            experiment_id,
+            start=start,
+            end=end,
+            built_in_metrics=built_in_metrics,
+            interval=interval,
+        )
+        formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
+        self.logger.log(formatted_metrics)
+
+
+class StreamExperimentMetricsCommand(StreamMetricsCommand, BaseExperimentCommand):
+    pass

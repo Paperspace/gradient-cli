@@ -32,7 +32,6 @@ masterRegistryUrl: psrurl
 masterRegistryUsername: psrcus
 ports: '3456'
 projectId: prq70zy79
-vpc: false
 workerCommand: wcom
 workerContainer: wcon
 workerContainerUser: usr
@@ -42,9 +41,8 @@ workerRegistryPassword: rpass
 workerRegistryUrl: rurl
 workerRegistryUsername: rusr
 workingDirectory: /dir
-workspace: null
+workspace: s3://some-workspace
 workspaceUsername: username
 workspacePassword: password
 workspaceArchive: null
 workspaceRef: some_branch_name
-workspaceUrl: wurl

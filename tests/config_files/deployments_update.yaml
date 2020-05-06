@@ -24,4 +24,3 @@ method: some_method
 modelId: some_model_id
 name: some_name
 ports: '5000'
-vpc: true

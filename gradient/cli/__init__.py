@@ -3,10 +3,12 @@ import colorama
 from click._compat import get_text_stderr
 
 import gradient.cli.auth
+import gradient.cli.clusters
 import gradient.cli.deployments
 import gradient.cli.experiments
 import gradient.cli.hyperparameters
 import gradient.cli.jobs
+import gradient.cli.machine_types
 import gradient.cli.machines
 import gradient.cli.models
 import gradient.cli.notebooks

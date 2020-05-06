@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 import tempfile
@@ -6,10 +7,51 @@ import mock
 import pytest
 from click.testing import CliRunner
 
+from gradient.api_sdk import sdk_exceptions
 from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import example_responses, MockResponse
 from tests.example_responses import LIST_JOB_FILES_RESPONSE_JSON
+
+EXPECTED_HEADERS = default_headers.copy()
+EXPECTED_HEADERS["ps_client_name"] = "gradient-cli"
+
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY = EXPECTED_HEADERS.copy()
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
+
+@pytest.fixture
+def basic_options_metrics_stream_websocket_connection_iterator():
+    def generator(self):
+        yield """{"handle": "jstkd2lapucirs", "object_type": "mljob", "chart_name": "memoryUsage",
+               "pod_metrics": {"mljob-ecgrgm7ok8chv-0-worker": {"time_stamp": 1588155670, "value": "5881856"}}}"""
+
+        yield """{"handle": "jstkd2lapucirs", "object_type": "mljob", "chart_name": "cpuPercentage",
+               "pod_metrics": {"mljob-ecgrgm7ok8chv-0-worker": {"time_stamp": 1588155670, "value": "0"}}}"""
+
+        yield """{"handle": "jstkd2lapucirs", "object_type": "mljob", "chart_name": "memoryUsage",
+               "pod_metrics": {"mljob-ecgrgm7ok8chv-0-worker": {"time_stamp": 1588155700, "value": "5881857"}}}"""
+
+        raise sdk_exceptions.GradientSdkError()
+
+    return generator
+
+
+@pytest.fixture
+def all_options_metrics_stream_websocket_connection_iterator():
+    def generator(self):
+        yield """{"handle": "jstkd2lapucirs", "object_type": "mljob", "chart_name": "gpuMemoryUsed",
+               "pod_metrics": {"mljob-ecgrgm7ok8chv-0-worker": {"time_stamp": 1588155670, "value": "5881856"}}}"""
+
+        yield """{"handle": "jstkd2lapucirs", "object_type": "mljob", "chart_name": "gpuMemoryFree",
+               "pod_metrics": {"mljob-ecgrgm7ok8chv-0-worker": {"time_stamp": 1588155670, "value": "0"}}}"""
+
+        yield """{"handle": "jstkd2lapucirs", "object_type": "mljob", "chart_name": "gpuMemoryUsed",
+               "pod_metrics": {"mljob-ecgrgm7ok8chv-0-worker": {"time_stamp": 1588155700, "value": "5881857"}}}"""
+
+        raise sdk_exceptions.GradientSdkError()
+
+    return generator
 
 
 class TestJobs(object):
@@ -22,7 +64,7 @@ class TestJobs(object):
 
 
 class TestListJobs(TestJobs):
-    URL = "https://api.paperspace.io/jobs/getJobs/"
+    URL = "https://api.paperspace.io/jobs/getJobList/"
     BASIC_COMMAND = ["jobs", "list"]
     COMMAND_WITH_OPTIONS_FILE = ["jobs", "list", "--optionsFile", ]  # path added in test
 
@@ -52,11 +94,17 @@ class TestListJobs(TestJobs):
     BASIC_COMMAND_WITH_FILTERING = [
         "jobs", "list",
         "--projectId", "some_project_id",
-        "--experimentId", "some_experiment_id",
+        "--tag", "some_tag",
+        "--tag", "some_other_tag",
     ]
-    EXPECTED_REQUEST_JSON_WITH_FILTERING = {
-        "projectId": "some_project_id",
-        "experimentId": "some_experiment_id",
+    EXPECTED_PARAMS_WITHOUT_FILTERING = {
+        "filter": "{\"filter\": {\"where\": {}}}",
+    }
+    EXPECTED_REQUEST_PARAMS_WITH_FILTERING = {
+        "filter": "{\"filter\": {\"where\": {\"projectId\": \"some_project_id\"}}}",
+        "modelName": "team",
+        "tagFilter[0]": "some_tag",
+        "tagFilter[1]": "some_other_tag",
     }
 
     BASIC_COMMAND_WITH_MUTUALLY_EXCLUSIVE_FILTERS = [
@@ -64,19 +112,6 @@ class TestListJobs(TestJobs):
         "--project", "some_project_name",
         "--projectId", "some_project_id",
     ]
-    EXPECTED_REQUEST_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS = {
-        "project": "some_project_name",
-        "projectId": "some_project_id",
-    }
-    RESPONSE_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS = {
-        "error": {
-            "name": "Error",
-            "status": 422,
-            "message": "Incompatible parameters: project and projectId cannot both be specified",
-        },
-    }
-    EXPECTED_STDOUT_WHEN_MUTUALLY_EXCLUSIVE_FILTERS = "Failed to fetch data: Incompatible parameters: project and " \
-                                                      "projectId cannot both be specified\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_jobs_list_was_used(self, get_patched):
@@ -87,9 +122,9 @@ class TestListJobs(TestJobs):
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS_WITHOUT_FILTERING)
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -100,9 +135,9 @@ class TestListJobs(TestJobs):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS_WITHOUT_FILTERING)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -115,9 +150,9 @@ class TestListJobs(TestJobs):
         result = cli_runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
-                                       json=self.EXPECTED_REQUEST_JSON_WITH_FILTERING,
-                                       params=None)
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params=self.EXPECTED_REQUEST_PARAMS_WITH_FILTERING)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
@@ -129,9 +164,9 @@ class TestListJobs(TestJobs):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS_WITHOUT_FILTERING)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
@@ -143,9 +178,9 @@ class TestListJobs(TestJobs):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS_WITHOUT_FILTERING)
         assert result.output == self.EXPECTED_STDOUT_WHEN_NO_JOBS_WERE_FOUND
         assert result.exit_code == 0
 
@@ -157,9 +192,9 @@ class TestListJobs(TestJobs):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
+                                       headers=EXPECTED_HEADERS,
                                        json=None,
-                                       params=None)
+                                       params=self.EXPECTED_PARAMS_WITHOUT_FILTERING)
         assert result.output == "Failed to fetch data\n"
         assert result.exit_code == 0
 
@@ -171,25 +206,10 @@ class TestListJobs(TestJobs):
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_FILTERING)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
-                                       json=self.EXPECTED_REQUEST_JSON_WITH_FILTERING,
-                                       params=None)
+                                       headers=EXPECTED_HEADERS,
+                                       json=None,
+                                       params=self.EXPECTED_REQUEST_PARAMS_WITH_FILTERING)
         assert result.output == self.EXPECTED_STDOUT
-        assert result.exit_code == 0
-
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
-    def test_should_print_proper_message_when_jobs_list_was_used_with_mutually_exclusive_filters(self, get_patched):
-        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS,
-                                                status_code=422)
-
-        cli_runner = CliRunner()
-        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_MUTUALLY_EXCLUSIVE_FILTERS)
-
-        get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS,
-                                       json=self.EXPECTED_REQUEST_JSON_WITH_MUTUALLY_EXCLUSIVE_FILTERS,
-                                       params=None)
-        assert result.output == self.EXPECTED_STDOUT_WHEN_MUTUALLY_EXCLUSIVE_FILTERS
         assert result.exit_code == 0
 
 
@@ -201,7 +221,7 @@ class TestJobLogs(TestJobs):
     COMMAND_WITHOUT_REQUIRED_PARAMETERS = ["jobs", "logs"]
     COMMAND_WITH_ALL_OPTIONS = [
         "jobs", "logs",
-        "--jobId", "some_id",
+        "--id", "some_id",
         "--apiKey", "some_key",
         "--line", "50",
         "--limit", "200",
@@ -210,12 +230,6 @@ class TestJobLogs(TestJobs):
 
     COMMAND_WITH_OPTIONS_FILE = ["jobs", "logs", "--optionsFile", ]  # path added in test
     REQUEST_WITH_OPTIONS_FILE = {"jobId": "some_id", "line": 50, "limit": 200}
-
-    EXPECTED_STDOUT_WITHOUT_PARAMETERS = """Usage: cli jobs logs [OPTIONS]
-Try "cli jobs logs --help" for help.
-
-Error: Missing option "--jobId".
-"""
 
     EXPECTED_STDOUT = """+Job some_id logs------------------------------------------------------------------------+
 | LINE | MESSAGE                                                                         |
@@ -237,15 +251,6 @@ Error: Missing option "--jobId".
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
-    def test_command_should_not_send_request_without_required_parameters(self, get_patched):
-        cli_runner = CliRunner()
-        result = cli_runner.invoke(cli.cli, self.COMMAND_WITHOUT_REQUIRED_PARAMETERS)
-
-        get_patched.assert_not_called()
-        assert result.exit_code == 2
-        assert result.output == self.EXPECTED_STDOUT_WITHOUT_PARAMETERS
-
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_get_request_and_print_available_logs(self, get_patched):
         get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
 
@@ -254,7 +259,7 @@ Error: Missing option "--jobId".
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_WITH_OPTIONS_FILE)
         assert result.exit_code == 0
@@ -267,7 +272,7 @@ Error: Missing option "--jobId".
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_ALL_OPTIONS)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_WITH_OPTIONS_FILE)
         assert result.output == self.EXPECTED_STDOUT
@@ -282,7 +287,7 @@ Error: Missing option "--jobId".
         result = cli_runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_WITH_OPTIONS_FILE)
         assert result.output == self.EXPECTED_STDOUT
@@ -296,7 +301,7 @@ Error: Missing option "--jobId".
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_ALL_OPTIONS)
 
         get_patched.assert_called_with(self.URL,
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params=self.REQUEST_WITH_OPTIONS_FILE)
         assert result.output == "Failed to fetch data\n"
@@ -312,13 +317,13 @@ class TestDestroyJobArtifactsCommands(TestJobs):
         post_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
         file_names = "some_file_names"
-        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--files", file_names, "--apiKey",
-                                              "some_key"])
+        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", "--id", job_id, "--files", file_names,
+                                              "--apiKey", "some_key"])
 
         assert result.exit_code == 0, result.exc_info
         post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy".format(self.URL, job_id),
                                         files=None,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params={"files": file_names},
                                         data=None)
@@ -327,11 +332,11 @@ class TestDestroyJobArtifactsCommands(TestJobs):
     def test_should_send_valid_post_request_when_destroying_artifacts_without_files_specified(self, post_patched):
         post_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
-        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", job_id, "--apiKey", "some_key"])
+        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "destroy", "--id", job_id, "--apiKey", "some_key"])
 
         post_patched.assert_called_with("{}/jobs/{}/artifactsDestroy".format(self.URL, job_id),
                                         files=None,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params=None,
                                         data=None)
@@ -347,7 +352,7 @@ class TestDestroyJobArtifactsCommands(TestJobs):
         assert result.exit_code == 0, result.exc_info
         post_patched.assert_called_with("{}/jobs/some_id/artifactsDestroy".format(self.URL),
                                         files=None,
-                                        headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                         json=None,
                                         params={"files": "file1,file2"},
                                         data=None)
@@ -361,10 +366,10 @@ class TestGetJobArtifacts(TestJobs):
     def test_should_send_send_valid_get_request_and_receive_json_response(self, get_patched):
         get_patched.return_value = MockResponse()
         job_id = "some_job_id"
-        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "get", job_id, "--apiKey", "some_key"])
+        result = self.runner.invoke(cli.cli, ["jobs", "artifacts", "get", "--id", job_id, "--apiKey", "some_key"])
 
         get_patched.assert_called_with("{}/jobs/artifactsGet".format(self.URL),
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params={"jobId": job_id})
         assert result.exit_code == 0
@@ -377,7 +382,7 @@ class TestGetJobArtifacts(TestJobs):
         result = self.runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with("{}/jobs/artifactsGet".format(self.URL),
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params={"jobId": "some_id"})
         assert result.exit_code == 0
@@ -392,11 +397,12 @@ class TestListJobArtifacts(TestJobs):
         get_patched.return_value = MockResponse()
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli,
-                                    ["jobs", "artifacts", "list", job_id, "--apiKey", "some_key", "--size", "--links",
+                                    ["jobs", "artifacts", "list", "--id", job_id, "--apiKey", "some_key", "--size",
+                                     "--links",
                                      "--files", "foo"])
 
         get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params={"jobId": job_id,
                                                "size": True,
@@ -411,7 +417,7 @@ class TestListJobArtifacts(TestJobs):
         result = self.runner.invoke(cli.cli, command)
 
         get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params={"files": "keton*.py",
                                                "size": True,
@@ -431,10 +437,10 @@ class TestListJobArtifacts(TestJobs):
         get_patched.return_value = MockResponse(status_code=200)
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli,
-                                    ["jobs", "artifacts", "list", job_id, "--apiKey", "some_key"] + [option])
+                                    ["jobs", "artifacts", "list", "--id", job_id, "--apiKey", "some_key"] + [option])
 
         get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
-                                       headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params={"jobId": job_id,
                                                param: True})
@@ -443,6 +449,7 @@ class TestListJobArtifacts(TestJobs):
 
 class TestJobsCreate(object):
     URL = "https://api.paperspace.io"
+    TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     EXPECTED_HEADERS = default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY = default_headers.copy()
     EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
@@ -454,6 +461,18 @@ class TestJobsCreate(object):
         "--machineType", "testType",
         "--command", "testCommand",
         "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+    ]
+    BASIC_OPTIONS_COMMAND_WITH_TAGS = [
+        "jobs", "create",
+        "--name", "exp1",
+        "--projectId", "testHandle",
+        "--container", "testContainer",
+        "--machineType", "testType",
+        "--command", "testCommand",
+        "--workspace", "https://github.com/Paperspace/gradient-cli.git",
+        "--tag", "test0",
+        "--tag", "test1",
+        "--tags", "test2,test3",
     ]
     FULL_OPTIONS_COMMAND = [
         "jobs", "create",
@@ -467,7 +486,6 @@ class TestJobsCreate(object):
         "--isPreemptible", "True",
         "--projectId", "some_project_id",
         "--isPublic", "True",
-        "--workspaceUrl", "s3://some.workspace.url",
         "--jobEnv", '{"key":"val"}',
         "--machineType", "K80",
         "--name", "some_name",
@@ -483,8 +501,8 @@ class TestJobsCreate(object):
         "--startedByUserId", "some_user_id",
         "--useDockerfile", "True",
         "--workingDirectory", "/some/path",
-        "--workspaceUrl", "s3://some.workspace.url",
         "--buildOnly",
+        "--workspace", "s3://some-path",
     ]
     BASIC_OPTIONS_REQUEST = {
         "name": u"exp1",
@@ -492,7 +510,6 @@ class TestJobsCreate(object):
         "container": u"testContainer",
         "machineType": u"testType",
         "command": u"testCommand",
-        "workspace": u"https://github.com/Paperspace/gradient-cli.git",
         "workspaceFileName": u"https://github.com/Paperspace/gradient-cli.git",
     }
     FULL_OPTIONS_REQUEST = {
@@ -505,12 +522,11 @@ class TestJobsCreate(object):
         "workingDirectory": "/some/path",
         "projectId": "some_project_id",
         "registryTargetUsername": "some_registry_target_username",
-        "workspaceUrl": "s3://some.workspace.url",
         "machineType": "K80",
         "registryTargetPassword": "some_registry_target_password",
         "registryTarget": "some_registry_target",
         "isPublic": True,
-        "workspaceFileName": "s3://some.workspace.url",
+        "workspaceFileName": "s3://some-path",
         "jobEnv": {"key": "val"},
         "useDockerfile": True,
         "name": "some_name",
@@ -522,9 +538,17 @@ class TestJobsCreate(object):
         "registryUsername": "some_registry_username",
         "registryPassword": "some_registry_password",
     }
+    TAGS_JSON = {
+        "entity": "job",
+        "entityId": "sadkfhlskdjh",
+        "tags": ["test0", "test1", "test2", "test3"]
+    }
     RESPONSE_JSON_200 = {"id": "sadkfhlskdjh", "message": "success"}
+    UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
     EXPECTED_STDOUT = u'New job created with ID: sadkfhlskdjh\n'
+    EXPECTED_STDOUT_TAGS = u'New job created with ID: sadkfhlskdjh\n' \
+                           u'https://www.paperspace.com/console/jobs/sadkfhlskdjh\n'
 
     RESPONSE_JSON_404_PROJECT_NOT_FOUND = {"details": {"handle": "wrong_handle"}, "error": "Project not found"}
     RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'
@@ -539,7 +563,7 @@ class TestJobsCreate(object):
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
         post_patched.assert_called_once_with(self.URL + '/jobs/createJob/',
-                                             headers=self.EXPECTED_HEADERS,
+                                             headers=EXPECTED_HEADERS,
                                              json=None,
                                              params=self.BASIC_OPTIONS_REQUEST,
                                              files=None,
@@ -555,7 +579,7 @@ class TestJobsCreate(object):
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
         post_patched.assert_called_once_with(self.URL + '/jobs/createJob/',
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=None,
                                              params=self.FULL_OPTIONS_REQUEST,
                                              files=None,
@@ -572,11 +596,40 @@ class TestJobsCreate(object):
 
         assert self.EXPECTED_STDOUT in result.output, result.exc_info
         post_patched.assert_called_once_with(self.URL + '/jobs/createJob/',
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=None,
                                              params=self.FULL_OPTIONS_REQUEST,
                                              files=None,
                                              data=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_proper_data_and_tag_job(self, post_patched, get_patched, put_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, self.RESPONSE_CONTENT_200)
+        get_patched.return_value = MockResponse({}, 200, "fake content")
+        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_TAGS)
+
+        post_patched.assert_called_once_with(self.URL + '/jobs/createJob/',
+                                             headers=EXPECTED_HEADERS,
+                                             json=None,
+                                             params=self.BASIC_OPTIONS_REQUEST,
+                                             files=None,
+                                             data=None)
+
+        put_patched.assert_called_once_with(
+            self.TAGS_URL,
+            headers=EXPECTED_HEADERS,
+            json=self.TAGS_JSON,
+            params=None,
+            data=None,
+        )
+
+        assert result.output == self.EXPECTED_STDOUT_TAGS, result.exc_info
         assert result.exit_code == 0
 
 
@@ -586,7 +639,7 @@ class TestDownloadJobArtifacts(TestJobs):
     DESTINATION_DIR_NAME = "dest"
     DESTINATION_DIR_PATH = os.path.join(tempfile.gettempdir(), "dest")
 
-    COMMAND = ["jobs", "artifacts", "download", "--jobId", "some_job_id", "--destinationDir", DESTINATION_DIR_PATH]
+    COMMAND = ["jobs", "artifacts", "download", "--id", "some_job_id", "--destinationDir", DESTINATION_DIR_PATH]
 
     @classmethod
     def teardown_method(cls):
@@ -613,7 +666,7 @@ class TestDownloadJobArtifacts(TestJobs):
 
         get_patched.assert_has_calls([
             mock.call(self.LIST_FILES_URL,
-                      headers=self.EXPECTED_HEADERS,
+                      headers=EXPECTED_HEADERS,
                       json=None,
                       params={"links": True, "jobId": "some_job_id"}),
             mock.call("https://ps-projects.s3.amazonaws.com/some/path/artifacts/hello.txt?AWSAccessKeyId="
@@ -653,3 +706,494 @@ class TestDownloadJobArtifacts(TestJobs):
             assert h.read() == "\"Elo\n\""
 
         assert result.exit_code == 0
+
+
+class TestJobsMetricsGetCommand(object):
+    GET_JOB_URL = "https://api.paperspace.io/jobs/getPublicJob"
+    GET_METRICS_URL = "https://aws-testing.paperspace.io/metrics/api/v1/range"
+    BASIC_OPTIONS_COMMAND = [
+        "jobs", "metrics", "get",
+        "--id", "jstkd2lapucirs",
+    ]
+    ALL_OPTIONS_COMMAND = [
+        "jobs", "metrics", "get",
+        "--id", "jstkd2lapucirs",
+        "--metric", "gpuMemoryFree",
+        "--metric", "gpuMemoryUsed",
+        "--interval", "20s",
+        "--start", "2020-04-01",
+        "--end", "2020-04-02 21:37:00",
+        "--apiKey", "some_key",
+    ]
+    FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
+        "jobs", "metrics", "get",
+        "--optionsFile",  # path added in test,
+    ]
+
+    GET_JOB_REQUEST_JSON = {"jobId": "jstkd2lapucirs"}
+    BASIC_COMMAND_GET_METRICS_REQUEST_PARAMS = {
+        "start": "2020-04-29T10:11:07Z",
+        "handle": "jstkd2lapucirs",
+        "interval": "30s",
+        "charts": "cpuPercentage,memoryUsage",
+        "objecttype": "mljob",
+    }
+    ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS = {
+        "start": "2020-04-01T00:00:00Z",
+        "handle": "jstkd2lapucirs",
+        "interval": "20s",
+        "charts": "gpuMemoryFree,gpuMemoryUsed",
+        "objecttype": "mljob",
+        "end": "2020-04-02T21:37:00Z",
+    }
+
+    GET_JOB_RESPONSE_JSON = example_responses.GET_JOB_RESPONSE
+    GET_METRICS_RESPONSE_JSON = example_responses.GET_JOB_METRICS_RESPONSE
+    GET_JOB_RESPONSE_JSON_WHEN_NO_JOBS_WERE_FOUND = {
+        "error": {
+            "name": "ApplicationError",
+            "status": 404,
+            "message": "No such job",
+        },
+    }
+
+    EXPECTED_STDOUT = """{
+  "cpuPercentage": {
+    "mljob-ecgrgm7ok8chv-0-worker": [
+      {
+        "time_stamp": 1588155157, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1588155187, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1588155217, 
+        "value": "0"
+      }
+    ]
+  }, 
+  "memoryUsage": {
+    "mljob-ecgrgm7ok8chv-0-worker": [
+      {
+        "time_stamp": 1588155097, 
+        "value": "0"
+      }, 
+      {
+        "time_stamp": 1588155127, 
+        "value": "5881856"
+      }, 
+      {
+        "time_stamp": 1588155157, 
+        "value": "5881856"
+      }, 
+      {
+        "time_stamp": 1588155187, 
+        "value": "5881856"
+      }
+    ]
+  }
+}
+"""
+
+    EXPECTED_STDOUT_WHEN_INVALID_API_KEY_WAS_USED = "Failed to fetch data: Invalid API token\n"
+    EXPECTED_STDOUT_WHEN_EXPERIMENT_WAS_NOT_FOUND = "Failed to fetch data: No such job\n"
+    EXPECTED_STDOUT_WHEN_NO_METRICS_FOUND = """{
+    "cpuPercentage": null,
+    "memoryUsage": null
+}
+"""
+    EXPECTED_STDOUT_WHEN_ERROR_CODE_WAS_RETURNED_WITHOUT_ERROR_MESSAGE = "Failed to fetch data\n"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_all_available_metrics_when_metrics_get_command_was_used_with_basic_options(
+            self, post_patched, get_patched):
+        post_patched.return_value = MockResponse(self.GET_JOB_RESPONSE_JSON)
+        get_patched.return_value = MockResponse(self.GET_METRICS_RESPONSE_JSON)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
+
+        assert json.loads(result.output.strip()) == json.loads(self.EXPECTED_STDOUT.strip()), \
+            str(result.output) + str(result.exc_info)
+        post_patched.assert_called_once_with(
+            self.GET_JOB_URL,
+            json=self.GET_JOB_REQUEST_JSON,
+            params=None,
+            data=None,
+            files=None,
+            headers=EXPECTED_HEADERS,
+        )
+        get_patched.assert_called_once_with(
+            self.GET_METRICS_URL,
+            json=None,
+            params=self.BASIC_COMMAND_GET_METRICS_REQUEST_PARAMS,
+            headers=EXPECTED_HEADERS,
+        )
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_metrics_when_metrics_get_command_was_used_with_all_options(
+            self, post_patched, get_patched):
+        post_patched.return_value = MockResponse(self.GET_JOB_RESPONSE_JSON)
+        get_patched.return_value = MockResponse(self.GET_METRICS_RESPONSE_JSON)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        # comparing objects instead of strings because Py2 and Py3 produce slightly different outputs
+        assert json.loads(result.output.strip()) == json.loads(self.EXPECTED_STDOUT.strip()), result.exc_info
+        post_patched.assert_called_once_with(
+            self.GET_JOB_URL,
+            json=self.GET_JOB_REQUEST_JSON,
+            params=None,
+            data=None,
+            files=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+        get_patched.assert_called_once_with(
+            self.GET_METRICS_URL,
+            json=None,
+            params=self.ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_metrics_when_metrics_get_was_executed_and_options_file_was_used(
+            self, post_patched, get_patched, jobs_metrics_get_config_path):
+        post_patched.return_value = MockResponse(self.GET_JOB_RESPONSE_JSON)
+        get_patched.return_value = MockResponse(self.GET_METRICS_RESPONSE_JSON)
+
+        command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [jobs_metrics_get_config_path]
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        # comparing objects instead of strings because Py2 and Py3 produce slightly different outputs
+        assert json.loads(result.output.strip()) == json.loads(self.EXPECTED_STDOUT.strip()), result.exc_info
+        post_patched.assert_called_once_with(
+            self.GET_JOB_URL,
+            json=self.GET_JOB_REQUEST_JSON,
+            params=None,
+            data=None,
+            files=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+        get_patched.assert_called_once_with(
+            self.GET_METRICS_URL,
+            json=None,
+            params=self.ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_valid_error_message_when_invalid_api_key_was_used(self, post_patched):
+        post_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"}, status_code=400)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_INVALID_API_KEY_WAS_USED, result.exc_info
+
+        post_patched.assert_called_once_with(
+            self.GET_JOB_URL,
+            json=self.GET_JOB_REQUEST_JSON,
+            params=None,
+            data=None,
+            files=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_valid_error_message_when_job_was_not_found(self, post_patched):
+        post_patched.return_value = MockResponse(self.GET_JOB_RESPONSE_JSON_WHEN_NO_JOBS_WERE_FOUND, status_code=400)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_EXPERIMENT_WAS_NOT_FOUND, result.exc_info
+
+        post_patched.assert_called_once_with(
+            self.GET_JOB_URL,
+            json=self.GET_JOB_REQUEST_JSON,
+            params=None,
+            data=None,
+            files=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_valid_message_when_was_no_metrics_were_returned(
+            self, post_patched, get_patched):
+        post_patched.return_value = MockResponse(self.GET_JOB_RESPONSE_JSON)
+        get_patched.return_value = MockResponse(example_responses.JOBS_METRICS_GET_RESPONSE_WHEN_NO_DATA_WAS_FOUND)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert json.loads(result.output.strip()) == json.loads(self.EXPECTED_STDOUT_WHEN_NO_METRICS_FOUND.strip()), \
+            result.exc_info
+
+        post_patched.assert_called_once_with(
+            self.GET_JOB_URL,
+            json=self.GET_JOB_REQUEST_JSON,
+            params=None,
+            data=None,
+            files=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+        get_patched.assert_called_once_with(
+            self.GET_METRICS_URL,
+            json=None,
+            params=self.ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_valid_error_message_when_error_code_was_returned_without_error_message(
+            self, post_patched, get_patched):
+        post_patched.return_value = MockResponse(self.GET_JOB_RESPONSE_JSON)
+        get_patched.return_value = MockResponse(status_code=500)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_ERROR_CODE_WAS_RETURNED_WITHOUT_ERROR_MESSAGE, result.exc_info
+        post_patched.assert_called_once_with(
+            self.GET_JOB_URL,
+            json=self.GET_JOB_REQUEST_JSON,
+            params=None,
+            data=None,
+            files=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+        get_patched.assert_called_once_with(
+            self.GET_METRICS_URL,
+            json=None,
+            params=self.ALL_COMMANDS_GET_METRICS_REQUEST_PARAMS,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        assert result.exit_code == 0, result.exc_info
+
+
+class TestExperimentsMetricsStreamCommand(object):
+    GET_JOB_URL = "https://api.paperspace.io/jobs/getPublicJob"
+    GET_METRICS_URL = "https://aws-testing.paperspace.io/metrics/api/v1/stream"
+    BASIC_OPTIONS_COMMAND = [
+        "jobs", "metrics", "stream",
+        "--id", "jstkd2lapucirs",
+    ]
+    ALL_OPTIONS_COMMAND = [
+        "jobs", "metrics", "stream",
+        "--id", "jstkd2lapucirs",
+        "--metric", "gpuMemoryFree",
+        "--metric", "gpuMemoryUsed",
+        "--interval", "20s",
+        "--apiKey", "some_key",
+    ]
+    ALL_OPTIONS_COMMAND_WITH_OPTIONS_FILE = [
+        "jobs", "metrics", "stream",
+        "--optionsFile",  # path added in test,
+    ]
+
+    GET_JOB_REQUEST_JSON = {"jobId": "jstkd2lapucirs"}
+    BASIC_COMMAND_CHART_DESCRIPTOR = '{"chart_names": ["cpuPercentage", "memoryUsage"], "handles": ["jstkd2lapucirs"]' \
+                                     ', "object_type": "mljob", "poll_interval": "30s"}'
+    ALL_COMMANDS_CHART_DESCRIPTOR = '{"chart_names": ["gpuMemoryFree", "gpuMemoryUsed"], "handles": ["jstkd2lapucirs"' \
+                                    '], "object_type": "mljob", "poll_interval": "20s"}'
+
+    GET_JOB_RESPONSE_JSON = example_responses.GET_JOB_RESPONSE
+
+    EXPECTED_TABLE_1 = """+------------------------------+---------------+-------------+
+| Pod                          | cpuPercentage | memoryUsage |
++------------------------------+---------------+-------------+
+| mljob-ecgrgm7ok8chv-0-worker |               | 5881856     |
++------------------------------+---------------+-------------+
+"""
+    EXPECTED_TABLE_2 = """+------------------------------+---------------+-------------+
+| Pod                          | cpuPercentage | memoryUsage |
++------------------------------+---------------+-------------+
+| mljob-ecgrgm7ok8chv-0-worker | 0             | 5881856     |
++------------------------------+---------------+-------------+
+"""
+    EXPECTED_TABLE_3 = """+------------------------------+---------------+-------------+
+| Pod                          | cpuPercentage | memoryUsage |
++------------------------------+---------------+-------------+
+| mljob-ecgrgm7ok8chv-0-worker | 0             | 5881857     |
++------------------------------+---------------+-------------+
+"""
+
+    ALL_OPTIONS_EXPECTED_TABLE_1 = """+------------------------------+---------------+---------------+
+| Pod                          | gpuMemoryFree | gpuMemoryUsed |
++------------------------------+---------------+---------------+
+| mljob-ecgrgm7ok8chv-0-worker |               | 5881856       |
++------------------------------+---------------+---------------+
+"""
+    ALL_OPTIONS_EXPECTED_TABLE_2 = """+------------------------------+---------------+---------------+
+| Pod                          | gpuMemoryFree | gpuMemoryUsed |
++------------------------------+---------------+---------------+
+| mljob-ecgrgm7ok8chv-0-worker | 0             | 5881856       |
++------------------------------+---------------+---------------+
+"""
+    ALL_OPTIONS_EXPECTED_TABLE_3 = """+------------------------------+---------------+---------------+
+| Pod                          | gpuMemoryFree | gpuMemoryUsed |
++------------------------------+---------------+---------------+
+| mljob-ecgrgm7ok8chv-0-worker | 0             | 5881857       |
++------------------------------+---------------+---------------+
+"""
+
+    EXPECTED_STDOUT_WHEN_INVALID_API_KEY_WAS_USED = "Failed to fetch data: Incorrect API Key provided\nForbidden\n"
+    EXPECTED_STDOUT_WHEN_JOB_WAS_NOT_FOUND = "Failed to fetch data: No such job\n"
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_all_available_metrics_when_metrics_get_command_was_used_with_basic_options(
+            self, post_patched, create_ws_connection_patched,
+            basic_options_metrics_stream_websocket_connection_iterator):
+        post_patched.return_value = MockResponse(self.GET_JOB_RESPONSE_JSON)
+
+        ws_connection_instance_mock = mock.MagicMock()
+        ws_connection_instance_mock.__iter__ = basic_options_metrics_stream_websocket_connection_iterator
+        create_ws_connection_patched.return_value = ws_connection_instance_mock
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
+
+        assert self.EXPECTED_TABLE_1 in result.output, result.exc_info
+        assert self.EXPECTED_TABLE_2 in result.output, result.exc_info
+        assert self.EXPECTED_TABLE_3 in result.output, result.exc_info
+
+        post_patched.assert_called_once_with(
+            self.GET_JOB_URL,
+            json=self.GET_JOB_REQUEST_JSON,
+            params=None,
+            data=None,
+            files=None,
+            headers=EXPECTED_HEADERS,
+        )
+        ws_connection_instance_mock.send.assert_called_once_with(self.BASIC_COMMAND_CHART_DESCRIPTOR)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_metrics_when_metrics_get_command_was_used_with_all_options(
+            self, post_patched, create_ws_connection_patched,
+            all_options_metrics_stream_websocket_connection_iterator):
+        post_patched.return_value = MockResponse(self.GET_JOB_RESPONSE_JSON)
+
+        ws_connection_instance_mock = mock.MagicMock()
+        ws_connection_instance_mock.__iter__ = all_options_metrics_stream_websocket_connection_iterator
+        create_ws_connection_patched.return_value = ws_connection_instance_mock
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_1 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_2 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_3 in result.output, result.exc_info
+
+        post_patched.assert_called_once_with(
+            self.GET_JOB_URL,
+            json=self.GET_JOB_REQUEST_JSON,
+            params=None,
+            data=None,
+            files=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        ws_connection_instance_mock.send.assert_called_once_with(self.ALL_COMMANDS_CHART_DESCRIPTOR)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_read_metrics_when_metrics_get_was_executed_and_options_file_was_used(
+            self, post_patched, create_ws_connection_patched,
+            all_options_metrics_stream_websocket_connection_iterator,
+            jobs_metrics_stream_config_path):
+        post_patched.return_value = MockResponse(self.GET_JOB_RESPONSE_JSON)
+        ws_connection_instance_mock = mock.MagicMock()
+        ws_connection_instance_mock.__iter__ = all_options_metrics_stream_websocket_connection_iterator
+        create_ws_connection_patched.return_value = ws_connection_instance_mock
+
+        command = self.ALL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [jobs_metrics_stream_config_path]
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_1 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_2 in result.output, result.exc_info
+        assert self.ALL_OPTIONS_EXPECTED_TABLE_3 in result.output, result.exc_info
+
+        post_patched.assert_called_once_with(
+            self.GET_JOB_URL,
+            json=self.GET_JOB_REQUEST_JSON,
+            params=None,
+            data=None,
+            files=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        ws_connection_instance_mock.send.assert_called_once_with(self.ALL_COMMANDS_CHART_DESCRIPTOR)
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_valid_error_message_when_invalid_api_key_was_used(
+            self, post_patched, create_ws_connection_patched):
+        post_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"}, 400)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert "Failed to fetch data: Invalid API token\n" == result.output, result.exc_info
+
+        post_patched.assert_called_once_with(
+            self.GET_JOB_URL,
+            json=self.GET_JOB_REQUEST_JSON,
+            params=None,
+            data=None,
+            files=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        create_ws_connection_patched.assert_not_called()
+        assert result.exit_code == 0, result.exc_info
+
+    @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_valid_error_message_when_job_was_not_found(
+            self, post_patched, create_ws_connection_patched):
+        post_patched.return_value = MockResponse(
+            {"error": {"name": "ApplicationError", "status": 404, "message": "No such job"}},
+            404,
+        )
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WHEN_JOB_WAS_NOT_FOUND, result.exc_info
+
+        post_patched.assert_called_once_with(
+            self.GET_JOB_URL,
+            json=self.GET_JOB_REQUEST_JSON,
+            params=None,
+            data=None,
+            files=None,
+            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        )
+
+        create_ws_connection_patched.assert_not_called()
+        assert result.exit_code == 0, result.exc_info

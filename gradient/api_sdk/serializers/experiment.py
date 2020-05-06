@@ -4,6 +4,7 @@ import marshmallow
 
 from . import dataset
 from .base import BaseSchema
+from .tag import TagSchema
 from .. import models, utils
 
 
@@ -26,6 +27,13 @@ class BaseExperimentSchema(BaseSchema):
     is_preemptible = marshmallow.fields.Bool(dump_to="isPreemptible", load_from="isPreemptible")
     id = marshmallow.fields.Str(load_from="handle")
     state = marshmallow.fields.Int()
+    tags = marshmallow.fields.Nested(TagSchema, only="name", many=True, load_only=True)
+
+    dt_created = marshmallow.fields.DateTime(dump_to="dtCreated", load_from="dtCreated")
+    dt_modified = marshmallow.fields.DateTime(dump_to="dtModified", load_from="dtModified")
+    dt_started = marshmallow.fields.DateTime(dump_to="dtStarted", load_from="dtStarted")
+    dt_stopped = marshmallow.fields.DateTime(dump_to="dtStopped", load_from="dtStopped")
+    dt_deleted = marshmallow.fields.DateTime(dump_to="dtDeleted", load_from="dtDeleted")
 
     def get_instance(self, obj_dict, many=False):
         # without popping these marshmallow wouldn't use load_from

@@ -1,13 +1,14 @@
 import time
 
-from gradient.api_sdk.config import config
 from .common import BaseRepository, CreateResource, DeleteResource, ListResources, StartResource, StopResource, \
     GetResource, AlterResource
 from .. import serializers, models
+from ..config import config
+from ..serializers import MachineSchema
 
 
 class MachinesApiUrlMixin(object):
-    def _get_api_url(self, use_vpc=False):
+    def _get_api_url(self, **kwargs):
         return config.CONFIG_HOST
 
 
@@ -18,7 +19,7 @@ class CheckMachineAvailability(MachinesApiUrlMixin, BaseRepository):
     def get(self, machine_type, region):
         kwargs = {"machineType": machine_type,
                   "region": region}
-        response = self._get(kwargs)
+        response = self._get(**kwargs)
         self._validate_response(response)
         is_available = response.data["available"]
         return is_available
@@ -77,8 +78,8 @@ class ListMachines(MachinesApiUrlMixin, ListResources):
 class RestartMachine(MachinesApiUrlMixin, StartResource):
     VALIDATION_ERROR_MESSAGE = "Unable to restart instance"
 
-    def restart(self, id_, use_vpc=False):
-        self._run(id=id_, use_vpc=use_vpc)
+    def restart(self, id_, **kwargs):
+        self._run(id=id_, **kwargs)
 
     def get_request_url(self, **kwargs):
         machine_id = kwargs["id"]
@@ -91,8 +92,8 @@ class RestartMachine(MachinesApiUrlMixin, StartResource):
 
 
 class StartMachine(MachinesApiUrlMixin, StartResource):
-    def restart(self, id_, use_vpc=False):
-        self._run(id=id_, use_vpc=use_vpc)
+    def restart(self, id_, **kwargs):
+        self._run(id=id_, **kwargs)
 
     def get_request_url(self, **kwargs):
         machine_id = kwargs["id"]
@@ -105,8 +106,8 @@ class StartMachine(MachinesApiUrlMixin, StartResource):
 
 
 class StopMachine(MachinesApiUrlMixin, StopResource):
-    def restart(self, id_, use_vpc=False):
-        self._run(id=id_, use_vpc=use_vpc)
+    def restart(self, id_):
+        self._run(id=id_)
 
     def get_request_url(self, **kwargs):
         machine_id = kwargs["id"]
@@ -119,10 +120,7 @@ class StopMachine(MachinesApiUrlMixin, StopResource):
 
 
 class GetMachine(MachinesApiUrlMixin, GetResource):
-    def _parse_object(self, data, **kwargs):
-        machine = serializers.MachineSchema().get_instance(data)
-        machine.events = serializers.MachineEventSchema().get_instance(machine.events, many=True)
-        return machine
+    SERIALIZER_CLS = MachineSchema
 
     def get_request_url(self, **kwargs):
         return "/machines/getMachinePublic/"
@@ -172,10 +170,10 @@ class GetMachineUtilization(MachinesApiUrlMixin, GetResource):
 
 
 class WaitForState(object):
-    def __init__(self, api_key, logger):
+    def __init__(self, api_key, logger, ps_client_name=None):
         self.api_key = api_key
         self.logger = logger
-        self.get_machine_repository = GetMachine(api_key=api_key, logger=logger)
+        self.get_machine_repository = GetMachine(api_key=api_key, logger=logger, ps_client_name=ps_client_name)
 
     def wait_for_state(self, machine_id, state, interval=5):
 

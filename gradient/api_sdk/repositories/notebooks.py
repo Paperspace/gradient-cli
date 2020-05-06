@@ -1,12 +1,13 @@
-import gradient.api_sdk.config
-from gradient import config
-from .common import CreateResource, DeleteResource, ListResources, GetResource
-from .. import serializers
+import json
+
+from .common import CreateResource, DeleteResource, ListResources, GetResource, GetMetrics, StreamMetrics
+from .. import config
+from .. import serializers, sdk_exceptions
 
 
 class GetNotebookApiUrlMixin(object):
-    def _get_api_url(self, use_vpc=False):
-        return gradient.api_sdk.config.config.CONFIG_HOST
+    def _get_api_url(self, **kwargs):
+        return config.config.CONFIG_HOST
 
 
 class CreateNotebook(GetNotebookApiUrlMixin, CreateResource):
@@ -79,17 +80,52 @@ class ListNotebooks(GetNotebookApiUrlMixin, ListResources):
         notebooks = serializer.get_instance(notebook_dicts, many=True)
         return notebooks
 
-    def _get_request_json(self, kwargs):
-        json_ = {
+    def _get_request_params(self, kwargs):
+        filters = {
             "filter": {
-                "filter": {
-                    "limit": kwargs.get("limit"),
-                    "offset": kwargs.get("offset"),
-                    "where": {
-                        "dtDeleted": None,
-                    },
-                    "order": "jobId desc",
+                "limit": kwargs.get("limit"),
+                "offset": kwargs.get("offset"),
+                "where": {
+                    "dtDeleted": None,
                 },
+                "order": "jobId desc",
             },
         }
-        return json_
+
+        params = {}
+        filter_string = json.dumps(filters)
+        params["filter"] = filter_string
+
+        tags = kwargs.get("tags", [])
+        for i, tag in enumerate(tags):
+            key = "tagFilter[{}]".format(i)
+            params[key] = tag
+
+        return params
+
+
+class GetNotebookMetrics(GetMetrics):
+    OBJECT_TYPE = "notebook"
+
+    def _get_instance_by_id(self, instance_id, **kwargs):
+        repository = GetNotebook(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        instance = repository.get(id=instance_id)
+        return instance
+
+    def _get_start_date(self, instance, kwargs):
+        rv = super(GetNotebookMetrics, self)._get_start_date(instance, kwargs)
+        if rv is None:
+            raise sdk_exceptions.GradientSdkError("Notebook has not started yet")
+
+        return rv
+
+
+class StreamNotebookMetrics(StreamMetrics):
+    OBJECT_TYPE = "notebook"
+
+    def _get_metrics_api_url(self, instance_id, protocol="https"):
+        repository = GetNotebook(api_key=self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        deployment = repository.get(id=instance_id)
+
+        metrics_api_url = super(StreamNotebookMetrics, self)._get_metrics_api_url(deployment, protocol="wss")
+        return metrics_api_url

@@ -19,3 +19,4 @@ class Project(object):
     repository_name = attr.ib(type=str, default=None)
     repository_url = attr.ib(type=str, default=None)
     created = attr.ib(type=datetime, default=None)
+    tags = attr.ib(type=list, factory=list)

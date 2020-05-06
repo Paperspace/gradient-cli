@@ -5,16 +5,16 @@ import os
 import requests
 from six.moves import input
 
-import gradient.logger
-from gradient.utils import response_error_check, requests_exception_to_error_obj, status_code_to_error_obj
+import gradient.clilogger
 from gradient.api_sdk.config import config
+from gradient.cliutils import response_error_check, requests_exception_to_error_obj, status_code_to_error_obj
 
 UNAUTHORIZED_EXTENDED_INFO = '\n\nNote: Please keep in mind that currently you can login only with the email and ' \
                              'password from your Paperspace account. If you\'re using AD, SAML or GitHub ' \
                              'credentials, please log into the Paperspace Console and create an API key for use with ' \
                              'the CLI client. For more information, please refer to the CLI client documentation.'
 
-logger = gradient.logger.Logger()
+logger = gradient.clilogger.CliLogger()
 
 
 def is_error_or_missing_keys_print(res, *required_keys):

@@ -22,7 +22,7 @@ class Model(object):
     name = attr.ib(type=str, default=None)
     project_id = attr.ib(type=str, default=None)
     experiment_id = attr.ib(type=str, default=None)
-    tags = attr.ib(type=list, default=None)
+    tags = attr.ib(type=list, factory=list)
     model_type = attr.ib(type=str, default=None)
     url = attr.ib(type=str, default=None)
     model_path = attr.ib(type=str, default=None)

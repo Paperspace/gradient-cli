@@ -1,29 +1,25 @@
 import abc
+import json
 import pydoc
 
 import six
 import terminaltables
 from halo import halo
 
-from gradient import version, logger as gradient_logger, exceptions
+from gradient import clilogger as gradient_logger, exceptions
 from gradient.api_sdk import sdk_exceptions, utils, models
-from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.config import config
-from gradient.api_sdk.utils import urljoin
-from gradient.commands.common import DetailsCommandMixin
-from gradient.utils import get_terminal_lines
-
-default_headers = {"X-API-Key": config.PAPERSPACE_API_KEY,
-                   "ps_client_name": "gradient-cli",
-                   "ps_client_version": version.version}
-deployments_api = http_client.API(config.CONFIG_HOST, headers=default_headers)
+from gradient.api_sdk.utils import concatenate_urls
+from gradient.cliutils import get_terminal_lines
+from gradient.commands.common import DetailsCommandMixin, StreamMetricsCommand
 
 
 @six.add_metaclass(abc.ABCMeta)
 class _DeploymentCommand(object):
-    def __init__(self, deployment_client, logger_=gradient_logger.Logger()):
+    def __init__(self, deployment_client, logger_=gradient_logger.CliLogger()):
         self.client = deployment_client
         self.logger = logger_
+        self.entity = "deployment"
 
     @abc.abstractmethod
     def execute(self, **kwargs):
@@ -31,17 +27,17 @@ class _DeploymentCommand(object):
 
 
 class CreateDeploymentCommand(_DeploymentCommand):
-    def execute(self, use_vpc=False, **kwargs):
+    def execute(self, **kwargs):
         self._handle_auth(kwargs)
 
         with halo.Halo(text="Creating new deployment", spinner="dots"):
-            deployment_id = self.client.create(use_vpc=use_vpc, **kwargs)
+            deployment_id = self.client.create(**kwargs)
 
         self.logger.log("New deployment created with id: {}".format(deployment_id))
         self.logger.log(self.get_instance_url(deployment_id))
 
     def get_instance_url(self, instance_id):
-        url = urljoin(config.WEB_URL, "/console/deployments/{}".format(instance_id))
+        url = concatenate_urls(config.WEB_URL, "/console/deployments/{}".format(instance_id))
         return url
 
     def _handle_auth(self, kwargs):
@@ -55,15 +51,15 @@ class CreateDeploymentCommand(_DeploymentCommand):
 class ListDeploymentsCommand(_DeploymentCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
-    def execute(self, use_vpc=False, **kwargs):
+    def execute(self, **kwargs):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            instances = self._get_instances(use_vpc=use_vpc, **kwargs)
+            instances = self._get_instances(**kwargs)
 
         self._log_objects_list(instances)
 
-    def _get_instances(self, use_vpc=False, **kwargs):
+    def _get_instances(self, **kwargs):
         try:
-            instances = self.client.list(use_vpc=use_vpc, **kwargs)
+            instances = self.client.list(**kwargs)
         except sdk_exceptions.GradientSdkError as e:
             raise exceptions.ReceivingDataFailedError(e)
 
@@ -103,14 +99,14 @@ class ListDeploymentsCommand(_DeploymentCommand):
 
 
 class StartDeploymentCommand(_DeploymentCommand):
-    def execute(self, use_vpc=False, **kwargs):
-        self.client.start(use_vpc=use_vpc, **kwargs)
+    def execute(self, **kwargs):
+        self.client.start(**kwargs)
         self.logger.log("Deployment started")
 
 
 class StopDeploymentCommand(_DeploymentCommand):
-    def execute(self, use_vpc=False, **kwargs):
-        self.client.stop(use_vpc=use_vpc, **kwargs)
+    def execute(self, **kwargs):
+        self.client.stop(**kwargs)
         self.logger.log("Deployment stopped")
 
 
@@ -121,9 +117,9 @@ class DeleteDeploymentCommand(_DeploymentCommand):
 
 
 class UpdateDeploymentCommand(_DeploymentCommand):
-    def execute(self, deployment_id, use_vpc=False, **kwargs):
+    def execute(self, deployment_id, **kwargs):
         with halo.Halo(text="Updating deployment data", spinner="dots"):
-            self.client.update(deployment_id, use_vpc=use_vpc, **kwargs)
+            self.client.update(deployment_id, **kwargs)
 
         self.logger.log("Deployment data updated")
 
@@ -133,17 +129,50 @@ class GetDeploymentDetails(DetailsCommandMixin, _DeploymentCommand):
         """
         :param models.Deployment instance:
         """
+        tags_string = ", ".join(instance.tags)
+
         data = (
             ("ID", instance.id),
             ("Name", instance.name),
             ("State", instance.state),
             ("Machine type", instance.machine_type),
             ("Instance count", instance.instance_count),
+            ("Command", instance.command),
             ("Deployment type", instance.deployment_type),
             ("Model ID", instance.model_id),
             ("Project ID", instance.project_id),
             ("Endpoint", instance.endpoint),
             ("API type", instance.api_type),
             ("Cluster ID", instance.cluster_id),
+            ("Tags", tags_string),
         )
         return data
+
+
+class DeploymentAddTagsCommand(_DeploymentCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.add_tags(deployment_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to deployment")
+
+
+class DeploymentRemoveTagsCommand(_DeploymentCommand):
+    def execute(self, deployment_id, *args, **kwargs):
+        self.client.remove_tags(deployment_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from deployment")
+
+
+class GetDeploymentMetricsCommand(_DeploymentCommand):
+    def execute(self, deployment_id, start, end, interval, built_in_metrics, *args, **kwargs):
+        metrics = self.client.get_metrics(
+            deployment_id,
+            start=start,
+            end=end,
+            built_in_metrics=built_in_metrics,
+            interval=interval,
+        )
+        formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
+        self.logger.log(formatted_metrics)
+
+
+class StreamDeploymentMetricsCommand(StreamMetricsCommand, _DeploymentCommand):
+    pass

@@ -11,7 +11,7 @@ class Model(BaseSchema):
     name = marshmallow.fields.Str()
     project_id = marshmallow.fields.Str(dump_to="projectId", load_from="projectId")
     experiment_id = marshmallow.fields.Str(dump_to="experimentId", load_from="experimentId")
-    tags = marshmallow.fields.List(marshmallow.fields.Str(), dump_to="tag", load_from="tag")
+    tags = marshmallow.fields.List(marshmallow.fields.Str(), load_only=True)
     model_type = marshmallow.fields.Str(dump_to="modelType", load_from="modelType")
     url = marshmallow.fields.Str()
     model_path = marshmallow.fields.Str(dump_to="modelPath", load_from="modelPath")

@@ -1,8 +1,5 @@
-import glob
-import os
-
 import gradient.api_sdk.config
-from .. import serializers
+from .. import serializers, s3_uploader
 from ..repositories.common import ListResources, DeleteResource, CreateResource, GetResource
 from ..sdk_exceptions import ResourceFetchingError
 
@@ -44,11 +41,16 @@ class ListModels(GetBaseModelsApiUrlMixin, ParseModelDictMixin, ListResources):
         if kwargs.get("project_id"):
             filters["projectId"] = kwargs.get("project_id")
 
-        if not filters:
-            return None
+        if filters:
+            json_ = {"filter": {"where": {"and": [filters]}}}
+        else:
+            json_ = {}
 
-        json_ = {"filter": {"where": {"and": [filters]}}}
-        return json_
+        tags = kwargs.get("tags")
+        if tags:
+            json_["tagFilter"] = tags
+
+        return json_ or None
 
 
 class DeleteModel(GetBaseModelsApiUrlMixin, DeleteResource):
@@ -63,12 +65,20 @@ class DeleteModel(GetBaseModelsApiUrlMixin, DeleteResource):
         return kwargs
 
 
+class GetPresignedUrlForModelFile(GetResource):
+    def get_request_url(self, **kwargs):
+        return "/mlModels/createModelV2"
+
+    def _get_api_url(self, **kwargs):
+        return gradient.api_sdk.config.config.CONFIG_HOST
+
+
 class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
     SERIALIZER_CLS = serializers.Model
     HANDLE_FIELD = "id"
 
     def get_request_url(self, **kwargs):
-        return "/mlModels/createModel"
+        return "/mlModels/createModelV2"
 
     def _get_request_params(self, kwargs):
         return kwargs
@@ -76,28 +86,25 @@ class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
     def _get_request_json(self, instance_dict):
         return None
 
-    def _get_request_files(self, path):
-        """
-        :param str path: path to Model that will be uploaded
-        """
-        if not path:
-            return None
+    def create(self, instance, data=None, path=None):
+        model_id = super(UploadModel, self).create(instance, data=data, path=path)
+        try:
+            self._upload_model(path, model_id)
+        except BaseException:
+            self._delete_model(model_id)
+            raise
 
-        return self._prepare_files(path)
+        return model_id
 
-    @staticmethod
-    def _prepare_files(path):
-        files = list()
-        if os.path.isfile(path):
-            file_name = os.path.basename(path)
-            files.append((file_name, open(path, "rb")))
-        elif os.path.isdir(path):
-            files_path = glob.glob(path + "/**", recursive=True)
-            for file_path in files_path:
-                if os.path.isfile(file_path):
-                    file_name = os.path.relpath(file_path, path)
-                    files.append((file_name, open(file_path, "rb")))
-        return files
+    def _upload_model(self, file_path, model_id):
+        model_uploader = s3_uploader.S3ModelFileUploader(
+            self.api_key, logger=self.logger, ps_client_name=self.ps_client_name
+        )
+        model_uploader.upload(file_path, model_id)
+
+    def _delete_model(self, model_id):
+        repository = DeleteModel(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        repository.delete(model_id)
 
 
 class GetModel(GetBaseModelsApiUrlMixin, GetResource):

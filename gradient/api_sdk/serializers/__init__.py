@@ -1,5 +1,5 @@
 from .artifact import ArtifactSchema
-from .deployment import DeploymentSchema
+from .deployment import DeploymentSchema, DeploymentCreateSchema
 from .experiment import BaseExperimentSchema, MultiNodeExperimentSchema, SingleNodeExperimentSchema, \
     MpiMultiNodeExperimentSchema
 from .hyperparameter import HyperparameterSchema
@@ -9,4 +9,6 @@ from .machine import MachineSchema, MachineSchemaForListing, MachineEventSchema
 from .model import Model, ModelFileSchema
 from .notebook import NotebookSchema
 from .project import Project
+from .tag import TagSchema
 from .tensorboard import InstanceSchema, TensorboardSchema, TensorboardDetailSchema
+from .vm_type import VmTypeSchema, VmTypeGpuModelSchema

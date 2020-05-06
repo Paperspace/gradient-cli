@@ -1,15 +1,15 @@
 import os
 import sys
 
-from gradient.commands.jobs import RunJobCommand
 from gradient.api_sdk.constants import RunMode
-from gradient.logger import Logger
-from gradient.workspace import WorkspaceHandler
+from gradient.clilogger import CliLogger
+from gradient.commands.jobs import RunJobCommand
+from gradient.api_sdk.workspace import WorkspaceHandler
 
 
 class RunCommand(object):
 
-    def __init__(self, api_key=None, logger_=Logger()):
+    def __init__(self, api_key=None, logger_=CliLogger()):
         self.api_key = api_key
         self.logger = logger_
 
@@ -53,5 +53,5 @@ class RunCommand(object):
         command = self._create_command(mode, script)
         json_['command'] = command
 
-        command = RunJobCommand(api_key=self.api_key, workspace_handler=WorkspaceHandler())
+        command = RunJobCommand(api_key=self.api_key, workspace_handler=WorkspaceHandler(logger_=CliLogger()))
         command.execute(json_)

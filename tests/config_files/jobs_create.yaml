@@ -26,6 +26,4 @@ relDockerfilePath: some dockerfile path
 startedByUserId: some_user_id
 useDockerfile: 'True'
 workingDirectory: /some/path
-workspace: null
-workspaceArchive: null
-workspaceUrl: s3://some.workspace.url
+workspace: s3://some-path

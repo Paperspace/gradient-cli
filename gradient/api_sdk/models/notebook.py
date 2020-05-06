@@ -1,7 +1,9 @@
+import datetime
+
 import attr
 
-from gradient.api_sdk.config import config
-from gradient.api_sdk.utils import urljoin
+from ..config import config
+from ..utils import concatenate_urls
 
 
 @attr.s
@@ -23,8 +25,16 @@ class Notebook(object):
     vm_type = attr.ib(type=bool, default=None)
     fqdn = attr.ib(type=bool, default=None)
     namespace = attr.ib(type=str, default=None)
+    tags = attr.ib(type=list, factory=list)
+    metrics_url = attr.ib(type=str, default=None)
+
+    dt_created = attr.ib(type=datetime.datetime, default=None)
+    dt_modified = attr.ib(type=datetime.datetime, default=None)
+    dt_started = attr.ib(type=datetime.datetime, default=None)
+    dt_stopped = attr.ib(type=datetime.datetime, default=None)
+    dt_deleted = attr.ib(type=datetime.datetime, default=None)
 
     @property
     def url(self):
-        url = urljoin(config.WEB_URL, "/console/{}/notebook/{}".format(self.namespace, self.project_id))
+        url = concatenate_urls(config.WEB_URL, "/console/{}/notebook/{}".format(self.namespace, self.project_id))
         return url

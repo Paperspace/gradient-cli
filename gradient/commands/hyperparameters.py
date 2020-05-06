@@ -1,17 +1,24 @@
 import abc
 
 import six
-import terminaltables
+
 from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 from gradient.commands.experiments import BaseCreateExperimentCommandMixin
 
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseHyperparameterCommand(BaseCommand):
+    entity = "experiment"
+
     def _get_client(self, api_key, logger):
-        client = api_sdk.clients.HyperparameterJobsClient(api_key=api_key, logger=logger)
+        client = api_sdk.clients.HyperparameterJobsClient(
+            api_key=api_key,
+            logger=logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
         return client
 
 
@@ -19,7 +26,7 @@ class CreateHyperparameterCommand(BaseCreateExperimentCommandMixin, BaseHyperpar
     SPINNER_MESSAGE = "Creating hyperparameter tuning job"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "Hyperparameter tuning job created with ID: {}"
 
-    def _create(self, hyperparameter, use_vpc=False):
+    def _create(self, hyperparameter):
         handle = self.client.create(**hyperparameter)
         return handle
 
@@ -28,7 +35,7 @@ class CreateAndStartHyperparameterCommand(BaseCreateExperimentCommandMixin, Base
     SPINNER_MESSAGE = "Creating and starting hyperparameter tuning job"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "Hyperparameter tuning job created and started with ID: {}"
 
-    def _create(self, hyperparameter, use_vpc=False):
+    def _create(self, hyperparameter):
         handle = self.client.run(**hyperparameter)
         return handle
 
@@ -76,3 +83,15 @@ class HyperparameterStartCommand(BaseHyperparameterCommand):
     def execute(self, id_):
         self.client.start(id_)
         self.logger.log("Hyperparameter tuning started")
+
+
+class HyperparameterAddTagsCommand(BaseHyperparameterCommand):
+    def execute(self, hyperparameter_id, *args, **kwargs):
+        self.client.add_tags(hyperparameter_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags added to hyperparameter")
+
+
+class HyperparameterRemoveTagsCommand(BaseHyperparameterCommand):
+    def execute(self, hyperparameter_id, *args, **kwargs):
+        self.client.remove_tags(hyperparameter_id, entity=self.entity, **kwargs)
+        self.logger.log("Tags removed from hyperparameter")

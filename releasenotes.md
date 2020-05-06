@@ -1,5 +1,99 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.7.1a0
+#### New features
+* streaming metrics 
+* local workspace upload for deployments
+#### Fixes
+* major refactor of workspace uploader
+
+# Release Notes for 0.7.0a1
+#### Fixes
+* Fix cluster ID field again
+
+# Release Notes for 0.7.0a0
+#### Breaking changes
+* Removed experimental `projects wizard` command
+#### New features
+* Added commands for reading experiment metrics
+#### Fixes
+* Fix request field name for `deployment create` command
+
+# Release Notes for 0.6.3
+#### Fixes
+* Fix request field name for `deployment create` command
+
+# Release Notes for 0.6.2
+#### New features
+* Added support for uploading 100MB+ models
+* Added `command` option/parameter to `depoyments create` command and SDK method
+
+# Release Notes for 0.6.1
+##### Note: this list includes all changes made in 0.6.1a* alpha releases
+### Breaking changes
+* `--workspaceUrl` and `--workspaceArchive` replaced by `--workspace`
+### New features
+* Added `clusters machineTypes list` command
+* Added `--projectId` option to `models upload` command
+* Overwriting options provided in YAML file with values passed in terminal
+### Fixes
+* Fix raising KeyError when listing experiments
+* Added `clusters list` command
+* Fixed URL to a newly created project
+
+# Release Notes for 0.6.1a1
+### New features
+* Added `--projectId` option to `models upload` command
+* Overwriting options provided in YAML file with values passed in terminal
+
+# Release Notes for 0.6.1a0
+### Breaking changes
+* `--workspaceUrl` and `--workspaceArchive` replaced by `--workspace`
+### Fixes
+* Added `clusters list` command
+* Fixed URL to a newly created project
+
+# Release Notes for 0.6.0
+##### Note: this list includes all changes made in 0.6.0a* alpha releases
+### Breaking changes
+* Removed the `--vpc` flag
+* `--name` is not required to create/run experiment. Parameters in methods for creating/running experiments have changed 
+### New features
+* Added commands to `add` and `remove` tags
+* Added filtering notebooks by tags
+* Added showing tags in `details` commands
+* Added `projects details` command
+* Datasets for experiments in YAML options file can now be defined as list of objects
+* Allow string instead of list of strings in YAML for options that take multiple values
+### Fixes
+* Removed empty lines in logs
+* Fixed `ExperimentsClient.list` parameters (not a breaking change)
+* Fix showing cluster ID in `deployments details`
+* Add filtering entities by tags in `list` commands
+
+# Release Notes for 0.6.0a2
+### Breaking changes
+* Removed the `--vpc` flag
+
+# Release Notes for 0.6.0a1
+### New features
+* Added commands to `add` and `remove` tags
+* Added filtering notebooks by tags
+* Added showing tags in `details` commands
+* Added `projects details` command
+
+# Release Notes for 0.6.0a0
+### Breaking changes
+* `--name` is not required to create/run experiment. Parameters in methods for creating/running experiments have changed 
+### New features
+* Datasets for experiments in YAML options file can now be defined as list of objects
+* Allow string instead of list of strings in YAML for options that take multiple values
+### Fixes
+* Removed empty lines in logs
+* Fixed `ExperimentsClient.list` parameters (not a breaking change)
+* Fix showing cluster ID in `deployments details`
+* Add filtering entities by tags in `list` commands
+
 # Release Notes for 0.5.2
 ##### Note: this list includes all changes made in 0.5.2a* alpha releases
 ### New features

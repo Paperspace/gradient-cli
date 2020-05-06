@@ -6,7 +6,7 @@ Remember that in code snippets all highlighted lines are required other lines ar
 from .base_client import BaseClient
 from ..models import Artifact, Job
 from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts, CreateJob, DeleteJob, StopJob, \
-    DeleteJobArtifacts, GetJobArtifacts
+    DeleteJobArtifacts, GetJobArtifacts, GetJobMetrics, StreamJobMetrics
 
 
 class JobsClient(BaseClient):
@@ -26,6 +26,7 @@ class JobsClient(BaseClient):
         )
 
     """
+    entity = "job"
 
     def create(
             self,
@@ -37,9 +38,6 @@ class JobsClient(BaseClient):
             command=None,
             ports=None,
             is_public=None,
-            workspace=None,
-            workspace_archive=None,
-            workspace_url=None,
             working_directory=None,
             experiment_id=None,
             job_env=None,
@@ -58,6 +56,7 @@ class JobsClient(BaseClient):
             registry_target_username=None,
             registry_target_password=None,
             build_only=False,
+            tags=None,
     ):
         """
         Method to create and start job in paperspace gradient.
@@ -76,7 +75,6 @@ class JobsClient(BaseClient):
                 name='Example job',
                 command='pip install -r requirements.txt && python mnist.py',
                 ports='5000:5000',
-                workspace_url='git+https://github.com/Paperspace/mnist-sample.git',
                 job_env={
                     'CUSTOM_ENV'='Some value that will be set as system environment',
                 }
@@ -112,11 +110,6 @@ class JobsClient(BaseClient):
             Example value: ``5000:5000,8080:8080``
 
         :param bool is_public: bool flag to select if job should be available by default None
-        :param str workspace: this field is used with CLI to upload folder as your workspace. You can provide here path
-            that you wish to upload. (Soon also will support a path to a workspace archive or git repository URL.)
-        :param str workspace_archive: Path to workspace archive. (Currently being deprecated in an upcoming version.)
-        :param str workspace_url: url to repo with code to run inside of job.
-            (Currently being deprecated in an upcoming version.)
         :param str working_directory: location of code to run. By default ``/paperspace``
         :param str experiment_id: Id of experiment to which job should be connected. If not provided there will be
             created new experiment for this job.
@@ -139,6 +132,7 @@ class JobsClient(BaseClient):
         :param str registry_target_username: username for custom docker registry
         :param str registry_target_password: password for custom docker registry
         :param bool build_only: determines whether to only build and not run image
+        :param list[str] tags: List of tags
 
         :returns: Job handle
         :rtype: str
@@ -155,9 +149,6 @@ class JobsClient(BaseClient):
             command=command,
             ports=ports,
             is_public=is_public,
-            workspace=workspace,
-            workspace_archive=workspace_archive,
-            workspace_url=workspace_url,
             working_directory=working_directory,
             experiment_id=experiment_id,
             job_env=job_env,
@@ -177,7 +168,12 @@ class JobsClient(BaseClient):
             registry_target_password=registry_target_password,
             build_only=build_only,
         )
-        handle = CreateJob(self.api_key, self.logger).create(job, data=data)
+        repository = self.build_repository(CreateJob)
+        handle = repository.create(job, data=data)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
         return handle
 
     def delete(self, job_id):
@@ -195,7 +191,8 @@ class JobsClient(BaseClient):
         :param str job_id: id of job that you want to remove
         :raises: exceptions.GradientSdkError
         """
-        DeleteJob(self.api_key, self.logger).delete(job_id)
+        repository = self.build_repository(DeleteJob)
+        repository.delete(job_id)
 
     def stop(self, job_id):
         """
@@ -212,9 +209,10 @@ class JobsClient(BaseClient):
         :param job_id: id of job that we want to stop
         :raises: exceptions.GradientSdkError
         """
-        StopJob(self.api_key, self.logger).stop(job_id)
+        repository = self.build_repository(StopJob)
+        repository.stop(job_id)
 
-    def list(self, project_id=None, project=None, experiment_id=None):
+    def list(self, project_id=None, project=None, experiment_id=None, tags=None):
         """
         Method to list jobs.
 
@@ -237,12 +235,19 @@ class JobsClient(BaseClient):
         :param str project_id: id of project that you want to list jobs
         :param str project: name of project that you want to list jobs
         :param str experiment_id: id of experiment that you want to list jobs
+        :param list[str]|tuple[str] tags: tags to filter jobs with OR
 
         :returns: list of job models
-        :rtype: list
+        :rtype: list[Job]
         """
-        return ListJobs(self.api_key, self.logger).list(project_id=project_id, project=project,
-                                                        experiment_id=experiment_id)
+        repository = self.build_repository(ListJobs)
+        jobs = repository.list(
+            project_id=project_id,
+            project=project,
+            experiment_id=experiment_id,
+            tags=tags,
+        )
+        return jobs
 
     def logs(self, job_id, line=0, limit=10000):
         """
@@ -265,7 +270,8 @@ class JobsClient(BaseClient):
         :returns: list of formatted logs lines
         :rtype: list
         """
-        logs = ListJobLogs(self.api_key, self.logger).list(job_id=job_id, line=line, limit=limit)
+        repository = self.build_repository(ListJobLogs)
+        logs = repository.list(job_id=job_id, line=line, limit=limit)
         return logs
 
     def yield_logs(self, job_id, line=0, limit=10000):
@@ -289,7 +295,7 @@ class JobsClient(BaseClient):
         :rtype: Iterator[models.LogRow]
         """
 
-        repository = ListJobLogs(self.api_key, self.logger)
+        repository = self.build_repository(ListJobLogs)
         logs = repository.yield_logs(job_id=job_id, line=line, limit=limit)
         return logs
 
@@ -312,7 +318,8 @@ class JobsClient(BaseClient):
 
         :raises: exceptions.GradientSdkError
         """
-        DeleteJobArtifacts(self.api_key, self.logger).delete(id_=job_id, files=files)
+        repository = self.build_repository(DeleteJobArtifacts)
+        repository.delete(id_=job_id, files=files)
 
     def artifacts_get(self, job_id):
         """
@@ -331,7 +338,8 @@ class JobsClient(BaseClient):
         :returns: Information about artifact place
         :rtype: dict
         """
-        data = GetJobArtifacts(self.api_key, self.logger).get(jobId=job_id)
+        repository = self.build_repository(GetJobArtifacts)
+        data = repository.get(jobId=job_id)
         return data
 
     def artifacts_list(self, job_id, files=None, size=False, links=True):
@@ -357,4 +365,52 @@ class JobsClient(BaseClient):
         :returns: list of files with description if specified from job artifacts.
         :rtype: list[Artifact]
         """
-        return ListJobArtifacts(self.api_key, self.logger).list(jobId=job_id, files=files, links=links, size=size)
+        repository = self.build_repository(ListJobArtifacts)
+        artifacts = repository.list(jobId=job_id, files=files, links=links, size=size)
+        return artifacts
+
+    def get_metrics(self, job_id, start=None, end=None, interval="30s", built_in_metrics=None):
+        """Get job metrics
+
+        :param str job_id: ID of a job
+        :param datetime.datetime|str start:
+        :param datetime.datetime|str end:
+        :param str interval:
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+                    Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
+                                            gpuTemp, gpuUtilization, gpuMemoryUtilization
+
+        :returns: Metrics of a job
+        :rtype: dict[str,dict[str,list[dict]]]
+        """
+
+        repository = self.build_repository(GetJobMetrics)
+        metrics = repository.get(
+            id=job_id,
+            start=start,
+            end=end,
+            interval=interval,
+            built_in_metrics=built_in_metrics,
+        )
+        return metrics
+
+    def stream_metrics(self, job_id, interval="30s", built_in_metrics=None):
+        """Stream live job metrics
+
+        :param str job_id: ID of a job
+        :param str interval:
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+                    Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
+                                            gpuTemp, gpuUtilization, gpuMemoryUtilization
+
+        :returns: Generator object yielding live job metrics
+        :rtype: Iterable[dict]
+        """
+
+        repository = self.build_repository(StreamJobMetrics)
+        metrics = repository.stream(
+            id=job_id,
+            interval=interval,
+            built_in_metrics=built_in_metrics,
+        )
+        return metrics

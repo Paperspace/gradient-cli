@@ -1,5 +1,5 @@
 apiKey: some_key
 follow: false
-jobId: some_id
+id: some_id
 limit: 200
 line: 50

@@ -1,7 +1,9 @@
+import json
+
 import gradient.api_sdk.config
-from gradient.api_sdk import serializers
-from gradient.api_sdk.clients import http_client
-from .common import ListResources, CreateResource, GetResource, DeleteResource, StopResource
+from .common import ListResources, CreateResource, GetResource, DeleteResource, StopResource, GetMetrics, StreamMetrics
+from .. import serializers, sdk_exceptions
+from ..clients import http_client
 from ..serializers import JobSchema, LogRowSchema
 
 
@@ -13,12 +15,12 @@ class GetBaseJobApiUrlMixin(object):
 class ListJobs(GetBaseJobApiUrlMixin, ListResources):
 
     def get_request_url(self, **kwargs):
-        return "/jobs/getJobs/"
+        return "/jobs/getJobList/"
 
     def _parse_objects(self, data, **kwargs):
         jobs = []
 
-        for job_dict in data:
+        for job_dict in data["jobList"]:
             job = self._parse_object(job_dict)
             jobs.append(job)
 
@@ -28,19 +30,29 @@ class ListJobs(GetBaseJobApiUrlMixin, ListResources):
         job = serializers.JobSchema().get_instance(job_dict)
         return job
 
-    def _get_request_json(self, kwargs):
-        filters = dict()
+    def _get_request_params(self, kwargs):
+        filters = {"filter": {"where": {}}}
         if kwargs.get("project_id"):
-            filters["projectId"] = kwargs.get("project_id")
+            filters["filter"]["where"]["projectId"] = kwargs.get("project_id")
 
         if kwargs.get("project"):
-            filters["project"] = kwargs.get("project")
+            filters["filter"]["where"]["project"] = kwargs.get("project")
 
         if kwargs.get("experiment_id"):
-            filters["experimentId"] = kwargs.get("experiment_id")
+            filters["filter"]["where"]["experimentId"] = kwargs.get("experiment_id")
 
-        json_ = filters or None
-        return json_
+        params = {}
+        filter_string = json.dumps(filters)
+        params["filter"] = filter_string
+
+        tags = kwargs.get("tags")
+        if tags:
+            params["modelName"] = "team"  # TODO: filtering by tags won't work without this. Remove this when fixed.
+            for i, tag in enumerate(tags):
+                key = "tagFilter[{}]".format(i)
+                params[key] = tag
+
+        return params or None
 
 
 class ListJobLogs(ListResources):
@@ -103,7 +115,7 @@ class RunJob(CreateJob):
         super(RunJob, self).__init__(api_key, logger)
         self.http_client = client
 
-    def _get_client(self, use_vpc=False):
+    def _get_client(self, **kwargs):
         return self.http_client
 
 
@@ -125,6 +137,26 @@ class StopJob(GetBaseJobApiUrlMixin, StopResource):
     def _send_request(self, client, url, json_data=None):
         response = client.post(url, json=json_data)
         return response
+
+
+class GetJob(GetBaseJobApiUrlMixin, GetResource):
+    def get_request_url(self, **kwargs):
+        return "/jobs/getPublicJob"
+
+    def _get_request_json(self, kwargs):
+        json_ = {
+            "jobId": kwargs["job_id"]
+        }
+        return json_
+
+    def _send_request(self, client, url, json=None, params=None):
+        response = client.post(url, json=json, params=params)
+        return response
+
+    def _parse_object(self, instance_dict, **kwargs):
+        instance_dict = instance_dict["job"]
+        job = serializers.JobSchema().get_instance(instance_dict)
+        return job
 
 
 class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
@@ -159,8 +191,8 @@ class DeleteJobArtifacts(GetBaseJobApiUrlMixin, DeleteResource):
     def get_request_url(self, **kwargs):
         return "/jobs/{}/artifactsDestroy".format(kwargs.get("id"))
 
-    def _send(self, url, use_vpc=False, **kwargs):
-        client = self._get_client(use_vpc=use_vpc)
+    def _send(self, url, **kwargs):
+        client = self._get_client(**kwargs)
         params_data = self._get_request_params(kwargs)
         response = self._send_request(client, url, params_data=params_data)
         gradient_response = http_client.GradientResponse.interpret_response(response)
@@ -190,3 +222,30 @@ class GetJobArtifacts(GetBaseJobApiUrlMixin, GetResource):
 
     def get_request_url(self, **kwargs):
         return "/jobs/artifactsGet"
+
+
+class GetJobMetrics(GetMetrics):
+    OBJECT_TYPE = "mljob"
+
+    def _get_instance_by_id(self, instance_id, **kwargs):
+        repository = GetJob(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        instance = repository.get(job_id=instance_id)
+        return instance
+
+    def _get_start_date(self, instance, kwargs):
+        rv = super(GetJobMetrics, self)._get_start_date(instance, kwargs)
+        if rv is None:
+            raise sdk_exceptions.GradientSdkError("Job has not started yet")
+
+        return rv
+
+
+class StreamJobMetrics(StreamMetrics):
+    OBJECT_TYPE = "mljob"
+
+    def _get_metrics_api_url(self, instance_id, protocol="https"):
+        repository = GetJob(api_key=self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        instance = repository.get(job_id=instance_id)
+
+        metrics_api_url = super(StreamJobMetrics, self)._get_metrics_api_url(instance, protocol="wss")
+        return metrics_api_url

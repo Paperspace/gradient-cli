@@ -3,6 +3,7 @@ authPassword: some_password
 apiKey: some_key
 apiType: REST
 clusterId: some_cluster_id
+command: some deployment command
 containerModelPath: some/container/model/path
 containerUrlPath: some/container/url/path
 deploymentType: TFSERVING
@@ -23,4 +24,3 @@ method: some_method
 modelId: some_model_id
 name: some_name
 ports: 5000,6000:7000
-vpc: true

@@ -53,6 +53,7 @@ class Hyperparameter(BaseExperiment):
     trigger_event_id = attr.ib(type=str, default=None)
     dockerfile_path = attr.ib(type=str, default=None)
     use_dockerfile = attr.ib(type=bool, default=None)
+    tags = attr.ib(type=list, factory=list)
 
     @experiment_type_id.validator
     def experiment_type_id_validator(self, attribute, value):
