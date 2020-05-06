@@ -1,3 +1,5 @@
+import datetime
+
 import attr
 
 from .. import constants
@@ -62,6 +64,13 @@ class BaseExperiment(object):
     is_preemptible = attr.ib(type=bool, default=None)
     id = attr.ib(type=str, default=None)
     state = attr.ib(type=int, default=None)
+    tags = attr.ib(type=list, factory=list)
+
+    dt_created = attr.ib(type=datetime.datetime, default=None)
+    dt_modified = attr.ib(type=datetime.datetime, default=None)
+    dt_started = attr.ib(type=datetime.datetime, default=None)
+    dt_stopped = attr.ib(type=datetime.datetime, default=None)
+    dt_deleted = attr.ib(type=datetime.datetime, default=None)
 
 
 @attr.s

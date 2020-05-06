@@ -1,0 +1,6 @@
+apiKey: some_key
+id: esro6mbmiulvbl
+interval: 20s
+metric:
+- gpuMemoryFree
+- gpuMemoryUsed

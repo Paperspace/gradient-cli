@@ -1,8 +1,6 @@
 import json
 import os
 
-from gradient.config import get_help_colors_dict
-
 
 # TODO: this function is copy-pasted from login.py;
 #  there is something weird going one with imports in __init__.py and I'm unable to import apikey now
@@ -29,6 +27,17 @@ _DEFAULT_HELP_OPTIONS_COLOR = "green"
 _DEFAULT_USE_CONSOLE_COLORS = True
 
 
+def get_help_colors_dict(use_colors, help_headers_color, help_options_color):
+    if not use_colors:
+        return {}
+
+    d = {
+        "help_headers_color": help_headers_color,
+        "help_options_color": help_options_color,
+    }
+    return d
+
+
 class config(object):
     DEBUG = os.environ.get("PAPERSPACE_CLI_DEBUG") in ("true", "1")
 
@@ -48,5 +57,3 @@ class config(object):
     USE_CONSOLE_COLORS = os.environ.get("PAPERSPACE_USE_CONSOLE_COLORS",
                                         _DEFAULT_USE_CONSOLE_COLORS) in (True, "true", "1")
     HELP_COLORS_DICT = get_help_colors_dict(USE_CONSOLE_COLORS, HELP_HEADERS_COLOR, HELP_OPTIONS_COLOR)
-
-    USE_VPC = os.environ.get("PAPERSPACE_USE_VPC", False) in (True, "true", "1")

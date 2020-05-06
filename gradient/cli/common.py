@@ -1,3 +1,4 @@
+import datetime
 import functools
 import json
 import re
@@ -67,12 +68,12 @@ def get_option_name(options_strings):
 class ReadValueFromConfigFile(click.Parameter):
     def handle_parse_result(self, ctx, opts, args):
         config_file = ctx.params.get(OPTIONS_FILE_PARAMETER_NAME)
-        if config_file:
+        if self.should_read_value_from_file(opts, args, config_file):
             with open(config_file) as f:
                 config_data = yaml.load(f, Loader=yaml.FullLoader)
                 option_name = get_option_name(self.opts)
                 if (isinstance(self, GradientObjectListOption) and
-                    self.object_list_name in config_data):
+                        self.object_list_name in config_data):
                     value_list = []
                     for object_list_item in config_data[self.object_list_name]:
                         value_list.append(object_list_item.get(self.object_key))
@@ -86,11 +87,21 @@ class ReadValueFromConfigFile(click.Parameter):
                             value = json.dumps(value)
                         elif self.multiple and isinstance(value, six.string_types):
                             value = (value,)
+                        # yaml.load turns datetime strings into datetime instances so we turn it back to a string
+                        elif isinstance(value, datetime.datetime):
+                            value = value.strftime("%Y-%m-%dT%H:%M:%S")
 
                         opts[self.name] = value
 
-        return super(ReadValueFromConfigFile, self).handle_parse_result(
+        rv = super(ReadValueFromConfigFile, self).handle_parse_result(
             ctx, opts, args)
+        return rv
+
+    def should_read_value_from_file(self, opts, args, config_file):
+        """
+        :rtype: bool
+        """
+        raise NotImplementedError
 
 
 class ColorExtrasInCommandHelpMixin(object):
@@ -127,11 +138,13 @@ class ColorExtrasInCommandHelpMixin(object):
 
 
 class GradientArgument(ColorExtrasInCommandHelpMixin, ReadValueFromConfigFile, click.Argument):
-    pass
+    def should_read_value_from_file(self, opts, args, config_file):
+        return opts.get(self.name) in (None, ()) and config_file
 
 
 class GradientOption(ColorExtrasInCommandHelpMixin, ReadValueFromConfigFile, click.Option):
-    pass
+    def should_read_value_from_file(self, opts, args, config_file):
+        return self.name not in opts and config_file
 
 
 api_key_option = click.option(
@@ -147,7 +160,7 @@ def generate_options_template(ctx, param, value):
         return value
 
     params = {}
-    objects_value_lists = {} # Object list name -> object key -> list of values
+    objects_value_lists = {}  # Object list name -> object key -> list of values
     for param in ctx.command.params:
         option_name = get_option_name(param.opts)
         if option_name in (OPTIONS_FILE_OPTION_NAME, OPTIONS_DUMP_FILE_OPTION_NAME):
@@ -207,6 +220,7 @@ def options_file(f):
         click.option(
             "--" + OPTIONS_FILE_OPTION_NAME,
             OPTIONS_FILE_PARAMETER_NAME,
+            is_eager=True,
             help="Path to YAML file with predefined options",
             type=click.Path(exists=True, resolve_path=True)
         ),
@@ -242,3 +256,20 @@ class GradientObjectListOption(GradientOption):
 class GradientDatasetOption(GradientObjectListOption):
     def __init__(self, param_decls, **kwargs):
         super(GradientDatasetOption, self).__init__("dataset", param_decls, **kwargs)
+
+
+def validate_comma_split_option(comma_option_value, option_value, raise_if_no_values=False):
+    if raise_if_no_values and not any((comma_option_value, option_value)):
+        raise click.UsageError("No tags provided")
+
+    if comma_option_value or option_value:
+        if option_value:
+            option_value = list(option_value)
+        else:
+            option_value = list()
+        if comma_option_value:
+            comma_option_value = [s.strip() for s in comma_option_value.split(",")]
+            option_value.extend(comma_option_value)
+
+        tags = sorted(set(option_value))
+        return tags

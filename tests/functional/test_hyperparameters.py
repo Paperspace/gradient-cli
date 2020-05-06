@@ -2,13 +2,20 @@ import mock
 from click.testing import CliRunner
 
 from gradient.api_sdk import constants
-from gradient.api_sdk.clients import http_client
+from gradient.api_sdk.clients.http_client import default_headers
 from gradient.cli import cli
 from tests import MockResponse, example_responses
 
+EXPECTED_HEADERS = default_headers.copy()
+EXPECTED_HEADERS["ps_client_name"] = "gradient-cli"
+
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY = EXPECTED_HEADERS.copy()
+EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
+
 
 class TestCreateHyperparameters(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/hyperopt/"
+    TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     COMMAND = [
         "experiments", "hyperparameters", "create",
         "--name", "some_name",
@@ -20,6 +27,20 @@ class TestCreateHyperparameters(object):
         "--projectId", "some_project_id",
         "--workspace", "none",
     ]
+    COMMAND_WITH_TAGS = [
+        "experiments", "hyperparameters", "create",
+        "--name", "some_name",
+        "--tuningCommand", "some command",
+        "--workerContainer", "some_container",
+        "--workerMachineType", "k80",
+        "--workerCommand", "some worker command",
+        "--workerCount", "1",
+        "--projectId", "some_project_id",
+        "--workspace", "none",
+        "--tag", "test0",
+        "--tag", "test1",
+        "--tags", "test2,test3",
+    ]
     EXPECTED_REQUEST_JSON = {
         "workerContainer": "some_container",
         "workerMachineType": "k80",
@@ -30,6 +51,12 @@ class TestCreateHyperparameters(object):
         "experimentTypeId": constants.ExperimentType.HYPERPARAMETER_TUNING,
         "projectHandle": "some_project_id",
     }
+    TAGS_JSON = {
+        "entity": "experiment",
+        "entityId": "eshgvasywz9k1w",
+        "tags": ["test0", "test1", "test2", "test3"]
+    }
+    UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
 
     COMMAND_WHEN_ALL_PARAMETERS_WERE_USED = [
         "experiments", "hyperparameters", "create",
@@ -60,7 +87,7 @@ class TestCreateHyperparameters(object):
         "--workerDockerfilePath", "some_docker_path",
         "--workerUseDockerfile",
         "--workingDirectory", "some_working_directory",
-        "--workspaceUrl", "s3://some.path",
+        "--workspace", "s3://some-path",
     ]
     EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED = {
         "workerContainer": "some_worker_container",
@@ -89,13 +116,10 @@ class TestCreateHyperparameters(object):
         "ports": "8080,9000:9999",
         "useDockerfile": True,
         "workingDirectory": "some_working_directory",
-        "workspaceUrl": "s3://some.path",
+        "workspaceUrl": "s3://some-path",
     }
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "create", "--optionsFile", ]  # path added in test
 
-    EXPECTED_HEADERS = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_RESPONSE = {"handle": "eshgvasywz9k1w", "message": "success"}
     EXPECTED_STDOUT = "Hyperparameter tuning job created with ID: eshgvasywz9k1w\n" \
                       "https://www.paperspace.com/console/projects/some_project_id/experiments/eshgvasywz9k1w\n"
@@ -143,14 +167,14 @@ class TestCreateHyperparameters(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
 
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_get_request_and_print_proper_message_when_create_command_was_used_with_all_options(self,
@@ -160,15 +184,15 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WHEN_ALL_PARAMETERS_WERE_USED)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
                                              params=None,
                                              files=None,
                                              data=None)
 
         assert result.output == self.EXPECTED_STDOUT
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, post_patched):
@@ -178,13 +202,13 @@ class TestCreateHyperparameters(object):
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
         assert result.output == self.EXPECTED_STDOUT
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_proper_message_when_error_message_received(self, post_patched):
@@ -193,8 +217,8 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
                                              files=None,
@@ -209,15 +233,15 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_yaml_file(self, post_patched, hyperparameters_create_config_path):
@@ -227,15 +251,15 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
                                              params=None,
                                              files=None,
                                              data=None)
 
-        assert result.output == self.EXPECTED_STDOUT
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_request_and_print_proper_message_when_error_code_returned_without_json_data(self,
@@ -245,19 +269,48 @@ class TestCreateHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
 
         assert result.output == "Failed to create resource\n"
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_proper_data_and_tag_hyperopt_experiment(self, post_patched, get_patched, put_patched):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE)
+        get_patched.return_value = MockResponse({}, )
+        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_TAGS)
+
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+
+        put_patched.assert_called_once_with(
+            self.TAGS_URL,
+            headers=EXPECTED_HEADERS,
+            json=self.TAGS_JSON,
+            params=None,
+            data=None,
+        )
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        assert result.exit_code == 0
 
 
 class TestCreateAndStartHyperparameters(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/create_and_start/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/hyperopt/create_and_start/"
     COMMAND = [
         "experiments", "hyperparameters", "run",
         "--name", "some_name",
@@ -267,7 +320,6 @@ class TestCreateAndStartHyperparameters(object):
         "--workerCommand", "some worker command",
         "--workerCount", "1",
         "--projectId", "some_project_id",
-        "--workspace", "none",
     ]
     EXPECTED_REQUEST_JSON = {
         "workerContainer": "some_container",
@@ -309,7 +361,7 @@ class TestCreateAndStartHyperparameters(object):
         "--workerDockerfilePath", "some_docker_path",
         "--workerUseDockerfile",
         "--workingDirectory", "some_working_directory",
-        "--workspaceUrl", "s3://some.path",
+        "--workspace", "s3://some-path",
     ]
     EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED = {
         "workerContainer": "some_worker_container",
@@ -338,13 +390,10 @@ class TestCreateAndStartHyperparameters(object):
         "ports": "8080,9000:9999",
         "useDockerfile": True,
         "workingDirectory": "some_working_directory",
-        "workspaceUrl": "s3://some.path",
+        "workspaceUrl": "s3://some-path",
     }
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "run", "--optionsFile", ]  # path added in test
 
-    EXPECTED_HEADERS = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_RESPONSE = {"handle": "eshgvasywz9k1w", "message": "success"}
     EXPECTED_STDOUT = "Hyperparameter tuning job created and started with ID: eshgvasywz9k1w\n" \
                       "https://www.paperspace.com/console/projects/some_project_id/experiments/eshgvasywz9k1w\n"
@@ -392,14 +441,14 @@ class TestCreateAndStartHyperparameters(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
 
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_get_request_and_print_proper_message_when_create_command_was_used_with_all_options(self,
@@ -409,15 +458,15 @@ class TestCreateAndStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WHEN_ALL_PARAMETERS_WERE_USED)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
                                              params=None,
                                              files=None,
                                              data=None)
 
         assert result.output == self.EXPECTED_STDOUT
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, post_patched):
@@ -426,15 +475,15 @@ class TestCreateAndStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
 
         assert result.output == self.EXPECTED_STDOUT
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_proper_message_when_error_message_received(self, post_patched):
@@ -443,8 +492,8 @@ class TestCreateAndStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
                                              files=None,
@@ -459,15 +508,15 @@ class TestCreateAndStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_request_and_print_proper_message_when_error_code_returned_without_json_data(self,
@@ -477,15 +526,15 @@ class TestCreateAndStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
                                              json=self.EXPECTED_REQUEST_JSON,
                                              params=None,
                                              files=None,
                                              data=None)
 
         assert result.output == "Failed to create resource\n"
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_yaml_file(self, post_patched, hyperparameters_create_config_path):
@@ -496,17 +545,17 @@ class TestCreateAndStartHyperparameters(object):
         result = runner.invoke(cli.cli, command)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.EXPECTED_REQUEST_JSON_WHEN_ALL_PARAMETERS_WERE_USED,
                                              params=None,
                                              files=None,
                                              data=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
 
 class TestStartHyperparameters(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/some_id/start/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/hyperopt/some_id/start/"
     COMMAND = [
         "experiments", "hyperparameters", "start",
         "--id", "some_id",
@@ -514,9 +563,6 @@ class TestStartHyperparameters(object):
 
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "start", "--optionsFile", ]  # path added in test
 
-    EXPECTED_HEADERS = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_RESPONSE = {"message": "success"}
     EXPECTED_STDOUT = "Hyperparameter tuning started\n"
 
@@ -539,11 +585,13 @@ class TestStartHyperparameters(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS,
                                              json=None,
-                                             params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+                                             params=None,
+                                             data=None,
+                                             )
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, post_patched):
@@ -552,13 +600,15 @@ class TestStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=None,
-                                             params=None)
+                                             params=None,
+                                             data=None,
+                                             )
 
         assert result.output == self.EXPECTED_STDOUT
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_read_options_from_yaml_file(self, post_patched, hyperparameters_start_config_path):
@@ -569,12 +619,14 @@ class TestStartHyperparameters(object):
         result = runner.invoke(cli.cli, command)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
-                                             headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        post_patched.assert_called_once_with(self.URL_V2,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=None,
-                                             params=None)
+                                             params=None,
+                                             data=None,
+                                             )
 
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_print_proper_message_when_error_message_received(self, put_patched):
@@ -583,10 +635,12 @@ class TestStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        put_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS,
+        put_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS,
                                             json=None,
-                                            params=None)
+                                            params=None,
+                                            data=None,
+                                            )
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_ERROR_RECEIVED
 
@@ -597,13 +651,15 @@ class TestStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        put_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS,
+        put_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS,
                                             json=None,
-                                            params=None)
+                                            params=None,
+                                            data=None,
+                                            )
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     def test_should_send_request_and_print_proper_message_when_error_code_returned_without_json_data(self, put_patched):
@@ -612,22 +668,21 @@ class TestStartHyperparameters(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        put_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS,
+        put_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS,
                                             json=None,
-                                            params=None)
+                                            params=None,
+                                            data=None,
+                                            )
 
         assert result.output == "Failed to start hyperparameter tuning job\n"
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
 
 class TestHyperparametersList(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/hyperopt/"
     COMMAND = ["experiments", "hyperparameters", "list"]
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "list", "--optionsFile", ]  # path added in test
-    EXPECTED_HEADERS = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
     EXPECTED_REQUEST_PARAMS = {"limit": -1}
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = ["experiments", "hyperparameters", "list", "--apiKey", "some_key"]
@@ -663,11 +718,11 @@ class TestHyperparametersList(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS,
+        get_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS,
                                             json=None,
                                             params=self.EXPECTED_REQUEST_PARAMS)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, get_patched):
@@ -676,13 +731,13 @@ class TestHyperparametersList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
-        get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        get_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=self.EXPECTED_REQUEST_PARAMS)
 
         assert result.output == self.EXPECTED_STDOUT
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml(self, get_patched, hyperparameters_list_config_path):
@@ -692,13 +747,13 @@ class TestHyperparametersList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
-        get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        get_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=self.EXPECTED_REQUEST_PARAMS)
 
         assert result.output == self.EXPECTED_STDOUT
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_proper_message_when_no_objects_were_found(
@@ -708,8 +763,8 @@ class TestHyperparametersList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS,
+        get_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS,
                                             json=None,
                                             params=self.EXPECTED_REQUEST_PARAMS)
 
@@ -722,8 +777,8 @@ class TestHyperparametersList(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS,
+        get_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS,
                                             json=None,
                                             params=self.EXPECTED_REQUEST_PARAMS)
 
@@ -731,11 +786,8 @@ class TestHyperparametersList(object):
 
 
 class TestHyperparametersDetails(object):
-    URL = "https://services.paperspace.io/experiments/v1/hyperopt/some_id/"
+    URL_V2 = "https://services.paperspace.io/experiments/v2/hyperopt/some_id/"
     COMMAND = ["experiments", "hyperparameters", "details", "--id", "some_id"]
-    EXPECTED_HEADERS = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY = http_client.default_headers.copy()
-    EXPECTED_HEADERS_WITH_CHANGED_API_KEY["X-API-Key"] = "some_key"
 
     COMMAND_WITH_OPTIONS_FILE = ["experiments", "hyperparameters", "details", "--optionsFile", ]  # path added in test
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
@@ -772,12 +824,12 @@ class TestHyperparametersDetails(object):
         result = runner.invoke(cli.cli, self.COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS,
+        get_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
 
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, get_patched):
@@ -786,13 +838,13 @@ class TestHyperparametersDetails(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
-        get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        get_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=None)
 
         assert result.output == self.EXPECTED_STDOUT
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(
@@ -804,11 +856,11 @@ class TestHyperparametersDetails(object):
         result = runner.invoke(cli.cli, command)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+        get_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
                                             params=None)
-        assert self.EXPECTED_HEADERS["X-API-Key"] != "some_key"
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_proper_message_when_no_objects_were_found(self, get_patched):
@@ -817,8 +869,8 @@ class TestHyperparametersDetails(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS,
+        get_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
 
@@ -831,8 +883,8 @@ class TestHyperparametersDetails(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS,
+        get_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
 
@@ -845,8 +897,8 @@ class TestHyperparametersDetails(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
 
-        get_patched.assert_called_once_with(self.URL,
-                                            headers=self.EXPECTED_HEADERS,
+        get_patched.assert_called_once_with(self.URL_V2,
+                                            headers=EXPECTED_HEADERS,
                                             json=None,
                                             params=None)
 

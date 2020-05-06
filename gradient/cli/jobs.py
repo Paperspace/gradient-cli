@@ -2,19 +2,23 @@ from functools import reduce
 
 import click
 
-from gradient import utils, logger
+from gradient import clilogger
+from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
-from gradient.cli.cli_types import json_string
-from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts
-from gradient.cli.experiments import \
-    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used
+from gradient.cli.cli_types import json_string, ChoiceType
+from gradient.cli.common import (
+    api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts,
+    validate_comma_split_option,
+)
 from gradient.commands import jobs as jobs_commands
-from gradient.workspace import WorkspaceHandler
+from gradient.commands.jobs import JobAddTagsCommand, JobRemoveTagsCommand, StreamJobMetricsCommand, \
+    GetJobMetricsCommand
+from gradient.api_sdk.workspace import WorkspaceHandler
 
 
 def get_workspace_handler():
-    logger_ = logger.Logger()
+    logger_ = clilogger.CliLogger()
     workspace_handler = WorkspaceHandler(logger_=logger_)
     return workspace_handler
 
@@ -24,9 +28,19 @@ def jobs_group():
     pass
 
 
+@jobs_group.group("tags", help="Manage job tags", cls=ClickGroup)
+def jobs_tags():
+    pass
+
+
+@jobs_group.group(name="metrics", help="Read job metrics", cls=ClickGroup)
+def jobs_metrics():
+    pass
+
+
 @jobs_group.command("delete", help="Delete job")
 @click.option(
-    "--jobId",
+    "--id",
     "job_id",
     required=True,
     help="Delete job with given ID",
@@ -39,7 +53,7 @@ def delete_job(job_id, api_key):
 
 @jobs_group.command("stop", help="Stop running job")
 @click.option(
-    "--jobId",
+    "--id",
     "job_id",
     required=True,
     help="Stop job with given ID",
@@ -131,18 +145,6 @@ def common_jobs_create_options(f):
             "--workspace",
             "workspace",
             help="Path to workspace directory",
-            cls=common.GradientOption,
-        ),
-        click.option(
-            "--workspaceArchive",
-            "workspace_archive",
-            help="Path to workspace archive",
-            cls=common.GradientOption,
-        ),
-        click.option(
-            "--workspaceUrl",
-            "workspace_url",
-            help="Project git repository url",
             cls=common.GradientOption,
         ),
         click.option(
@@ -265,6 +267,19 @@ def common_jobs_create_options(f):
             help="Determines whether to only build and not run image (default false)",
             cls=common.GradientOption,
         ),
+        click.option(
+            "--tag",
+            "tags",
+            multiple=True,
+            help="One or many tags that you want to add to experiment",
+            cls=common.GradientOption
+        ),
+        click.option(
+            "--tags",
+            "tags_comma",
+            help="Separated by comma tags that you want add to experiment",
+            cls=common.GradientOption
+        )
     ]
     return reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -275,8 +290,7 @@ def common_jobs_create_options(f):
 @common.options_file
 @click.pass_context
 def create_job(ctx, api_key, options_file, **kwargs):
-    utils.validate_workspace_input(kwargs)
-    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
 
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
@@ -289,7 +303,7 @@ def create_job(ctx, api_key, options_file, **kwargs):
 
 @jobs_group.command("logs", help="List job logs")
 @click.option(
-    "--jobId",
+    "--id",
     "job_id",
     required=True,
     cls=common.GradientOption,
@@ -328,7 +342,12 @@ def artifacts():
 
 
 @artifacts.command("destroy", help="Destroy job's artifacts")
-@click.argument("job_id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "job_id",
+    cls=common.GradientOption,
+    help="ID of the job",
+)
 @click.option(
     "--files",
     "files",
@@ -342,7 +361,12 @@ def destroy_artifacts(job_id, options_file, api_key=None, files=None):
 
 
 @artifacts.command("get", help="Get job's artifacts")
-@click.argument("job_id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "job_id",
+    cls=common.GradientOption,
+    help="ID of the job",
+)
 @api_key_option
 @common.options_file
 def get_artifacts(job_id, options_file, api_key=None):
@@ -351,7 +375,12 @@ def get_artifacts(job_id, options_file, api_key=None):
 
 
 @artifacts.command("list", help="List job's artifacts")
-@click.argument("job_id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "job_id",
+    cls=common.GradientOption,
+    help="ID of the job",
+)
 @click.option(
     "--size",
     "-s",
@@ -384,7 +413,7 @@ def list_artifacts(job_id, size, links, files, options_file, api_key=None):
 
 @artifacts.command("download", help="List job's artifacts")
 @click.option(
-    "--jobId",
+    "--id",
     "job_id",
     cls=common.GradientOption,
 )
@@ -398,3 +427,148 @@ def list_artifacts(job_id, size, links, files, options_file, api_key=None):
 def download_artifacts(job_id, destination_directory, options_file, api_key=None):
     command = jobs_commands.DownloadArtifactsCommand(api_key=api_key)
     command.execute(job_id=job_id, destination_directory=destination_directory)
+
+
+@jobs_tags.command("add", help="Add tags to job")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the job",
+)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to job",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to job",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def job_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+
+    command = JobAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@jobs_tags.command("remove", help="Remove tags from job")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the job",
+)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to remove from job",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want to remove from job",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def job_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+
+    command = JobRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+
+@jobs_metrics.command(
+    "get",
+    short_help="Get job metrics",
+    help="Get job metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "job_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the job",
+)
+@click.option(
+    "--metric",
+    "metrics_list",
+    multiple=True,
+    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
+    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--start",
+    "start",
+    type=click.DateTime(),
+    help="Timestamp of first time series metric to collect",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--end",
+    "end",
+    type=click.DateTime(),
+    help="Timestamp of last time series metric to collect",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def get_job_metrics(job_id, metrics_list, interval, start, end, options_file, api_key):
+    command = GetJobMetricsCommand(api_key=api_key)
+    command.execute(job_id, start, end, interval, built_in_metrics=metrics_list)
+
+
+@jobs_metrics.command(
+    "stream",
+    short_help="Watch live job metrics",
+    help="Watch live job metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "job_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the job",
+)
+@click.option(
+    "--metric",
+    "metrics_list",
+    multiple=True,
+    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
+    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def stream_job_metrics(job_id, metrics_list, interval, options_file, api_key):
+    command = StreamJobMetricsCommand(api_key=api_key)
+    command.execute(job_id=job_id, interval=interval, built_in_metrics=metrics_list)

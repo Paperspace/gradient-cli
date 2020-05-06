@@ -111,3 +111,28 @@ MODEL_TYPES_MAP = collections.OrderedDict(
 class ApiTypes:
     REST = "REST"
     GRPC = "GRPC"
+
+
+class BuiltinMetrics:
+    cpu_percentage = "cpuPercentage"
+    memory_usage = "memoryUsage"
+    gpu_memory_free = "gpuMemoryFree"
+    gpu_memory_used = "gpuMemoryUsed"
+    gpu_power_draw = "gpuPowerDraw"
+    gpu_temp = "gpuTemp"
+    gpu_utilization = "gpuUtilization"
+    gpu_memory_utilization = "gpuMemoryUtilization"
+
+
+METRICS_MAP = collections.OrderedDict(
+    (
+        ("cpuPercentage", BuiltinMetrics.cpu_percentage),
+        ("memoryUsage", BuiltinMetrics.memory_usage),
+        ("gpuMemoryFree", BuiltinMetrics.gpu_memory_free),
+        ("gpuMemoryUsed", BuiltinMetrics.gpu_memory_used),
+        ("gpuPowerDraw", BuiltinMetrics.gpu_power_draw),
+        ("gpuTemp", BuiltinMetrics.gpu_temp),
+        ("gpuUtilization", BuiltinMetrics.gpu_utilization),
+        ("gpuMemoryUtilization", BuiltinMetrics.gpu_memory_utilization),
+    )
+)

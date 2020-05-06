@@ -70,10 +70,11 @@ setup(
         'requests-toolbelt',
         'progressbar2',
         'halo',
-        'prompt_toolkit<3.0',
         'marshmallow<3.0',
         'attrs<=19',
         'PyYAML==5.*',
+        'python-dateutil==2.*',
+        'websocket-client==0.57.*'
     ],
     entry_points={'console_scripts': [
         'gradient = gradient:main.main',

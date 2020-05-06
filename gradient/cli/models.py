@@ -4,11 +4,17 @@ from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
+from gradient.cli.common import validate_comma_split_option
 from gradient.commands import models as models_commands
 
 
 @cli.group("models", help="Manage models", cls=common.ClickGroup)
 def models_group():
+    pass
+
+
+@models_group.group("tags", help="Manage model tags", cls=common.ClickGroup)
+def model_tags():
     pass
 
 
@@ -43,6 +49,7 @@ def list_models(api_key, experiment_id, project_id, tags, options_file):
 @click.option(
     "--id",
     "model_id",
+    required=True,
     help="Model ID",
     cls=common.GradientOption,
 )
@@ -75,6 +82,12 @@ def delete_model(api_key, model_id, options_file):
     cls=common.GradientOption,
 )
 @click.option(
+    "--projectId",
+    "project_id",
+    help="ID of a project",
+    cls=common.GradientOption,
+)
+@click.option(
     "--modelSummary",
     "model_summary",
     type=json_string,
@@ -87,17 +100,32 @@ def delete_model(api_key, model_id, options_file):
     help="Additional notes",
     cls=common.GradientOption,
 )
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
 @common.api_key_option
 @common.options_file
-def upload_model(path, name, model_type, model_summary, notes, api_key, options_file):
+def upload_model(api_key, options_file, **model):
+    model["tags"] = validate_comma_split_option(model.pop("tags_comma"), model.pop("tags"))
     command = models_commands.UploadModel(api_key=api_key)
-    command.execute(path, name, model_type, model_summary, notes)
+    command.execute(**model)
 
 
 @models_group.command("details", help="Show model details")
 @click.option(
     "--id",
     "model_id",
+    required=True,
     help="Model ID",
     cls=common.GradientOption,
 )
@@ -112,6 +140,7 @@ def model_details(model_id, api_key, options_file):
 @click.option(
     "--id",
     "model_id",
+    required=True,
     help="Model ID",
     cls=common.GradientOption,
 )
@@ -126,3 +155,63 @@ def model_details(model_id, api_key, options_file):
 def download_model_files(model_id, destination_directory, api_key, options_file):
     command = models_commands.DownloadModelFiles(api_key=api_key)
     command.execute(model_id, destination_directory)
+
+
+@model_tags.command("add", help="Add tags to ml model")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the model",
+)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to ml model",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to ml model",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def ml_model_add_tag(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+
+    command = models_commands.MLModelAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@model_tags.command("remove", help="Remove tags from ml model")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the model",
+)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to remove from ml model",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want to remove from ml model",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def ml_model_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+
+    command = models_commands.MLModelRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)

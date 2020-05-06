@@ -1,10 +1,10 @@
-from platform import system
 import sys
-from distutils.version import StrictVersion
+from platform import system
 
 import six
+from distutils.version import StrictVersion
 
-from gradient.logger import Logger
+from gradient.clilogger import CliLogger
 from gradient.version import version
 
 if six.PY2:
@@ -12,8 +12,7 @@ if six.PY2:
 else:
     import xmlrpc.client as xmlrpclib
 
-
-logger = Logger()
+logger = CliLogger()
 
 
 class PackageNotFoundError(Exception):

@@ -1,7 +1,7 @@
 import marshmallow as ma
 
-from gradient.api_sdk import models
 from .base import BaseSchema
+from .. import models
 
 
 class DeploymentSchema(BaseSchema):
@@ -33,4 +33,17 @@ class DeploymentSchema(BaseSchema):
     ports = ma.fields.Str(dump_to="ports", load_from="ports")
     auth_username = ma.fields.Str(dump_to="oauthKey", load_from="oauthKey")
     auth_password = ma.fields.Str(dump_to="oauthSecret", load_from="oauthSecret")
+    cluster_id = ma.fields.Str(dump_to="clusterId", load_from="clusterId")
+    tags = ma.fields.List(ma.fields.Str(), load_only=True)
+    command = ma.fields.Str()
+    metrics_url = ma.fields.Str(dump_to="metricsURL", load_from="metricsURL")
+
+    dt_created = ma.fields.DateTime(dump_to="dtCreated", load_from="dtCreated")
+    dt_modified = ma.fields.DateTime(dump_to="dtModified", load_from="dtModified")
+    dt_started = ma.fields.DateTime(dump_to="dtStarted", load_from="dtStarted")
+    dt_stopped = ma.fields.DateTime(dump_to="dtStopped", load_from="dtStopped")
+    dt_deleted = ma.fields.DateTime(dump_to="dtDeleted", load_from="dtDeleted")
+
+
+class DeploymentCreateSchema(DeploymentSchema):
     cluster_id = ma.fields.Str(dump_to="cluster", load_from="clusterId")

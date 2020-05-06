@@ -1,6 +1,6 @@
 from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource, AlterResource, \
-    GetResource
-from .. import serializers, config
+    GetResource, GetMetrics, StreamMetrics
+from .. import serializers, config, sdk_exceptions
 from ..sdk_exceptions import ResourceFetchingError, MalformedResponseError
 
 
@@ -51,10 +51,10 @@ class ListDeployments(GetBaseDeploymentApiUrlMixin, ListResources):
 
 
 class CreateDeployment(GetBaseDeploymentApiUrlMixin, CreateResource):
-    SERIALIZER_CLS = serializers.DeploymentSchema
+    SERIALIZER_CLS = serializers.DeploymentCreateSchema
 
     def get_request_url(self, **kwargs):
-        if kwargs.get("use_vpc") or config.config.USE_VPC:
+        if kwargs.get("cluster"):
             return "/deployments/v2/createDeployment/"
 
         return "/deployments/createDeployment/"
@@ -66,10 +66,7 @@ class CreateDeployment(GetBaseDeploymentApiUrlMixin, CreateResource):
 
 class StartDeployment(GetBaseDeploymentApiUrlMixin, StartResource):
     def get_request_url(self, **kwargs):
-        if kwargs.get("use_vpc") or config.config.USE_VPC:
-            return "/deployments/v2/updateDeployment/"
-
-        return "/deployments/updateDeployment/"
+        return "/deployments/v2/updateDeployment/"
 
     def _get_request_json(self, kwargs):
         data = {
@@ -85,10 +82,7 @@ class StartDeployment(GetBaseDeploymentApiUrlMixin, StartResource):
 
 class StopDeployment(GetBaseDeploymentApiUrlMixin, StopResource):
     def get_request_url(self, **kwargs):
-        if kwargs.get("use_vpc") or config.config.USE_VPC:
-            return "/deployments/v2/updateDeployment/"
-
-        return "/deployments/updateDeployment/"
+        return "/deployments/v2/updateDeployment/"
 
     def _get_request_json(self, kwargs):
         data = {
@@ -104,10 +98,7 @@ class StopDeployment(GetBaseDeploymentApiUrlMixin, StopResource):
 
 class DeleteDeployment(GetBaseDeploymentApiUrlMixin, DeleteResource):
     def get_request_url(self, **kwargs):
-        if kwargs.get("use_vpc") or config.config.USE_VPC:
-            return "/deployments/v2/deleteDeployment"
-
-        return "/deployments/deleteDeployment"
+        return "/deployments/v2/deleteDeployment"
 
     def _get_request_json(self, kwargs):
         data = {
@@ -125,16 +116,12 @@ class UpdateDeployment(GetBaseDeploymentApiUrlMixin, AlterResource):
     SERIALIZER_CLS = serializers.DeploymentSchema
     VALIDATION_ERROR_MESSAGE = "Failed to update resource"
 
-    def update(self, id, instance, use_vpc=False):
+    def update(self, id, instance):
         instance_dict = self._get_instance_dict(instance)
-        instance_dict["use_vpc"] = use_vpc
         self._run(id=id, **instance_dict)
 
     def get_request_url(self, **kwargs):
-        if kwargs.get("use_vpc") or config.config.USE_VPC:
-            return "/deployments/v2/updateDeployment"
-
-        return "/deployments/updateDeployment"
+        return "/deployments/v2/updateDeployment"
 
     def _get_request_json(self, kwargs):
         # this temporary workaround is here because create and update
@@ -171,3 +158,30 @@ class GetDeployment(GetBaseDeploymentApiUrlMixin, GetResource):
             raise ResourceFetchingError("Deployment not found")
 
         return super(GetDeployment, self)._parse_object(instance_dict, **kwargs)
+
+
+class GetDeploymentMetrics(GetMetrics):
+    OBJECT_TYPE = "modelDeployment"
+
+    def _get_instance_by_id(self, instance_id, **kwargs):
+        repository = GetDeployment(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        instance = repository.get(deployment_id=instance_id)
+        return instance
+
+    def _get_start_date(self, instance, kwargs):
+        rv = super(GetDeploymentMetrics, self)._get_start_date(instance, kwargs)
+        if rv is None:
+            raise sdk_exceptions.GradientSdkError("Deployment job has not started yet")
+
+        return rv
+
+
+class StreamDeploymentMetrics(StreamMetrics):
+    OBJECT_TYPE = "modelDeployment"
+
+    def _get_metrics_api_url(self, instance_id, protocol="https"):
+        repository = GetDeployment(api_key=self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        deployment = repository.get(deployment_id=instance_id)
+
+        metrics_api_url = super(StreamDeploymentMetrics, self)._get_metrics_api_url(deployment, protocol="wss")
+        return metrics_api_url

@@ -26,6 +26,5 @@ workerRegistryPassword: some_registry_password
 workerRegistryUsername: some_registry_username
 workerUseDockerfile: true
 workingDirectory: some_working_directory
-workspace: null
+workspace: s3://some-path
 workspaceArchive: null
-workspaceUrl: s3://some.path

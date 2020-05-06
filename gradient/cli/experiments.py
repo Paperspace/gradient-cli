@@ -2,15 +2,18 @@ import functools
 
 import click
 
-from gradient import utils, logger, workspace
-from gradient.api_sdk import constants
+from gradient import clilogger
+from gradient.api_sdk import constants, workspace
 from gradient.cli import common, validators
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import json_string, ChoiceType
-from gradient.cli.common import api_key_option, ClickGroup
+from gradient.cli.common import api_key_option, ClickGroup, validate_comma_split_option
 from gradient.cli.utils.flag_with_value import GradientRegisterReaderOption, GradientRegisterWriterOption, \
     GradientRegisterWriterCommand
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.commands import experiments as experiments_commands
+from gradient.commands.experiments import ExperimentAddTagsCommand, ExperimentRemoveTagsCommand, \
+    GetExperimentMetricsCommand, StreamExperimentMetricsCommand
 
 MULTI_NODE_CREATE_EXPERIMENT_COMMANDS = {
     constants.ExperimentType.GRPC_MULTI_NODE: experiments_commands.CreateMultiNodeExperimentCommand,
@@ -24,8 +27,9 @@ MULTI_NODE_RUN_EXPERIMENT_COMMANDS = {
 
 
 def get_workspace_handler(api_key):
-    logger_ = logger.Logger()
-    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(api_key=api_key, logger_=logger_)
+    logger_ = clilogger.CliLogger()
+    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(api_key=api_key, logger_=logger_,
+                                                                    client_name=CLI_PS_CLIENT_NAME)
     return workspace_handler
 
 
@@ -41,6 +45,16 @@ def create_experiment():
 
 @experiments_group.group(name="run", help="Create and start new experiment", cls=ClickGroup)
 def create_and_start_experiment():
+    pass
+
+
+@experiments_group.group(name="tags", help="Manage tags for experiment", cls=ClickGroup)
+def experiments_tags():
+    pass
+
+
+@experiments_group.group(name="metrics", help="Read experiment metrics", cls=ClickGroup)
+def experiments_metrics():
     pass
 
 
@@ -68,19 +82,6 @@ def common_experiments_create_options(f):
             "--workspaceRef",
             "workspace_ref",
             help="Git commit hash, branch name or tag",
-            cls=common.GradientOption,
-        ),
-        click.option(
-            "--workspaceArchive",
-            "workspace_archive",
-            help="Path to workspace .zip archive",
-            cls=common.GradientOption,
-        ),
-        click.option(
-            "--workspaceUrl",
-            "workspace_url",
-            metavar="<workspace URL>",
-            help="Project git repository url",
             cls=common.GradientOption,
         ),
         click.option(
@@ -158,6 +159,19 @@ def common_experiments_create_options(f):
             help="Flag: is preemptible",
             cls=common.GradientOption,
         ),
+        click.option(
+            "--tag",
+            "tags",
+            multiple=True,
+            help="One or many tags that you want to add to experiment",
+            cls=common.GradientOption
+        ),
+        click.option(
+            "--tags",
+            "tags_comma",
+            help="Separated by comma tags that you want add to experiment",
+            cls=common.GradientOption
+        )
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -391,13 +405,6 @@ def common_experiment_create_multi_node_options(f):
             help="Master registry URL (MPI only)",
             cls=common.GradientOption
         ),
-        click.option(
-            "--vpc",
-            "use_vpc",
-            type=bool,
-            is_flag=True,
-            cls=common.GradientOption,
-        ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
 
@@ -451,27 +458,8 @@ def common_experiments_create_single_node_options(f):
             help="Registry URL",
             cls=common.GradientOption,
         ),
-        click.option(
-            "--vpc",
-            "use_vpc",
-            type=bool,
-            is_flag=True,
-            cls=common.GradientOption,
-        ),
     ]
     return functools.reduce(lambda x, opt: opt(x), reversed(options), f)
-
-
-def show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs):
-    if kwargs["workspace_archive"] or kwargs["workspace_url"]:
-        msg = """DeprecatedWarning:
-WARNING: --workspaceUrl and --workspaceArchive options will not be included in version 0.6.0
-
-For more information, please see:
-https://docs.paperspace.com
-If you depend on functionality not listed there, please file an issue."""
-
-        logger.Logger().error(msg)
 
 
 def tensorboard_option(f):
@@ -515,20 +503,19 @@ def parse_tensorboard_options(tensorboard, tensorboard_set):
 @tensorboard_option
 @api_key_option
 @common.options_file
-def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
-    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+def create_multi_node(api_key, tensorboard, tensorboard_set, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
     validators.validate_multi_node(kwargs)
-    utils.validate_workspace_input(kwargs)
-    common.del_if_value_is_none(kwargs, del_all_falsy=True)
+    common.del_if_value_is_none(kwargs)
     experiment_type = kwargs.get('experiment_type_id')
     command_class = MULTI_NODE_CREATE_EXPERIMENT_COMMANDS.get(experiment_type)
     command = command_class(
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    command.execute(kwargs, add_to_tensorboard=add_to_tensorboard, use_vpc=use_vpc)
+    command.execute(kwargs, add_to_tensorboard=add_to_tensorboard)
 
 
 @create_experiment.command(name="singlenode", help="Create single node experiment", cls=GradientRegisterWriterCommand)
@@ -538,18 +525,17 @@ def create_multi_node(api_key, use_vpc, tensorboard, tensorboard_set, options_fi
 @tensorboard_option
 @api_key_option
 @common.options_file
-def create_single_node(api_key, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
-    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+def create_single_node(api_key, tensorboard, tensorboard_set, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
-    utils.validate_workspace_input(kwargs)
-    common.del_if_value_is_none(kwargs, del_all_falsy=True)
+    common.del_if_value_is_none(kwargs)
 
     command = experiments_commands.CreateSingleNodeExperimentCommand(
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    command.execute(kwargs, add_to_tensorboard=add_to_tensorboard, use_vpc=use_vpc)
+    command.execute(kwargs, add_to_tensorboard=add_to_tensorboard)
 
 
 @create_and_start_experiment.command(name="multinode", help="Create and start new multi node experiment",
@@ -569,13 +555,12 @@ def create_single_node(api_key, use_vpc, tensorboard, tensorboard_set, options_f
 @api_key_option
 @common.options_file
 @click.pass_context
-def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, tensorboard_set, options_file, **kwargs):
-    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+def create_and_start_multi_node(ctx, api_key, show_logs, tensorboard, tensorboard_set, options_file, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
     validators.validate_multi_node(kwargs)
-    utils.validate_workspace_input(kwargs)
-    common.del_if_value_is_none(kwargs, del_all_falsy=True)
+    common.del_if_value_is_none(kwargs)
 
     experiment_type = kwargs.get('experiment_type_id')
     command_class = MULTI_NODE_RUN_EXPERIMENT_COMMANDS.get(experiment_type)
@@ -584,7 +569,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, t
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    experiment_id = command.execute(kwargs, add_to_tensorboard=add_to_tensorboard, use_vpc=use_vpc)
+    experiment_id = command.execute(kwargs, add_to_tensorboard=add_to_tensorboard)
     if experiment_id and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
@@ -606,63 +591,60 @@ def create_and_start_multi_node(ctx, api_key, show_logs, use_vpc, tensorboard, t
 @api_key_option
 @common.options_file
 @click.pass_context
-def create_and_start_single_node(ctx, api_key, show_logs, use_vpc, tensorboard, tensorboard_set, options_file,
+def create_and_start_single_node(ctx, api_key, show_logs, tensorboard, tensorboard_set, options_file,
                                  **kwargs):
-    show_workspace_deprecation_warning_if_workspace_archive_or_workspace_archive_was_used(kwargs)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     add_to_tensorboard = parse_tensorboard_options(tensorboard, tensorboard_set)
 
-    utils.validate_workspace_input(kwargs)
-    common.del_if_value_is_none(kwargs, del_all_falsy=True)
+    common.del_if_value_is_none(kwargs)
 
     command = experiments_commands.CreateAndStartSingleNodeExperimentCommand(
         api_key=api_key,
         workspace_handler=get_workspace_handler(api_key),
     )
-    experiment_id = command.execute(kwargs, add_to_tensorboard=add_to_tensorboard, use_vpc=use_vpc)
+    experiment_id = command.execute(kwargs, add_to_tensorboard=add_to_tensorboard)
     if experiment_id and show_logs:
         ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
 
 
 @experiments_group.command("start", help="Start experiment")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
 @click.option(
     "--logs",
     "show_logs",
     is_flag=True,
     help="Show logs",
 )
-@click.option(
-    "--vpc",
-    "use_vpc",
-    type=bool,
-    is_flag=True,
-    cls=common.GradientOption,
-)
 @api_key_option
 @common.options_file
 @click.pass_context
-def start_experiment(ctx, id, show_logs, api_key, options_file, use_vpc):
+def start_experiment(ctx, id, show_logs, api_key, options_file):
     command = experiments_commands.StartExperimentCommand(api_key=api_key)
-    command.execute(id, use_vpc=use_vpc)
+    command.execute(id)
 
     if show_logs:
         ctx.invoke(list_logs, experiment_id=id, line=0, limit=100, follow=True, api_key=api_key)
 
 
 @experiments_group.command("stop", help="Stop experiment")
-@click.argument("id", cls=common.GradientArgument)
-@api_key_option
 @click.option(
-    "--vpc",
-    "use_vpc",
-    type=bool,
-    is_flag=True,
+    "--id",
+    "id",
+    required=True,
     cls=common.GradientOption,
+    help="ID of the experiment",
 )
+@api_key_option
 @common.options_file
-def stop_experiment(id, api_key, options_file, use_vpc):
+def stop_experiment(id, api_key, options_file):
     command = experiments_commands.StopExperimentCommand(api_key=api_key)
-    command.execute(id, use_vpc=use_vpc)
+    command.execute(id)
 
 
 @experiments_group.command("list", help="List experiments")
@@ -710,7 +692,13 @@ def list_experiments(project_ids, api_key, exp_limit, exp_offset, tags, options_
 
 
 @experiments_group.command("details", help="Show detail of an experiment")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
 @api_key_option
 @common.options_file
 def get_experiment_details(id, options_file, api_key):
@@ -720,7 +708,7 @@ def get_experiment_details(id, options_file, api_key):
 
 @experiments_group.command("logs", help="List experiment logs")
 @click.option(
-    "--experimentId",
+    "--id",
     "experiment_id",
     required=True,
     cls=common.GradientOption,
@@ -754,9 +742,159 @@ def list_logs(experiment_id, line, limit, follow, options_file, api_key=None):
 
 
 @experiments_group.command("delete", help="Delete an experiment")
-@click.argument("id", cls=common.GradientArgument)
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
 @api_key_option
 @common.options_file
 def delete_experiment(id, options_file, api_key):
     command = experiments_commands.DeleteExperimentCommand(api_key=api_key)
     command.execute(id)
+
+
+@experiments_tags.command("add", help="Add tags to experiment")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def experiment_add_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+
+    command = ExperimentAddTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@experiments_tags.command("remove", help="Remove tags from experiment")
+@click.option(
+    "--id",
+    "id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to remove from experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want to remove from experiment",
+    cls=common.GradientOption
+)
+@api_key_option
+@common.options_file
+def experiment_remove_tags(id, options_file, api_key, **kwargs):
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+
+    command = ExperimentRemoveTagsCommand(api_key=api_key)
+    command.execute(id, **kwargs)
+
+
+@experiments_metrics.command(
+    "get",
+    short_help="Get experiment metrics",
+    help="Get experiment metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "experiment_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
+@click.option(
+    "--metric",
+    "metrics_list",
+    multiple=True,
+    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
+    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--start",
+    "start",
+    type=click.DateTime(),
+    help="Timestamp of first time series metric to collect",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--end",
+    "end",
+    type=click.DateTime(),
+    help="Timestamp of last time series metric to collect",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def get_experiment_metrics(experiment_id, metrics_list, interval, start, end, options_file, api_key):
+    command = GetExperimentMetricsCommand(api_key=api_key)
+    command.execute(experiment_id, start, end, interval, built_in_metrics=metrics_list)
+
+
+@experiments_metrics.command(
+    "stream",
+    short_help="Watch live experiment metrics",
+    help="Watch live experiment metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "experiment_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
+@click.option(
+    "--metric",
+    "metrics_list",
+    multiple=True,
+    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
+    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def get_experiment_metrics_stream(experiment_id, metrics_list, interval, options_file, api_key):
+    command = StreamExperimentMetricsCommand(api_key=api_key)
+    command.execute(experiment_id=experiment_id, interval=interval, built_in_metrics=metrics_list)
