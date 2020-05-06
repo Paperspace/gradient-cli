@@ -315,8 +315,6 @@ class TestNotebooksFork(object):
                                         params=None)
         assert result.exit_code == 0
 
-
-# TODO stop test
 class TestNotebooksStop(object):
     URL = "https://api.paperspace.io/notebooks/v2/stopNotebook"
     COMMAND = [
