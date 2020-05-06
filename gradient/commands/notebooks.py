@@ -157,48 +157,6 @@ class GetNotebookMetricsCommand(BaseNotebookCommand):
 class StreamNotebookMetricsCommand(StreamMetricsCommand, BaseNotebookCommand):
     pass
 
-class NotebookLogsCommand(BaseNotebookCommand):
-
-    def execute(self, notebook_id, line, limit, follow):
-        if follow:
-            self.logger.log("Awaiting logs...")
-            self._log_logs_continuously(notebook_id, line, limit)
-        else:
-            self._log_table_of_logs(notebook_id, line, limit)
-
-    def _log_table_of_logs(self, notebook_id, line, limit):
-        logs = self.client.logs(notebook_id, line, limit)
-        if not logs:
-            self.logger.log("No logs found")
-            return
-
-        table_str = self._make_table(logs, notebook_id)
-        if len(table_str.splitlines()) > get_terminal_lines():
-            pydoc.pager(table_str)
-        else:
-            self.logger.log(table_str)
-
-    def _log_logs_continuously(self, notebook_id, line, limit):
-        logs_gen = self.client.yield_logs(notebook_id, line, limit)
-        for log in logs_gen:
-            log_msg = "{}\t{}".format(*self._format_row(log))
-            self.logger.log(log_msg)
-
-    @staticmethod
-    def _format_row(log_row):
-        return (style(fg="red", text=str(log_row.line)),
-                log_row.message)
-
-    def _make_table(self, logs, notebook_id):
-        table_title = "Notebook %s logs" % notebook_id
-        table_data = [("LINE", "MESSAGE")]
-        table = terminaltables.AsciiTable(table_data, title=table_title)
-
-        for log in logs:
-            table_data.append(self._format_row(log))
-
-        return table.table
-
 
 class ArtifactsListCommand(BaseNotebookCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
