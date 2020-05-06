@@ -223,6 +223,33 @@ class TestNotebooksCreate(object):
 
 # TODO fork test
 # TODO stop test
+class TestNotebooksStop(object):
+    URL = "https://api.paperspace.io/notebooks/v2/stopNotebook"
+    COMMAND = [
+        "notebooks",
+        "stop",
+        "--id", "n123",
+    ]
+    EXPECTED_REQUEST_JSON = {
+        "notebookId": 'n123',
+    }
+    EXPECTED_STDOUT = "Stopping notebook with id: n123\n"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_post_request_and_print_notebook_id(self, post_patched):
+        post_patched.return_value = MockResponse(example_responses.NOTEBOOK_GET_RESPONSE)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             data=None,
+                                             files=None,
+                                             params=None)
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 # TODO artifacts list test
 
 class TestNotebooksDelete(object):
