@@ -9,11 +9,13 @@ datasets:
   etag: "some etag"
   volumeKind: "dynamic"
   volumeSize: "10Gi"
+  versionId: version1
 - uri: "s3://some.other.dataset/uri"
   name: null
   awsAccessKeyId: some_other_key_id
   awsSecretAccessKey: some_other_secret
   etag: "some other etag"
+  versionId: version2
 experimentEnv:
   key: val
 experimentType: MPI
