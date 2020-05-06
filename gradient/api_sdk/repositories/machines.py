@@ -76,7 +76,9 @@ class ListMachines(MachinesApiUrlMixin, ListResources):
         json_ = {"params": instance_dict_without_nulls} if instance_dict_without_nulls else None
 
         if tags:
+            json_ = json_ or {}
             json_["tagFilter"] = list(tags)
+
         return json_
 
 
