@@ -222,6 +222,100 @@ class TestNotebooksCreate(object):
 # TODO: Add test case for creating notebook with tag
 
 # TODO fork test
+class TestNotebooksFork(object):
+    URL = "https://api.paperspace.io/notebooks/v2/forkNotebook"
+    COMMAND = [
+        "notebooks",
+        "fork",
+        "--id", "n1234",
+    ]
+    EXPECTED_REQUEST_JSON = {
+        "notebookId": "n1234",
+    }
+    EXPECTED_RESPONSE_JSON = {
+        "handle": "n1234",
+        "notebookToken": None,
+        "jobId": 20163,
+        "isPublic": False,
+        "id": 1811,
+    }
+    EXPECTED_STDOUT = "Notebook forked to id: n1234\n"
+
+    COMMAND_WITH_API_KEY_USED = [
+        "notebooks",
+        "fork",
+        "--id", "n1234",
+        "--apiKey", "some_key",
+    ]
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fork notebook: Invalid API token\n"
+
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_post_request_and_print_notebook_id(self, post_patched):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             data=None,
+                                             files=None,
+                                             params=None)
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_USED)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             data=None,
+                                             files=None,
+                                             params=None)
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
+        post_patched.assert_called_with(self.URL,
+                                        headers=EXPECTED_HEADERS,
+                                        json=self.EXPECTED_REQUEST_JSON,
+                                        data=None,
+                                        files=None,
+                                        params=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_valid_error_message_when_no_content_was_received_in_response(self, post_patched):
+        post_patched.return_value = MockResponse(status_code=400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == "Failed to fork notebook\n", result.exc_info
+        post_patched.assert_called_with(self.URL,
+                                        headers=EXPECTED_HEADERS,
+                                        json=self.EXPECTED_REQUEST_JSON,
+                                        data=None,
+                                        files=None,
+                                        params=None)
+        assert result.exit_code == 0
+
+
 # TODO stop test
 class TestNotebooksStop(object):
     URL = "https://api.paperspace.io/notebooks/v2/stopNotebook"
