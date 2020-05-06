@@ -35,6 +35,7 @@ class StartNotebook(GetNotebookApiUrlMixin, CreateResource):
 
 class ForkNotebook(GetNotebookApiUrlMixin, BaseRepository):
     SERIALIZER_CLS = serializers.NotebookSchema
+    VALIDATION_ERROR_MESSAGE = "Failed to fork notebook"
 
     def fork(self, id):
         instance = {"notebookId": id}
@@ -52,8 +53,8 @@ class ForkNotebook(GetNotebookApiUrlMixin, BaseRepository):
         url = self.get_request_url()
         client = self._get_client()
         response = client.post(url, json=data)
-        self._validate_response(response)
         gradient_response = http_client.GradientResponse.interpret_response(response)
+        self._validate_response(gradient_response)
         handle = self._process_response(gradient_response)
         return handle
 
