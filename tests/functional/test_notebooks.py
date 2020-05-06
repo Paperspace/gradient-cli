@@ -234,6 +234,14 @@ class TestNotebooksStop(object):
         "notebookId": 'n123',
     }
     EXPECTED_STDOUT = "Stopping notebook with id: n123\n"
+    COMMAND_WITH_API_KEY_USED = [
+        "notebooks",
+        "stop",
+        "--id", "n123",
+        "--apiKey", "some_key",
+    ]
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Unable to stop instance: Invalid API token\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_post_request_and_print_notebook_id(self, post_patched):
@@ -250,6 +258,56 @@ class TestNotebooksStop(object):
                                              files=None,
                                              params=None)
         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched, get_patched):
+        post_patched.return_value = MockResponse(example_responses.NOTEBOOK_GET_RESPONSE)
+        get_patched.return_value = MockResponse(example_responses.NOTEBOOK_GET_RESPONSE)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_USED)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             data=None,
+                                             files=None,
+                                             params=None)
+        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
+        post_patched.assert_called_with(self.URL,
+                                        headers=EXPECTED_HEADERS,
+                                        json=self.EXPECTED_REQUEST_JSON,
+                                        data=None,
+                                        files=None,
+                                        params=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_valid_error_message_when_no_content_was_received_in_response(self, post_patched):
+        post_patched.return_value = MockResponse(status_code=400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == "Unable to stop instance\n", result.exc_info
+        post_patched.assert_called_with(self.URL,
+                                        headers=EXPECTED_HEADERS,
+                                        json=self.EXPECTED_REQUEST_JSON,
+                                        data=None,
+                                        files=None,
+                                        params=None)
+        assert result.exit_code == 0
 # TODO artifacts list test
 
 class TestNotebooksDelete(object):
