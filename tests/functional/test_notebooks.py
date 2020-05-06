@@ -221,7 +221,6 @@ class TestNotebooksCreate(object):
 
 # TODO: Add test case for creating notebook with tag
 
-# TODO fork test
 class TestNotebooksFork(object):
     URL = "https://api.paperspace.io/notebooks/v2/forkNotebook"
     COMMAND = [
@@ -315,6 +314,7 @@ class TestNotebooksFork(object):
                                         params=None)
         assert result.exit_code == 0
 
+
 class TestNotebooksStop(object):
     URL = "https://api.paperspace.io/notebooks/v2/stopNotebook"
     COMMAND = [
@@ -400,7 +400,51 @@ class TestNotebooksStop(object):
                                         files=None,
                                         params=None)
         assert result.exit_code == 0
-# TODO artifacts list test
+
+
+class TestListNotebookArtifacts(object):
+    runner = CliRunner()
+    URL = "https://api.paperspace.io/notebooks/artifactsList"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_valid_get_request_with_all_parameters_for_a_list_of_artifacts(self, get_patched):
+        get_patched.return_value = MockResponse()
+        notebook_id = "some_notebook_id"
+        result = self.runner.invoke(cli.cli,
+                                    ["notebooks", "artifacts", "list", "--id", notebook_id, "--apiKey", "some_key", "--size",
+                                     "--links",
+                                     "--files", "foo"])
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params={"notebookId": notebook_id,
+                                               "size": True,
+                                               "links": True,
+                                               "files": "foo"})
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @pytest.mark.parametrize('option,param', [("--size", "size"),
+                                              ("-s", "size"),
+                                              ("--links", "links"),
+                                              ("-l", "links")])
+    def test_should_send_valid_get_request_with_valid_param_for_a_list_of_artifacts_for_both_formats_of_param(self,
+                                                                                                              get_patched,
+                                                                                                              option,
+                                                                                                              param):
+        get_patched.return_value = MockResponse(status_code=200)
+        notebook_id = "some_notebook_id"
+        result = self.runner.invoke(cli.cli,
+                                    ["notebooks", "artifacts", "list", "--id", notebook_id, "--apiKey", "some_key"] + [option])
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params={"notebookId": notebook_id,
+                                               param: True})
+        assert result.exit_code == 0
+
 
 class TestNotebooksDelete(object):
     URL = "https://api.paperspace.io/notebooks/v2/deleteNotebook"
