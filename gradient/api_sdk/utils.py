@@ -106,7 +106,10 @@ def base64_encode(s):
 
 
 def base64_encode_attribute(data, name):
-    encoded_value = base64_encode(getattr(data, name))
+    raw = getattr(data, name)
+    if raw is None:
+        return
+    encoded_value = base64_encode(raw)
     setattr(data, name, encoded_value)
 
 
