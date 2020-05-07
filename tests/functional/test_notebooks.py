@@ -130,7 +130,6 @@ class TestNotebooksCreate(object):
                                              data=None,
                                              files=None,
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -148,7 +147,6 @@ class TestNotebooksCreate(object):
                                              data=None,
                                              files=None,
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -166,7 +164,6 @@ class TestNotebooksCreate(object):
                                              data=None,
                                              files=None,
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -185,7 +182,6 @@ class TestNotebooksCreate(object):
                                              data=None,
                                              files=None,
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, post_patched):
@@ -264,7 +260,6 @@ class TestNotebooksFork(object):
                                              data=None,
                                              files=None,
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched):
@@ -280,7 +275,6 @@ class TestNotebooksFork(object):
                                              data=None,
                                              files=None,
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, post_patched):
@@ -349,7 +343,6 @@ class TestNotebooksStop(object):
                                              data=None,
                                              files=None,
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -367,7 +360,6 @@ class TestNotebooksStop(object):
                                              data=None,
                                              files=None,
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, post_patched):
@@ -482,7 +474,6 @@ class TestNotebooksDelete(object):
                                              data=None,
                                              files=None,
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched):
@@ -498,7 +489,6 @@ class TestNotebooksDelete(object):
                                              data=None,
                                              files=None,
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_option_from_yaml_file(self, post_patched, notebooks_delete_config_path):
@@ -515,7 +505,6 @@ class TestNotebooksDelete(object):
                                              data=None,
                                              files=None,
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, get_patched):
@@ -595,7 +584,6 @@ class TestNotebooksdetails(object):
                                              headers=EXPECTED_HEADERS,
                                              json={"notebookId": "some_id"},
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_post_request_and_print_notebook_details_with_tags(self, post_patched):
@@ -609,7 +597,6 @@ class TestNotebooksdetails(object):
                                              headers=EXPECTED_HEADERS,
                                              json={"notebookId": "some_id"},
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched):
@@ -623,7 +610,6 @@ class TestNotebooksdetails(object):
                                              headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json={"notebookId": "some_id"},
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_option_from_yaml_file(self, post_patched, notebooks_show_config_path):
@@ -638,7 +624,6 @@ class TestNotebooksdetails(object):
                                              headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json={"notebookId": "some_id"},
                                              params=None)
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, get_patched):
@@ -729,7 +714,6 @@ class TestNotebooksList(object):
         filter_params = json.loads(filter_params)
         assert filter_params == self.EXPECTED_FILTERS
         assert "tagFilter[0]" not in params
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_post_request_and_print_notebook_details_when_filtering_by_tags(self, post_patched):
@@ -751,7 +735,6 @@ class TestNotebooksList(object):
         assert params["tagFilter[0]"] in ("tag1", "tag2")
         assert params["tagFilter[1]"] in ("tag1", "tag2")
         assert params["tagFilter[0]"] != params["tagFilter[1]"]
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, get_patched):
@@ -769,7 +752,6 @@ class TestNotebooksList(object):
         filter_params = params["filter"]
         filter_params = json.loads(filter_params)
         assert filter_params == self.EXPECTED_FILTERS
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_option_from_yaml_file(self, get_patched, notebooks_list_config_path):
@@ -788,7 +770,6 @@ class TestNotebooksList(object):
         filter_params = params["filter"]
         filter_params = json.loads(filter_params)
         assert filter_params == self.EXPECTED_FILTERS
-        assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, get_patched):
