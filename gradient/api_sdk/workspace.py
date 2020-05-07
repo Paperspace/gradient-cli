@@ -75,7 +75,7 @@ class WorkspaceHandler(object):
 
 
 class S3WorkspaceHandler(WorkspaceHandler):
-    WORKSPACE_UPLOADER_CLS = s3_uploader.S3ProjectFileUploader
+    WORKSPACE_UPLOADER_CLS = s3_uploader.ExperimentFileUploader
 
     def __init__(self, api_key, logger_=None, client_name=None):
         """
@@ -118,7 +118,7 @@ class S3WorkspaceHandlerWithProgressbar(S3WorkspaceHandler):
         )
         workspace_uploader = self.WORKSPACE_UPLOADER_CLS(
             api_key,
-            s3uploader=file_uploader,
+            uploader=file_uploader,
             logger=self.logger,
             ps_client_name=self.client_name
         )

@@ -79,11 +79,11 @@ class S3FileUploader(object):
         return url
 
 
-class S3ProjectFileUploader(object):
-    def __init__(self, api_key, s3uploader=None, logger=None, ps_client_name=None):
+class ExperimentFileUploader(object):
+    def __init__(self, api_key, uploader=None, logger=None, ps_client_name=None):
         """
         :param str api_key:
-        :param S3FileUploader s3uploader:
+        :param S3FileUploader uploader:
         :param Logger logger:
         """
         self.logger = logger or MuteLogger()
@@ -93,7 +93,7 @@ class S3ProjectFileUploader(object):
             logger=self.logger,
             ps_client_name=ps_client_name,
         )
-        self.s3uploader = s3uploader or S3FileUploader(logger=self.logger, ps_client_name=ps_client_name)
+        self.uploader = uploader or S3FileUploader(logger=self.logger, ps_client_name=ps_client_name)
 
     def upload(self, file_path, project_id, cluster_id=None):
         """Upload file to S3 bucket for a project
@@ -105,9 +105,9 @@ class S3ProjectFileUploader(object):
         :rtype: str
         :return: S3 bucket's URL
         """
-        url, bucket_name, s3_fields = self._get_upload_data(file_path, project_id, cluster_id=cluster_id)
-        self.s3uploader.upload(file_path, url, s3_fields)
-        bucket_url = self.s3uploader.get_bucket_url(bucket_name, s3_fields)
+        url, bucket_name, fields = self._get_upload_data(file_path, project_id, cluster_id=cluster_id)
+        self.uploader.upload(file_path, url, fields)
+        bucket_url = self.uploader.get_bucket_url(bucket_name, fields)
         return bucket_url
 
     def _get_upload_data(self, file_path, project_handle, cluster_id=None):
@@ -142,11 +142,18 @@ class S3ProjectFileUploader(object):
 
             url = response_data["data"]["url"]
             bucket_name = response_data["data"]["bucket_name"]
-            s3_fields = response_data["data"]["fields"]
+            fields = response_data["data"]["fields"]
         except (KeyError, ValueError):
             raise sdk_exceptions.PresignedUrlMalformedResponseError("Response malformed")
 
-        return url, bucket_name, s3_fields
+        return url, bucket_name, fields
+
+
+class S3ProjectFileUploader(ExperimentFileUploader):
+    """
+    DEPRECATED: This class will be renamed to ExperimentFileUploader in release v0.8
+    """
+    pass
 
 
 class S3ModelFileUploader(object):
@@ -215,18 +222,18 @@ class S3ModelFileUploader(object):
         return client
 
 
-class S3WorkspaceDirectoryUploader(object):
+class ExperimentWorkspaceDirectoryUploader(object):
     def __init__(self, api_key, temp_dir=None, archiver=None, project_uploader=None, ps_client_name=None):
         """
         :param str api_key:
         :param str temp_dir:
         :param ZipArchiver archiver:
-        :param S3ProjectFileUploader project_uploader:
+        :param ExperimentFileUploader project_uploader:
         """
         self.temp_dir = temp_dir or tempfile.gettempdir()
         self.archiver = archiver or ZipArchiver()
         self.ps_client_name = ps_client_name
-        self.project_uploader = project_uploader or S3ProjectFileUploader(api_key, ps_client_name=ps_client_name)
+        self.project_uploader = project_uploader or ExperimentFileUploader(api_key, ps_client_name=ps_client_name)
 
     def upload(self, workspace_dir_path, project_id, exclude=None, temp_file_name="temp.zip"):
         """Archive and upload a workspace directory
@@ -247,3 +254,10 @@ class S3WorkspaceDirectoryUploader(object):
     def get_archive_path(self, temp_file_name):
         archive_path = os.path.join(self.temp_dir, temp_file_name)
         return archive_path
+
+
+class S3WorkspaceDirectoryUploader(ExperimentWorkspaceDirectoryUploader):
+    """
+    DEPRECATED: This class will be renamed to ExperimentWorkspaceDirectoryUploader in release v0.8
+    """
+    pass

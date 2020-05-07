@@ -4,7 +4,8 @@ import click
 
 from gradient import cliutils
 from gradient import exceptions, clilogger, DEPLOYMENT_TYPES_MAP
-from gradient.api_sdk import DeploymentsClient, constants
+from gradient.api_sdk import DeploymentsClient, constants, workspace
+# from gradient.api_sdk.s3_uploader import DeploymentWorkspaceDirectoryUploader
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
