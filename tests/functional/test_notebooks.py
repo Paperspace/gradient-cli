@@ -309,6 +309,93 @@ class TestNotebooksFork(object):
         assert result.exit_code == 0
 
 
+class TestNotebooksStart(object):
+    URL = "https://api.paperspace.io/notebooks/v2/startNotebook"
+    COMMAND = [
+        "notebooks",
+        "start",
+        "--id", "n123",
+        "--vmTypeLabel", "c5.xlarge",
+        "--clusterId", "cl123",
+    ]
+    EXPECTED_REQUEST_JSON = {
+        "notebookId": "n123",
+        "vmTypeLabel": "c5.xlarge",
+        "clusterId": "cl123",
+        "isPreemptible": False,
+    }
+    EXPECTED_RESPONSE_JSON = {
+        "handle": "n123",
+        "notebookToken": None,
+        "jobId": 20163,
+        "isPublic": False,
+        "id": 1811,
+        "containerId": 123,
+    }
+    EXPECTED_STDOUT = "Started notebook with id: n123\n"
+    COMMAND_WITH_API_KEY_USED = [
+        "notebooks",
+        "start",
+        "--id", "n123",
+        "--vmTypeLabel", "c5.xlarge",
+        "--clusterId", "cl123",
+        "--apiKey", "some_key",
+    ]
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
+    EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to create resource: Invalid API token\n"
+    EXPECTED_STDOUT_WITH_KEY = "Started notebook with id: n123\n" \
+                            "https://www.paperspace.com/some_namespace/notebook/prg284tu2\n"
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched, get_patched):
+        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON)
+        get_patched.return_value = MockResponse(example_responses.NOTEBOOK_GET_RESPONSE)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_USED)
+
+        assert result.output == self.EXPECTED_STDOUT_WITH_KEY, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                             json=self.EXPECTED_REQUEST_JSON,
+                                             data=None,
+                                             files=None,
+                                             params=None)
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_valid_error_message_when_command_was_used_with_invalid_api_token(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN, result.exc_info
+        post_patched.assert_called_with(self.URL,
+                                        headers=EXPECTED_HEADERS,
+                                        json=self.EXPECTED_REQUEST_JSON,
+                                        data=None,
+                                        files=None,
+                                        params=None)
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_print_valid_error_message_when_no_content_was_received_in_response(self, post_patched):
+        post_patched.return_value = MockResponse(status_code=400)
+
+        cli_runner = CliRunner()
+        result = cli_runner.invoke(cli.cli, self.COMMAND)
+
+        assert result.output == "Failed to create resource\n", result.exc_info
+        post_patched.assert_called_with(self.URL,
+                                        headers=EXPECTED_HEADERS,
+                                        json=self.EXPECTED_REQUEST_JSON,
+                                        data=None,
+                                        files=None,
+                                        params=None)
+        assert result.exit_code == 0
+
+
 class TestNotebooksStop(object):
     URL = "https://api.paperspace.io/notebooks/v2/stopNotebook"
     COMMAND = [
