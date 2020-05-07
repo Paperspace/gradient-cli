@@ -8,7 +8,7 @@ from .logger import MuteLogger
 class WorkspaceHandler(object):
     WORKSPACE_ARCHIVER_CLS = archivers.ZipArchiver
 
-    def __init__(self, logger_=None):
+    def __init__(self, logger_=None, archiver_cls=None):
         """
 
         :param logger_: gradient.logger
@@ -16,6 +16,7 @@ class WorkspaceHandler(object):
         self.logger = logger_ or MuteLogger()
         self.archive_path = None
         self.archive_basename = None
+        self.archiver_cls = archiver_cls or self.WORKSPACE_ARCHIVER_CLS
 
     def _zip_workspace(self, workspace_path, ignore_files):
         zip_file_name = 'workspace.zip'
@@ -51,7 +52,7 @@ class WorkspaceHandler(object):
         return archive_path
 
     def _get_workspace_archiver(self):
-        workspace_archiver = self.WORKSPACE_ARCHIVER_CLS(logger=self.logger)
+        workspace_archiver = self.archiver_cls(logger=self.logger)
         return workspace_archiver
 
     @staticmethod
@@ -77,14 +78,17 @@ class WorkspaceHandler(object):
 class S3WorkspaceHandler(WorkspaceHandler):
     WORKSPACE_UPLOADER_CLS = s3_uploader.ExperimentFileUploader
 
-    def __init__(self, api_key, logger_=None, client_name=None):
+    def __init__(self, api_key, client_name=None, uploader_cls=None, *args, **kwargs):
         """
         :param str api_key:
+        :param str client_name:
+        :param object uploader_cls:
         :param gradient.logger logger_:
         """
-        super(S3WorkspaceHandler, self).__init__(logger_=logger_)
+        super(S3WorkspaceHandler, self).__init__(*args, **kwargs)
         self.api_key = api_key
         self.client_name = client_name
+        self.uploader_cls = uploader_cls or self.WORKSPACE_UPLOADER_CLS
 
     def handle(self, input_data):
         workspace = super(S3WorkspaceHandler, self).handle(input_data)
@@ -92,7 +96,7 @@ class S3WorkspaceHandler(WorkspaceHandler):
             return workspace
 
         archive_path = workspace
-        project_handle = input_data.get('projectHandle') or input_data["project_id"]
+        project_handle = input_data.get('projectHandle') or input_data.get("project_id")
         cluster_id = input_data.get('clusterId') or input_data.get("cluster_id")
         workspace = self._upload(archive_path, project_handle, cluster_id=cluster_id)
         return workspace
@@ -116,7 +120,7 @@ class S3WorkspaceHandlerWithProgressbar(S3WorkspaceHandler):
             logger=self.logger,
             ps_client_name=self.client_name,
         )
-        workspace_uploader = self.WORKSPACE_UPLOADER_CLS(
+        workspace_uploader = self.uploader_cls(
             api_key,
             uploader=file_uploader,
             logger=self.logger,

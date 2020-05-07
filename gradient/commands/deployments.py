@@ -27,9 +27,13 @@ class _DeploymentCommand(object):
 
 
 class CreateDeploymentCommand(_DeploymentCommand):
+    def __init__(self, workspace_handler, *args, **kwargs):
+        super(CreateDeploymentCommand, self).__init__(*args, **kwargs)
+        self.workspace_handler = workspace_handler
+        
     def execute(self, **kwargs):
         self._handle_auth(kwargs)
-
+        self._handle_workspace(kwargs)
         with halo.Halo(text="Creating new deployment", spinner="dots"):
             deployment_id = self.client.create(**kwargs)
 
@@ -39,6 +43,16 @@ class CreateDeploymentCommand(_DeploymentCommand):
     def get_instance_url(self, instance_id):
         url = concatenate_urls(config.WEB_URL, "/console/deployments/{}".format(instance_id))
         return url
+
+    def _handle_workspace(self, instance_dict):
+        handler = self.workspace_handler.handle(instance_dict)
+
+        instance_dict.pop("ignore_files", None)
+        instance_dict.pop("workspace", None)
+        instance_dict.pop("workspace_archive", None)
+        instance_dict.pop("workspace_url", None)
+        if handler and handler != "none":
+            instance_dict["workspace_url"] = handler
 
     def _handle_auth(self, kwargs):
         if kwargs.pop("generate_auth", False):

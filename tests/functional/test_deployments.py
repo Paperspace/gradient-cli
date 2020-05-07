@@ -60,6 +60,7 @@ def all_options_metrics_stream_websocket_connection_iterator():
 
 class TestDeploymentsCreate(object):
     URL = "https://api.paperspace.io/deployments/createDeployment/"
+    GET_PRESIGNED_URL = "https://api.paperspace.io/deployments/getPresignedDeploymentUrl"
     TAGS_URL = "https://api.paperspace.io/entityTags/updateTags"
     URL_V2 = "https://api.paperspace.io/deployments/v2/createDeployment/"
     VALIDATE_CLUSTER_URL = "https://api.paperspace.io/clusters/getCluster"
@@ -71,6 +72,26 @@ class TestDeploymentsCreate(object):
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
+    ]
+    BASIC_OPTIONS_COMMAND_WITH_CURRENT_DIR_AS_WORKSPACE = [
+        "deployments", "create",
+        "--deploymentType", "tfserving",
+        "--modelId", "some_model_id",
+        "--name", "some_name",
+        "--machineType", "G1",
+        "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--instanceCount", "666",
+        "--workspace", ".",
+    ]
+    BASIC_OPTIONS_COMMAND_WITH_EXISTING_FILE_AS_WORKSPACE = [
+        "deployments", "create",
+        "--deploymentType", "tfserving",
+        "--modelId", "some_model_id",
+        "--name", "some_name",
+        "--machineType", "G1",
+        "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--instanceCount", "666",
+        "--workspace", "existing_workspace.zip",
     ]
     BASIC_OPTIONS_COMMAND_WITH_TAGS = [
         "deployments", "create",
@@ -128,6 +149,10 @@ class TestDeploymentsCreate(object):
         "--authPassword", "some_password",
         "--clusterId", "some_cluster_id",
         "--apiKey", "some_key",
+        "--workspace", "s3://some-workspace",
+        "--workspaceRef", "some_branch_name",
+        "--workspaceUsername", "username",
+        "--workspacePassword", "password",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["deployments", "create", "--optionsFile", ]  # path added in test
 
@@ -175,11 +200,20 @@ class TestDeploymentsCreate(object):
         "ports": "5000,6000:7000",
         "oauthKey": "some_username",
         "oauthSecret": "some_password",
+        "workspaceUrl": u"s3://some-workspace",
+        "workspaceRef": "some_branch_name",
+        "workspaceUsername": u"username",
+        "workspacePassword": u"password",
     }
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
     UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
     EXPECTED_STDOUT = "New deployment created with id: sadkfhlskdjh\n" \
                       "https://www.paperspace.com/console/deployments/sadkfhlskdjh\n"
+
+    EXPECTED_STDOUT_WITH_WORKSPACE_ARCHIVING = "Archiving your working directory for upload as your experiment workspace..." \
+                                               "(See https://docs.paperspace.com/gradient/experiments/run-experiments for more information.)\n" \
+                                               "New deployment created with id: sadkfhlskdjh\n" \
+                                               "https://www.paperspace.com/console/deployments/sadkfhlskdjh\n"
 
     RESPONSE_JSON_404_MODEL_NOT_FOUND = {"error": {"name": "Error", "status": 404, "message": "Unable to find model"}}
     RESPONSE_CONTENT_404_MODEL_NOT_FOUND = b'{"error":{"name":"Error","status":404,"message":"Unable to find model"}}\n'
@@ -200,6 +234,73 @@ class TestDeploymentsCreate(object):
                                              files=None,
                                              data=None)
 
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.workspace.WorkspaceHandler._get_workspace_archiver")
+    @mock.patch("gradient.api_sdk.workspace.tempfile")
+    @mock.patch("gradient.api_sdk.s3_uploader.S3FileUploader.upload")
+    def test_should_send_proper_data_and_print_message_when_create_deployment_with_workspace_zipped_and_upload(self,
+                                                                                                               mock_upload,
+                                                                                                               mock_tempfile,
+                                                                                                               mock_get_archiver,
+                                                                                                               get_patched,
+                                                                                                               post_patched):
+        bucket_name = "some-bucket"
+        team_handle = "thandle"
+        archive_location = '/temp_foo'
+        archive_name = "workspace.zip"
+        uuid = 111
+        content_type = "application/zip"
+        presigned_url = "https://{bucket_name}.s3.amazonaws.com/{team_handle}/deployments/{uuid}/{archive_name}?AWSAccessKeyId=AWSKEY&Content-Type={content_type}&Expires=0&Signature=bar".format(
+            bucket_name=bucket_name,
+            team_handle=team_handle,
+            uuid=uuid,
+            archive_name=archive_name,
+            content_type=content_type
+        )
+        workspace_url = "s3://{bucket_name}/{team_handle}/deployments/{uuid}/{archive_name}".format(
+            bucket_name=bucket_name,
+            team_handle=team_handle,
+            uuid=uuid,
+            archive_name=archive_name
+        )
+        presigned_url_return_value = {
+            "presignedUrl": presigned_url,
+            "bucketName": bucket_name,
+            "workspaceUrl": workspace_url
+        }
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
+        get_patched.return_value = MockResponse(presigned_url_return_value, 200)
+
+        mocked_archiver = mock.MagicMock()
+        mock_get_archiver.return_value = mocked_archiver
+        mock_tempfile.gettempdir.return_value = archive_location
+
+        post_params = self.BASIC_OPTIONS_REQUEST.copy()
+        post_params['workspaceUrl'] = workspace_url
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_CURRENT_DIR_AS_WORKSPACE)
+
+        assert result.output == self.EXPECTED_STDOUT_WITH_WORKSPACE_ARCHIVING, result.exc_info
+        mocked_archiver.archive.assert_called()
+        get_patched.assert_called_once_with(self.GET_PRESIGNED_URL,
+                                            headers=EXPECTED_HEADERS,
+                                            json=None,
+                                            params={
+                                                "contentType": content_type,
+                                                "fileName": archive_name,
+                                            })
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=post_params,
+                                             params=None,
+                                             files=None,
+                                             data=None)
+        mock_upload.assert_called_once_with("{}/{}".format(archive_location, archive_name),
+                                            presigned_url)
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")

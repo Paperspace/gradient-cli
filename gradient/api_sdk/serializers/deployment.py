@@ -37,7 +37,10 @@ class DeploymentSchema(BaseSchema):
     tags = ma.fields.List(ma.fields.Str(), load_only=True)
     command = ma.fields.Str()
     metrics_url = ma.fields.Str(dump_to="metricsURL", load_from="metricsURL")
-
+    workspace_url = ma.fields.Str(dump_to="workspaceUrl", load_from="workspaceUrl")
+    workspace_ref = ma.fields.Str(dump_to="workspaceRef", load_from="workspaceRef")
+    workspace_username = ma.fields.Str(dump_to="workspaceUsername", load_from="workspaceUsername")
+    workspace_password = ma.fields.Str(dump_to="workspacePassword", load_from="workspacePassword")
     dt_created = ma.fields.DateTime(dump_to="dtCreated", load_from="dtCreated")
     dt_modified = ma.fields.DateTime(dump_to="dtModified", load_from="dtModified")
     dt_started = ma.fields.DateTime(dump_to="dtStarted", load_from="dtStarted")

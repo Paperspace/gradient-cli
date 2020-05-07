@@ -5,14 +5,24 @@ import click
 from gradient import cliutils
 from gradient import exceptions, clilogger, DEPLOYMENT_TYPES_MAP
 from gradient.api_sdk import DeploymentsClient, constants, workspace
-# from gradient.api_sdk.s3_uploader import DeploymentWorkspaceDirectoryUploader
+from gradient.api_sdk.s3_uploader import DeploymentWorkspaceDirectoryUploader
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, validate_comma_split_option
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.commands import deployments as deployments_commands
 from gradient.commands.deployments import DeploymentRemoveTagsCommand, DeploymentAddTagsCommand, \
     GetDeploymentMetricsCommand, StreamDeploymentMetricsCommand
+
+
+def get_workspace_handler(api_key):
+    logger_ = clilogger.CliLogger()
+    workspace_handler = workspace.S3WorkspaceHandlerWithProgressbar(api_key=api_key,
+                                                                    logger_=logger_,
+                                                                    uploader_cls=DeploymentWorkspaceDirectoryUploader,
+                                                                    client_name=CLI_PS_CLIENT_NAME)
+    return workspace_handler
 
 
 @cli.group("deployments", help="Manage deployments", cls=ClickGroup)
@@ -224,7 +234,8 @@ def create_deployment(api_key, options_file, **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     del_if_value_is_none(kwargs)
     deployment_client = get_deployment_client(api_key)
-    command = deployments_commands.CreateDeploymentCommand(deployment_client=deployment_client)
+    command = deployments_commands.CreateDeploymentCommand(deployment_client=deployment_client,
+                                                           workspace_handler=get_workspace_handler(api_key))
     command.execute(**kwargs)
 
 

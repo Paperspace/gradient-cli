@@ -261,3 +261,63 @@ class S3WorkspaceDirectoryUploader(ExperimentWorkspaceDirectoryUploader):
     DEPRECATED: This class will be renamed to ExperimentWorkspaceDirectoryUploader in release v0.8
     """
     pass
+
+
+class DeploymentWorkspaceDirectoryUploader(object):
+    def __init__(self, api_key, uploader=None, logger=None, ps_client_name=None):
+        """
+        :param str api_key:
+        :param S3FileUploader uploader:
+        :param Logger logger:
+        """
+        self.logger = logger or MuteLogger()
+        self.ps_api_client = http_client.API(
+            config.CONFIG_HOST,
+            api_key=api_key,
+            logger=self.logger,
+            ps_client_name=ps_client_name,
+        )
+        self.uploader = uploader or S3FileUploader(logger=self.logger, ps_client_name=ps_client_name)
+
+    def _get_upload_data(self, file_path, project_id):
+        """Ask API for data required to upload deployment workspace a file to S3
+
+        :param str file_path:
+        :param str project_id:
+
+        :rtype: str
+        :return: URL to which send the file, name of the bucket and a dictionary required by S3 service
+        """
+        file_name = os.path.basename(file_path)
+        params = {
+            "fileName": file_name,
+            "contentType": mimetypes.guess_type(file_path)[0] or "",
+        }
+        if project_id:
+            params['projectId'] = project_id
+        response = self.ps_api_client.get("/deployments/getPresignedDeploymentUrl", params=params)
+        if not response.ok:
+            raise sdk_exceptions.PresignedUrlConnectionError(response.reason)
+
+        try:
+            response_data = response.json()
+            presigned_url = response_data['presignedUrl']
+            bucket_name = response_data['bucketName']
+            workspace_url = response_data['workspaceUrl']
+        except (KeyError, ValueError):
+            raise sdk_exceptions.PresignedUrlMalformedResponseError("Response malformed")
+
+        return presigned_url, bucket_name, workspace_url
+
+    def upload(self, file_path, project_id=None, **kwargs):
+        """Upload file to S3 bucket for a project
+
+        :param str file_path:
+        :param str project_id:
+
+        :rtype: str
+        :return: S3 bucket's URL
+        """
+        url, bucket_name, workspace_url = self._get_upload_data(file_path, project_id)
+        self.uploader.upload(file_path, url)
+        return workspace_url
