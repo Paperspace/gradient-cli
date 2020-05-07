@@ -1,7 +1,8 @@
+import copy
 import marshmallow
 
 from .base import BaseSchema
-from .. import models
+from .. import models, utils
 
 
 class NotebookSchema(BaseSchema):
@@ -46,6 +47,14 @@ class NotebookSchema(BaseSchema):
     dt_teardown_finished = marshmallow.fields.DateTime(dump_to="dtTeardownStarted", load_from="dtTeardownStarted")
     dt_workspace_upload_finished = marshmallow.fields.DateTime(dump_to="dtWorkspaceUploadFinished", load_from="dtWorkspaceUploadFinished")
     dt_deleted = marshmallow.fields.DateTime(dump_to="dtDeleted", load_from="dtDeleted")
+
+    @marshmallow.pre_dump
+    def preprocess(self, data, **kwargs):
+        data = copy.copy(data)
+
+        utils.base64_encode_attribute(data, "default_entrypoint")
+        return data
+
 
 class NotebookStartSchema(BaseSchema):
     MODEL = models.NotebookStart
