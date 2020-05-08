@@ -1,11 +1,10 @@
 # Gradient CLI Release Notes
 
-# Release Notes for 0.7.1a0
+# Release Notes for 0.7.0a2
 #### New features
-* streaming metrics 
-* local workspace upload for deployments
-#### Fixes
-* major refactor of workspace uploader
+* Added some datetime fields to deployment and experiment models
+* `--modelId` is not required to create a deployment anymore
+* Added commands for reading and streaming deployment, notebook and job metrics
 
 # Release Notes for 0.7.0a1
 #### Fixes
