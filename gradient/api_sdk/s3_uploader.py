@@ -79,6 +79,22 @@ class S3FileUploader(object):
         return url
 
 
+class S3PutFileUploader(S3FileUploader):
+    def _upload(self, url, data):
+        """Send data to S3 and raise exception if it was not a success
+
+        :param str url:
+        :param encoder.MultipartEncoderMonitor data:
+        """
+        file_path = data.encoder.fields['file'][0]
+        client = self._get_client(url)
+        client.headers = {"Content-Type": mimetypes.guess_type(file_path)[0] or ""}
+
+        response = client.put("", data=data)
+        if not response.ok:
+            raise sdk_exceptions.S3UploadFailedError(response)
+
+
 class ExperimentFileUploader(object):
     def __init__(self, api_key, uploader=None, logger=None, ps_client_name=None):
         """
@@ -171,7 +187,7 @@ class S3ModelFileUploader(object):
             api_key=api_key,
             ps_client_name=ps_client_name,
         )
-        self.s3uploader = s3uploader or S3FileUploader(
+        self.s3uploader = s3uploader or S3PutFileUploader(
             logger=self.logger,
             ps_client_name=ps_client_name,
             multipart_encoder_cls=self.multipart_encoder_cls
@@ -277,7 +293,7 @@ class DeploymentWorkspaceDirectoryUploader(object):
             logger=self.logger,
             ps_client_name=ps_client_name,
         )
-        self.uploader = uploader or S3FileUploader(logger=self.logger, ps_client_name=ps_client_name)
+        self.uploader = uploader or S3PutFileUploader(logger=self.logger, ps_client_name=ps_client_name)
 
     def _get_upload_data(self, file_path, project_id):
         """Ask API for data required to upload deployment workspace a file to S3

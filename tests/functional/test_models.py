@@ -303,10 +303,12 @@ class TestModelUpload(object):
     UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_post_request_when_models_update_command_was_used_with_basic_options(
-            self, post_patched, get_patched):
+            self, post_patched, put_patched, get_patched):
         post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
+        put_patched.return_value = MockResponse()
         get_patched.return_value = MockResponse(self.GET_PRESIGNED_URL_RESPONSE)
 
         runner = CliRunner()
@@ -324,10 +326,11 @@ class TestModelUpload(object):
                           files=None,
                           data=None,
                           params=self.BASE_PARAMS),
+            ])
+            put_patched.assert_has_calls([
                 mock.call(self.GET_PRESIGNED_URL_RESPONSE,
                           headers={"Content-Type": mock.ANY},
                           json=None,
-                          files=None,
                           params=None,
                           data=mock.ANY)
             ])
@@ -336,15 +339,17 @@ class TestModelUpload(object):
                                                 params=self.GET_PRESIGNED_URL_PARAMS,
                                                 json=None,
                                                 )
-            assert post_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
+            assert put_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
 
             assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_post_request_when_models_update_command_was_used_with_all_options(
-            self, post_patched, get_patched):
+            self, post_patched, put_patched, get_patched):
         post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
+        put_patched.return_value = MockResponse()
         get_patched.return_value = MockResponse(self.GET_PRESIGNED_URL_RESPONSE)
 
         runner = CliRunner()
@@ -362,19 +367,19 @@ class TestModelUpload(object):
                           files=None,
                           data=None,
                           params=self.ALL_OPTIONS_PARAMS),
+            ])
+            put_patched.assert_has_calls([
                 mock.call(self.GET_PRESIGNED_URL_RESPONSE,
                           headers={"Content-Type": mock.ANY},
                           json=None,
-                          files=None,
                           params=None,
-                          data=mock.ANY)
-            ])
+                          data=mock.ANY)])
             get_patched.assert_called_once_with(self.GET_PRESIGNED_URL,
                                                 headers=EXPECTED_HEADERS,
                                                 params=self.GET_PRESIGNED_URL_PARAMS,
                                                 json=None,
                                                 )
-            assert post_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
+            assert put_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
 
             assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
@@ -403,20 +408,20 @@ class TestModelUpload(object):
                           data=None,
                           params=self.ALL_OPTIONS_PARAMS
                           ),
+            ])
+            put_patched.assert_has_calls([
                 mock.call(self.GET_PRESIGNED_URL_RESPONSE,
                           headers={"Content-Type": mock.ANY},
-                          files=None,
                           json=None,
                           params=None,
                           data=mock.ANY)
             ])
-
             get_patched.assert_called_once_with(self.GET_PRESIGNED_URL,
                                                 headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                                 params=self.GET_PRESIGNED_URL_PARAMS,
                                                 json=None,
                                                 )
-            assert post_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
+            assert put_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
 
             assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
@@ -447,21 +452,18 @@ class TestModelUpload(object):
                     data=None,
                     params=self.ALL_OPTIONS_PARAMS
                 ),
-                mock.call(
-                    self.GET_PRESIGNED_URL_RESPONSE,
-                    headers={'Content-Type': mock.ANY},
-                    json=None,
-                    files=None,
-                    params=None,
-                    data=mock.ANY
-                )
             ])
+            put_patched.assert_called_once_with(self.GET_PRESIGNED_URL_RESPONSE,
+                                                headers={"Content-Type": ""},
+                                                json=None,
+                                                params=None,
+                                                data=mock.ANY)
             get_patched.assert_called_once_with(self.GET_PRESIGNED_URL,
                                                 headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                                 params=self.GET_PRESIGNED_URL_PARAMS,
                                                 json=None,
                                                 )
-            assert post_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
+            assert put_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
 
             assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
@@ -511,15 +513,8 @@ class TestModelUpload(object):
                           data=None,
                           params=self.BASE_PARAMS
                           ),
-                mock.call(
-                    self.GET_PRESIGNED_URL_RESPONSE,
-                    headers={"Content-Type": mock.ANY},
-                    files=None,
-                    json=None,
-                    params=None,
-                    data=mock.ANY,
-                ),
             ])
+
             get_patched.assert_has_calls(
                 [
                     mock.call(
@@ -532,6 +527,13 @@ class TestModelUpload(object):
             )
             put_patched.assert_has_calls(
                 [
+                    mock.call(
+                        self.GET_PRESIGNED_URL_RESPONSE,
+                        headers={"Content-Type": mock.ANY},
+                        json=None,
+                        params=None,
+                        data=mock.ANY,
+                    ),
                     mock.call(
                         self.TAGS_URL,
                         headers=EXPECTED_HEADERS,
