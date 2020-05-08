@@ -56,7 +56,7 @@ class TestNotebooksCreate(object):
         "--clusterId", "321"
     ]
     EXPECTED_REQUEST_JSON = {
-        "machineType": "P5000",
+        "vmTypeLabel": "P5000",
         "containerName": "jupyter/notebook",
         "clusterId": "321",
         'isPreemptible': False,
@@ -68,7 +68,7 @@ class TestNotebooksCreate(object):
         "jobId": 20163,
         "isPublic": False,
         "id": 1811,
-        "containerId": 123,
+        "containerName": "jupyter/notebook",
     }
     EXPECTED_STDOUT = "Created new notebook with id: some_id\n" \
                       "https://www.paperspace.com/some_namespace/notebook/prg284tu2\n"
@@ -97,8 +97,8 @@ class TestNotebooksCreate(object):
         "--isPreemptible",
     ]
     EXPECTED_REQUEST_JSON_WITH_ALL_OPTIONS = {
-        "machineType": "P5000",
-        "container": "jupyter/notebook",
+        "vmTypeLabel": "P5000",
+        "containerName": "jupyter/notebook",
         "clusterId": "321",
         "name": "some_notebook_name",
         "registryUsername": "some_username",
