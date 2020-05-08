@@ -315,7 +315,7 @@ class TestNotebooksStart(object):
         "notebooks",
         "start",
         "--id", "n123",
-        "--vmTypeLabel", "c5.xlarge",
+        "--machineType", "c5.xlarge",
         "--clusterId", "cl123",
     ]
     EXPECTED_REQUEST_JSON = {
@@ -337,7 +337,7 @@ class TestNotebooksStart(object):
         "notebooks",
         "start",
         "--id", "n123",
-        "--vmTypeLabel", "c5.xlarge",
+        "--machineType", "c5.xlarge",
         "--clusterId", "cl123",
         "--apiKey", "some_key",
     ]
