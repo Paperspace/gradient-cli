@@ -51,13 +51,13 @@ class TestNotebooksCreate(object):
     COMMAND = [
         "notebooks",
         "create",
-        "--vmTypeId", "25",
-        "--containerId", "123",
+        "--machineType", "P5000",
+        "--container", "jupyter/notebook",
         "--clusterId", "321"
     ]
     EXPECTED_REQUEST_JSON = {
-        "vmTypeId": 25,
-        "containerId": 123,
+        "machineType": "P5000",
+        "containerName": "jupyter/notebook",
         "clusterId": "321",
         'isPreemptible': False,
         'isPublic': False,
@@ -76,8 +76,8 @@ class TestNotebooksCreate(object):
     COMMAND_WITH_API_KEY_USED = [
         "notebooks",
         "create",
-        "--vmTypeId", "25",
-        "--containerId", "123",
+        "--machineType", "P5000",
+        "--container", "jupyter/notebook",
         "--clusterId", "321",
         "--apiKey", "some_key",
     ]
@@ -85,8 +85,8 @@ class TestNotebooksCreate(object):
     COMMAND_WITH_ALL_OPTIONS = [
         "notebooks",
         "create",
-        "--vmTypeId", "25",
-        "--containerId", "123",
+        "--machineType", "P5000",
+        "--container", "jupyter/notebook",
         "--clusterId", "321",
         "--name", "some_notebook_name",
         "--registryUsername", "some_username",
@@ -97,8 +97,8 @@ class TestNotebooksCreate(object):
         "--isPreemptible",
     ]
     EXPECTED_REQUEST_JSON_WITH_ALL_OPTIONS = {
-        "vmTypeId": 25,
-        "containerId": 123,
+        "machineType": "P5000",
+        "container": "jupyter/notebook",
         "clusterId": "321",
         "name": "some_notebook_name",
         "registryUsername": "some_username",

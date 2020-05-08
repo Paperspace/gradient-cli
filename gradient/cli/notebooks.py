@@ -34,17 +34,10 @@ def notebook_metrics():
     cls=common.GradientOption,
 )
 @click.option(
-    "--vmTypeLabel",
+    "--machineType",
     "vm_type_label",
     type=str,
     help="Virtual Machine type label e.g. P5000",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--vmTypeId",
-    "vm_type_id",
-    type=int,
-    help="Virtual Machine type id",
     cls=common.GradientOption,
 )
 @click.option(
@@ -55,7 +48,7 @@ def notebook_metrics():
     cls=common.GradientOption,
 )
 @click.option(
-    "--containerName",
+    "--container",
     "container_name",
     type=str,
     help="Container name",
@@ -149,17 +142,10 @@ def create_notebook(api_key, options_file, **notebook):
     cls=common.GradientOption,
 )
 @click.option(
-    "--vmTypeLabel",
+    "--machineType",
     "vm_type_label",
     type=str,
     help="Virtual Machine type label e.g. P5000",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--vmTypeId",
-    "vm_type_id",
-    type=int,
-    help="Virtual Machine type id",
     cls=common.GradientOption,
 )
 @click.option(
