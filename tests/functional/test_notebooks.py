@@ -91,7 +91,7 @@ class TestNotebooksCreate(object):
         "--name", "some_notebook_name",
         "--registryUsername", "some_username",
         "--registryPassword", "some_password",
-        "--defaultEntrypoint", "some_entrypoint",
+        "--command", "some_entrypoint",
         "--containerUser", "some_container_user",
         "--shutdownTimeout", "8",
         "--isPreemptible",

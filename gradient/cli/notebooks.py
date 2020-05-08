@@ -76,10 +76,10 @@ def notebook_metrics():
     cls=common.GradientOption,
 )
 @click.option(
-    "--defaultEntrypoint",
+    "--command",
     "default_entrypoint",
     type=str,
-    help="Default entrypoint",
+    help="Command (executed as `/bin/sh -c 'YOUR COMMAND'`)",
     cls=common.GradientOption,
 )
 @click.option(
