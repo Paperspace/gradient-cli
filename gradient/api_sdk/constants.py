@@ -136,3 +136,16 @@ METRICS_MAP = collections.OrderedDict(
         ("gpuMemoryUtilization", BuiltinMetrics.gpu_memory_utilization),
     )
 )
+
+
+class DatasetVolumeKinds:
+    DYNAMIC = "dynamic"
+    SHARED = "shared"
+
+
+DATASET_VOLUME_KINDS = collections.OrderedDict(
+    (
+        ("dynamic", DatasetVolumeKinds.DYNAMIC),
+        ("shared", DatasetVolumeKinds.SHARED),
+    ),
+)
