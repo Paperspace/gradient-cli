@@ -1,12 +1,12 @@
 apiKey: some_key
 clusterId: 321
-containerId: 123
-containerName: null
+container: "jupyter/notebook"
+command: "some_entrypoint"
 containerUser: some_container_user
 defaultEntrypoint: some_entrypoint
 isPreemptible: true
 name: some_notebook_name
 registryPassword: some_password
 registryUsername: some_username
-shutdownTimeout: 8.0
-vmTypeId: 25
+shutdownTimeout: 8
+machineType: P5000

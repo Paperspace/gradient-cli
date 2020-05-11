@@ -4,7 +4,7 @@ from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType
-from gradient.cli.common import validate_comma_split_option, api_key_option
+from gradient.cli.common import validate_comma_split_option, api_key_option, ClickGroup
 from gradient.commands import notebooks
 from gradient.commands.notebooks import GetNotebookMetricsCommand, StreamNotebookMetricsCommand
 
@@ -24,64 +24,68 @@ def notebook_metrics():
     pass
 
 
-# @notebooks_group.command("create", help="Create new notebook")
-# @click.option(
-#     "--vmTypeId",
-#     "vm_type_id",
-#     type=int,
-#     required=True,
-#     help="Type of Virtual Machine",
-#     cls=common.GradientOption,
-# )
-@click.option(
-    "--containerId",
-    "container_id",
-    type=int,
-    required=True,
-    help="Container ID",
-    cls=common.GradientOption,
-)
+@notebooks_group.command("create", help="Create new notebook")
 @click.option(
     "--clusterId",
     "cluster_id",
-    type=int,
+    type=str,
     required=True,
     help="Cluster ID",
     cls=common.GradientOption,
 )
 @click.option(
-    "--containerName",
+    "--machineType",
+    "vm_type_label",
+    type=str,
+    help="Virtual Machine type label e.g. P5000",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--containerId",
+    "container_id",
+    type=int,
+    help="Container ID",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--container",
     "container_name",
+    type=str,
     help="Container name",
     cls=common.GradientOption,
 )
 @click.option(
     "--name",
     "name",
+    type=str,
     help="Notebook name",
     cls=common.GradientOption,
 )
 @click.option(
     "--registryUsername",
     "registry_username",
+    type=str,
     help="Registry username",
     cls=common.GradientOption,
 )
 @click.option(
     "--registryPassword",
     "registry_password",
+    type=str,
     help="Registry password",
     cls=common.GradientOption,
 )
 @click.option(
-    "--defaultEntrypoint",
+    "--command",
     "default_entrypoint",
-    help="Default entrypoint",
+    type=str,
+    help="Command (executed as `/bin/sh -c 'YOUR COMMAND'`)",
     cls=common.GradientOption,
 )
 @click.option(
     "--containerUser",
     "container_user",
+    type=str,
     help="Container user",
     cls=common.GradientOption,
 )
@@ -89,13 +93,21 @@ def notebook_metrics():
     "--shutdownTimeout",
     "shutdown_timeout",
     help="Shutdown timeout in hours",
-    type=float,
+    type=int,
     cls=common.GradientOption,
 )
 @click.option(
     "--isPreemptible",
     "is_preemptible",
     help="Is preemptible",
+    is_flag=True,
+    type=bool,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--isPublic",
+    "is_public",
+    help="Is publically viewable",
     is_flag=True,
     type=bool,
     cls=common.GradientOption,
@@ -119,6 +131,86 @@ def create_notebook(api_key, options_file, **notebook):
     notebook["tags"] = validate_comma_split_option(notebook.pop("tags_comma"), notebook.pop("tags"))
     command = notebooks.CreateNotebookCommand(api_key=api_key)
     command.execute(**notebook)
+
+@notebooks_group.command("start", help="Start notebook")
+@click.option(
+    "--id",
+    "id",
+    type=str,
+    required=True,
+    help="Notebook ID",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--machineType",
+    "vm_type_label",
+    type=str,
+    help="Virtual Machine type label e.g. P5000",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--clusterId",
+    "cluster_id",
+    type=str,
+    required=True,
+    help="Cluster ID",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--name",
+    "name",
+    type=str,
+    help="Notebook name",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--shutdownTimeout",
+    "shutdown_timeout",
+    help="Shutdown timeout in hours",
+    type=int,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--isPreemptible",
+    "is_preemptible",
+    help="Is preemptible",
+    is_flag=True,
+    type=bool,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
+
+@common.api_key_option
+@common.options_file
+def start_notebook(api_key, options_file, **notebook):
+    notebook["tags"] = validate_comma_split_option(notebook.pop("tags_comma"), notebook.pop("tags"))
+    command = notebooks.StartNotebookCommand(api_key=api_key)
+    command.execute(**notebook)
+
+@notebooks_group.command("fork", help="Fork existing notebook")
+@click.option(
+    "--id",
+    "id_",
+    help="Notebook ID",
+    cls=common.GradientOption,
+)
+@common.api_key_option
+@common.options_file
+def delete_notebook(id_, api_key, options_file):
+    command = notebooks.ForkNotebookCommand(api_key=api_key)
+    command.execute(id_=id_)
 
 
 @notebooks_group.command("delete", help="Delete existing notebook")
@@ -312,3 +404,58 @@ def get_deployment_metrics(notebook_id, metrics_list, interval, start, end, opti
 def stream_model_deployment_metrics(notebook_id, metrics_list, interval, options_file, api_key):
     command = StreamNotebookMetricsCommand(api_key=api_key)
     command.execute(notebook_id=notebook_id, interval=interval, built_in_metrics=metrics_list)
+
+@notebooks_group.command("stop", help="Stop running notebook")
+@click.option(
+    "--id",
+    "notebook_id",
+    required=True,
+    help="Stop notebook with given ID",
+)
+@api_key_option
+def stop_notebook(notebook_id, api_key=None):
+    command = notebooks.StopNotebookCommand(api_key=api_key)
+    command.execute(notebook_id)
+
+
+@notebooks_group.group("artifacts", help="Manage notebooks' artifacts", cls=ClickGroup)
+def artifacts():
+    pass
+
+
+@artifacts.command("list", help="List notebook's artifacts")
+@click.option(
+    "--id",
+    "notebook_id",
+    cls=common.GradientOption,
+    help="ID of the notebook",
+)
+@click.option(
+    "--size",
+    "-s",
+    "size",
+    help="Show file size",
+    is_flag=True,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--links",
+    "-l",
+    "links",
+    help="Show file URL",
+    is_flag=True,
+    default=False,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--files",
+    "files",
+    help="Get only given file (use at the end * as a wildcard)",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def list_artifacts(notebook_id, size, links, files, options_file, api_key=None):
+    command = notebooks.ArtifactsListCommand(api_key=api_key)
+    command.execute(notebook_id=notebook_id, size=size, links=links, files=files)
+

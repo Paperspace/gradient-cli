@@ -7,9 +7,10 @@ class NotebooksClient(BaseClient):
 
     def create(
             self,
-            vm_type_id,
-            container_id,
             cluster_id,
+            container_id=None,
+            vm_type_id=None,
+            vm_type_label=None,
             container_name=None,
             name=None,
             registry_username=None,
@@ -18,21 +19,24 @@ class NotebooksClient(BaseClient):
             container_user=None,
             shutdown_timeout=None,
             is_preemptible=None,
+            is_public=None,
             tags=None,
     ):
         """Create new notebook
 
-        :param int vm_type_id:
         :param int container_id:
-        :param int cluster_id:
+        :param str cluster_id:
+        :param str vm_type_id;
+        :param int vm_type_label:
         :param str container_name:
         :param str name:
         :param str registry_username:
         :param str registry_password:
         :param str default_entrypoint:
         :param str container_user:
-        :param int|float shutdown_timeout:
+        :param int shutdown_timeout:
         :param bool is_preemptible:
+        :param bool is_public:
         :param list[str] tags: List of tags
 
         :return: Notebook ID
@@ -40,7 +44,6 @@ class NotebooksClient(BaseClient):
         """
 
         notebook = models.Notebook(
-            vm_type_id=vm_type_id,
             container_id=container_id,
             cluster_id=cluster_id,
             container_name=container_name,
@@ -51,10 +54,72 @@ class NotebooksClient(BaseClient):
             container_user=container_user,
             shutdown_timeout=shutdown_timeout,
             is_preemptible=is_preemptible,
+            vm_type_label = vm_type_label,
+            vm_type_id = vm_type_id,
+            is_public = is_public,
         )
 
         repository = self.build_repository(repositories.CreateNotebook)
         handle = repository.create(notebook)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
+        return handle
+
+    def start(
+            self,
+            id,
+            cluster_id,
+            vm_type_id=None,
+            vm_type_label=None,
+            name=None,
+            shutdown_timeout=None,
+            is_preemptible=None,
+            tags=None,
+    ):
+        """Start existing notebook
+        :param str|int id
+        :param str cluster_id:
+        :param str vm_type_id:
+        :param int vm_type_label:
+        :param str name:
+        :param int shutdown_timeout:
+        :param bool is_preemptible:
+        :param list[str] tags: List of tags
+
+        :return: Notebook ID
+        :rtype str:
+        """
+        notebook = models.NotebookStart(
+            notebook_id=id,
+            vm_type_id=vm_type_id,
+            vm_type_label=vm_type_label,
+            cluster_id=cluster_id,
+            notebook_name=name,
+            shutdown_timeout=shutdown_timeout,
+            is_preemptible=is_preemptible,
+        )
+
+        repository = self.build_repository(repositories.StartNotebook)
+
+        handle = repository.start(notebook)
+
+        if tags:
+            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+
+        return handle
+
+    def fork(self, id, tags=None):
+        """Fork an existing notebook
+        :param str|int id:
+        :param list[str] tags: List of tags
+
+        :return: Notebook ID
+        :rtype str:
+        """
+        repository = self.build_repository(repositories.ForkNotebook)
+        handle = repository.fork(id)
 
         if tags:
             self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
@@ -133,3 +198,40 @@ class NotebooksClient(BaseClient):
             built_in_metrics=built_in_metrics,
         )
         return metrics
+
+    def stop(self, id):
+        """Stop existing notebook
+
+        :param str|int id: Notebook ID
+        """
+        repository = self.build_repository(repositories.StopNotebook)
+        repository.stop(id)
+
+
+    def artifacts_list(self, notebook_id, files=None, size=False, links=True):
+        """
+        Method to retrieve all artifacts files.
+
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 2
+
+            artifacts = notebook_client.artifacts_list(
+                notebook_id='your_notebook_id_here',
+                files='your_files,here',
+                size=False,
+                links=True
+            )
+
+        :param str notebook_id: to limit artifact from this notebook.
+        :param str files: to limit result only to file names provided. You can use wildcard option ``*``.
+        :param bool size: flag to show file size. Default value is set to False.
+        :param bool links: flag to show file url. Default value is set to True.
+
+        :returns: list of files with description if specified from notebook artifacts.
+        :rtype: list[Artifact]
+        """
+        repository = self.build_repository(repositories.ListNotebookArtifacts)
+        artifacts = repository.list(notebook_id=notebook_id, files=files, links=links, size=size)
+        return artifacts
+
