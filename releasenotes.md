@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.7.0a3
+#### Fixes
+* Fixed a bug in model upload introduced in 0.7.0a3
+
 # Release Notes for 0.7.0a2
 #### New features
 * Added some datetime fields to deployment and experiment models
