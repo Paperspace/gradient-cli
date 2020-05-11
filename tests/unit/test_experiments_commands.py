@@ -14,6 +14,7 @@ class TestHandleDatasetDataMethod(object):
             "dataset_secret_access_key_list": ["none", "secret"],
             # "dataset_version_id_list": []  # this key does not exist if parameter was not used
             "dataset_etag_list": ["etag"],
+            "dataset_volume_kind_list": [],
         }
         expected_data = {
             "some_key": "some_value",
@@ -25,6 +26,8 @@ class TestHandleDatasetDataMethod(object):
                     "aws_secret_access_key": None,
                     "version_id": None,
                     "etag": "etag",
+                    "volume_kind": None,
+                    "volume_size": None,
                 },
                 {
                     "uri": "uri2",
@@ -33,6 +36,8 @@ class TestHandleDatasetDataMethod(object):
                     "aws_secret_access_key": "secret",
                     "version_id": None,
                     "etag": None,
+                    "volume_kind": None,
+                    "volume_size": None,
                 },
             ]
 

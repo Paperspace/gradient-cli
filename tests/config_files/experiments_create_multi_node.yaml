@@ -14,9 +14,15 @@ datasetAwsSecretAccessKey:
   -
   - some_other_secret
 datasetVersionId:
+  - version1
+  - version2
 datasetEtag:
   - "some etag"
   - "some other etag"
+datasetVolumeKind:
+  - dynamic
+datasetVolumeSize:
+  - 10Gi
 experimentEnv:
   key: val
 experimentType: MPI

@@ -95,6 +95,22 @@ class S3PutFileUploader(S3FileUploader):
             raise sdk_exceptions.S3UploadFailedError(response)
 
 
+class S3PutFileUploader(S3FileUploader):
+    def _upload(self, url, data):
+        """Send data to S3 and raise exception if it was not a success
+
+        :param str url:
+        :param encoder.MultipartEncoderMonitor data:
+        """
+        file_path = data.encoder.fields['file'][0]
+        client = self._get_client(url)
+        client.headers = {"Content-Type": mimetypes.guess_type(file_path)[0] or ""}
+
+        response = client.put("", data=data)
+        if not response.ok:
+            raise sdk_exceptions.S3UploadFailedError(response)
+
+
 class ExperimentFileUploader(object):
     def __init__(self, api_key, uploader=None, logger=None, ps_client_name=None):
         """
