@@ -26,11 +26,23 @@ class _DeploymentCommand(object):
         pass
 
 
-class CreateDeploymentCommand(_DeploymentCommand):
+class HandleWorkspaceMixin(object):
+    def _handle_workspace(self, instance_dict):
+        handler = self.workspace_handler.handle(instance_dict)
+
+        instance_dict.pop("ignore_files", None)
+        instance_dict.pop("workspace", None)
+        instance_dict.pop("workspace_archive", None)
+        instance_dict.pop("workspace_url", None)
+        if handler and handler != "none":
+            instance_dict["workspace_url"] = handler
+
+
+class CreateDeploymentCommand(_DeploymentCommand, HandleWorkspaceMixin):
     def __init__(self, workspace_handler, *args, **kwargs):
         super(CreateDeploymentCommand, self).__init__(*args, **kwargs)
         self.workspace_handler = workspace_handler
-        
+
     def execute(self, **kwargs):
         self._handle_auth(kwargs)
         self._handle_workspace(kwargs)
@@ -43,16 +55,6 @@ class CreateDeploymentCommand(_DeploymentCommand):
     def get_instance_url(self, instance_id):
         url = concatenate_urls(config.WEB_URL, "/console/deployments/{}".format(instance_id))
         return url
-
-    def _handle_workspace(self, instance_dict):
-        handler = self.workspace_handler.handle(instance_dict)
-
-        instance_dict.pop("ignore_files", None)
-        instance_dict.pop("workspace", None)
-        instance_dict.pop("workspace_archive", None)
-        instance_dict.pop("workspace_url", None)
-        if handler and handler != "none":
-            instance_dict["workspace_url"] = handler
 
     def _handle_auth(self, kwargs):
         if kwargs.pop("generate_auth", False):
@@ -130,8 +132,14 @@ class DeleteDeploymentCommand(_DeploymentCommand):
         self.logger.log("Deployment deleted")
 
 
-class UpdateDeploymentCommand(_DeploymentCommand):
+class UpdateDeploymentCommand(_DeploymentCommand, HandleWorkspaceMixin):
+    def __init__(self, workspace_handler, *args, **kwargs):
+        super(UpdateDeploymentCommand, self).__init__(*args, **kwargs)
+        self.workspace_handler = workspace_handler
+
     def execute(self, deployment_id, **kwargs):
+        self._handle_workspace(kwargs)
+
         with halo.Halo(text="Updating deployment data", spinner="dots"):
             self.client.update(deployment_id, **kwargs)
 
