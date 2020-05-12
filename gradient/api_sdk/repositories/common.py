@@ -7,7 +7,9 @@ import dateutil
 import six
 import websocket
 
+from .. import serializers
 from ..clients import http_client
+from ..config import config
 from ..sdk_exceptions import ResourceFetchingError, ResourceCreatingDataError, ResourceCreatingError, GradientSdkError
 from ..utils import MessageExtractor, concatenate_urls
 
@@ -451,3 +453,39 @@ class StreamMetrics(BaseRepository):
 
     def _get_stream_generator(self, connection):
         return connection
+
+
+class ListLogs(ListResources):
+    @abc.abstractmethod
+    def _get_request_params(self, kwargs):
+        pass
+
+    def _get_api_url(self, **kwargs):
+        return config.CONFIG_LOG_HOST
+
+    def get_request_url(self, **kwargs):
+        return "/jobs/logs"
+
+    def yield_logs(self, id, line=0, limit=10000):
+
+        gen = self._get_logs_generator(id, line, limit)
+        return gen
+
+    def _get_logs_generator(self, id, line, limit):
+        last_line_number = line
+
+        while True:
+            logs = self.list(id=id, line=line, limit=limit)
+
+            for log in logs:
+                # stop generator - "PSEOF" indicates there are no more logs
+                if log.message == "PSEOF":
+                    return
+
+                last_line_number += 1
+                yield log
+
+    def _parse_objects(self, log_rows, **kwargs):
+        serializer = serializers.LogRowSchema()
+        log_rows = [serializer.get_instance(row) for row in log_rows]
+        return log_rows

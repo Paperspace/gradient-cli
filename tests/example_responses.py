@@ -7999,3 +7999,66 @@ NOTEBOOKS_METRICS_GET_RESPONSE_WHEN_NO_METRICS_WERE_FOUND = {
     "object_type": "notebook",
     "charts": {"cpuPercentage": None, "memoryUsage": None},
 }
+
+DEPLOYMENTS_LOGS_RESPONSE = [
+    {
+        "jobId": "deshj1l4nuw6sd1",
+        "line": 1,
+        "timestamp": "2020-05-11T11:27:56.552Z",
+        "message": "line1\n",
+        "instanceName": {
+            "String": "deshj1l4nuw6sd1-1-artifact-1-5nd94",
+            "Valid": True
+        },
+        "uuid": {
+            "String": "1ef5d86b-d05e-4610-8f81-b42b556cede7",
+            "Valid": True
+        },
+        "instanceCount": {
+            "Int64": 1,
+            "Valid": True
+        }
+    },
+    {
+        "jobId": "deshj1l4nuw6sd1",
+        "line": 2,
+        "timestamp": "2020-05-11T11:27:56.552Z",
+        "message": "line2\n",
+        "instanceName": {
+            "String": "deshj1l4nuw6sd1-1-artifact-1-5nd94",
+            "Valid": True
+        },
+        "uuid": {
+            "String": "1ef5d86b-d05e-4610-8f81-b42b556cede7",
+            "Valid": True
+        },
+        "instanceCount": {
+            "Int64": 1,
+            "Valid": True
+        }
+    },
+    {
+        "jobId": "deshj1l4nuw6sd1",
+        "line": 3,
+        "timestamp": "2020-05-11T11:27:56.557Z",
+        "message": "line3",
+        "instanceName": {
+            "String": "deshj1l4nuw6sd1-1-artifact-1-5nd94",
+            "Valid": True
+        },
+        "uuid": {
+            "String": "1ef5d86b-d05e-4610-8f81-b42b556cede7",
+            "Valid": True
+        },
+        "instanceCount": {
+            "Int64": 1,
+            "Valid": True
+        }
+    },
+    {
+        "jobId": "deshj1l4nuw6sd1",
+        "line": 4,
+        "timestamp": "2020-05-11T11:27:56.558Z",
+        "message": "PSEOF"
+    }
+]

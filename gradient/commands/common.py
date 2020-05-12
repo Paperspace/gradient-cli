@@ -10,6 +10,7 @@ from halo import halo
 
 from gradient.clilogger import CliLogger
 from gradient.cliutils import get_terminal_lines
+from gradient.exceptions import ApplicationError
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -175,3 +176,41 @@ class StreamMetricsCommand(ListCommandMixin):
             table_data.append(row)
 
         return table_data
+
+
+class LogsCommandMixin(object):
+    @abc.abstractmethod
+    def _make_table(self, logs, id):
+        pass
+
+    @abc.abstractmethod
+    def _get_log_row_string(self, id, log):
+        pass
+
+    def execute(self, id, line, limit, follow):
+        if follow:
+            self.logger.log("Awaiting logs...")
+            self._log_logs_continuously(id, line, limit)
+        else:
+            self._log_table_of_logs(id, line, limit)
+
+    def _log_table_of_logs(self, id, line, limit):
+        logs = self.client.logs(id, line, limit)
+        if not logs:
+            raise ApplicationError("No logs found")
+
+        table_str = self._make_table(logs, id)
+        if len(table_str.splitlines()) > get_terminal_lines():
+            pydoc.pager(table_str)
+        else:
+            self.logger.log(table_str)
+
+    def _log_logs_continuously(self, id, line, limit):
+        logs_gen = self._get_logs_generator(id, line, limit)
+        for log in logs_gen:
+            log_msg = self._get_log_row_string(id, log)
+            self.logger.log(log_msg)
+
+    def _get_logs_generator(self, id, line, limit):
+        logs_gen = self.client.yield_logs(id, line, limit)
+        return logs_gen
