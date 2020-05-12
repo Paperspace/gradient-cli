@@ -284,3 +284,33 @@ class DeploymentsClient(BaseClient):
             built_in_metrics=built_in_metrics,
         )
         return metrics
+
+    def logs(self, deployment_id, line=0, limit=10000):
+        """Show list of latest logs from the specified deployment.
+
+        :param str deployment_id: Deployment Id
+        :param int line: line number at which logs starts to display on screen
+        :param int limit: maximum lines displayed on screen, default set to 10 000
+
+        :returns: list of LogRows
+        :rtype: list[models.LogRow]
+        """
+
+        repository = self.build_repository(repositories.ListDeploymentLogs)
+        logs = repository.list(id=deployment_id, line=line, limit=limit)
+        return logs
+
+    def yield_logs(self, deployment_id, line=0, limit=10000):
+        """Get log generator. Polls the API for new logs
+
+        :param str deployment_id: Deployment Id
+        :param int line: line number at which logs starts to display on screen
+        :param int limit: maximum lines displayed on screen, default set to 10 000
+
+        :returns: generator yielding LogRow instances
+        :rtype: Iterator[models.LogRow]
+        """
+
+        repository = self.build_repository(repositories.ListDeploymentLogs)
+        logs = repository.yield_logs(id=deployment_id, line=line, limit=limit)
+        return logs
