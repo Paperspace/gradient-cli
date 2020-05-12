@@ -11,25 +11,25 @@ from gradient.cli.cli_types import ChoiceType, json_string
 from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup, validate_comma_split_option
 from gradient.commands import deployments as deployments_commands
 from gradient.commands.deployments import DeploymentRemoveTagsCommand, DeploymentAddTagsCommand, \
-    GetDeploymentMetricsCommand, StreamDeploymentMetricsCommand
+    GetDeploymentMetricsCommand, StreamDeploymentMetricsCommand, DeploymentLogsCommand
 
 
 @cli.group("deployments", help="Manage deployments", cls=ClickGroup)
-def deployments():
+def deployments_group():
     pass
 
 
-@deployments.group("tags", help="Manage deployments tags", cls=ClickGroup)
+@deployments_group.group("tags", help="Manage deployments tags", cls=ClickGroup)
 def deployments_tags():
     pass
 
 
-@deployments.group(name="metrics", help="Read model deployment metrics", cls=ClickGroup)
+@deployments_group.group(name="metrics", help="Read model deployment metrics", cls=ClickGroup)
 def deployments_metrics():
     pass
 
 
-@deployments.command("create", help="Create new deployment")
+@deployments_group.command("create", help="Create new deployment")
 @click.option(
     "--deploymentType",
     "deployment_type",
@@ -208,7 +208,7 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
 )
 
 
-@deployments.command("list", help="List deployments with optional filtering")
+@deployments_group.command("list", help="List deployments with optional filtering")
 @click.option(
     "--state",
     "state",
@@ -246,7 +246,7 @@ def get_deployments_list(api_key, options_file, **filters):
         clilogger.CliLogger().error(e)
 
 
-@deployments.command("start", help="Start deployment")
+@deployments_group.command("start", help="Start deployment")
 @click.option(
     "--id",
     "id_",
@@ -261,7 +261,7 @@ def start_deployment(id_, options_file, api_key=None):
     command.execute(deployment_id=id_)
 
 
-@deployments.command("stop", help="Stop deployment")
+@deployments_group.command("stop", help="Stop deployment")
 @click.option(
     "--id",
     "id_",
@@ -276,7 +276,7 @@ def stop_deployment(id_, options_file, api_key=None):
     command.execute(deployment_id=id_)
 
 
-@deployments.command("delete", help="Delete deployment")
+@deployments_group.command("delete", help="Delete deployment")
 @click.option(
     "--id",
     "id_",
@@ -291,7 +291,7 @@ def delete_deployment(id_, options_file, api_key):
     command.execute(deployment_id=id_)
 
 
-@deployments.command("update", help="Modify existing deployment")
+@deployments_group.command("update", help="Modify existing deployment")
 @click.option(
     "--id",
     "deployment_id",
@@ -431,7 +431,7 @@ def update_deployment(deployment_id, api_key, options_file, **kwargs):
     command.execute(deployment_id, **kwargs)
 
 
-@deployments.command("details", help="Get details of model deployment")
+@deployments_group.command("details", help="Get details of model deployment")
 @click.option(
     "--id",
     "deployment_id",
@@ -588,3 +588,35 @@ def get_deployment_metrics(deployment_id, metrics_list, interval, start, end, op
 def stream_model_deployment_metrics(deployment_id, metrics_list, interval, options_file, api_key):
     command = StreamDeploymentMetricsCommand(api_key=api_key)
     command.execute(deployment_id=deployment_id, interval=interval, built_in_metrics=metrics_list)
+
+
+@deployments_group.command("logs", help="List deployment logs")
+@click.option(
+    "--id",
+    "deployment_id",
+    required=True,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--line",
+    "line",
+    default=0,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--limit",
+    "limit",
+    default=10000,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--follow",
+    "follow",
+    default=False,
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def list_logs(deployment_id, line, limit, follow, options_file, api_key=None):
+    command = DeploymentLogsCommand(api_key=api_key)
+    command.execute(deployment_id, line, limit, follow)

@@ -4,15 +4,16 @@ import pydoc
 
 import six
 import terminaltables
-from gradient.cli_constants import CLI_PS_CLIENT_NAME
+from click import style
 from halo import halo
 
-from gradient import clilogger as gradient_logger, exceptions, DeploymentsClient
+from gradient import exceptions, DeploymentsClient
 from gradient.api_sdk import sdk_exceptions, utils, models
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import concatenate_urls
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.cliutils import get_terminal_lines
-from gradient.commands.common import DetailsCommandMixin, StreamMetricsCommand, BaseCommand
+from gradient.commands.common import DetailsCommandMixin, StreamMetricsCommand, BaseCommand, LogsCommandMixin
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -178,3 +179,24 @@ class GetDeploymentMetricsCommand(BaseDeploymentCommand):
 
 class StreamDeploymentMetricsCommand(StreamMetricsCommand, BaseDeploymentCommand):
     pass
+
+
+class DeploymentLogsCommand(LogsCommandMixin, BaseDeploymentCommand):
+    def _make_table(self, logs, experiment_id):
+        table_title = "Deployment %s logs" % experiment_id
+        table_data = [("LINE", "MESSAGE")]
+        table = terminaltables.AsciiTable(table_data, title=table_title)
+
+        for log in logs:
+            table_data.append(self._format_row(experiment_id, log))
+
+        return table.table
+
+    def _get_log_row_string(self, id, log):
+        log_msg = "{}\t{}".format(*self._format_row(id, log))
+        return log_msg
+
+    @staticmethod
+    def _format_row(id, log_row):
+        return (style(fg="red", text=str(log_row.line)),
+                str(log_row.message).rstrip())

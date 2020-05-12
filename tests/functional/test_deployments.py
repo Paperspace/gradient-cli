@@ -1556,3 +1556,57 @@ class TestExperimentsMetricsStreamCommand(object):
 
         create_ws_connection_patched.assert_not_called()
         assert result.exit_code == 0, result.exc_info
+
+
+class TestExperimentLogs(object):
+    URL = "https://logs.paperspace.io/jobs/logs"
+    COMMAND = ["deployments", "logs", "--id", "some_id"]
+    COMMAND_WITH_FOLLOW = ["deployments", "logs", "--id", "some_id", "--follow", "True"]
+    COMMAND_WITH_OPTIONS_FILE = ["deployments", "logs", "--optionsFile", ]  # path added in test
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_get_request_and_print_all_received_logs_when_logs_command_was_used(self, get_patched):
+        get_patched.return_value = MockResponse(json_data=example_responses.DEPLOYMENTS_LOGS_RESPONSE)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND)
+
+        assert "line1" in result.output
+        # This one checks if trailing \n was removed from log line.
+        # There were empty lines printed if log line had a new line character at the end so we rstrip lines now
+        assert "|\n|    " not in result.output
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_should_read_options_from_config_file(self, get_patched, deployments_logs_config_path):
+        get_patched.return_value = MockResponse(json_data=example_responses.DEPLOYMENTS_LOGS_RESPONSE)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [deployments_logs_config_path]
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, command)
+
+        get_patched.assert_called_with(self.URL,
+                                       headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
+                                       json=None,
+                                       params={"line": 20, "limit": 30, "deploymentId": "some_id"})
+        assert "line2" in result.output
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_get_request_and_print_all_received_logs_when_logs_command_was_used_with_follow_flag(
+            self, get_patched):
+        get_patched.return_value = MockResponse(json_data=example_responses.DEPLOYMENTS_LOGS_RESPONSE)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_FOLLOW)
+
+        assert "line3" in result.output
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
+    def test_should_send_get_request_and_error_message_when_wrong_api_key_was_used(self, get_patched):
+        get_patched.return_value = MockResponse(content="Authentication failed",
+                                                status_code=401)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_FOLLOW)
+
+        assert "Awaiting logs...\nFailed to fetch data: Authentication failed\n" in result.output

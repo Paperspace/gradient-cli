@@ -1,5 +1,5 @@
 from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource, AlterResource, \
-    GetResource, GetMetrics, StreamMetrics
+    GetResource, GetMetrics, StreamMetrics, ListLogs
 from .. import serializers, config, sdk_exceptions
 from ..sdk_exceptions import ResourceFetchingError, MalformedResponseError
 
@@ -185,3 +185,13 @@ class StreamDeploymentMetrics(StreamMetrics):
 
         metrics_api_url = super(StreamDeploymentMetrics, self)._get_metrics_api_url(deployment, protocol="wss")
         return metrics_api_url
+
+
+class ListDeploymentLogs(ListLogs):
+    def _get_request_params(self, kwargs):
+        params = {
+            "deploymentId": kwargs["id"],
+            "line": kwargs["line"],
+            "limit": kwargs["limit"]
+        }
+        return params
