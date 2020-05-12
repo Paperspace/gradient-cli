@@ -1,5 +1,17 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.7.0
+##### Note: this list includes all changes made in 0.7.0a* alpha releases
+#### Breaking changes
+* Removed experimental `projects wizard` command
+#### New features
+* Added some datetime fields to deployment and experiment models
+* `--modelId` is not required to create a deployment anymore
+* Added commands for reading and streaming experiment, deployment, notebook and job metrics
+#### Fixes
+* Fix request field name for `deployment create` command
+* Fix cluster ID field again
+
 # Release Notes for 0.7.0a3
 #### Fixes
 * Fixed a bug in model upload introduced in 0.7.0a3
