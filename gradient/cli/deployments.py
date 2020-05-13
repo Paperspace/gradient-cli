@@ -212,7 +212,6 @@ def deployments_metrics():
 @click.option(
     "--workspaceUsername",
     "workspace_username",
-    metavar="<username>",
     help="Workspace username",
     cls=common.GradientOption,
 )
