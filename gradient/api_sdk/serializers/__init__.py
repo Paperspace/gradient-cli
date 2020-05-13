@@ -7,7 +7,7 @@ from .job import JobSchema
 from .log import LogRowSchema
 from .machine import MachineSchema, MachineSchemaForListing, MachineEventSchema
 from .model import Model, ModelFileSchema
-from .notebook import NotebookSchema
+from .notebook import NotebookSchema, NotebookStartSchema
 from .project import Project
 from .tag import TagSchema
 from .tensorboard import InstanceSchema, TensorboardSchema, TensorboardDetailSchema

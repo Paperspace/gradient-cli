@@ -778,7 +778,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         """
 
         repository = self.build_repository(repositories.ListExperimentLogs)
-        logs = repository.list(experiment_id, line, limit)
+        logs = repository.list(id=experiment_id, line=line, limit=limit)
         return logs
 
     def yield_logs(self, experiment_id, line=0, limit=10000):
@@ -793,7 +793,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         """
 
         repository = self.build_repository(repositories.ListExperimentLogs)
-        logs_generator = repository.yield_logs(experiment_id, line, limit)
+        logs_generator = repository.yield_logs(id=experiment_id, line=line, limit=limit)
         return logs_generator
 
     def delete(self, experiment_id):

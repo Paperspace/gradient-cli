@@ -1,6 +1,9 @@
 import json
 
-from .common import CreateResource, DeleteResource, ListResources, GetResource, GetMetrics, StreamMetrics
+from ..clients import http_client
+from ..sdk_exceptions import ResourceCreatingError
+from .common import CreateResource, DeleteResource, ListResources, GetResource, \
+    StopResource, GetMetrics, StreamMetrics, BaseRepository
 from .. import config
 from .. import serializers, sdk_exceptions
 
@@ -14,12 +17,49 @@ class CreateNotebook(GetNotebookApiUrlMixin, CreateResource):
     SERIALIZER_CLS = serializers.NotebookSchema
 
     def get_request_url(self, **kwargs):
-        return "notebooks/createNotebook"
+        return "notebooks/v2/createNotebook"
 
-    def _process_instance_dict(self, instance_dict):
-        # the API requires this field but marshmallow does not create it if it's value is None
-        instance_dict.setdefault("containerId")
-        return instance_dict
+
+class StartNotebook(GetNotebookApiUrlMixin, CreateResource):
+    SERIALIZER_CLS = serializers.NotebookStartSchema
+
+    def start(self, instance, data=None, path=None):
+        # notebook start is more like a create than a true start
+        # as it posts and you need to send more data than just a
+        # handle
+        return self.create(instance, data=data, path=path)
+
+    def get_request_url(self, **kwargs):
+        return "notebooks/v2/startNotebook"
+
+
+class ForkNotebook(GetNotebookApiUrlMixin, BaseRepository):
+    SERIALIZER_CLS = serializers.NotebookSchema
+    VALIDATION_ERROR_MESSAGE = "Failed to fork notebook"
+
+    def fork(self, id):
+        instance = {"notebookId": id}
+        handle = self._send_request(instance)
+        return handle
+
+    def _process_response(self, response):
+        try:
+            return response.data["handle"]
+        except Exception as e:
+            raise ResourceCreatingError(e)
+
+
+    def _send_request(self, data):
+        url = self.get_request_url()
+        client = self._get_client()
+        response = client.post(url, json=data)
+        gradient_response = http_client.GradientResponse.interpret_response(response)
+        self._validate_response(gradient_response)
+        handle = self._process_response(gradient_response)
+        return handle
+
+    def get_request_url(self, **kwargs):
+        return "notebooks/v2/forkNotebook"
 
 
 class DeleteNotebook(GetNotebookApiUrlMixin, DeleteResource):
@@ -54,6 +94,21 @@ class GetNotebook(GetNotebookApiUrlMixin, GetResource):
         notebook_id = kwargs["id"]
         j = {"notebookId": notebook_id}
         return j
+
+class StopNotebook(GetNotebookApiUrlMixin, StopResource):
+
+    def get_request_url(self, **kwargs):
+        return "notebooks/v2/stopNotebook"
+
+    def _get_request_json(self, kwargs):
+        notebook_id = kwargs["id"]
+        d = {"notebookId": notebook_id}
+        return d
+
+    def _send_request(self, client, url, json_data=None):
+        response = client.post(url, json=json_data)
+        return response
+
 
 
 class ListNotebooks(GetNotebookApiUrlMixin, ListResources):
@@ -129,3 +184,30 @@ class StreamNotebookMetrics(StreamMetrics):
 
         metrics_api_url = super(StreamNotebookMetrics, self)._get_metrics_api_url(deployment, protocol="wss")
         return metrics_api_url
+
+
+class ListNotebookArtifacts(GetNotebookApiUrlMixin, ListResources):
+    def _parse_objects(self, data, **kwargs):
+        serializer = serializers.ArtifactSchema()
+        files = serializer.get_instance(data, many=True)
+        return files
+
+    def get_request_url(self, **kwargs):
+        return "/notebooks/artifactsList"
+
+    def _get_request_params(self, kwargs):
+        params = {
+            "notebookId": kwargs.get("notebook_id"),
+        }
+
+        if kwargs.get("files"):
+            params["files"] = kwargs.get("files")
+
+        if kwargs.get("size"):
+            params["size"] = kwargs.get("size")
+
+        if kwargs.get("links"):
+            params["links"] = kwargs.get("links")
+
+        return params
+

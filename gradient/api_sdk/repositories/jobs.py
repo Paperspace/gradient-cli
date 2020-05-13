@@ -1,10 +1,11 @@
 import json
 
 import gradient.api_sdk.config
-from .common import ListResources, CreateResource, GetResource, DeleteResource, StopResource, GetMetrics, StreamMetrics
+from .common import ListResources, CreateResource, GetResource, DeleteResource, StopResource, GetMetrics, StreamMetrics, \
+    ListLogs
 from .. import serializers, sdk_exceptions
 from ..clients import http_client
-from ..serializers import JobSchema, LogRowSchema
+from ..serializers import JobSchema
 
 
 class GetBaseJobApiUrlMixin(object):
@@ -55,37 +56,10 @@ class ListJobs(GetBaseJobApiUrlMixin, ListResources):
         return params or None
 
 
-class ListJobLogs(ListResources):
-    def _get_api_url(self, **_):
-        return gradient.api_sdk.config.config.CONFIG_LOG_HOST
-
-    def get_request_url(self, **kwargs):
-        return "/jobs/logs"
-
-    def yield_logs(self, job_id, line=0, limit=10000):
-        return self._get_logs_generator(job_id, line, limit)
-
-    def _get_logs_generator(self, job_id, line, limit):
-        last_line_number = line
-
-        while True:
-            logs = self.list(job_id=job_id, line=line, limit=limit)
-
-            for log in logs:
-                if log.message == "PSEOF":
-                    return
-
-                last_line_number += 1
-                yield log
-
-    def _parse_objects(self, log_rows, **kwargs):
-        serializer = LogRowSchema()
-        log_rows = (serializer.get_instance(row) for row in log_rows)
-        return log_rows
-
+class ListJobLogs(ListLogs):
     def _get_request_params(self, kwargs):
         params = {
-            "jobId": kwargs["job_id"],
+            "jobId": kwargs["id"],
             "line": kwargs["line"],
             "limit": kwargs["limit"]
         }
