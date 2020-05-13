@@ -52,8 +52,6 @@ class CreateDeploymentCommand(BaseDeploymentCommand):
 
         instance_dict.pop("ignore_files", None)
         instance_dict.pop("workspace", None)
-        instance_dict.pop("workspace_archive", None)
-        instance_dict.pop("workspace_url", None)
         if handler and handler != "none":
             instance_dict["workspace_url"] = handler
 
