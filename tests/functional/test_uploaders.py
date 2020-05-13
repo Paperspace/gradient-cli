@@ -3,8 +3,8 @@ import sys
 import mock
 from pytest import fixture
 
-from gradient.api_sdk.s3_uploader import S3FileUploader, S3ProjectFileUploader, S3ModelFileUploader, \
-    S3WorkspaceDirectoryUploader
+from gradient.api_sdk.s3_uploader import S3FileUploader, ExperimentFileUploader, S3ModelFileUploader, \
+    ExperimentWorkspaceDirectoryUploader
 
 open_path = "builtins.open"
 if sys.version_info[0] < 3:
@@ -59,7 +59,7 @@ class TestS3FileUploader(object):
         client.post.assert_called()
 
 
-class TestS3ProjectFileUploader(object):
+class TestExperimentFileUploader(object):
     def test_should_post_file_data_and_return_valid_url(self, client, file_uploader):
         upload_url = "s3://url"
         mock_response = get_ps_exp_valid_response(upload_url)
@@ -67,7 +67,7 @@ class TestS3ProjectFileUploader(object):
         mock_api_client = mock.MagicMock()
         mock_api_client.get.return_value = mock_response
 
-        uploader = S3ProjectFileUploader("api_key", s3uploader=file_uploader)
+        uploader = ExperimentFileUploader("api_key", uploader=file_uploader)
         uploader.experiments_api = mock_api_client
 
         _mock_open = mock.mock_open(read_data="data")
@@ -101,7 +101,7 @@ class TestS3ModelFileUploader(object):
         client.post.assert_called()
 
 
-class TestS3WorkspaceDirectoryUploader(object):
+class TestExperimentWorkspaceDirectoryUploader(object):
 
     def test_should_post_file_data_and_return_valid_url(self, client, file_uploader):
         upload_url = "s3://url"
@@ -110,10 +110,10 @@ class TestS3WorkspaceDirectoryUploader(object):
 
         mock_api_client = mock.MagicMock()
         mock_api_client.get.return_value = mock_response
-        project_uploader = S3ProjectFileUploader("api_key", s3uploader=file_uploader)
+        project_uploader = ExperimentFileUploader("api_key", uploader=file_uploader)
         project_uploader.experiments_api = mock_api_client
 
-        uploader = S3WorkspaceDirectoryUploader(api_key="api_key", archiver=mock.MagicMock(),
+        uploader = ExperimentWorkspaceDirectoryUploader(api_key="api_key", archiver=mock.MagicMock(),
                                                 project_uploader=project_uploader)
 
         _mock_open = mock.mock_open(read_data="data")

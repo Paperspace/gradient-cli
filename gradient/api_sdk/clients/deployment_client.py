@@ -50,6 +50,10 @@ class DeploymentsClient(BaseClient):
             auth_password=None,
             tags=None,
             command=None,
+            workspace_url=None,
+            workspace_ref=None,
+            workspace_username=None,
+            workspace_password=None
     ):
         """
         Method to create a Deployment instance.
@@ -94,6 +98,10 @@ class DeploymentsClient(BaseClient):
         :param str auth_password: Password
         :param list[str] tags: List of tags
         :param str command: Deployment command
+        :param str workspace_url: Project git or s3repository url
+        :param str workspace_ref: Git commit hash, branch name or tag
+        :param str workspace_username: Project git repository username
+        :param str workspace_password: Project git repository password
 
         :returns: Created deployment id
         :rtype: str
@@ -120,6 +128,10 @@ class DeploymentsClient(BaseClient):
             auth_username=auth_username,
             auth_password=auth_password,
             command=command,
+            workspace_url=workspace_url,
+            workspace_ref=workspace_ref,
+            workspace_username=workspace_username,
+            workspace_password=workspace_password,
         )
 
         repository = self.build_repository(repositories.CreateDeployment)
