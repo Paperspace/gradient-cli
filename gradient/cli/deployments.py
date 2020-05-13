@@ -460,11 +460,38 @@ def delete_deployment(id_, options_file, api_key):
     help="Cluster ID",
     cls=common.GradientOption,
 )
+@click.option(
+    "--workspace",
+    "workspace",
+    help="Path to workspace directory, archive, S3 or git repository",
+    default="none",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--workspaceRef",
+    "workspace_ref",
+    help="Git commit hash, branch name or tag",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--workspaceUsername",
+    "workspace_username",
+    metavar="<username>",
+    help="Workspace username",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--workspacePassword",
+    "workspace_password",
+    help="Workspace password",
+    cls=common.GradientOption,
+)
 @api_key_option
 @common.options_file
 def update_deployment(deployment_id, api_key, options_file, **kwargs):
     del_if_value_is_none(kwargs)
-    command = deployments_commands.UpdateDeploymentCommand(api_key=api_key)
+    command = deployments_commands.UpdateDeploymentCommand(api_key=api_key,
+                                                           workspace_handler=get_workspace_handler(api_key))
     command.execute(deployment_id, **kwargs)
 
 

@@ -224,6 +224,10 @@ class DeploymentsClient(BaseClient):
             cluster_id=None,
             auth_username=None,
             auth_password=None,
+            workspace_url=None,
+            workspace_ref=None,
+            workspace_username=None,
+            workspace_password=None,
     ):
         deployment = models.Deployment(
             deployment_type=deployment_type,
@@ -246,6 +250,10 @@ class DeploymentsClient(BaseClient):
             cluster_id=cluster_id,
             auth_username=auth_username,
             auth_password=auth_password,
+            workspace_url=workspace_url,
+            workspace_ref=workspace_ref,
+            workspace_username=workspace_username,
+            workspace_password=workspace_password,
         )
 
         repository = self.build_repository(repositories.UpdateDeployment)

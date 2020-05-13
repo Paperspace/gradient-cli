@@ -864,6 +864,10 @@ class TestDeploymentsUpdate(object):
         "--authPassword", "some_password",
         "--clusterId", "some_cluster_id",
         "--apiKey", "some_key",
+        "--workspace", "s3://some-workspace",
+        "--workspaceRef", "some_branch_name",
+        "--workspaceUsername", "username",
+        "--workspacePassword", "password",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["deployments", "update", "--optionsFile", ]  # path added in test
 
@@ -896,6 +900,10 @@ class TestDeploymentsUpdate(object):
             "ports": "5000",
             "oauthKey": "some_username",
             "oauthSecret": "some_password",
+            "workspaceUrl": u"s3://some-workspace",
+            "workspaceRef": "some_branch_name",
+            "workspaceUsername": u"username",
+            "workspacePassword": u"password",
         }
     }
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
