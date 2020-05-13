@@ -8,5 +8,6 @@ from .machines_client import MachinesClient
 from .model_client import ModelsClient
 from .notebook_client import NotebooksClient
 from .project_client import ProjectsClient
+from .secret_client import SecretsClient
 from .sdk_client import SdkClient
 from .tensorboards_client import TensorboardClient

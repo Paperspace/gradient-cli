@@ -14,6 +14,7 @@ import gradient.cli.models
 import gradient.cli.notebooks
 import gradient.cli.projects
 import gradient.cli.run
+import gradient.cli.secrets
 import gradient.cli.tensorboards
 
 
