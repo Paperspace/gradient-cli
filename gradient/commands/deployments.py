@@ -4,26 +4,29 @@ import pydoc
 
 import six
 import terminaltables
+from click import style
 from halo import halo
 
-from gradient import clilogger as gradient_logger, exceptions
+from gradient import exceptions, DeploymentsClient
 from gradient.api_sdk import sdk_exceptions, utils, models
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import concatenate_urls
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.cliutils import get_terminal_lines
-from gradient.commands.common import DetailsCommandMixin, StreamMetricsCommand
+from gradient.commands.common import DetailsCommandMixin, StreamMetricsCommand, BaseCommand, LogsCommandMixin
 
 
 @six.add_metaclass(abc.ABCMeta)
-class _DeploymentCommand(object):
-    def __init__(self, deployment_client, logger_=gradient_logger.CliLogger()):
-        self.client = deployment_client
-        self.logger = logger_
-        self.entity = "deployment"
+class BaseDeploymentCommand(BaseCommand):
+    entity = "deployment"
 
-    @abc.abstractmethod
-    def execute(self, **kwargs):
-        pass
+    def _get_client(self, api_key, logger):
+        client = DeploymentsClient(
+            api_key=api_key,
+            logger=logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
+        return client
 
 
 class HandleWorkspaceMixin(object):
@@ -38,7 +41,7 @@ class HandleWorkspaceMixin(object):
             instance_dict["workspace_url"] = handler
 
 
-class CreateDeploymentCommand(_DeploymentCommand, HandleWorkspaceMixin):
+class CreateDeploymentCommand(BaseDeploymentCommand, HandleWorkspaceMixin):
     def __init__(self, workspace_handler, *args, **kwargs):
         super(CreateDeploymentCommand, self).__init__(*args, **kwargs)
         self.workspace_handler = workspace_handler
@@ -64,7 +67,7 @@ class CreateDeploymentCommand(_DeploymentCommand, HandleWorkspaceMixin):
             self.logger.log("Generated credentials: \nusername:{}\npassword:{}".format(auth_password, auth_username))
 
 
-class ListDeploymentsCommand(_DeploymentCommand):
+class ListDeploymentsCommand(BaseDeploymentCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
     def execute(self, **kwargs):
@@ -114,25 +117,25 @@ class ListDeploymentsCommand(_DeploymentCommand):
         return table_string
 
 
-class StartDeploymentCommand(_DeploymentCommand):
+class StartDeploymentCommand(BaseDeploymentCommand):
     def execute(self, **kwargs):
         self.client.start(**kwargs)
         self.logger.log("Deployment started")
 
 
-class StopDeploymentCommand(_DeploymentCommand):
+class StopDeploymentCommand(BaseDeploymentCommand):
     def execute(self, **kwargs):
         self.client.stop(**kwargs)
         self.logger.log("Deployment stopped")
 
 
-class DeleteDeploymentCommand(_DeploymentCommand):
+class DeleteDeploymentCommand(BaseDeploymentCommand):
     def execute(self, **kwargs):
         self.client.delete(**kwargs)
         self.logger.log("Deployment deleted")
 
 
-class UpdateDeploymentCommand(_DeploymentCommand, HandleWorkspaceMixin):
+class UpdateDeploymentCommand(BaseDeploymentCommand, HandleWorkspaceMixin):
     def __init__(self, workspace_handler, *args, **kwargs):
         super(UpdateDeploymentCommand, self).__init__(*args, **kwargs)
         self.workspace_handler = workspace_handler
@@ -146,7 +149,7 @@ class UpdateDeploymentCommand(_DeploymentCommand, HandleWorkspaceMixin):
         self.logger.log("Deployment data updated")
 
 
-class GetDeploymentDetails(DetailsCommandMixin, _DeploymentCommand):
+class GetDeploymentDetails(DetailsCommandMixin, BaseDeploymentCommand):
     def _get_table_data(self, instance):
         """
         :param models.Deployment instance:
@@ -171,19 +174,19 @@ class GetDeploymentDetails(DetailsCommandMixin, _DeploymentCommand):
         return data
 
 
-class DeploymentAddTagsCommand(_DeploymentCommand):
+class DeploymentAddTagsCommand(BaseDeploymentCommand):
     def execute(self, deployment_id, *args, **kwargs):
         self.client.add_tags(deployment_id, entity=self.entity, **kwargs)
         self.logger.log("Tags added to deployment")
 
 
-class DeploymentRemoveTagsCommand(_DeploymentCommand):
+class DeploymentRemoveTagsCommand(BaseDeploymentCommand):
     def execute(self, deployment_id, *args, **kwargs):
         self.client.remove_tags(deployment_id, entity=self.entity, **kwargs)
         self.logger.log("Tags removed from deployment")
 
 
-class GetDeploymentMetricsCommand(_DeploymentCommand):
+class GetDeploymentMetricsCommand(BaseDeploymentCommand):
     def execute(self, deployment_id, start, end, interval, built_in_metrics, *args, **kwargs):
         metrics = self.client.get_metrics(
             deployment_id,
@@ -196,5 +199,26 @@ class GetDeploymentMetricsCommand(_DeploymentCommand):
         self.logger.log(formatted_metrics)
 
 
-class StreamDeploymentMetricsCommand(StreamMetricsCommand, _DeploymentCommand):
+class StreamDeploymentMetricsCommand(StreamMetricsCommand, BaseDeploymentCommand):
     pass
+
+
+class DeploymentLogsCommand(LogsCommandMixin, BaseDeploymentCommand):
+    def _make_table(self, logs, experiment_id):
+        table_title = "Deployment %s logs" % experiment_id
+        table_data = [("LINE", "MESSAGE")]
+        table = terminaltables.AsciiTable(table_data, title=table_title)
+
+        for log in logs:
+            table_data.append(self._format_row(experiment_id, log))
+
+        return table.table
+
+    def _get_log_row_string(self, id, log):
+        log_msg = "{}\t{}".format(*self._format_row(id, log))
+        return log_msg
+
+    @staticmethod
+    def _format_row(id, log_row):
+        return (style(fg="red", text=str(log_row.line)),
+                str(log_row.message).rstrip())

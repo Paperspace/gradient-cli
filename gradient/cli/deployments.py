@@ -4,7 +4,7 @@ import click
 
 from gradient import cliutils
 from gradient import exceptions, clilogger, DEPLOYMENT_TYPES_MAP
-from gradient.api_sdk import DeploymentsClient, constants, workspace
+from gradient.api_sdk import constants, workspace
 from gradient.api_sdk.s3_uploader import DeploymentWorkspaceDirectoryUploader
 from gradient.cli import common
 from gradient.cli.cli import cli
@@ -13,7 +13,7 @@ from gradient.cli.common import api_key_option, del_if_value_is_none, ClickGroup
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.commands import deployments as deployments_commands
 from gradient.commands.deployments import DeploymentRemoveTagsCommand, DeploymentAddTagsCommand, \
-    GetDeploymentMetricsCommand, StreamDeploymentMetricsCommand
+    GetDeploymentMetricsCommand, StreamDeploymentMetricsCommand, DeploymentLogsCommand
 
 
 def get_workspace_handler(api_key):
@@ -26,26 +26,21 @@ def get_workspace_handler(api_key):
 
 
 @cli.group("deployments", help="Manage deployments", cls=ClickGroup)
-def deployments():
+def deployments_group():
     pass
 
 
-@deployments.group("tags", help="Manage deployments tags", cls=ClickGroup)
+@deployments_group.group("tags", help="Manage deployments tags", cls=ClickGroup)
 def deployments_tags():
     pass
 
 
-@deployments.group(name="metrics", help="Read model deployment metrics", cls=ClickGroup)
+@deployments_group.group(name="metrics", help="Read model deployment metrics", cls=ClickGroup)
 def deployments_metrics():
     pass
 
 
-def get_deployment_client(api_key):
-    deployment_client = DeploymentsClient(api_key=api_key, logger=clilogger.CliLogger(), ps_client_name="gradient-cli")
-    return deployment_client
-
-
-@deployments.command("create", help="Create new deployment")
+@deployments_group.command("create", help="Create new deployment")
 @click.option(
     "--deploymentType",
     "deployment_type",
@@ -233,8 +228,7 @@ def create_deployment(api_key, options_file, **kwargs):
     cliutils.validate_auth_options(kwargs)
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
     del_if_value_is_none(kwargs)
-    deployment_client = get_deployment_client(api_key)
-    command = deployments_commands.CreateDeploymentCommand(deployment_client=deployment_client,
+    command = deployments_commands.CreateDeploymentCommand(api_key=api_key,
                                                            workspace_handler=get_workspace_handler(api_key))
     command.execute(**kwargs)
 
@@ -252,7 +246,7 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
 )
 
 
-@deployments.command("list", help="List deployments with optional filtering")
+@deployments_group.command("list", help="List deployments with optional filtering")
 @click.option(
     "--state",
     "state",
@@ -283,15 +277,14 @@ DEPLOYMENT_STATES_MAP = collections.OrderedDict(
 @common.options_file
 def get_deployments_list(api_key, options_file, **filters):
     del_if_value_is_none(filters)
-    deployment_client = get_deployment_client(api_key)
-    command = deployments_commands.ListDeploymentsCommand(deployment_client=deployment_client)
+    command = deployments_commands.ListDeploymentsCommand(api_key=api_key)
     try:
         command.execute(**filters)
     except exceptions.ApplicationError as e:
         clilogger.CliLogger().error(e)
 
 
-@deployments.command("start", help="Start deployment")
+@deployments_group.command("start", help="Start deployment")
 @click.option(
     "--id",
     "id_",
@@ -302,12 +295,11 @@ def get_deployments_list(api_key, options_file, **filters):
 @api_key_option
 @common.options_file
 def start_deployment(id_, options_file, api_key=None):
-    deployment_client = get_deployment_client(api_key)
-    command = deployments_commands.StartDeploymentCommand(deployment_client=deployment_client)
+    command = deployments_commands.StartDeploymentCommand(api_key=api_key)
     command.execute(deployment_id=id_)
 
 
-@deployments.command("stop", help="Stop deployment")
+@deployments_group.command("stop", help="Stop deployment")
 @click.option(
     "--id",
     "id_",
@@ -318,12 +310,11 @@ def start_deployment(id_, options_file, api_key=None):
 @api_key_option
 @common.options_file
 def stop_deployment(id_, options_file, api_key=None):
-    deployment_client = get_deployment_client(api_key)
-    command = deployments_commands.StopDeploymentCommand(deployment_client=deployment_client)
+    command = deployments_commands.StopDeploymentCommand(api_key=api_key)
     command.execute(deployment_id=id_)
 
 
-@deployments.command("delete", help="Delete deployment")
+@deployments_group.command("delete", help="Delete deployment")
 @click.option(
     "--id",
     "id_",
@@ -334,12 +325,11 @@ def stop_deployment(id_, options_file, api_key=None):
 @api_key_option
 @common.options_file
 def delete_deployment(id_, options_file, api_key):
-    deployment_client = get_deployment_client(api_key)
-    command = deployments_commands.DeleteDeploymentCommand(deployment_client=deployment_client)
+    command = deployments_commands.DeleteDeploymentCommand(api_key=api_key)
     command.execute(deployment_id=id_)
 
 
-@deployments.command("update", help="Modify existing deployment")
+@deployments_group.command("update", help="Modify existing deployment")
 @click.option(
     "--id",
     "deployment_id",
@@ -501,13 +491,12 @@ def delete_deployment(id_, options_file, api_key):
 @common.options_file
 def update_deployment(deployment_id, api_key, options_file, **kwargs):
     del_if_value_is_none(kwargs)
-    deployment_client = get_deployment_client(api_key)
-    command = deployments_commands.UpdateDeploymentCommand(deployment_client=deployment_client,
+    command = deployments_commands.UpdateDeploymentCommand(api_key=api_key,
                                                            workspace_handler=get_workspace_handler(api_key))
     command.execute(deployment_id, **kwargs)
 
 
-@deployments.command("details", help="Get details of model deployment")
+@deployments_group.command("details", help="Get details of model deployment")
 @click.option(
     "--id",
     "deployment_id",
@@ -518,8 +507,7 @@ def update_deployment(deployment_id, api_key, options_file, **kwargs):
 @api_key_option
 @common.options_file
 def get_deployment(deployment_id, api_key, options_file):
-    deployment_client = get_deployment_client(api_key)
-    command = deployments_commands.GetDeploymentDetails(deployment_client=deployment_client)
+    command = deployments_commands.GetDeploymentDetails(api_key=api_key)
     command.execute(deployment_id)
 
 
@@ -549,9 +537,7 @@ def get_deployment(deployment_id, api_key, options_file):
 def deployment_add_tag(id, options_file, api_key, **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
-    deployment_client = get_deployment_client(api_key)
-
-    command = DeploymentAddTagsCommand(deployment_client=deployment_client)
+    command = DeploymentAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
 
 
@@ -581,9 +567,7 @@ def deployment_add_tag(id, options_file, api_key, **kwargs):
 def deployment_remove_tags(id, options_file, api_key, **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
-    deployment_client = get_deployment_client(api_key)
-
-    command = DeploymentRemoveTagsCommand(deployment_client=deployment_client)
+    command = DeploymentRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
 
 
@@ -632,8 +616,7 @@ def deployment_remove_tags(id, options_file, api_key, **kwargs):
 @api_key_option
 @common.options_file
 def get_deployment_metrics(deployment_id, metrics_list, interval, start, end, options_file, api_key):
-    deployment_client = get_deployment_client(api_key)
-    command = GetDeploymentMetricsCommand(deployment_client=deployment_client)
+    command = GetDeploymentMetricsCommand(api_key=api_key)
     command.execute(deployment_id, start, end, interval, built_in_metrics=metrics_list)
 
 
@@ -668,6 +651,37 @@ def get_deployment_metrics(deployment_id, metrics_list, interval, start, end, op
 @api_key_option
 @common.options_file
 def stream_model_deployment_metrics(deployment_id, metrics_list, interval, options_file, api_key):
-    deployment_client = get_deployment_client(api_key)
-    command = StreamDeploymentMetricsCommand(deployment_client=deployment_client)
+    command = StreamDeploymentMetricsCommand(api_key=api_key)
     command.execute(deployment_id=deployment_id, interval=interval, built_in_metrics=metrics_list)
+
+
+@deployments_group.command("logs", help="List deployment logs")
+@click.option(
+    "--id",
+    "deployment_id",
+    required=True,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--line",
+    "line",
+    default=0,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--limit",
+    "limit",
+    default=10000,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--follow",
+    "follow",
+    default=False,
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def list_logs(deployment_id, line, limit, follow, options_file, api_key=None):
+    command = DeploymentLogsCommand(api_key=api_key)
+    command.execute(deployment_id, line, limit, follow)

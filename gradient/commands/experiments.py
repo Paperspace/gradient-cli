@@ -1,6 +1,5 @@
 import abc
 import json
-import pydoc
 
 import click
 import six
@@ -14,9 +13,10 @@ from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import concatenate_urls
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.clilogger import CliLogger
-from gradient.cliutils import get_terminal_lines, none_strings_to_none_objects
+from gradient.cliutils import none_strings_to_none_objects
 from gradient.commands import tensorboards as tensorboards_commands
-from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin, StreamMetricsCommand
+from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin, StreamMetricsCommand, \
+    LogsCommandMixin
 
 try:
     # Python 3
@@ -374,32 +374,7 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
         return data
 
 
-class ExperimentLogsCommand(BaseExperimentCommand):
-    def execute(self, experiment_id, line, limit, follow):
-        if follow:
-            self.logger.log("Awaiting logs...")
-            self._log_logs_continuously(experiment_id, line, limit)
-        else:
-            self._log_table_of_logs(experiment_id, line, limit)
-
-    def _log_table_of_logs(self, experiment_id, line, limit):
-        logs = self.client.logs(experiment_id, line, limit)
-        if not logs:
-            self.logger.log("No logs found")
-            return
-
-        table_str = self._make_table(logs, experiment_id)
-        if len(table_str.splitlines()) > get_terminal_lines():
-            pydoc.pager(table_str)
-        else:
-            self.logger.log(table_str)
-
-    def _log_logs_continuously(self, experiment_id, line, limit):
-        logs_gen = self.client.yield_logs(experiment_id, line, limit)
-        for log in logs_gen:
-            log_msg = "{}\t{}\t{}".format(*self._format_row(experiment_id, log))
-            self.logger.log(log_msg)
-
+class ExperimentLogsCommand(LogsCommandMixin, BaseExperimentCommand):
     def _make_table(self, logs, experiment_id):
         table_title = "Experiment %s logs" % experiment_id
         table_data = [("JOB ID", "LINE", "MESSAGE")]
@@ -409,6 +384,10 @@ class ExperimentLogsCommand(BaseExperimentCommand):
             table_data.append(self._format_row(experiment_id, log))
 
         return table.table
+
+    def _get_log_row_string(self, id, log):
+        log_msg = "{}\t{}\t{}".format(*self._format_row(id, log))
+        return log_msg
 
     @staticmethod
     def _format_row(experiment_id, log_row):

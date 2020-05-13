@@ -8,7 +8,7 @@ from .job import Job
 from .log import LogRow
 from .machine import Machine, MachineEvent, MachineUtilization
 from .model import Model, ModelFile
-from .notebook import Notebook
+from .notebook import Notebook, NotebookStart
 from .project import Project
 from .tag import Tag
 from .tensorboard import Instance, Tensorboard

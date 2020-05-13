@@ -271,7 +271,7 @@ class JobsClient(BaseClient):
         :rtype: list
         """
         repository = self.build_repository(ListJobLogs)
-        logs = repository.list(job_id=job_id, line=line, limit=limit)
+        logs = repository.list(id=job_id, line=line, limit=limit)
         return logs
 
     def yield_logs(self, job_id, line=0, limit=10000):
@@ -296,7 +296,7 @@ class JobsClient(BaseClient):
         """
 
         repository = self.build_repository(ListJobLogs)
-        logs = repository.yield_logs(job_id=job_id, line=line, limit=limit)
+        logs = repository.yield_logs(id=job_id, line=line, limit=limit)
         return logs
 
     def artifacts_delete(self, job_id, files=None):
