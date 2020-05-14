@@ -11,7 +11,6 @@ dockerArgs:
   - some
   - docker
   - args
-endpointUrlPath: some/endpoint/url/path
 env:
   key: value
 imageUrl: https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation

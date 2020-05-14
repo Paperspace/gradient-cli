@@ -121,12 +121,6 @@ def deployments_metrics():
     cls=common.GradientOption,
 )
 @click.option(
-    "--endpointUrlPath",
-    "endpoint_url_path",
-    help="Endpoint URL path",
-    cls=common.GradientOption,
-)
-@click.option(
     "--method",
     "method",
     help="Method",
@@ -375,6 +369,12 @@ def delete_deployment(id_, options_file, api_key):
     cls=common.GradientOption,
 )
 @click.option(
+    "--command",
+    "command",
+    help="Deployment command",
+    cls=common.GradientOption,
+)
+@click.option(
     "--containerModelPath",
     "container_model_path",
     help="Container model path",
@@ -402,12 +402,6 @@ def delete_deployment(id_, options_file, api_key):
     "--containerUrlPath",
     "container_url_path",
     help="Container URL path",
-    cls=common.GradientOption,
-)
-@click.option(
-    "--endpointUrlPath",
-    "endpoint_url_path",
-    help="Endpoint URL path",
     cls=common.GradientOption,
 )
 @click.option(

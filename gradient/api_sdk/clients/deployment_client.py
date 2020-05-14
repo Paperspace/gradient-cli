@@ -228,6 +228,8 @@ class DeploymentsClient(BaseClient):
             workspace_ref=None,
             workspace_username=None,
             workspace_password=None,
+            project_id=None,
+            command=None,
     ):
         deployment = models.Deployment(
             deployment_type=deployment_type,
@@ -254,6 +256,8 @@ class DeploymentsClient(BaseClient):
             workspace_ref=workspace_ref,
             workspace_username=workspace_username,
             workspace_password=workspace_password,
+            project_id=project_id,
+            command=command,
         )
 
         repository = self.build_repository(repositories.UpdateDeployment)
