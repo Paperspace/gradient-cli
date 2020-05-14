@@ -1,12 +1,12 @@
 import datetime
 
-from .base_client import BaseClient
+from .base_client import BaseClient, TagsSupportMixin
 from .. import repositories, models, constants, utils
 from ..sdk_exceptions import ResourceCreatingDataError, InvalidParametersError
 from ..validation_messages import EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
 
 
-class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
+class ExperimentsClient(TagsSupportMixin, utils.ExperimentsClientHelpersMixin, BaseClient):
     entity = "experiment"
 
     def create_single_node(
@@ -104,7 +104,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         handle = repository.create(experiment)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
 
         return handle
 
@@ -234,7 +234,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         handle = repository.create(experiment)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
         return handle
 
     def create_mpi_multi_node(
@@ -360,7 +360,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         handle = repository.create(experiment)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
         return handle
 
     def run_single_node(
@@ -458,7 +458,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         handle = repository.create(experiment)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
         return handle
 
     def run_multi_node(
@@ -586,7 +586,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         handle = repository.create(experiment)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
 
         return handle
 
@@ -713,7 +713,7 @@ class ExperimentsClient(utils.ExperimentsClientHelpersMixin, BaseClient):
         handle = repository.create(experiment)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
 
         return handle
 

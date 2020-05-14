@@ -1,8 +1,8 @@
-from .base_client import BaseClient
+from .base_client import BaseClient, TagsSupportMixin
 from .. import repositories, models
 
 
-class NotebooksClient(BaseClient):
+class NotebooksClient(TagsSupportMixin, BaseClient):
     entity = "notebook"
 
     def create(
@@ -26,7 +26,7 @@ class NotebooksClient(BaseClient):
 
         :param int container_id:
         :param str cluster_id:
-        :param str vm_type_id;
+        :param str vm_type_id:
         :param int vm_type_label:
         :param str container_name:
         :param str name:
@@ -54,16 +54,16 @@ class NotebooksClient(BaseClient):
             container_user=container_user,
             shutdown_timeout=shutdown_timeout,
             is_preemptible=is_preemptible,
-            vm_type_label = vm_type_label,
-            vm_type_id = vm_type_id,
-            is_public = is_public,
+            vm_type_label=vm_type_label,
+            vm_type_id=vm_type_id,
+            is_public=is_public,
         )
 
         repository = self.build_repository(repositories.CreateNotebook)
         handle = repository.create(notebook)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
 
         return handle
 
@@ -79,7 +79,7 @@ class NotebooksClient(BaseClient):
             tags=None,
     ):
         """Start existing notebook
-        :param str|int id
+        :param str|int id:
         :param str cluster_id:
         :param str vm_type_id:
         :param int vm_type_label:
@@ -106,7 +106,7 @@ class NotebooksClient(BaseClient):
         handle = repository.start(notebook)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
 
         return handle
 
@@ -122,7 +122,7 @@ class NotebooksClient(BaseClient):
         handle = repository.fork(id)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
 
         return handle
 
@@ -207,7 +207,6 @@ class NotebooksClient(BaseClient):
         repository = self.build_repository(repositories.StopNotebook)
         repository.stop(id)
 
-
     def artifacts_list(self, notebook_id, files=None, size=False, links=True):
         """
         Method to retrieve all artifacts files.
@@ -234,4 +233,3 @@ class NotebooksClient(BaseClient):
         repository = self.build_repository(repositories.ListNotebookArtifacts)
         artifacts = repository.list(notebook_id=notebook_id, files=files, links=links, size=size)
         return artifacts
-

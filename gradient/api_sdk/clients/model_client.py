@@ -1,10 +1,10 @@
 import json
 
-from .base_client import BaseClient
+from .base_client import BaseClient, TagsSupportMixin
 from .. import repositories, models
 
 
-class ModelsClient(BaseClient):
+class ModelsClient(TagsSupportMixin, BaseClient):
     entity = "mlModel"
 
     def list(self, experiment_id=None, project_id=None, tags=None):
@@ -56,7 +56,7 @@ class ModelsClient(BaseClient):
         model_id = repository.create(model, path=path)
 
         if tags:
-            self.add_tags(entity_id=model_id, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=model_id, tags=tags)
 
         return model_id
 

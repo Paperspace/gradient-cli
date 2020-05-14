@@ -1,9 +1,9 @@
-from .base_client import BaseClient
+from .base_client import BaseClient, TagsSupportMixin
 from .. import repositories, models
 from ..repositories.machines import CheckMachineAvailability, DeleteMachine, ListMachines, WaitForState
 
 
-class MachinesClient(BaseClient):
+class MachinesClient(TagsSupportMixin, BaseClient):
     entity = "machine"
 
     def create(
@@ -78,7 +78,7 @@ class MachinesClient(BaseClient):
         repository = self.build_repository(repositories.CreateMachine)
         handle = repository.create(instance)
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
         return handle
 
     def get(self, id):

@@ -10,15 +10,12 @@ from click import style
 from gradient import api_sdk, exceptions
 from gradient.api_sdk import sdk_exceptions
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
-from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin, StreamMetricsCommand
 from gradient.cliutils import get_terminal_lines
-from gradient.api_sdk.utils import print_dict_recursive
+from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin, StreamMetricsCommand
 
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseNotebookCommand(BaseCommand):
-    entity = "notebook"
-
     def _get_client(self, api_key, logger):
         client = api_sdk.clients.NotebooksClient(
             api_key=api_key,
@@ -55,6 +52,7 @@ class StopNotebookCommand(BaseNotebookCommand):
 
 class StartNotebookCommand(BaseNotebookCommand):
     SPINNER_MESSAGE = "Starting notebook"
+
     def execute(self, **kwargs):
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
             notebook_id = self.client.start(**kwargs)
@@ -131,13 +129,13 @@ class ShowNotebookDetailsCommand(DetailsCommandMixin, BaseNotebookCommand):
 
 class NotebookAddTagsCommand(BaseNotebookCommand):
     def execute(self, notebook_id, *args, **kwargs):
-        self.client.add_tags(notebook_id, entity=self.entity, **kwargs)
+        self.client.add_tags(notebook_id, **kwargs)
         self.logger.log("Tags added to notebook")
 
 
 class NotebookRemoveTagsCommand(BaseNotebookCommand):
     def execute(self, notebook_id, *args, **kwargs):
-        self.client.remove_tags(notebook_id, entity=self.entity, **kwargs)
+        self.client.remove_tags(notebook_id, **kwargs)
         self.logger.log("Tags removed from notebook")
 
 
@@ -156,6 +154,7 @@ class GetNotebookMetricsCommand(BaseNotebookCommand):
 
 class StreamNotebookMetricsCommand(StreamMetricsCommand, BaseNotebookCommand):
     pass
+
 
 class NotebookLogsCommand(BaseNotebookCommand):
 
@@ -250,4 +249,3 @@ class ArtifactsListCommand(BaseNotebookCommand):
         ascii_table = terminaltables.AsciiTable(table_data)
         table_string = ascii_table.table
         return table_string
-

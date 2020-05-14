@@ -3,11 +3,11 @@ Deployment related client handler logic.
 
 Remember that in code snippets all highlighted lines are required other lines are optional.
 """
-from .base_client import BaseClient
+from .base_client import BaseClient, TagsSupportMixin
 from .. import config, models, repositories
 
 
-class DeploymentsClient(BaseClient):
+class DeploymentsClient(TagsSupportMixin, BaseClient):
     """
     Client to handle deployment related actions.
 
@@ -137,7 +137,7 @@ class DeploymentsClient(BaseClient):
         repository = self.build_repository(repositories.CreateDeployment)
         deployment_id = repository.create(deployment)
         if tags:
-            self.add_tags(entity_id=deployment_id, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=deployment_id, tags=tags)
         return deployment_id
 
     def get(self, deployment_id):

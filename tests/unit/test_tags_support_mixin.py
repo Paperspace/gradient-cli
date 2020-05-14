@@ -1,9 +1,13 @@
 import pytest
 
-from gradient.api_sdk.clients.base_client import BaseClient
+from gradient.api_sdk.clients.base_client import BaseClient, TagsSupportMixin
 
 
-class TestBaseClientMethods(object):
+class ClassWithTagsSupportMixin(TagsSupportMixin, BaseClient):
+    pass
+
+
+class TestTagsSupportMixinMethods(object):
     example_entity_tags = [{"some_id": ["test0", "test2", "test1", "test3"]}]
 
     @pytest.mark.parametrize(
@@ -16,7 +20,7 @@ class TestBaseClientMethods(object):
         ]
     )
     def test_merge_tags(self, entity_id, entity_tags, new_tags, expected_result_tags):
-        result_tags = BaseClient.merge_tags(entity_id, entity_tags, new_tags)
+        result_tags = ClassWithTagsSupportMixin.merge_tags(entity_id, entity_tags, new_tags)
         assert result_tags == expected_result_tags
 
     @pytest.mark.parametrize(
@@ -29,5 +33,5 @@ class TestBaseClientMethods(object):
         ]
     )
     def test_diff_tags(self, entity_id, entity_tags, tags_to_remove, expected_result_tags):
-        result_tags = BaseClient.diff_tags(entity_id, entity_tags, tags_to_remove)
+        result_tags = ClassWithTagsSupportMixin.diff_tags(entity_id, entity_tags, tags_to_remove)
         assert result_tags == expected_result_tags

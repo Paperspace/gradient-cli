@@ -12,8 +12,6 @@ from gradient.exceptions import ApplicationError
 
 @six.add_metaclass(abc.ABCMeta)
 class GetModelsClientMixin:
-    entity = "mlModel"
-
     def _get_client(self, api_key, logger):
         client = api_sdk.clients.ModelsClient(
             api_key=api_key,
@@ -98,11 +96,11 @@ class DownloadModelFiles(GetModelsClientMixin, BaseCommand):
 
 class MLModelAddTagsCommand(GetModelsClientMixin, BaseCommand):
     def execute(self, ml_model_id, *args, **kwargs):
-        self.client.add_tags(ml_model_id, entity=self.entity, **kwargs)
+        self.client.add_tags(ml_model_id, **kwargs)
         self.logger.log("Tags added to ml model")
 
 
 class MLModelRemoveTagsCommand(GetModelsClientMixin, BaseCommand):
     def execute(self, ml_model_id, *args, **kwargs):
-        self.client.remove_tags(ml_model_id, entity=self.entity, **kwargs)
+        self.client.remove_tags(ml_model_id, **kwargs)
         self.logger.log("Tags removed from ml model")
