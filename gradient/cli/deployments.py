@@ -50,6 +50,12 @@ def deployments_metrics():
     cls=common.GradientOption,
 )
 @click.option(
+    "--projectId",
+    "project_id",
+    help="Project ID",
+    cls=common.GradientOption,
+)
+@click.option(
     "--modelId",
     "model_id",
     help="ID of a trained model",
@@ -335,6 +341,12 @@ def delete_deployment(id_, options_file, api_key):
     "deployment_type",
     type=ChoiceType(DEPLOYMENT_TYPES_MAP, case_sensitive=False),
     help="Model deployment type",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--projectId",
+    "project_id",
+    help="Project ID",
     cls=common.GradientOption,
 )
 @click.option(
