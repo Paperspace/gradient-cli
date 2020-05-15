@@ -53,7 +53,8 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
             workspace_url=None,
             workspace_ref=None,
             workspace_username=None,
-            workspace_password=None
+            workspace_password=None,
+            project_id=None,
     ):
         """
         Method to create a Deployment instance.
@@ -102,6 +103,7 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
         :param str workspace_ref: Git commit hash, branch name or tag
         :param str workspace_username: Project git repository username
         :param str workspace_password: Project git repository password
+        :param str project_id: Project ID
 
         :returns: Created deployment id
         :rtype: str
@@ -132,6 +134,7 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
             workspace_ref=workspace_ref,
             workspace_username=workspace_username,
             workspace_password=workspace_password,
+            project_id=project_id,
         )
 
         repository = self.build_repository(repositories.CreateDeployment)
@@ -228,6 +231,8 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
             workspace_ref=None,
             workspace_username=None,
             workspace_password=None,
+            project_id=None,
+            command=None,
     ):
         deployment = models.Deployment(
             deployment_type=deployment_type,
@@ -254,6 +259,8 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
             workspace_ref=workspace_ref,
             workspace_username=workspace_username,
             workspace_password=workspace_password,
+            project_id=project_id,
+            command=command,
         )
 
         repository = self.build_repository(repositories.UpdateDeployment)

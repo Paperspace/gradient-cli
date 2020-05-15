@@ -118,6 +118,7 @@ class TestDeploymentsCreate(object):
     COMMAND_WITH_ALL_OPTIONS = [
         "deployments", "create",
         "--deploymentType", "tfserving",
+        "--projectId", "some_project_id",
         "--modelId", "some_model_id",
         "--name", "some_name",
         "--machineType", "G1",
@@ -129,7 +130,6 @@ class TestDeploymentsCreate(object):
         "--imagePassword", "some_image_password",
         "--imageServer", "some.image/server",
         "--containerUrlPath", "some/container/url/path",
-        "--endpointUrlPath", "some/endpoint/url/path",
         "--method", "some_method",
         "--dockerArgs", """["some", "docker", "args"]""",
         "--env", """{"key":"value"}""",
@@ -182,7 +182,6 @@ class TestDeploymentsCreate(object):
         "imagePassword": "some_image_password",
         "imageServer": "some.image/server",
         "containerUrlPath": "some/container/url/path",
-        "endpointUrlPath": "some/endpoint/url/path",
         "method": "some_method",
         "dockerArgs": ["some", "docker", "args"],
         "env": {"key": "value"},
@@ -194,6 +193,7 @@ class TestDeploymentsCreate(object):
         "workspaceRef": "some_branch_name",
         "workspaceUsername": u"username",
         "workspacePassword": u"password",
+        "projectId": "some_project_id",
     }
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
     UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
@@ -844,17 +844,18 @@ class TestDeploymentsUpdate(object):
         "deployments", "update",
         "--id", "some_id",
         "--deploymentType", "tfserving",
+        "--projectId", "some_project_id",
         "--modelId", "some_model_id",
         "--name", "some_name",
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
+        "--command", "echo Bazinga!",
         "--containerModelPath", "some/container/model/path",
         "--imageUsername", "some_image_username",
         "--imagePassword", "some_image_password",
         "--imageServer", "some.image/server",
         "--containerUrlPath", "some/container/url/path",
-        "--endpointUrlPath", "some/endpoint/url/path",
         "--method", "some_method",
         "--dockerArgs", """["some", "docker", "args"]""",
         "--env", """{"key":"value"}""",
@@ -885,6 +886,7 @@ class TestDeploymentsUpdate(object):
             "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
             "deploymentType": "TFServing",
             "instanceCount": 666,
+            "command": "echo Bazinga!",
             "modelId": u"some_model_id",
             "clusterId": "some_cluster_id",
             "containerModelPath": "some/container/model/path",
@@ -892,7 +894,6 @@ class TestDeploymentsUpdate(object):
             "imagePassword": "some_image_password",
             "imageServer": "some.image/server",
             "containerUrlPath": "some/container/url/path",
-            "endpointUrlPath": "some/endpoint/url/path",
             "method": "some_method",
             "args": ["some", "docker", "args"],
             "env": {"key": "value"},
@@ -904,6 +905,7 @@ class TestDeploymentsUpdate(object):
             "workspaceRef": "some_branch_name",
             "workspaceUsername": u"username",
             "workspacePassword": u"password",
+            "projectId": "some_project_id",
         }
     }
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
