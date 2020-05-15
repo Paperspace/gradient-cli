@@ -74,7 +74,8 @@ setup(
         'attrs<=19',
         'PyYAML==5.*',
         'python-dateutil==2.*',
-        'websocket-client==0.57.*'
+        'websocket-client==0.57.*',
+        'gradient-utils>=0.1.1',
     ],
     entry_points={'console_scripts': [
         'gradient = gradient:main.main',
