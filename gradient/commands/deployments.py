@@ -18,8 +18,6 @@ from gradient.commands.common import DetailsCommandMixin, StreamMetricsCommand, 
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseDeploymentCommand(BaseCommand):
-    entity = "deployment"
-
     def _get_client(self, api_key, logger):
         client = DeploymentsClient(
             api_key=api_key,
@@ -174,13 +172,13 @@ class GetDeploymentDetails(DetailsCommandMixin, BaseDeploymentCommand):
 
 class DeploymentAddTagsCommand(BaseDeploymentCommand):
     def execute(self, deployment_id, *args, **kwargs):
-        self.client.add_tags(deployment_id, entity=self.entity, **kwargs)
+        self.client.add_tags(deployment_id, **kwargs)
         self.logger.log("Tags added to deployment")
 
 
 class DeploymentRemoveTagsCommand(BaseDeploymentCommand):
     def execute(self, deployment_id, *args, **kwargs):
-        self.client.remove_tags(deployment_id, entity=self.entity, **kwargs)
+        self.client.remove_tags(deployment_id, **kwargs)
         self.logger.log("Tags removed from deployment")
 
 

@@ -10,7 +10,7 @@ from halo import halo
 from gradient import api_sdk, exceptions, Job, JobArtifactsDownloader, cli_constants
 from gradient.api_sdk import config, sdk_exceptions
 from gradient.api_sdk.clients import http_client
-from gradient.api_sdk.clients.base_client import BaseClient
+from gradient.api_sdk.clients.base_client import BaseClient, TagsSupportMixin
 from gradient.api_sdk.repositories.jobs import RunJob
 from gradient.api_sdk.utils import print_dict_recursive, concatenate_urls, MultipartEncoder
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
@@ -20,8 +20,6 @@ from gradient.commands.common import BaseCommand, StreamMetricsCommand, LogsComm
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseJobCommand(BaseCommand):
-    entity = "job"
-
     def _get_client(self, api_key, logger_):
         client = api_sdk.clients.JobsClient(
             api_key=api_key,
@@ -189,9 +187,7 @@ class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
         return self.client.create(data=data, **json_)
 
 
-class JobRunClient(BaseClient):
-    entity = "job"
-
+class JobRunClient(TagsSupportMixin, BaseClient):
     def __init__(self, http_client_, *args, **kwargs):
         super(JobRunClient, self).__init__(*args, **kwargs)
         self.client = http_client_
@@ -259,7 +255,7 @@ class JobRunClient(BaseClient):
         )
         handle = RunJob(self.api_key, self.logger, self.client).create(job, data=data)
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
         return handle
 
 
@@ -363,13 +359,13 @@ class DownloadArtifactsCommand(BaseJobCommand):
 
 class JobAddTagsCommand(BaseJobCommand):
     def execute(self, job_id, *args, **kwargs):
-        self.client.add_tags(job_id, entity=self.entity, **kwargs)
+        self.client.add_tags(job_id, **kwargs)
         self.logger.log("Tags added to job")
 
 
 class JobRemoveTagsCommand(BaseJobCommand):
     def execute(self, job_id, *args, **kwargs):
-        self.client.remove_tags(job_id, entity=self.entity, **kwargs)
+        self.client.remove_tags(job_id, **kwargs)
         self.logger.log("Tags removed from job")
 
 

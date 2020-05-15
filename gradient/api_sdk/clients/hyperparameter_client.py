@@ -1,8 +1,9 @@
 from . import base_client
+from .base_client import TagsSupportMixin
 from .. import models, repositories
 
 
-class HyperparameterJobsClient(base_client.BaseClient):
+class HyperparameterJobsClient(TagsSupportMixin, base_client.BaseClient):
     entity = "experiment"
 
     def create(
@@ -110,7 +111,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         handle = repository.create(hyperparameter)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
 
         return handle
 
@@ -220,7 +221,7 @@ class HyperparameterJobsClient(base_client.BaseClient):
         handle = repository.create(hyperparameter)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
 
         return handle
 

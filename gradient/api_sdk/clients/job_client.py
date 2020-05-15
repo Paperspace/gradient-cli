@@ -3,13 +3,13 @@ Jobs related client handler logic.
 
 Remember that in code snippets all highlighted lines are required other lines are optional.
 """
-from .base_client import BaseClient
+from .base_client import BaseClient, TagsSupportMixin
 from ..models import Artifact, Job
 from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts, CreateJob, DeleteJob, StopJob, \
     DeleteJobArtifacts, GetJobArtifacts, GetJobMetrics, StreamJobMetrics
 
 
-class JobsClient(BaseClient):
+class JobsClient(TagsSupportMixin, BaseClient):
     """
     Client to handle job related actions.
 
@@ -172,7 +172,7 @@ class JobsClient(BaseClient):
         handle = repository.create(job, data=data)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
 
         return handle
 

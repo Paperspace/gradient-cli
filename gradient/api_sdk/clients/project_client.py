@@ -1,8 +1,8 @@
-from .base_client import BaseClient
+from .base_client import BaseClient, TagsSupportMixin
 from .. import models, repositories
 
 
-class ProjectsClient(BaseClient):
+class ProjectsClient(TagsSupportMixin, BaseClient):
     entity = "project"
 
     def create(self, name, repository_name=None, repository_url=None, tags=None, ):
@@ -47,7 +47,7 @@ class ProjectsClient(BaseClient):
         handle = repository.create(project)
 
         if tags:
-            self.add_tags(entity_id=handle, entity=self.entity, tags=tags)
+            self.add_tags(entity_id=handle, tags=tags)
 
         return handle
 
