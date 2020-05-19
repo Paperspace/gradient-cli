@@ -11,6 +11,11 @@
 # Release Notes for 0.8.0a0
 #### New features
 * Added `deployments logs` command for reading depoyment logs
+* Added `notebooks create` command for creating and starting a new notebook
+* Added `notebooks start` command for starting an existing notebook
+* Added `notebooks fork` command for forking a new notebook
+* Added `notebooks stop` command for stopping a running notebook
+* Added `notebooks artifacts list` command for listing the last workspace artifacts uploaded for a notebook.
 
 # Release Notes for 0.7.0
 ##### Note: this list includes all changes made in 0.7.0a* alpha releases
