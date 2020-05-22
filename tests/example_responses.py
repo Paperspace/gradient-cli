@@ -8062,3 +8062,12 @@ DEPLOYMENTS_LOGS_RESPONSE = [
         "message": "PSEOF"
     }
 ]
+
+LIST_SECRETS_RESPONSE = [
+    {
+        "name": "aws_access_key_id"
+    },
+    {
+        "name": "aws_secret_access_key"
+    }
+]

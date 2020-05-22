@@ -15,4 +15,5 @@ from .models import DeleteModel, ListModels, UploadModel, GetModel, ListModelFil
 from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks, GetNotebookMetrics, \
     StreamNotebookMetrics, StopNotebook, StartNotebook, ForkNotebook, ListNotebookArtifacts
 from .projects import CreateProject, ListProjects, DeleteProject, GetProject
+from .secrets import ListSecrets, SetSecret, DeleteSecret
 from .tensorboards import CreateTensorboard, GetTensorboard, ListTensorboards, UpdateTensorboard, DeleteTensorboard
