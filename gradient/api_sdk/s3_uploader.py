@@ -238,6 +238,28 @@ class S3ModelFileUploader(object):
         return client
 
 
+class S3ModelUploader(S3ModelFileUploader):
+    def upload(self, file_path, model_id):
+        if os.path.isdir(file_path):
+            file_path = self._zip_model_directory(file_path)
+
+        return super(S3ModelUploader, self).upload(file_path, model_id)
+
+    def _zip_model_directory(self, dir_path):
+        archiver = self._get_archiver()
+        archive_path = self._get_archive_path()
+        archiver.archive(dir_path, archive_path)
+        return archive_path
+
+    def _get_archiver(self):
+        return ZipArchiver()
+
+    def _get_archive_path(self):
+        archive_file_name = 'model.zip'
+        archive_file_path = os.path.join(tempfile.gettempdir(), archive_file_name)
+        return archive_file_path
+
+
 class ExperimentWorkspaceDirectoryUploader(object):
     def __init__(self, api_key, temp_dir=None, archiver=None, project_uploader=None, ps_client_name=None):
         """
