@@ -586,7 +586,7 @@ def create_and_start_multi_node(ctx, api_key, show_logs, tensorboard, tensorboar
     )
     experiment_id = command.execute(kwargs, add_to_tensorboard=add_to_tensorboard)
     if experiment_id and show_logs:
-        ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
+        ctx.invoke(list_logs, experiment_id=experiment_id, line=1, limit=100, follow=True, api_key=api_key)
 
 
 @create_and_start_experiment.command(name="singlenode", help="Create and start new single node experiment",
@@ -619,7 +619,7 @@ def create_and_start_single_node(ctx, api_key, show_logs, tensorboard, tensorboa
     )
     experiment_id = command.execute(kwargs, add_to_tensorboard=add_to_tensorboard)
     if experiment_id and show_logs:
-        ctx.invoke(list_logs, experiment_id=experiment_id, line=0, limit=100, follow=True, api_key=api_key)
+        ctx.invoke(list_logs, experiment_id=experiment_id, line=1, limit=100, follow=True, api_key=api_key)
 
 
 @experiments_group.command("start", help="Start experiment")
@@ -644,7 +644,7 @@ def start_experiment(ctx, id, show_logs, api_key, options_file):
     command.execute(id)
 
     if show_logs:
-        ctx.invoke(list_logs, experiment_id=id, line=0, limit=100, follow=True, api_key=api_key)
+        ctx.invoke(list_logs, experiment_id=id, line=1, limit=100, follow=True, api_key=api_key)
 
 
 @experiments_group.command("stop", help="Stop experiment")

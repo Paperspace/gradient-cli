@@ -249,7 +249,7 @@ class JobsClient(TagsSupportMixin, BaseClient):
         )
         return jobs
 
-    def logs(self, job_id, line=0, limit=10000):
+    def logs(self, job_id, line=1, limit=10000):
         """
         Method to retrieve job logs.
 
@@ -274,7 +274,7 @@ class JobsClient(TagsSupportMixin, BaseClient):
         logs = repository.list(id=job_id, line=line, limit=limit)
         return logs
 
-    def yield_logs(self, job_id, line=0, limit=10000):
+    def yield_logs(self, job_id, line=1, limit=10000):
         """Get log generator. Polls the API for new logs
 
         .. code-block:: python
