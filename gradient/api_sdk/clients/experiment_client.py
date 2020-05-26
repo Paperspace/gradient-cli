@@ -766,7 +766,7 @@ class ExperimentsClient(TagsSupportMixin, utils.ExperimentsClientHelpersMixin, B
         experiment = repository.get(experiment_id=experiment_id)
         return experiment
 
-    def logs(self, experiment_id, line=0, limit=10000):
+    def logs(self, experiment_id, line=1, limit=10000):
         """Show list of latest logs from the specified experiment.
 
         :param str experiment_id: Experiment ID
@@ -781,7 +781,7 @@ class ExperimentsClient(TagsSupportMixin, utils.ExperimentsClientHelpersMixin, B
         logs = repository.list(id=experiment_id, line=line, limit=limit)
         return logs
 
-    def yield_logs(self, experiment_id, line=0, limit=10000):
+    def yield_logs(self, experiment_id, line=1, limit=10000):
         """Get log generator. Polls the API for new logs
 
         :param str experiment_id:
