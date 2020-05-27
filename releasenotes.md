@@ -1,5 +1,10 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.8.0a2
+#### Fixes
+* Fix reading logs with `--follow true`
+* Fix creating job without workspace
+
 # Release Notes for 0.8.0a1
 #### Breaking changes
 * Removed `entity` parameter from tag-related methods in clients 
