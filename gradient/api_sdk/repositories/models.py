@@ -97,7 +97,7 @@ class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
         return model_id
 
     def _upload_model(self, file_path, model_id):
-        model_uploader = s3_uploader.S3ModelFileUploader(
+        model_uploader = s3_uploader.S3ModelUploader(
             self.api_key, logger=self.logger, ps_client_name=self.ps_client_name
         )
         model_uploader.upload(file_path, model_id)
