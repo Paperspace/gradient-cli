@@ -9,7 +9,7 @@ class NotebookSchema(BaseSchema):
     MODEL = models.Notebook
 
     id = marshmallow.fields.Str()
-    machine_type = marshmallow.fields.Int(load_from="machineType", dump_to="machineType")
+    machine_type = marshmallow.fields.Str(load_from="machineType", dump_to="machineType")
     vm_type_id = marshmallow.fields.Int(load_from="vmTypeId", dump_to="vmTypeId")
     vm_type_label = marshmallow.fields.Str(load_from="vmTypeLabel", dump_to="vmTypeLabel")
     container_id = marshmallow.fields.Int(load_from="containerId", dump_to="containerId", allow_none=True)
@@ -63,6 +63,7 @@ class NotebookStartSchema(BaseSchema):
     MODEL = models.NotebookStart
 
     notebook_id = marshmallow.fields.Str(load_from="notebookId", dump_to="notebookId")
+    machine_type = marshmallow.fields.Str(load_from="machineType", dump_to="machineType")
     vm_type_id = marshmallow.fields.Int(load_from="vmTypeId", dump_to="vmTypeId")
     vm_type_label = marshmallow.fields.Str(load_from="vmTypeLabel", dump_to="vmTypeLabel")
     name = marshmallow.fields.Str(load_from="notebookName", dump_to="notebookName")
