@@ -39,7 +39,7 @@ class WorkspaceHandler(object):
             return workspace_url  # nothing to do
 
         # Should be removed as soon it won't be necessary by PS_API
-        if workspace_path in ('none', None):
+        if workspace_path == 'none':
             return 'none'
 
         if workspace_archive:
