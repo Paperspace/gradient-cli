@@ -9,9 +9,11 @@ class NotebookSchema(BaseSchema):
     MODEL = models.Notebook
 
     id = marshmallow.fields.Str()
+    machine_type = marshmallow.fields.Int(load_from="machineType", dump_to="machineType")
     vm_type_id = marshmallow.fields.Int(load_from="vmTypeId", dump_to="vmTypeId")
     vm_type_label = marshmallow.fields.Str(load_from="vmTypeLabel", dump_to="vmTypeLabel")
     container_id = marshmallow.fields.Int(load_from="containerId", dump_to="containerId", allow_none=True)
+    container = marshmallow.fields.Str(load_from="container", dump_to="container", allow_none=True)
     container_name = marshmallow.fields.Str(load_from="containerName", dump_to="containerName", allow_none=True)
     name = marshmallow.fields.Str()
     cluster_id = marshmallow.fields.Str(load_from="clusterId", dump_to="clusterId")

@@ -7,8 +7,10 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
 
     def create(
             self,
-            cluster_id,
+            cluster_id=None,
+            container=None,
             container_id=None,
+            machine_type=None,
             vm_type_id=None,
             vm_type_label=None,
             container_name=None,
@@ -26,8 +28,10 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
 
         :param int container_id:
         :param str cluster_id:
+        :param str machine_type:
         :param str vm_type_id:
         :param int vm_type_label:
+        :param str container:
         :param str container_name:
         :param str name:
         :param str registry_username:
@@ -46,6 +50,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         notebook = models.Notebook(
             container_id=container_id,
             cluster_id=cluster_id,
+            container=container,
             container_name=container_name,
             name=name,
             registry_username=registry_username,
@@ -54,6 +59,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             container_user=container_user,
             shutdown_timeout=shutdown_timeout,
             is_preemptible=is_preemptible,
+            machine_type=machine_type,
             vm_type_label=vm_type_label,
             vm_type_id=vm_type_id,
             is_public=is_public,
@@ -70,7 +76,8 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
     def start(
             self,
             id,
-            cluster_id,
+            cluster_id=None,
+            machine_type=None,
             vm_type_id=None,
             vm_type_label=None,
             name=None,
@@ -81,6 +88,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         """Start existing notebook
         :param str|int id:
         :param str cluster_id:
+        :param str machine_type:
         :param str vm_type_id:
         :param int vm_type_label:
         :param str name:
@@ -93,6 +101,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         """
         notebook = models.NotebookStart(
             notebook_id=id,
+            machine_type=machine_type,
             vm_type_id=vm_type_id,
             vm_type_label=vm_type_label,
             cluster_id=cluster_id,
