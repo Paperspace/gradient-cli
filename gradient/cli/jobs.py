@@ -144,6 +144,7 @@ def common_jobs_create_options(f):
         click.option(
             "--workspace",
             "workspace",
+            default=".",
             help="Path to workspace directory",
             cls=common.GradientOption,
         ),
