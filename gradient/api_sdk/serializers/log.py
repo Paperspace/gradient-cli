@@ -10,3 +10,10 @@ class LogRowSchema(BaseSchema):
     line = marshmallow.fields.Int()
     message = marshmallow.fields.Str()
     timestamp = marshmallow.fields.Str()
+
+    @marshmallow.pre_load
+    def rstrip_log_line(self, data):
+        if "message" in data:
+            data["message"] = str(data["message"]).rstrip()
+
+        return data

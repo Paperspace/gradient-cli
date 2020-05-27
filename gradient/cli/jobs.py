@@ -144,6 +144,7 @@ def common_jobs_create_options(f):
         click.option(
             "--workspace",
             "workspace",
+            default=".",
             help="Path to workspace directory",
             cls=common.GradientOption,
         ),
@@ -298,7 +299,7 @@ def create_job(ctx, api_key, options_file, **kwargs):
     command = jobs_commands.CreateJobCommand(api_key=api_key, workspace_handler=get_workspace_handler())
     job_handle = command.execute(kwargs)
     if job_handle is not None:
-        ctx.invoke(list_logs, job_id=job_handle, line=0, limit=100, follow=True, api_key=api_key)
+        ctx.invoke(list_logs, job_id=job_handle, line=1, limit=100, follow=True, api_key=api_key)
 
 
 @jobs_group.command("logs", help="List job logs")

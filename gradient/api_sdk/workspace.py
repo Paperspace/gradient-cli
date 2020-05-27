@@ -41,6 +41,7 @@ class WorkspaceHandler(object):
         # Should be removed as soon it won't be necessary by PS_API
         if workspace_path == 'none':
             return 'none'
+
         if workspace_archive:
             archive_path = os.path.abspath(workspace_archive)
         else:

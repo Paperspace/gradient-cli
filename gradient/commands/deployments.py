@@ -217,4 +217,4 @@ class DeploymentLogsCommand(LogsCommandMixin, BaseDeploymentCommand):
     @staticmethod
     def _format_row(id, log_row):
         return (style(fg="red", text=str(log_row.line)),
-                str(log_row.message).rstrip())
+                log_row.message)

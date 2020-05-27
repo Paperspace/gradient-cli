@@ -312,7 +312,7 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
         )
         return metrics
 
-    def logs(self, deployment_id, line=0, limit=10000):
+    def logs(self, deployment_id, line=1, limit=10000):
         """Show list of latest logs from the specified deployment.
 
         :param str deployment_id: Deployment Id
@@ -327,7 +327,7 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
         logs = repository.list(id=deployment_id, line=line, limit=limit)
         return logs
 
-    def yield_logs(self, deployment_id, line=0, limit=10000):
+    def yield_logs(self, deployment_id, line=1, limit=10000):
         """Get log generator. Polls the API for new logs
 
         :param str deployment_id: Deployment Id
