@@ -1,5 +1,6 @@
 from .base_client import BaseClient, TagsSupportMixin
 from .. import repositories, models
+from ..repositories.jobs import ListJobLogs
 
 
 class NotebooksClient(TagsSupportMixin, BaseClient):
@@ -233,3 +234,55 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         repository = self.build_repository(repositories.ListNotebookArtifacts)
         artifacts = repository.list(notebook_id=notebook_id, files=files, links=links, size=size)
         return artifacts
+
+    def logs(self, notebook_id, line=1, limit=10000):
+        """
+        Method to retrieve notebook logs.
+
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 2
+
+            notebook_logs = notebook_client.logs(
+                notebook_id='Your_job_id_here',
+                line=100,
+                limit=100
+            )
+
+        :param str notebook_id: id of notebook that we want to retrieve logs
+        :param int line: from what line you want to retrieve logs. Default 0
+        :param int limit: how much lines you want to retrieve logs. Default 10000
+
+        :returns: list of formatted logs lines
+        :rtype: list
+        """
+        notebook = self.get(notebook_id)
+        repository = self.build_repository(ListJobLogs)
+        logs = repository.list(id=notebook.job_handle, line=line, limit=limit)
+        return logs
+
+    def yield_logs(self, notebook_id, line=1, limit=10000):
+        """Get log generator. Polls the API for new logs
+
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 2
+
+            notebook_logs_generator = notebook_client.yield_logs(
+                notebook_id='Your_job_id_here',
+                line=100,
+                limit=100
+            )
+
+        :param str notebook_id:
+        :param int line: line number at which logs starts to display on screen
+        :param int limit: maximum lines displayed on screen, default set to 10 000
+
+        :returns: generator yielding LogRow instances
+        :rtype: Iterator[models.LogRow]
+        """
+
+        notebook = self.get(notebook_id)
+        repository = self.build_repository(ListJobLogs)
+        logs = repository.yield_logs(id=notebook.job_handle, line=line, limit=limit)
+        return logs

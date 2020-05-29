@@ -459,3 +459,36 @@ def list_artifacts(notebook_id, size, links, files, options_file, api_key=None):
     command = notebooks.ArtifactsListCommand(api_key=api_key)
     command.execute(notebook_id=notebook_id, size=size, links=links, files=files)
 
+@notebooks_group.command("logs", help="List notebook logs")
+@click.option(
+    "--id",
+    "notebook_id",
+    required=True,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--line",
+    "line",
+    required=False,
+    default=0,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--limit",
+    "limit",
+    required=False,
+    default=10000,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--follow",
+    "follow",
+    required=False,
+    default=False,
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def list_logs(notebook_id, line, limit, follow, options_file, api_key=None):
+    command = notebooks.NotebookLogsCommand(api_key=api_key)
+    command.execute(notebook_id, line, limit, follow)
