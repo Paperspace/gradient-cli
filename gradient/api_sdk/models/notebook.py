@@ -17,6 +17,7 @@ class Notebook(object):
     cluster_id = attr.ib(type=str, default=None)
     registry_username = attr.ib(type=str, default=None)
     registry_password = attr.ib(type=str, default=None)
+    command = attr.ib(type=str, default=None)
     default_entrypoint = attr.ib(type=str, default=None)
     container_user = attr.ib(type=str, default=None)
     shutdown_timeout = attr.ib(type=int, default=None)

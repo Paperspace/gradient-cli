@@ -15,6 +15,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             name=None,
             registry_username=None,
             registry_password=None,
+            command=None,
             default_entrypoint=None,
             container_user=None,
             shutdown_timeout=None,
@@ -32,6 +33,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         :param str name:
         :param str registry_username:
         :param str registry_password:
+        :param str command:
         :param str default_entrypoint:
         :param str container_user:
         :param int shutdown_timeout:
@@ -50,6 +52,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             name=name,
             registry_username=registry_username,
             registry_password=registry_password,
+            command=command,
             default_entrypoint=default_entrypoint,
             container_user=container_user,
             shutdown_timeout=shutdown_timeout,

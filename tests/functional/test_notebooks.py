@@ -103,7 +103,7 @@ class TestNotebooksCreate(object):
         "name": "some_notebook_name",
         "registryUsername": "some_username",
         "registryPassword": "some_password",
-        "defaultEntrypoint": "c29tZV9lbnRyeXBvaW50",
+        "command": "c29tZV9lbnRyeXBvaW50",
         "containerUser": "some_container_user",
         "shutdownTimeout": 8,
         "isPreemptible": True,

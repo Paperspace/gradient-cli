@@ -77,7 +77,7 @@ def notebook_metrics():
 )
 @click.option(
     "--command",
-    "default_entrypoint",
+    "command",
     type=str,
     help="Command (executed as `/bin/sh -c 'YOUR COMMAND'`)",
     cls=common.GradientOption,

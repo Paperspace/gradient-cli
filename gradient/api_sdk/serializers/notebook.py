@@ -17,6 +17,7 @@ class NotebookSchema(BaseSchema):
     cluster_id = marshmallow.fields.Str(load_from="clusterId", dump_to="clusterId")
     registry_username = marshmallow.fields.Str(load_from="registryUsername", dump_to="registryUsername")
     registry_password = marshmallow.fields.Str(load_from="registryPassword", dump_to="registryPassword")
+    command = marshmallow.fields.Str(load_from="command", dump_to="command")
     default_entrypoint = marshmallow.fields.Str(load_from="defaultEntrypoint", dump_to="defaultEntrypoint")
     container_user = marshmallow.fields.Str(load_from="containerUser", dump_to="containerUser")
     shutdown_timeout = marshmallow.fields.Int(load_from="shutdownTimeout", dump_to="shutdownTimeout")
@@ -52,6 +53,7 @@ class NotebookSchema(BaseSchema):
     def preprocess(self, data, **kwargs):
         data = copy.copy(data)
 
+        utils.base64_encode_attribute(data, "command")
         utils.base64_encode_attribute(data, "default_entrypoint")
         return data
 
