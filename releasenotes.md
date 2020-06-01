@@ -1,5 +1,18 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.8.0
+##### Note: this list includes all changes made in 0.8.0a* alpha releases
+#### Breaking changes
+* Removed `entity` parameter from tag-related methods in clients 
+#### Fixes
+* Fix reading logs with `--follow true`
+* Fix creating job without workspace
+#### New features
+* Added `deployments logs` command for reading depoyment logs
+* Added `--command` option to `deployments update`
+* Added `--projectId` option to `deployments create` and `deployments update`
+* Added `gradient-utils` to required
+
 # Release Notes for 0.8.0a2
 #### Fixes
 * Fix reading logs with `--follow true`
