@@ -1,5 +1,13 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.9.0a0
+#### Fixes
+* Fixed reading logs with `--follow`. The bug caused all log lines in a loop instead of only the new one
+* Fixed `TypeError` occurring when a job was being created without `--workspace`
+### New features
+* Added whole directory upload to `models upload` command
+* Added a command group for managing `secrets`
+
 # Release Notes for 0.8.0
 ##### Note: this list includes all changes made in 0.8.0a* alpha releases
 #### Breaking changes
