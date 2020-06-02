@@ -29,7 +29,7 @@ def basic_options_metrics_stream_websocket_connection_iterator():
                "pod_metrics": {"desgffa3mtgepvm-0": {"time_stamp": 1587673820, "value": "34914304"},
                                "desgffa3mtgepvm-1": {"time_stamp": 1587673820, "value": "35942400"}}}"""
 
-        raise sdk_exceptions.GradientSdkError()
+        raise sdk_exceptions.EndWebsocketStream()
 
     return generator
 
@@ -53,7 +53,7 @@ def all_options_metrics_stream_websocket_connection_iterator():
                "pod_metrics": {"desgffa3mtgepvm-0": {"time_stamp": 1587640740, "value": "1234"},
                                "desgffa3mtgepvm-1": {"time_stamp": 1587640740, "value": "234"}}}"""
 
-        raise sdk_exceptions.GradientSdkError()
+        raise sdk_exceptions.EndWebsocketStream()
 
     return generator
 
@@ -1525,7 +1525,7 @@ class TestDeploymentsMetricsGetCommand(object):
         assert result.exit_code == 0, result.exc_info
 
 
-class TestExperimentsMetricsStreamCommand(object):
+class TestDeploymentssMetricsStreamCommand(object):
     LIST_DEPLOYMENTS_URL = "https://api.paperspace.io/deployments/getDeploymentList/"
     GET_METRICS_URL = "https://aws-testing.paperspace.io/metrics/api/v1/stream"
     BASIC_OPTIONS_COMMAND = [
@@ -1559,52 +1559,47 @@ class TestExperimentsMetricsStreamCommand(object):
 +-------------------+---------------+-------------+
 | desgffa3mtgepvm-0 |               | 34914304    |
 | desgffa3mtgepvm-1 |               | 35942400    |
-+-------------------+---------------+-------------+
-"""
++-------------------+---------------+-------------+"""
     EXPECTED_TABLE_2 = """+-------------------+----------------------+-------------+
 | Pod               | cpuPercentage        | memoryUsage |
 +-------------------+----------------------+-------------+
 | desgffa3mtgepvm-0 | 0.044894188888835944 | 34914304    |
 | desgffa3mtgepvm-1 | 0.048185748888916656 | 35942400    |
-+-------------------+----------------------+-------------+
-"""
++-------------------+----------------------+-------------+"""
     EXPECTED_TABLE_3 = """+-------------------+----------------------+-------------+
 | Pod               | cpuPercentage        | memoryUsage |
 +-------------------+----------------------+-------------+
 | desgffa3mtgepvm-0 | 0.044894188888835944 | 34914304    |
 | desgffa3mtgepvm-1 | 0.048185748888916656 | 35942400    |
-+-------------------+----------------------+-------------+
-"""
++-------------------+----------------------+-------------+"""
 
     ALL_OPTIONS_EXPECTED_TABLE_1 = """+-------------------+---------------+---------------+
 | Pod               | gpuMemoryFree | gpuMemoryUsed |
 +-------------------+---------------+---------------+
 | desgffa3mtgepvm-0 |               | 0             |
 | desgffa3mtgepvm-1 |               | 0             |
-+-------------------+---------------+---------------+
-"""
++-------------------+---------------+---------------+"""
     ALL_OPTIONS_EXPECTED_TABLE_2 = """+-------------------+---------------+---------------+
 | Pod               | gpuMemoryFree | gpuMemoryUsed |
 +-------------------+---------------+---------------+
 | desgffa3mtgepvm-0 |               | 321           |
 | desgffa3mtgepvm-1 |               | 432           |
-+-------------------+---------------+---------------+
-"""
++-------------------+---------------+---------------+"""
     ALL_OPTIONS_EXPECTED_TABLE_3 = """+-------------------+---------------+---------------+
 | Pod               | gpuMemoryFree | gpuMemoryUsed |
 +-------------------+---------------+---------------+
 | desgffa3mtgepvm-0 | 1234          | 321           |
 | desgffa3mtgepvm-1 | 234           | 432           |
-+-------------------+---------------+---------------+
-"""
++-------------------+---------------+---------------+"""
 
     EXPECTED_STDOUT_WHEN_INVALID_API_KEY_WAS_USED = "Failed to fetch data: Incorrect API Key provided\nForbidden\n"
     EXPECTED_STDOUT_WHEN_DEPLOYMENT_WAS_NOT_FOUND = "Deployment not found\n"
 
+    @mock.patch("gradient.commands.common.TerminalPrinter")
     @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_all_available_metrics_when_metrics_get_command_was_used_with_basic_options(
-            self, get_patched, create_ws_connection_patched,
+            self, get_patched, create_ws_connection_patched, terminal_printer_cls_patched,
             basic_options_metrics_stream_websocket_connection_iterator):
         get_patched.return_value = MockResponse(self.GET_LIST_OF_DEPLOYMENTS_RESPONSE_JSON)
 
@@ -1615,9 +1610,13 @@ class TestExperimentsMetricsStreamCommand(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
 
-        assert self.EXPECTED_TABLE_1 in result.output, result.exc_info
-        assert self.EXPECTED_TABLE_2 in result.output, result.exc_info
-        assert self.EXPECTED_TABLE_3 in result.output, result.exc_info
+        terminal_printer_cls_patched().init.assert_called_once()
+        terminal_printer_cls_patched().rewrite_screen.assert_has_calls([
+            mock.call(self.EXPECTED_TABLE_1),
+            mock.call(self.EXPECTED_TABLE_2),
+            mock.call(self.EXPECTED_TABLE_3),
+        ])
+        terminal_printer_cls_patched().cleanup.assert_called_once()
 
         get_patched.assert_called_once_with(
             self.LIST_DEPLOYMENTS_URL,
@@ -1628,10 +1627,11 @@ class TestExperimentsMetricsStreamCommand(object):
         ws_connection_instance_mock.send.assert_called_once_with(self.BASIC_COMMAND_CHART_DESCRIPTOR)
         assert result.exit_code == 0, result.exc_info
 
+    @mock.patch("gradient.commands.common.TerminalPrinter")
     @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_metrics_when_metrics_get_command_was_used_with_all_options(
-            self, get_patched, create_ws_connection_patched,
+            self, get_patched, create_ws_connection_patched, terminal_printer_cls_patched,
             all_options_metrics_stream_websocket_connection_iterator):
         get_patched.return_value = MockResponse(self.GET_LIST_OF_DEPLOYMENTS_RESPONSE_JSON)
 
@@ -1642,9 +1642,13 @@ class TestExperimentsMetricsStreamCommand(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
 
-        assert self.ALL_OPTIONS_EXPECTED_TABLE_1 in result.output, result.exc_info
-        assert self.ALL_OPTIONS_EXPECTED_TABLE_2 in result.output, result.exc_info
-        assert self.ALL_OPTIONS_EXPECTED_TABLE_3 in result.output, result.exc_info
+        terminal_printer_cls_patched().init.assert_called_once()
+        terminal_printer_cls_patched().rewrite_screen.assert_has_calls([
+            mock.call(self.ALL_OPTIONS_EXPECTED_TABLE_1),
+            mock.call(self.ALL_OPTIONS_EXPECTED_TABLE_2),
+            mock.call(self.ALL_OPTIONS_EXPECTED_TABLE_3),
+        ])
+        terminal_printer_cls_patched().cleanup.assert_called_once()
 
         get_patched.assert_called_once_with(
             self.LIST_DEPLOYMENTS_URL,
@@ -1656,10 +1660,11 @@ class TestExperimentsMetricsStreamCommand(object):
         ws_connection_instance_mock.send.assert_called_once_with(self.ALL_COMMANDS_CHART_DESCRIPTOR)
         assert result.exit_code == 0, result.exc_info
 
+    @mock.patch("gradient.commands.common.TerminalPrinter")
     @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_metrics_when_metrics_get_was_executed_and_options_file_was_used(
-            self, get_patched, create_ws_connection_patched,
+            self, get_patched, create_ws_connection_patched, terminal_printer_cls_patched,
             all_options_metrics_stream_websocket_connection_iterator,
             deployments_metrics_stream_config_path):
         get_patched.return_value = MockResponse(self.GET_LIST_OF_DEPLOYMENTS_RESPONSE_JSON)
@@ -1671,9 +1676,13 @@ class TestExperimentsMetricsStreamCommand(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
-        assert self.ALL_OPTIONS_EXPECTED_TABLE_1 in result.output, result.exc_info
-        assert self.ALL_OPTIONS_EXPECTED_TABLE_2 in result.output, result.exc_info
-        assert self.ALL_OPTIONS_EXPECTED_TABLE_3 in result.output, result.exc_info
+        terminal_printer_cls_patched().init.assert_called_once()
+        terminal_printer_cls_patched().rewrite_screen.assert_has_calls([
+            mock.call(self.ALL_OPTIONS_EXPECTED_TABLE_1),
+            mock.call(self.ALL_OPTIONS_EXPECTED_TABLE_2),
+            mock.call(self.ALL_OPTIONS_EXPECTED_TABLE_3),
+        ])
+        terminal_printer_cls_patched().cleanup.assert_called_once()
 
         get_patched.assert_called_once_with(
             self.LIST_DEPLOYMENTS_URL,
@@ -1685,10 +1694,11 @@ class TestExperimentsMetricsStreamCommand(object):
         ws_connection_instance_mock.send.assert_called_once_with(self.ALL_COMMANDS_CHART_DESCRIPTOR)
         assert result.exit_code == 0, result.exc_info
 
+    @mock.patch("gradient.commands.common.TerminalPrinter")
     @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_valid_error_message_when_invalid_api_key_was_used(
-            self, get_patched, create_ws_connection_patched):
+            self, get_patched, create_ws_connection_patched, terminal_printer_cls_patched):
         get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"}, 400)
 
         runner = CliRunner()
@@ -1706,10 +1716,11 @@ class TestExperimentsMetricsStreamCommand(object):
         create_ws_connection_patched.assert_not_called()
         assert result.exit_code == 0, result.exc_info
 
+    @mock.patch("gradient.commands.common.TerminalPrinter")
     @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_valid_error_message_when_deployment_was_not_found(
-            self, get_patched, create_ws_connection_patched):
+            self, get_patched, create_ws_connection_patched, terminal_printer_cls_patched):
         get_patched.return_value = MockResponse({"deploymentList": []})
 
         runner = CliRunner()

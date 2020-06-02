@@ -26,7 +26,7 @@ def basic_options_metrics_stream_websocket_connection_iterator():
         yield """{"handle":"nrwed38p","object_type":"notebook","chart_name":"memoryUsage",
         "pod_metrics":{"nrwed38p":{"time_stamp":1588066155,"value":"12345667"}}}"""
 
-        raise sdk_exceptions.GradientSdkError()
+        raise sdk_exceptions.EndWebsocketStream()
 
     return generator
 
@@ -41,7 +41,7 @@ def all_options_metrics_stream_websocket_connection_iterator():
         yield """{"handle":"nrwed38p","object_type":"notebook","chart_name":"gpuMemoryFree",
         "pod_metrics":{"nrwed38p":{"time_stamp":1588068646,"value":"2345"}}}"""
 
-        raise sdk_exceptions.GradientSdkError()
+        raise sdk_exceptions.EndWebsocketStream()
 
     return generator
 
@@ -215,6 +215,7 @@ class TestNotebooksCreate(object):
                                         params=None)
         assert result.exit_code == 0
 
+
 # TODO: Add test case for creating notebook with tag
 
 class TestNotebooksFork(object):
@@ -244,7 +245,6 @@ class TestNotebooksFork(object):
     ]
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fork notebook: Invalid API token\n"
-
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_post_request_and_print_notebook_id(self, post_patched):
@@ -344,7 +344,7 @@ class TestNotebooksStart(object):
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to create resource: Invalid API token\n"
     EXPECTED_STDOUT_WITH_KEY = "Started notebook with id: n123\n" \
-                            "https://www.paperspace.com/some_namespace/notebook/prg284tu2\n"
+                               "https://www.paperspace.com/some_namespace/notebook/prg284tu2\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -490,7 +490,8 @@ class TestListNotebookArtifacts(object):
         get_patched.return_value = MockResponse()
         notebook_id = "some_notebook_id"
         result = self.runner.invoke(cli.cli,
-                                    ["notebooks", "artifacts", "list", "--id", notebook_id, "--apiKey", "some_key", "--size",
+                                    ["notebooks", "artifacts", "list", "--id", notebook_id, "--apiKey", "some_key",
+                                     "--size",
                                      "--links",
                                      "--files", "foo"])
 
@@ -512,10 +513,11 @@ class TestListNotebookArtifacts(object):
                                                                                                               get_patched,
                                                                                                               option,
                                                                                                               param):
-        get_patched.return_value = MockResponse(status_code=200)
+        get_patched.return_value = MockResponse()
         notebook_id = "some_notebook_id"
         result = self.runner.invoke(cli.cli,
-                                    ["notebooks", "artifacts", "list", "--id", notebook_id, "--apiKey", "some_key"] + [option])
+                                    ["notebooks", "artifacts", "list", "--id", notebook_id, "--apiKey", "some_key"] + [
+                                        option])
 
         get_patched.assert_called_with(self.URL,
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -1269,7 +1271,7 @@ class TestNotebooksMetricsGetCommand(object):
         assert result.exit_code == 0, result.exc_info
 
 
-class TestExperimentsMetricsStreamCommand(object):
+class TestNotebooksMetricsStreamCommand(object):
     GET_NOTEBOOK_URL = "https://api.paperspace.io/notebooks/getNotebook"
     GET_METRICS_URL = "https://aws-testing.paperspace.io/metrics/api/v1/stream"
     BASIC_OPTIONS_COMMAND = [
@@ -1309,48 +1311,43 @@ class TestExperimentsMetricsStreamCommand(object):
 | Pod      | cpuPercentage | memoryUsage |
 +----------+---------------+-------------+
 | nrwed38p |               | 54013952    |
-+----------+---------------+-------------+
-"""
++----------+---------------+-------------+"""
     EXPECTED_TABLE_2 = """+----------+----------------------+-------------+
 | Pod      | cpuPercentage        | memoryUsage |
 +----------+----------------------+-------------+
 | nrwed38p | 0.006907773333334353 | 54013952    |
-+----------+----------------------+-------------+
-"""
++----------+----------------------+-------------+"""
     EXPECTED_TABLE_3 = """+----------+----------------------+-------------+
 | Pod      | cpuPercentage        | memoryUsage |
 +----------+----------------------+-------------+
 | nrwed38p | 0.006907773333334353 | 12345667    |
-+----------+----------------------+-------------+
-"""
++----------+----------------------+-------------+"""
 
     ALL_OPTIONS_EXPECTED_TABLE_1 = """+----------+---------------+---------------+
 | Pod      | gpuMemoryFree | gpuMemoryUsed |
 +----------+---------------+---------------+
 | nrwed38p | 1234          |               |
-+----------+---------------+---------------+
-"""
++----------+---------------+---------------+"""
     ALL_OPTIONS_EXPECTED_TABLE_2 = """+----------+---------------+---------------+
 | Pod      | gpuMemoryFree | gpuMemoryUsed |
 +----------+---------------+---------------+
-| nrwed38p | 1234          |               |
-+----------+---------------+---------------+
-"""
+| nrwed38p | 1234          | 32            |
++----------+---------------+---------------+"""
     ALL_OPTIONS_EXPECTED_TABLE_3 = """+----------+---------------+---------------+
 | Pod      | gpuMemoryFree | gpuMemoryUsed |
 +----------+---------------+---------------+
 | nrwed38p | 2345          | 32            |
-+----------+---------------+---------------+
-"""
++----------+---------------+---------------+"""
 
     EXPECTED_STDOUT_WHEN_INVALID_API_KEY_WAS_USED = "Failed to fetch data: Incorrect API Key provided\nForbidden\n"
     EXPECTED_STDOUT_WHEN_DEPLOYMENT_WAS_NOT_FOUND = "Failed to fetch data: Not found. Please contact " \
                                                     "support@paperspace.com for help.\n"
 
+    @mock.patch("gradient.commands.common.TerminalPrinter")
     @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_all_available_metrics_when_metrics_get_command_was_used_with_basic_options(
-            self, get_patched, create_ws_connection_patched,
+            self, get_patched, create_ws_connection_patched, terminal_printer_cls_patched,
             basic_options_metrics_stream_websocket_connection_iterator):
         get_patched.return_value = MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON)
 
@@ -1361,9 +1358,13 @@ class TestExperimentsMetricsStreamCommand(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
 
-        assert self.EXPECTED_TABLE_1 in result.output, result.exc_info
-        assert self.EXPECTED_TABLE_2 in result.output, result.exc_info
-        assert self.EXPECTED_TABLE_3 in result.output, result.exc_info
+        terminal_printer_cls_patched().init.assert_called_once()
+        terminal_printer_cls_patched().rewrite_screen.assert_has_calls([
+            mock.call(self.EXPECTED_TABLE_1),
+            mock.call(self.EXPECTED_TABLE_2),
+            mock.call(self.EXPECTED_TABLE_3),
+        ])
+        terminal_printer_cls_patched().cleanup.assert_called_once()
 
         get_patched.assert_called_once_with(
             self.GET_NOTEBOOK_URL,
@@ -1374,10 +1375,11 @@ class TestExperimentsMetricsStreamCommand(object):
         ws_connection_instance_mock.send.assert_called_once_with(self.BASIC_COMMAND_CHART_DESCRIPTOR)
         assert result.exit_code == 0, result.exc_info
 
+    @mock.patch("gradient.commands.common.TerminalPrinter")
     @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_metrics_when_metrics_get_command_was_used_with_all_options(
-            self, get_patched, create_ws_connection_patched,
+            self, get_patched, create_ws_connection_patched, terminal_printer_cls_patched,
             all_options_metrics_stream_websocket_connection_iterator):
         get_patched.return_value = MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON)
 
@@ -1388,9 +1390,13 @@ class TestExperimentsMetricsStreamCommand(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.ALL_OPTIONS_COMMAND)
 
-        assert self.ALL_OPTIONS_EXPECTED_TABLE_1 in result.output, result.exc_info
-        assert self.ALL_OPTIONS_EXPECTED_TABLE_2 in result.output, result.exc_info
-        assert self.ALL_OPTIONS_EXPECTED_TABLE_3 in result.output, result.exc_info
+        terminal_printer_cls_patched().init.assert_called_once()
+        terminal_printer_cls_patched().rewrite_screen.assert_has_calls([
+            mock.call(self.ALL_OPTIONS_EXPECTED_TABLE_1),
+            mock.call(self.ALL_OPTIONS_EXPECTED_TABLE_2),
+            mock.call(self.ALL_OPTIONS_EXPECTED_TABLE_3),
+        ])
+        terminal_printer_cls_patched().cleanup.assert_called_once()
 
         get_patched.assert_called_once_with(
             self.GET_NOTEBOOK_URL,
@@ -1402,10 +1408,11 @@ class TestExperimentsMetricsStreamCommand(object):
         ws_connection_instance_mock.send.assert_called_once_with(self.ALL_COMMANDS_CHART_DESCRIPTOR)
         assert result.exit_code == 0, result.exc_info
 
+    @mock.patch("gradient.commands.common.TerminalPrinter")
     @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_metrics_when_metrics_get_was_executed_and_options_file_was_used(
-            self, get_patched, create_ws_connection_patched,
+            self, get_patched, create_ws_connection_patched, terminal_printer_cls_patched,
             all_options_metrics_stream_websocket_connection_iterator,
             notebooks_metrics_stream_config_path):
         get_patched.return_value = MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON)
@@ -1417,9 +1424,13 @@ class TestExperimentsMetricsStreamCommand(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
-        assert self.ALL_OPTIONS_EXPECTED_TABLE_1 in result.output, result.exc_info
-        assert self.ALL_OPTIONS_EXPECTED_TABLE_2 in result.output, result.exc_info
-        assert self.ALL_OPTIONS_EXPECTED_TABLE_3 in result.output, result.exc_info
+        terminal_printer_cls_patched().init.assert_called_once()
+        terminal_printer_cls_patched().rewrite_screen.assert_has_calls([
+            mock.call(self.ALL_OPTIONS_EXPECTED_TABLE_1),
+            mock.call(self.ALL_OPTIONS_EXPECTED_TABLE_2),
+            mock.call(self.ALL_OPTIONS_EXPECTED_TABLE_3),
+        ])
+        terminal_printer_cls_patched().cleanup.assert_called_once()
 
         get_patched.assert_called_once_with(
             self.GET_NOTEBOOK_URL,
@@ -1431,10 +1442,11 @@ class TestExperimentsMetricsStreamCommand(object):
         ws_connection_instance_mock.send.assert_called_once_with(self.ALL_COMMANDS_CHART_DESCRIPTOR)
         assert result.exit_code == 0, result.exc_info
 
+    @mock.patch("gradient.commands.common.TerminalPrinter")
     @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_valid_error_message_when_invalid_api_key_was_used(
-            self, get_patched, create_ws_connection_patched):
+            self, get_patched, create_ws_connection_patched, terminal_printer_cls_patched):
         get_patched.return_value = MockResponse({"status": 400, "message": "Invalid API token"}, 400)
 
         runner = CliRunner()
@@ -1452,10 +1464,11 @@ class TestExperimentsMetricsStreamCommand(object):
         create_ws_connection_patched.assert_not_called()
         assert result.exit_code == 0, result.exc_info
 
+    @mock.patch("gradient.commands.common.TerminalPrinter")
     @mock.patch("gradient.api_sdk.repositories.common.websocket.create_connection")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_valid_error_message_when_deployment_was_not_found(
-            self, get_patched, create_ws_connection_patched):
+            self, get_patched, create_ws_connection_patched, terminal_printer_cls_patched):
         get_patched.return_value = MockResponse(self.GET_NOTEBOOK_RESPONSE_JSON_WHEN_NOTEBOOK_NOT_FOUND, 404)
 
         runner = CliRunner()
