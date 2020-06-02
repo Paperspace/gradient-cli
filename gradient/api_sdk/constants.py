@@ -149,3 +149,26 @@ DATASET_VOLUME_KINDS = collections.OrderedDict(
         ("shared", DatasetVolumeKinds.SHARED),
     ),
 )
+
+
+class DeploymentState:
+    BUILDING = 1
+    PROVISIONING = 2
+    STARTING = 3
+    RUNNING = 4
+    STOPPING = 5
+    STOPPED = 6
+    ERROR = 7
+
+    @classmethod
+    def get_state_str(cls, state_int):
+        state_strings = {
+            1: "building",
+            2: "provisioning",
+            3: "starting",
+            4: "running",
+            5: "stopping",
+            6: "stopped",
+            7: "error",
+        }
+        return state_strings.get(state_int, "undefined")
