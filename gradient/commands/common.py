@@ -3,13 +3,12 @@ import collections
 import json
 import pydoc
 
-import click
 import six
 import terminaltables
 from halo import halo
 
 from gradient.clilogger import CliLogger
-from gradient.cliutils import get_terminal_lines
+from gradient.cliutils import get_terminal_lines, TerminalPrinter
 from gradient.exceptions import ApplicationError
 
 
@@ -131,6 +130,18 @@ class StreamMetricsCommand(ListCommandMixin):
         super(StreamMetricsCommand, self).__init__(*args, **kwargs)
         # {"metricName": {"pod_id": "value"}}
         self._recent_values = collections.OrderedDict()
+        self.terminal_printer = None
+
+    def execute(self, *args, **kwargs):
+        self.terminal_printer = TerminalPrinter()
+        self.terminal_printer.init()
+        try:
+            rv = super(StreamMetricsCommand, self).execute(*args, **kwargs)
+        finally:
+            self.terminal_printer.clear()
+            self.terminal_printer.cleanup()
+
+        return rv
 
     def _get_instances(self, kwargs):
         metrics_stream = self.client.stream_metrics(**kwargs)
@@ -154,8 +165,7 @@ class StreamMetricsCommand(ListCommandMixin):
             self._recent_values[metric_name][pod_name] = data["value"]
 
     def _print_table_to_terminal(self, table_str):
-        click.clear()
-        super(StreamMetricsCommand, self)._print_table_to_terminal(table_str)
+        self.terminal_printer.rewrite_screen(table_str)
 
     def _get_table_data(self, objects):
         metrics = list(self._recent_values.keys())

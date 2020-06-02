@@ -60,3 +60,7 @@ class PresignedUrlConnectionError(ArchiveUploadError):
 
 class InvalidParametersError(GradientSdkError):
     pass
+
+
+class EndWebsocketStream(Exception):
+    pass

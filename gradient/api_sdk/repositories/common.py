@@ -2,13 +2,12 @@ import abc
 import collections
 import datetime
 import json
-import time
 
 import dateutil
 import six
 import websocket
 
-from .. import serializers
+from .. import serializers, sdk_exceptions
 from ..clients import http_client
 from ..config import config
 from ..sdk_exceptions import ResourceFetchingError, ResourceCreatingDataError, ResourceCreatingError, GradientSdkError
@@ -408,6 +407,8 @@ class StreamMetrics(BaseRepository):
                     yield data
             except websocket.WebSocketConnectionClosedException as e:
                 self.logger.debug("WebSocketConnectionClosedException: {}".format(e))
+            except sdk_exceptions.EndWebsocketStream:
+                return
 
     def _get_connection(self, kwargs):
         url = self._get_full_url(kwargs)

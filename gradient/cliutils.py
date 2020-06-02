@@ -1,3 +1,4 @@
+import curses
 import json
 import shutil
 
@@ -48,3 +49,36 @@ def validate_auth_options(kwargs):
 
 def none_strings_to_none_objects(lst):
     return [elem if elem != "none" else None for elem in lst]
+
+
+class TerminalPrinter(object):
+    def __init__(self):
+        self.screen_writer = None
+
+    def init(self):
+        self.screen_writer = curses.initscr()
+        return self
+
+    def cleanup(self):
+        """Cleanup before program ends or terminal may stop working correlctly"""
+        curses.nocbreak()
+        self.screen_writer.keypad(False)
+        curses.echo()
+        curses.endwin()
+
+    def rewrite_screen(self, s):
+        self.clear()
+        self.add_line(s)
+        self.refresh()
+
+    def add_line(self, s):
+        self.add_str(s + "\n")
+
+    def add_str(self, s):
+        self.screen_writer.addstr(s)
+
+    def refresh(self):
+        self.screen_writer.refresh()
+
+    def clear(self):
+        self.screen_writer.clear()
