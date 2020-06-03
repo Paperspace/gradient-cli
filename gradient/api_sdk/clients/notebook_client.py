@@ -7,13 +7,10 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
 
     def create(
             self,
+            machine_type,
             cluster_id=None,
             container=None,
             container_id=None,
-            machine_type=None,
-            vm_type_id=None,
-            vm_type_label=None,
-            container_name=None,
             name=None,
             registry_username=None,
             registry_password=None,
@@ -26,13 +23,10 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
     ):
         """Create new notebook
 
+        :param str machine_type:
         :param int container_id:
         :param str cluster_id:
-        :param str machine_type:
-        :param str vm_type_id:
-        :param int vm_type_label:
         :param str container:
-        :param str container_name:
         :param str name:
         :param str registry_username:
         :param str registry_password:
@@ -51,7 +45,6 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             container_id=container_id,
             cluster_id=cluster_id,
             container=container,
-            container_name=container_name,
             name=name,
             registry_username=registry_username,
             registry_password=registry_password,
@@ -60,8 +53,6 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             shutdown_timeout=shutdown_timeout,
             is_preemptible=is_preemptible,
             machine_type=machine_type,
-            vm_type_label=vm_type_label,
-            vm_type_id=vm_type_id,
             is_public=is_public,
         )
 
@@ -76,10 +67,8 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
     def start(
             self,
             id,
+            machine_type,
             cluster_id=None,
-            machine_type=None,
-            vm_type_id=None,
-            vm_type_label=None,
             name=None,
             shutdown_timeout=None,
             is_preemptible=None,
@@ -87,10 +76,8 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
     ):
         """Start existing notebook
         :param str|int id:
-        :param str cluster_id:
         :param str machine_type:
-        :param str vm_type_id:
-        :param int vm_type_label:
+        :param str cluster_id:
         :param str name:
         :param int shutdown_timeout:
         :param bool is_preemptible:
@@ -102,8 +89,6 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         notebook = models.NotebookStart(
             notebook_id=id,
             machine_type=machine_type,
-            vm_type_id=vm_type_id,
-            vm_type_label=vm_type_label,
             cluster_id=cluster_id,
             notebook_name=name,
             shutdown_timeout=shutdown_timeout,

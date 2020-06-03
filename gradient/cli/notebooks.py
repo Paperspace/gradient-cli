@@ -29,13 +29,13 @@ def notebook_metrics():
     "--clusterId",
     "cluster_id",
     type=str,
-    required=False,
     help="Cluster ID",
     cls=common.GradientOption,
 )
 @click.option(
     "--machineType",
     "machine_type",
+    required=True,
     type=str,
     help="Virtual Machine type label e.g. P5000",
     cls=common.GradientOption,
@@ -144,6 +144,7 @@ def create_notebook(api_key, options_file, **notebook):
 @click.option(
     "--machineType",
     "machine_type",
+    required=True,
     type=str,
     help="Virtual Machine type label e.g. P5000",
     cls=common.GradientOption,
@@ -152,7 +153,6 @@ def create_notebook(api_key, options_file, **notebook):
     "--clusterId",
     "cluster_id",
     type=str,
-    required=False,
     help="Cluster ID",
     cls=common.GradientOption,
 )
