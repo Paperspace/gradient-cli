@@ -7,7 +7,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
 
     def create(
             self,
-            cluster_id,
+            cluster_id=None,
             container_id=None,
             vm_type_id=None,
             vm_type_label=None,
@@ -70,7 +70,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
     def start(
             self,
             id,
-            cluster_id,
+            cluster_id=None,
             vm_type_id=None,
             vm_type_label=None,
             name=None,

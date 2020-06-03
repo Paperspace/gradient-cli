@@ -29,7 +29,6 @@ def notebook_metrics():
     "--clusterId",
     "cluster_id",
     type=str,
-    required=True,
     help="Cluster ID",
     cls=common.GradientOption,
 )
@@ -152,7 +151,6 @@ def create_notebook(api_key, options_file, **notebook):
     "--clusterId",
     "cluster_id",
     type=str,
-    required=True,
     help="Cluster ID",
     cls=common.GradientOption,
 )
