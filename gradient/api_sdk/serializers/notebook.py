@@ -54,7 +54,6 @@ class NotebookSchema(BaseSchema):
         data = copy.copy(data)
 
         utils.base64_encode_attribute(data, "command")
-        utils.base64_encode_attribute(data, "default_entrypoint")
         return data
 
 
