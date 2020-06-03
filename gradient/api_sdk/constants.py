@@ -19,7 +19,7 @@ class ExperimentType:
 
 
 class ExperimentState:
-    CREATED = 1
+    PENDING = 1
     PROVISIONED = 2
     NETWORK_SETUP = 3
     RUNNING = 4
@@ -28,15 +28,16 @@ class ExperimentState:
     FAILED = 7
     CANCELLED = 8
     NETWORK_TEARDOWN = 9
-    PENDING = 10
+    CREATED = 10
     PROVISIONING = 11
     NETWORK_SETTING_UP = 12
     NETWORK_TEARING_DOWN = 13
+    ABORTING = 14
 
     @classmethod
     def get_state_str(cls, state_int):
         state_strings = {
-            1: "created",
+            1: "pending",
             2: "provisioned",
             3: "network setup",
             4: "running",
@@ -45,7 +46,7 @@ class ExperimentState:
             7: "failed",
             8: "canceled",
             9: "network teardown",
-            10: "pending",
+            10: "created",
             11: "provisioning",
             12: "network setting up",
             13: "network tearing down",
@@ -149,3 +150,26 @@ DATASET_VOLUME_KINDS = collections.OrderedDict(
         ("shared", DatasetVolumeKinds.SHARED),
     ),
 )
+
+
+class DeploymentState:
+    BUILDING = 1
+    PROVISIONING = 2
+    STARTING = 3
+    RUNNING = 4
+    STOPPING = 5
+    STOPPED = 6
+    ERROR = 7
+
+    @classmethod
+    def get_state_str(cls, state_int):
+        state_strings = {
+            1: "building",
+            2: "provisioning",
+            3: "starting",
+            4: "running",
+            5: "stopping",
+            6: "stopped",
+            7: "error",
+        }
+        return state_strings.get(state_int, "undefined")

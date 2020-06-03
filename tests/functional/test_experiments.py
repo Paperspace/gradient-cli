@@ -927,7 +927,7 @@ class TestExperimentDetail(object):
 | Name                | some_name                |
 +---------------------+--------------------------+
 | ID                  | emarbao6t6tsn            |
-| State               | pending                  |
+| State               | created                  |
 | Artifact directory  | /some/artifact/directory |
 | Cluster ID          | clqr4b0ox                |
 | Experiment Env      | {'key': 'value'}         |
@@ -953,7 +953,7 @@ class TestExperimentDetail(object):
 | Name                | dsfads         |
 +---------------------+----------------+
 | ID                  | esro6mbmiulvbl |
-| State               | created        |
+| State               | pending        |
 | Ports               | 5000           |
 | Project ID          | prq70zy79      |
 | Worker Command      | sadas          |
@@ -1060,9 +1060,9 @@ class TestExperimentList(object):
     DETAILS_STDOUT = """+---------------+---------------+---------+
 | Name          | ID            | Status  |
 +---------------+---------------+---------+
-| dsfads        | ea2lfbbpdyzsq | created |
-| dsfads        | em6btk2vtb7it | created |
-| multinode_mpi | ew69ls0vy3eto | created |
+| dsfads        | ea2lfbbpdyzsq | pending |
+| dsfads        | em6btk2vtb7it | pending |
+| multinode_mpi | ew69ls0vy3eto | pending |
 +---------------+---------------+---------+
 
 Do you want to continue? [y/N]: 
