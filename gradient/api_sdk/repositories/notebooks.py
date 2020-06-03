@@ -3,7 +3,7 @@ import json
 from ..clients import http_client
 from ..sdk_exceptions import ResourceCreatingError
 from .common import CreateResource, DeleteResource, ListResources, GetResource, \
-    StopResource, GetMetrics, StreamMetrics, BaseRepository
+    StopResource, GetMetrics, StreamMetrics, BaseRepository, ListLogs
 from .. import config
 from .. import serializers, sdk_exceptions
 
@@ -209,5 +209,15 @@ class ListNotebookArtifacts(GetNotebookApiUrlMixin, ListResources):
         if kwargs.get("links"):
             params["links"] = kwargs.get("links")
 
+        return params
+
+class ListNotebookLogs(ListLogs):
+    def _get_request_params(self, kwargs):
+        params = {
+            "jobId": kwargs["job_id"],
+            "notebookId": kwargs["notebook_id"],
+            "line": kwargs["line"],
+            "limit": kwargs["limit"]
+        }
         return params
 

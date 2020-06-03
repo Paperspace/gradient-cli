@@ -1,6 +1,5 @@
 from .base_client import BaseClient, TagsSupportMixin
 from .. import repositories, models
-from ..repositories.jobs import ListJobLogs
 
 
 class NotebooksClient(TagsSupportMixin, BaseClient):
@@ -257,8 +256,8 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         :rtype: list
         """
         notebook = self.get(notebook_id)
-        repository = self.build_repository(ListJobLogs)
-        logs = repository.list(id=notebook.job_handle, line=line, limit=limit)
+        repository = self.build_repository(repositories.ListNotebookLogs)
+        logs = repository.list(job_id=notebook.job_handle, notebook_id=notebook_id, line=line, limit=limit)
         return logs
 
     def yield_logs(self, notebook_id, line=1, limit=10000):
@@ -283,6 +282,6 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         """
 
         notebook = self.get(notebook_id)
-        repository = self.build_repository(ListJobLogs)
-        logs = repository.yield_logs(id=notebook.job_handle, line=line, limit=limit)
+        repository = self.build_repository(repositories.ListNotebookLogs)
+        logs = repository.yield_logs(job_id=notebook.job_handle, notebook_id=notebook_id, line=line, limit=limit)
         return logs

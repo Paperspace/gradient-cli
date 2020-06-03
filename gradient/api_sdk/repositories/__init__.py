@@ -13,7 +13,7 @@ from .machines import CheckMachineAvailability, CreateMachine, CreateResource, S
     RestartMachine, GetMachine, UpdateMachine, GetMachineUtilization
 from .models import DeleteModel, ListModels, UploadModel, GetModel, ListModelFiles
 from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks, GetNotebookMetrics, \
-    StreamNotebookMetrics, StopNotebook, StartNotebook, ForkNotebook, ListNotebookArtifacts
+    StreamNotebookMetrics, StopNotebook, StartNotebook, ForkNotebook, ListNotebookArtifacts, ListNotebookLogs
 from .projects import CreateProject, ListProjects, DeleteProject, GetProject
 from .secrets import ListSecrets, SetSecret, DeleteSecret
 from .tensorboards import CreateTensorboard, GetTensorboard, ListTensorboards, UpdateTensorboard, DeleteTensorboard
