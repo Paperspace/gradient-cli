@@ -1,5 +1,10 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.9.0a1
+#### Fixes
+* Fix output of `metrics stream` command
+* Fixed experiment status constants and added constants for deployment statuses
+
 # Release Notes for 0.9.0a0
 #### Fixes
 * Fixed reading logs with `--follow`. The bug caused all log lines in a loop instead of only the new one
