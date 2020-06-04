@@ -5932,6 +5932,26 @@ GET_DEPLOYMENT_DETAILS_JSON_RESPONSE = {
             "method": None,
             "tags": ["tag1", "tag2"],
             "metricsURL": "aws-testing.paperspace.io",
+            "versions": [
+                {
+                    "id": "some_version_id",
+                    "state": "Running",
+                    "params": None,
+                    "instanceCount": 1,
+                    "runningCount": 0,
+                    "dtCreated": "2020-05-06T20:12:09.016Z",
+                    "dtModified": "2020-05-06T20:25:43.092Z"
+                },
+                {
+                    "id": "some_other_version_id",
+                    "state": "Stopped",
+                    "params": None,
+                    "instanceCount": 1,
+                    "runningCount": 0,
+                    "dtCreated": "2020-05-05T20:12:09.016Z",
+                    "dtModified": "2020-05-05T20:25:43.092Z"
+                }
+            ]
         }
     ],
     "total": 129,

@@ -515,7 +515,7 @@ class TestDeploymentsList(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_deployments(self, get_patched):
-        get_patched.return_value = MockResponse(self.LIST_JSON, 200, "fake content")
+        get_patched.return_value = MockResponse(self.LIST_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -1024,6 +1024,8 @@ class TestDeploymentDetails(object):
 | ID              | some_id                                             |
 +-----------------+-----------------------------------------------------+
 | Name            | some_name                                           |
+| Versions        | some_other_version_id: Stopped                      |
+|                 | some_version_id: Running                            |
 | State           | Stopped                                             |
 | Machine type    | p3.2xlarge                                          |
 | Instance count  | 1                                                   |

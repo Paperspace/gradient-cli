@@ -4,6 +4,16 @@ import attr
 
 
 @attr.s
+class DeploymentVersion(object):
+    id = attr.ib(type=str, default=None)
+    state = attr.ib(type=str, default=None)
+    instance_count = attr.ib(type=int, default=None)
+    running_count = attr.ib(type=int, default=None)
+    dt_created = attr.ib(type=datetime.datetime, default=None)
+    dt_modified = attr.ib(type=datetime.datetime, default=None)
+
+
+@attr.s
 class Deployment(object):
     """
     Deployment class
@@ -82,6 +92,7 @@ class Deployment(object):
     workspace_username = attr.ib(type=str, default=None)
     workspace_password = attr.ib(type=str, default=None)
     metrics_url = attr.ib(type=str, default=None)
+    versions = attr.ib(type=list, factory=list)
 
     dt_created = attr.ib(type=datetime.datetime, default=None)
     dt_modified = attr.ib(type=datetime.datetime, default=None)

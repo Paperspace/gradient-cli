@@ -4,6 +4,17 @@ from .base import BaseSchema
 from .. import models
 
 
+class DeploymentVersion(BaseSchema):
+    MODEL = models.DeploymentVersion
+
+    id = ma.fields.Str()
+    state = ma.fields.Str()
+    instance_count = ma.fields.Int(dump_to="instanceCount", load_from="instanceCount")
+    running_count = ma.fields.Int(dump_to="runningCount", load_from="runningCount")
+    dt_created = ma.fields.DateTime(dump_to="dtCreated", load_from="dtCreated")
+    dt_modified = ma.fields.DateTime(dump_to="dtModified", load_from="dtModified")
+
+
 class DeploymentSchema(BaseSchema):
     MODEL = models.Deployment
 
@@ -41,6 +52,8 @@ class DeploymentSchema(BaseSchema):
     workspace_ref = ma.fields.Str(dump_to="workspaceRef", load_from="workspaceRef")
     workspace_username = ma.fields.Str(dump_to="workspaceUsername", load_from="workspaceUsername")
     workspace_password = ma.fields.Str(dump_to="workspacePassword", load_from="workspacePassword")
+    versions = ma.fields.Nested(DeploymentVersion, many=True, load_only=True)
+
     dt_created = ma.fields.DateTime(dump_to="dtCreated", load_from="dtCreated")
     dt_modified = ma.fields.DateTime(dump_to="dtModified", load_from="dtModified")
     dt_started = ma.fields.DateTime(dump_to="dtStarted", load_from="dtStarted")

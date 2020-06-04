@@ -151,10 +151,12 @@ class GetDeploymentDetails(DetailsCommandMixin, BaseDeploymentCommand):
         :param models.Deployment instance:
         """
         tags_string = ", ".join(instance.tags)
+        versions_string = self._get_versions_string(instance.versions)
 
         data = (
             ("ID", instance.id),
             ("Name", instance.name),
+            ("Versions", versions_string),
             ("State", instance.state),
             ("Machine type", instance.machine_type),
             ("Instance count", instance.instance_count),
@@ -168,6 +170,11 @@ class GetDeploymentDetails(DetailsCommandMixin, BaseDeploymentCommand):
             ("Tags", tags_string),
         )
         return data
+
+    def _get_versions_string(self, versions):
+        s = "\n".join("{}: {}".format(version.id, version.state)
+                      for version in sorted(versions, key=lambda v: v.dt_created))
+        return s
 
 
 class DeploymentAddTagsCommand(BaseDeploymentCommand):
