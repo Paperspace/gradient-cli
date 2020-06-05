@@ -1,6 +1,6 @@
 from .artifact import Artifact
 from .cluster import Cluster
-from .dataset import Dataset
+from .dataset import Dataset, VolumeOptions
 from .deployment import Deployment
 from .experiment import BaseExperiment, MultiNodeExperiment, SingleNodeExperiment, MpiMultiNodeExperiment
 from .hyperparameter import Hyperparameter
