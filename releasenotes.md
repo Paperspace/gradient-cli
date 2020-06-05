@@ -1,5 +1,13 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.9.0a2
+### Fixes
+* Fixed NotImplementedError raised when parsing experiment with dataset volume options set
+
+# Release Notes for 0.8.1
+### Fixes
+* Fixed NotImplementedError raised when parsing experiment with dataset volume options set
+
 # Release Notes for 0.9.0a1
 #### Fixes
 * Fix output of `metrics stream` command
