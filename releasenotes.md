@@ -1,5 +1,9 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.8.1
+### Fixes
+* Fixed NotImplementedError raised when parsing experiment with dataset volume options set
+
 # Release Notes for 0.8.0
 ##### Note: this list includes all changes made in 0.8.0a* alpha releases
 #### Breaking changes
