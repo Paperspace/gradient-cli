@@ -36,7 +36,16 @@ LIST_OF_EXPERIMENTS_RESPONSE_JSON = {
                 },
                 "triggerEvent": None,
                 "triggerEventId": None
-            }
+            },
+            "datasets": [
+                {
+                    "uri": "s3://some/dataset",
+                    "volume_options": {
+                        "kind": "dynamic",
+                        "size": "10Gi",
+                    },
+                },
+            ],
         },
         {
             "dtCreated": "2019-03-21T07:46:57.706055+00:00",
@@ -4586,7 +4595,16 @@ DETAILS_OF_SINGLE_NODE_EXPERIMENT_RESPONSE_JSON = {
             },
             "triggerEvent": None,
             "triggerEventId": None
-        }
+        },
+        "datasets": [
+            {
+                "uri": "s3://some/dataset",
+                "volume_options": {
+                    "kind": "dynamic",
+                    "size": "10Gi",
+                },
+            },
+        ],
     },
     "message": "success"
 }
