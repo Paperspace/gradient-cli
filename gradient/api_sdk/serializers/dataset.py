@@ -6,6 +6,8 @@ from .. import models
 
 
 class DatasetVolumeOptionsSchema(BaseSchema):
+    MODEL = models.VolumeOptions
+
     kind = ma.fields.Str(required=True)
     size = ma.fields.Str(required=True)
 
