@@ -210,21 +210,4 @@ class ArtifactsListCommand(BaseNotebookCommand):
 
 
 class NotebookLogsCommand(LogsCommandMixin, BaseNotebookCommand):
-    def _make_table(self, logs, id):
-        table_title = "Notebook %s logs" % id
-        table_data = [("LINE", "MESSAGE")]
-        table = terminaltables.AsciiTable(table_data, title=table_title)
-
-        for log in logs:
-            table_data.append(self._format_row(log))
-
-        return table.table
-
-    def _get_log_row_string(self, id, log):
-        log_msg = "{}\t{}".format(*self._format_row(log))
-        return log_msg
-
-    @staticmethod
-    def _format_row(log_row):
-        return (style(fg="red", text=str(log_row.line)),
-                log_row.message)
+    ENTITY = "Notebook"
