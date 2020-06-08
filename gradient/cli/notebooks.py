@@ -29,13 +29,13 @@ def notebook_metrics():
     "--clusterId",
     "cluster_id",
     type=str,
-    required=True,
     help="Cluster ID",
     cls=common.GradientOption,
 )
 @click.option(
     "--machineType",
-    "vm_type_label",
+    "machine_type",
+    required=True,
     type=str,
     help="Virtual Machine type label e.g. P5000",
     cls=common.GradientOption,
@@ -49,7 +49,7 @@ def notebook_metrics():
 )
 @click.option(
     "--container",
-    "container_name",
+    "container",
     type=str,
     help="Container name",
     cls=common.GradientOption,
@@ -77,7 +77,7 @@ def notebook_metrics():
 )
 @click.option(
     "--command",
-    "default_entrypoint",
+    "command",
     type=str,
     help="Command (executed as `/bin/sh -c 'YOUR COMMAND'`)",
     cls=common.GradientOption,
@@ -143,7 +143,8 @@ def create_notebook(api_key, options_file, **notebook):
 )
 @click.option(
     "--machineType",
-    "vm_type_label",
+    "machine_type",
+    required=True,
     type=str,
     help="Virtual Machine type label e.g. P5000",
     cls=common.GradientOption,
@@ -152,7 +153,6 @@ def create_notebook(api_key, options_file, **notebook):
     "--clusterId",
     "cluster_id",
     type=str,
-    required=True,
     help="Cluster ID",
     cls=common.GradientOption,
 )

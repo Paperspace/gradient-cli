@@ -9,14 +9,17 @@ class NotebookSchema(BaseSchema):
     MODEL = models.Notebook
 
     id = marshmallow.fields.Str()
+    machine_type = marshmallow.fields.Str(load_from="machineType", dump_to="machineType")
     vm_type_id = marshmallow.fields.Int(load_from="vmTypeId", dump_to="vmTypeId")
     vm_type_label = marshmallow.fields.Str(load_from="vmTypeLabel", dump_to="vmTypeLabel")
     container_id = marshmallow.fields.Int(load_from="containerId", dump_to="containerId", allow_none=True)
+    container = marshmallow.fields.Str(load_from="container", dump_to="container", allow_none=True)
     container_name = marshmallow.fields.Str(load_from="containerName", dump_to="containerName", allow_none=True)
     name = marshmallow.fields.Str()
     cluster_id = marshmallow.fields.Str(load_from="clusterId", dump_to="clusterId")
     registry_username = marshmallow.fields.Str(load_from="registryUsername", dump_to="registryUsername")
     registry_password = marshmallow.fields.Str(load_from="registryPassword", dump_to="registryPassword")
+    command = marshmallow.fields.Str(load_from="command", dump_to="command")
     default_entrypoint = marshmallow.fields.Str(load_from="defaultEntrypoint", dump_to="defaultEntrypoint")
     container_user = marshmallow.fields.Str(load_from="containerUser", dump_to="containerUser")
     shutdown_timeout = marshmallow.fields.Int(load_from="shutdownTimeout", dump_to="shutdownTimeout")
@@ -52,7 +55,7 @@ class NotebookSchema(BaseSchema):
     def preprocess(self, data, **kwargs):
         data = copy.copy(data)
 
-        utils.base64_encode_attribute(data, "default_entrypoint")
+        utils.base64_encode_attribute(data, "command")
         return data
 
 
@@ -60,6 +63,7 @@ class NotebookStartSchema(BaseSchema):
     MODEL = models.NotebookStart
 
     notebook_id = marshmallow.fields.Str(load_from="notebookId", dump_to="notebookId")
+    machine_type = marshmallow.fields.Str(load_from="machineType", dump_to="machineType")
     vm_type_id = marshmallow.fields.Int(load_from="vmTypeId", dump_to="vmTypeId")
     vm_type_label = marshmallow.fields.Str(load_from="vmTypeLabel", dump_to="vmTypeLabel")
     name = marshmallow.fields.Str(load_from="notebookName", dump_to="notebookName")

@@ -1,9 +1,8 @@
 apiKey: some_key
 clusterId: 321
 container: "jupyter/notebook"
-command: "some_entrypoint"
+command: some_entrypoint
 containerUser: some_container_user
-defaultEntrypoint: some_entrypoint
 isPreemptible: true
 name: some_notebook_name
 registryPassword: some_password
