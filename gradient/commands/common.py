@@ -5,6 +5,7 @@ import pydoc
 
 import six
 import terminaltables
+from click import style
 from halo import halo
 
 from gradient.clilogger import CliLogger
@@ -189,14 +190,6 @@ class StreamMetricsCommand(ListCommandMixin):
 
 
 class LogsCommandMixin(object):
-    @abc.abstractmethod
-    def _make_table(self, logs, id):
-        pass
-
-    @abc.abstractmethod
-    def _get_log_row_string(self, id, log):
-        pass
-
     def execute(self, id, line, limit, follow):
         if follow:
             self.logger.log("Awaiting logs...")
@@ -224,3 +217,22 @@ class LogsCommandMixin(object):
     def _get_logs_generator(self, id, line, limit):
         logs_gen = self.client.yield_logs(id, line, limit)
         return logs_gen
+
+    def _make_table(self, logs, id):
+        table_title = "%s %s logs" % (self.ENTITY, id)
+        table_data = [("LINE", "MESSAGE")]
+        table = terminaltables.AsciiTable(table_data, title=table_title)
+
+        for log in logs:
+            table_data.append(self._format_row(log))
+
+        return table.table
+
+    def _get_log_row_string(self, id, log):
+        log_msg = "{}\t{}".format(*self._format_row(log))
+        return log_msg
+
+    @staticmethod
+    def _format_row(log_row):
+        return (style(fg="red", text=str(log_row.line)),
+                log_row.message)

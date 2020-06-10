@@ -48,6 +48,9 @@ class MessageExtractor(object):
         if isinstance(data, six.string_types):
             yield data
 
+        if six.PY3 and isinstance(data, bytes):
+            yield data.decode('utf-8')
+
 
 def print_dict_recursive(input_dict, logger, indent=0, tabulator="  "):
     for key, val in input_dict.items():
