@@ -25,6 +25,52 @@ def get_workspace_handler(api_key):
     return workspace_handler
 
 
+def validate_autoscaling_metric_or_resource(ctx, param, value, metric_type):
+    """
+    value in = ("cpu/targetAverage:10")
+    value out = ({"type": instance,
+                  "name": "cpu",
+                  "value_type": "targetAverage",
+                  "value": 10})
+    """
+
+    if value is None:
+        return None
+
+    old_values = value
+    new_values = []
+
+    for old_value in old_values:
+        try:
+            name, values = old_value.split("/", 1)
+            value_type, value = values.split(":", 1)
+            value = int(value)
+        except Exception as e:
+            debug_msg = "Error occurred while validating autoscaling {} with value {}: {}"\
+                .format(metric_type, old_value, e)
+            clilogger.CliLogger().debug(debug_msg)
+
+            msg = "value need to be in format resource_name/value_type:value for example cpu/targetAverage:60" \
+                .format(old_value)
+            raise click.BadParameter(msg)
+
+        new_value = {"type": metric_type,
+                     "name": name,
+                     "value_type": value_type,
+                     "value": value}
+        new_values.append(new_value)
+
+    return tuple(new_values)
+
+
+def validate_autoscaling_metric(ctx, param, value):
+    return validate_autoscaling_metric_or_resource(ctx, param, value, "Metric")
+
+
+def validate_autoscaling_resource(ctx, param, value):
+    return validate_autoscaling_metric_or_resource(ctx, param, value, "Resource")
+
+
 @cli.group("deployments", help="Manage deployments", cls=ClickGroup)
 def deployments_group():
     pass
@@ -219,6 +265,40 @@ def deployments_metrics():
     "--workspacePassword",
     "workspace_password",
     help="Workspace password",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--minInstanceCount",
+    "min_instance_count",
+    help="Minimal instance count",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--maxInstanceCount",
+    "max_instance_count",
+    help="Maximal instance count",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--scaleCooldownPeriod",
+    "scale_cooldown_period",
+    help="Scale cooldown period",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--metric",
+    "metrics",
+    multiple=True,
+    callback=validate_autoscaling_metric,
+    help="Autoscaling metrics",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--resource",
+    "resources",
+    multiple=True,
+    callback=validate_autoscaling_resource,
+    help="Autoscaling resources",
     cls=common.GradientOption,
 )
 @api_key_option

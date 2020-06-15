@@ -4,6 +4,34 @@ from .base import BaseSchema
 from .. import models
 
 
+class AutoscalingMetricSchema(BaseSchema):
+    def dump(self, obj, many=None, update_fields=True, **kwargs):
+        if not obj:
+            return None, []
+
+        metrics = []
+        for o in obj:
+            metric = {
+                "type": o.type,
+                "resource": {
+                    "name": o.name,
+                    o.value_type: o.value,
+                },
+            }
+            metrics.append(metric)
+
+        return metrics, []
+
+
+class AutoscalingDefinitionSchema(BaseSchema):
+    MODEL = models.AutoscalingDefinition
+
+    min_instance_count = ma.fields.Int(dump_to="minInstanceCount", load_from="minInstanceCount")
+    max_instance_count = ma.fields.Int(dump_to="maxInstanceCount", load_from="maxInstanceCount")
+    scale_cooldown_period = ma.fields.Int(dump_to="scaleCooldownPeriod", load_from="scaleCooldownPeriod")
+    metrics = ma.fields.Nested(AutoscalingMetricSchema(), many=True)
+
+
 class DeploymentSchema(BaseSchema):
     MODEL = models.Deployment
 
@@ -50,3 +78,4 @@ class DeploymentSchema(BaseSchema):
 
 class DeploymentCreateSchema(DeploymentSchema):
     cluster_id = ma.fields.Str(dump_to="cluster", load_from="clusterId")
+    autoscaling = ma.fields.Nested(AutoscalingDefinitionSchema)

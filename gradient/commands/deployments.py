@@ -1,4 +1,5 @@
 import abc
+import itertools
 import json
 import pydoc
 
@@ -7,8 +8,8 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import exceptions, DeploymentsClient
-from gradient.api_sdk import sdk_exceptions, utils, models
+from gradient import exceptions, DeploymentsClient, AutoscalingMetric, AutoscalingDefinition
+from gradient.api_sdk import sdk_exceptions, utils
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import concatenate_urls
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
@@ -45,6 +46,7 @@ class CreateDeploymentCommand(BaseDeploymentCommand, HandleWorkspaceMixin):
     def execute(self, **kwargs):
         self._handle_auth(kwargs)
         self._handle_workspace(kwargs)
+        self._handle_autoscaling_options(kwargs)
         with halo.Halo(text="Creating new deployment", spinner="dots"):
             deployment_id = self.client.create(**kwargs)
 
@@ -61,6 +63,27 @@ class CreateDeploymentCommand(BaseDeploymentCommand, HandleWorkspaceMixin):
             kwargs["auth_username"] = auth_username
             kwargs["auth_password"] = auth_password
             self.logger.log("Generated credentials: \nusername:{}\npassword:{}".format(auth_password, auth_username))
+
+    def _handle_autoscaling_options(self, kwargs):
+        autoscaling_metrics_and_resources = []
+        metrics = kwargs.pop("metrics", None) or []
+        resources = kwargs.pop("resources", None) or []
+        for metric_dict in itertools.chain(resources, metrics):
+            metric = AutoscalingMetric(
+                type=metric_dict["type"],
+                name=metric_dict["name"],
+                value_type=metric_dict["value_type"],
+                value=metric_dict["value"],
+            )
+            autoscaling_metrics_and_resources.append(metric)
+
+        autoscaling_definition = AutoscalingDefinition(
+            min_instance_count=kwargs.pop("min_instance_count", None),
+            max_instance_count=kwargs.pop("max_instance_count", None),
+            scale_cooldown_period=kwargs.pop("scale_cooldown_period", None),
+            metrics=autoscaling_metrics_and_resources,
+        )
+        kwargs["autoscaling"] = autoscaling_definition
 
 
 class ListDeploymentsCommand(BaseDeploymentCommand):
