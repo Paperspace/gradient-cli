@@ -224,24 +224,21 @@ class TestDeploymentsCreate(object):
             "metrics": [
                 {
                     "type": "Resource",
-                    "resource": {
-                        "name": "cpu",
-                        "targetAverage": 10,
-                    },
+                    "name": "cpu",
+                    "valueType": "targetAverage",
+                    "value": 10,
                 },
                 {
                     "type": "Metric",
-                    "resource": {
-                        "name": "loss",
-                        "target": 2,
-                    },
+                    "name": "loss",
+                    "valueType": "target",
+                    "value": 2,
                 },
                 {
                     "type": "Metric",
-                    "resource": {
-                        "name": "keton",
-                        "target": 2137,
-                    },
+                    "name": "keton",
+                    "valueType": "target",
+                    "value": 2137,
                 },
             ],
         },

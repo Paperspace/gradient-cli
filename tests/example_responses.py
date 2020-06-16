@@ -5950,7 +5950,32 @@ GET_DEPLOYMENT_DETAILS_JSON_RESPONSE = {
             "method": None,
             "tags": ["tag1", "tag2"],
             "metricsURL": "aws-testing.paperspace.io",
-        }
+            "autoscaling": {
+                "minInstanceCount": 4,
+                "maxInstanceCount": 64,
+                "scaleCooldownPeriod": 123,
+                "metrics": [
+                    {
+                        "type": "Resource",
+                        "name": "cpu",
+                        "value_type": "targetAverage",
+                        "value": 10,
+                    },
+                    {
+                        "type": "Metric",
+                        "name": "loss",
+                        "value_type": "target",
+                        "value": 2,
+                    },
+                    {
+                        "type": "Metric",
+                        "name": "keton",
+                        "value_type": "target",
+                        "value": 2137,
+                    },
+                ],
+            },
+        },
     ],
     "total": 129,
     "displayTotal": 129,

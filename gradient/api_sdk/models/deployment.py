@@ -8,7 +8,7 @@ class AutoscalingMetric(object):
     type = attr.ib(type=str)
     name = attr.ib(type=str)
     value_type = attr.ib(type=str)
-    value = attr.ib(type=str)
+    value = attr.ib(type=float)
 
 
 @attr.s
