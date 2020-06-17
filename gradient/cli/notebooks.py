@@ -3,7 +3,7 @@ import click
 from gradient.api_sdk import constants
 from gradient.cli import common
 from gradient.cli.cli import cli
-from gradient.cli.cli_types import ChoiceType
+from gradient.cli.cli_types import ChoiceType, json_string
 from gradient.cli.common import validate_comma_split_option, api_key_option, ClickGroup
 from gradient.commands import notebooks
 from gradient.commands.notebooks import GetNotebookMetricsCommand, StreamNotebookMetricsCommand
@@ -110,6 +110,13 @@ def notebook_metrics():
     help="Is publically viewable",
     is_flag=True,
     type=bool,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--environment",
+    "environment",
+    type=json_string,
+    help="Environmental variables",
     cls=common.GradientOption,
 )
 @click.option(

@@ -20,6 +20,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             is_preemptible=None,
             is_public=None,
             tags=None,
+            environment=None,
     ):
         """Create new notebook
 
@@ -36,6 +37,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         :param bool is_preemptible:
         :param bool is_public:
         :param list[str] tags: List of tags
+        :param dict environment: key value collection of envs that are used in notebook
 
         :return: Notebook ID
         :rtype str:
@@ -54,6 +56,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             is_preemptible=is_preemptible,
             machine_type=machine_type,
             is_public=is_public,
+            environment=environment,
         )
 
         repository = self.build_repository(repositories.CreateNotebook)

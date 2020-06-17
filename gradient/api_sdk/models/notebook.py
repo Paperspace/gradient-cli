@@ -38,6 +38,7 @@ class Notebook(object):
     container_url = attr.ib(type=str, default=None)
     base_container = attr.ib(type=str, default=None)
     base_container_url = attr.ib(type=str, default=None)
+    environment = attr.ib(type=dict, default=None)
 
     dt_created = attr.ib(type=datetime.datetime, default=None)
     dt_modified = attr.ib(type=datetime.datetime, default=None)
