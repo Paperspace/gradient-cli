@@ -290,7 +290,7 @@ def deployments_metrics():
     "metrics",
     multiple=True,
     callback=validate_autoscaling_metric,
-    help="Autoscaling metrics",
+    help="Autoscaling metrics. Example: my_metric/targetAverage:21.37",
     cls=common.GradientOption,
 )
 @click.option(
@@ -298,7 +298,7 @@ def deployments_metrics():
     "resources",
     multiple=True,
     callback=validate_autoscaling_resource,
-    help="Autoscaling resources",
+    help="Autoscaling resources. Example: cpu/target:60",
     cls=common.GradientOption,
 )
 @api_key_option

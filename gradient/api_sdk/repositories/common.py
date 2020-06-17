@@ -149,7 +149,7 @@ class GetResource(BaseRepository):
             objects = self._parse_object(response.data, **kwargs)
         except GradientSdkError:
             raise
-        except Exception as e:
+        except Exception:
             msg = "Error parsing response data: {}".format(str(response.body))
             raise ResourceFetchingError(msg)
 
