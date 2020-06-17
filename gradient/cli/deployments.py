@@ -44,9 +44,9 @@ def validate_autoscaling_metric_or_resource(ctx, param, value, metric_type):
         try:
             name, values = old_value.split("/", 1)
             value_type, value = values.split(":", 1)
-            value = int(value)
+            value = float(value)
         except Exception as e:
-            debug_msg = "Error occurred while validating autoscaling {} with value {}: {}"\
+            debug_msg = "Error occurred while validating autoscaling {} with value {}: {}" \
                 .format(metric_type, old_value, e)
             clilogger.CliLogger().debug(debug_msg)
 
@@ -570,6 +570,40 @@ def delete_deployment(id_, options_file, api_key):
     "--workspacePassword",
     "workspace_password",
     help="Workspace password",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--minInstanceCount",
+    "min_instance_count",
+    help="Minimal instance count",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--maxInstanceCount",
+    "max_instance_count",
+    help="Maximal instance count",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--scaleCooldownPeriod",
+    "scale_cooldown_period",
+    help="Scale cooldown period",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--metric",
+    "metrics",
+    multiple=True,
+    callback=validate_autoscaling_metric,
+    help="Autoscaling metrics. Example: my_metric/targetAverage:21.37",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--resource",
+    "resources",
+    multiple=True,
+    callback=validate_autoscaling_resource,
+    help="Autoscaling resources. Example: cpu/target:60",
     cls=common.GradientOption,
 )
 @api_key_option

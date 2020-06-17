@@ -236,6 +236,7 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
             workspace_password=None,
             project_id=None,
             command=None,
+            autoscaling=None,
     ):
         deployment = models.Deployment(
             deployment_type=deployment_type,
@@ -264,6 +265,7 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
             workspace_password=workspace_password,
             project_id=project_id,
             command=command,
+            autoscaling=autoscaling,
         )
 
         repository = self.build_repository(repositories.UpdateDeployment)

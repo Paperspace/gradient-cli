@@ -157,8 +157,8 @@ class TestDeploymentsCreate(object):
         "--maxInstanceCount", "64",
         "--scaleCooldownPeriod", "123",
         "--resource", "cpu/targetAverage:10",
-        "--metric", "loss/target:2",
-        "--metric", "keton/target:2137",
+        "--metric", "loss/target:2.0",
+        "--metric", "keton/target:21.37",
     ]
 
     BASIC_OPTIONS_REQUEST = {
@@ -232,13 +232,13 @@ class TestDeploymentsCreate(object):
                     "type": "Metric",
                     "name": "loss",
                     "valueType": "target",
-                    "value": 2,
+                    "value": 2.0,
                 },
                 {
                     "type": "Metric",
                     "name": "keton",
                     "valueType": "target",
-                    "value": 2137,
+                    "value": 21.37,
                 },
             ],
         },
@@ -934,6 +934,12 @@ class TestDeploymentsUpdate(object):
         "--workspaceRef", "some_branch_name",
         "--workspaceUsername", "username",
         "--workspacePassword", "password",
+        "--minInstanceCount", "4",
+        "--maxInstanceCount", "64",
+        "--scaleCooldownPeriod", "123",
+        "--resource", "cpu/targetAverage:10",
+        "--metric", "loss/target:2.0",
+        "--metric", "keton/target:21.37",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["deployments", "update", "--optionsFile", ]  # path added in test
 
@@ -971,6 +977,31 @@ class TestDeploymentsUpdate(object):
             "workspaceUsername": u"username",
             "workspacePassword": u"password",
             "projectId": "some_project_id",
+            "autoscaling": {
+                "minInstanceCount": 4,
+                "maxInstanceCount": 64,
+                "scaleCooldownPeriod": 123,
+                "metrics": [
+                    {
+                        "type": "Resource",
+                        "name": "cpu",
+                        "valueType": "targetAverage",
+                        "value": 10,
+                    },
+                    {
+                        "type": "Metric",
+                        "name": "loss",
+                        "valueType": "target",
+                        "value": 2.0,
+                    },
+                    {
+                        "type": "Metric",
+                        "name": "keton",
+                        "valueType": "target",
+                        "value": 21.37,
+                    },
+                ],
+            },
         }
     }
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE

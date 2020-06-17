@@ -28,6 +28,29 @@ class BaseDeploymentCommand(BaseCommand):
         return client
 
 
+class HandleAutoscalingOptions(object):
+    def _handle_autoscaling_options(self, kwargs):
+        autoscaling_metrics_and_resources = []
+        metrics = kwargs.pop("metrics", None) or []
+        resources = kwargs.pop("resources", None) or []
+        for metric_dict in itertools.chain(resources, metrics):
+            metric = AutoscalingMetric(
+                type=metric_dict["type"],
+                name=metric_dict["name"],
+                value_type=metric_dict["value_type"],
+                value=metric_dict["value"],
+            )
+            autoscaling_metrics_and_resources.append(metric)
+
+        autoscaling_definition = AutoscalingDefinition(
+            min_instance_count=kwargs.pop("min_instance_count", None),
+            max_instance_count=kwargs.pop("max_instance_count", None),
+            scale_cooldown_period=kwargs.pop("scale_cooldown_period", None),
+            metrics=autoscaling_metrics_and_resources,
+        )
+        kwargs["autoscaling"] = autoscaling_definition
+
+
 class HandleWorkspaceMixin(object):
     def _handle_workspace(self, instance_dict):
         handler = self.workspace_handler.handle(instance_dict)
@@ -38,7 +61,7 @@ class HandleWorkspaceMixin(object):
             instance_dict["workspace_url"] = handler
 
 
-class CreateDeploymentCommand(BaseDeploymentCommand, HandleWorkspaceMixin):
+class CreateDeploymentCommand(HandleAutoscalingOptions, BaseDeploymentCommand, HandleWorkspaceMixin):
     def __init__(self, workspace_handler, *args, **kwargs):
         super(CreateDeploymentCommand, self).__init__(*args, **kwargs)
         self.workspace_handler = workspace_handler
@@ -63,27 +86,6 @@ class CreateDeploymentCommand(BaseDeploymentCommand, HandleWorkspaceMixin):
             kwargs["auth_username"] = auth_username
             kwargs["auth_password"] = auth_password
             self.logger.log("Generated credentials: \nusername:{}\npassword:{}".format(auth_password, auth_username))
-
-    def _handle_autoscaling_options(self, kwargs):
-        autoscaling_metrics_and_resources = []
-        metrics = kwargs.pop("metrics", None) or []
-        resources = kwargs.pop("resources", None) or []
-        for metric_dict in itertools.chain(resources, metrics):
-            metric = AutoscalingMetric(
-                type=metric_dict["type"],
-                name=metric_dict["name"],
-                value_type=metric_dict["value_type"],
-                value=metric_dict["value"],
-            )
-            autoscaling_metrics_and_resources.append(metric)
-
-        autoscaling_definition = AutoscalingDefinition(
-            min_instance_count=kwargs.pop("min_instance_count", None),
-            max_instance_count=kwargs.pop("max_instance_count", None),
-            scale_cooldown_period=kwargs.pop("scale_cooldown_period", None),
-            metrics=autoscaling_metrics_and_resources,
-        )
-        kwargs["autoscaling"] = autoscaling_definition
 
 
 class ListDeploymentsCommand(BaseDeploymentCommand):
@@ -154,13 +156,14 @@ class DeleteDeploymentCommand(BaseDeploymentCommand):
         self.logger.log("Deployment deleted")
 
 
-class UpdateDeploymentCommand(BaseDeploymentCommand, HandleWorkspaceMixin):
+class UpdateDeploymentCommand(HandleAutoscalingOptions, BaseDeploymentCommand, HandleWorkspaceMixin):
     def __init__(self, workspace_handler, *args, **kwargs):
         super(UpdateDeploymentCommand, self).__init__(*args, **kwargs)
         self.workspace_handler = workspace_handler
 
     def execute(self, deployment_id, **kwargs):
         self._handle_workspace(kwargs)
+        self._handle_autoscaling_options(kwargs)
 
         with halo.Halo(text="Updating deployment data", spinner="dots"):
             self.client.update(deployment_id, **kwargs)
