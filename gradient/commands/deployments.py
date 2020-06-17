@@ -174,6 +174,7 @@ class GetDeploymentDetails(DetailsCommandMixin, BaseDeploymentCommand):
         :param models.Deployment instance:
         """
         tags_string = ", ".join(instance.tags)
+        autoscaling_metrics_string = self.get_autoscaling_metrics_string(instance)
 
         data = (
             ("ID", instance.id),
@@ -189,8 +190,20 @@ class GetDeploymentDetails(DetailsCommandMixin, BaseDeploymentCommand):
             ("API type", instance.api_type),
             ("Cluster ID", instance.cluster_id),
             ("Tags", tags_string),
+            ("Min Instance Count", getattr(instance.autoscaling, "min_instance_count", "")),
+            ("Max Instance Count", getattr(instance.autoscaling, "max_instance_count", "")),
+            ("Scale Cooldown Period", getattr(instance.autoscaling, "scale_cooldown_period", "")),
+            ("Autoscaling Metrics", autoscaling_metrics_string),
         )
         return data
+
+    def get_autoscaling_metrics_string(self, instance):
+        if not instance.autoscaling or not instance.autoscaling.metrics:
+            return ""
+
+        s = "\n".join("{}/{}:{}".format(m.name, m.value_type, m.value)
+                      for m in instance.autoscaling.metrics)
+        return s
 
 
 class DeploymentAddTagsCommand(BaseDeploymentCommand):

@@ -13,17 +13,13 @@ class AutoscalingMetricSchema(BaseSchema):
     value = ma.fields.Float()
 
 
-
-
 class AutoscalingDefinitionSchema(BaseSchema):
     MODEL = models.AutoscalingDefinition
 
     min_instance_count = ma.fields.Int(dump_to="minInstanceCount", load_from="minInstanceCount")
     max_instance_count = ma.fields.Int(dump_to="maxInstanceCount", load_from="maxInstanceCount")
     scale_cooldown_period = ma.fields.Int(dump_to="scaleCooldownPeriod", load_from="scaleCooldownPeriod")
-    metrics = ma.fields.Nested(AutoscalingMetricSchema(), many=True, default=None)
-
-
+    metrics = ma.fields.Nested(AutoscalingMetricSchema, many=True, default=None)
 
 
 class DeploymentSchema(BaseSchema):
@@ -68,8 +64,8 @@ class DeploymentSchema(BaseSchema):
     dt_started = ma.fields.DateTime(dump_to="dtStarted", load_from="dtStarted")
     dt_stopped = ma.fields.DateTime(dump_to="dtStopped", load_from="dtStopped")
     dt_deleted = ma.fields.DateTime(dump_to="dtDeleted", load_from="dtDeleted")
+    autoscaling = ma.fields.Nested(AutoscalingDefinitionSchema)
 
 
 class DeploymentCreateSchema(DeploymentSchema):
     cluster_id = ma.fields.Str(dump_to="cluster", load_from="clusterId")
-    autoscaling = ma.fields.Nested(AutoscalingDefinitionSchema)

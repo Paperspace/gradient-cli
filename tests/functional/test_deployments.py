@@ -1085,22 +1085,28 @@ class TestDeploymentDetails(object):
         "statusCode": 404,
     }}
 
-    DETAILS_STDOUT = """+-----------------+-----------------------------------------------------+
-| ID              | some_id                                             |
-+-----------------+-----------------------------------------------------+
-| Name            | some_name                                           |
-| State           | Stopped                                             |
-| Machine type    | p3.2xlarge                                          |
-| Instance count  | 1                                                   |
-| Command         | some deployment command                             |
-| Deployment type | TFServing                                           |
-| Model ID        | some_model_id                                       |
-| Project ID      | some_project_id                                     |
-| Endpoint        | https://paperspace.io/model-serving/some_id:predict |
-| API type        | REST                                                |
-| Cluster ID      | some_cluster_id                                     |
-| Tags            | tag1, tag2                                          |
-+-----------------+-----------------------------------------------------+
+    DETAILS_STDOUT = """+-----------------------+-----------------------------------------------------+
+| ID                    | some_id                                             |
++-----------------------+-----------------------------------------------------+
+| Name                  | some_name                                           |
+| State                 | Stopped                                             |
+| Machine type          | p3.2xlarge                                          |
+| Instance count        | 1                                                   |
+| Command               | some deployment command                             |
+| Deployment type       | TFServing                                           |
+| Model ID              | some_model_id                                       |
+| Project ID            | some_project_id                                     |
+| Endpoint              | https://paperspace.io/model-serving/some_id:predict |
+| API type              | REST                                                |
+| Cluster ID            | some_cluster_id                                     |
+| Tags                  | tag1, tag2                                          |
+| Min Instance Count    | 4                                                   |
+| Max Instance Count    | 64                                                  |
+| Scale Cooldown Period | 123                                                 |
+| Autoscaling Metrics   | cpu/targetAverage:10.0                              |
+|                       | loss/target:2.0                                     |
+|                       | keton/target:21.37                                  |
++-----------------------+-----------------------------------------------------+
 """
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
