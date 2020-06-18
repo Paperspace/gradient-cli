@@ -84,15 +84,6 @@ class CreateJob(GetBaseJobApiUrlMixin, CreateResource):
         return instance_dict
 
 
-class RunJob(CreateJob):
-    def __init__(self, api_key, logger, client):
-        super(RunJob, self).__init__(api_key, logger)
-        self.http_client = client
-
-    def _get_client(self, **kwargs):
-        return self.http_client
-
-
 class DeleteJob(GetBaseJobApiUrlMixin, DeleteResource):
 
     def get_request_url(self, **kwargs):
