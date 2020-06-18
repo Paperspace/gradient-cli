@@ -59,8 +59,9 @@ class TestNotebooksCreate(object):
         "machineType": "P5000",
         "container": "jupyter/notebook",
         "clusterId": "321",
-        'isPreemptible': False,
-        'isPublic': False,
+        "isPreemptible": False,
+        "isPublic": False,
+        "workspace": "none",
     }
     EXPECTED_RESPONSE_JSON = {
         "handle": "some_id",
@@ -108,6 +109,7 @@ class TestNotebooksCreate(object):
         "shutdownTimeout": 8,
         "isPreemptible": True,
         "isPublic": False,
+        "workspace": "none",
     }
     COMMAND_WITH_OPTIONS_FILE_USED = ["notebooks", "create", "--optionsFile", ]  # path added in test
 
