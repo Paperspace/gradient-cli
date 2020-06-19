@@ -118,7 +118,7 @@ class BaseCreateExperimentCommandMixin(object):
         instance_dict.pop("workspace", None)
         instance_dict.pop("workspace_archive", None)
         instance_dict.pop("workspace_url", None)
-        if handler and handler != "none":
+        if handler:
             instance_dict["workspace_url"] = handler
 
     def _maybe_add_to_tensorboard(self, tensorboard_id, experiment_id, api_key):

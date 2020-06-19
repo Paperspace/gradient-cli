@@ -33,7 +33,7 @@ class HandleWorkspaceMixin(object):
 
         instance_dict.pop("ignore_files", None)
         instance_dict.pop("workspace", None)
-        if handler and handler != "none":
+        if handler:
             instance_dict["workspace_url"] = handler
 
 
