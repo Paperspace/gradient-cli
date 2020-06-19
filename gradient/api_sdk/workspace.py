@@ -1,7 +1,7 @@
 import os
 import tempfile
 
-from . import s3_uploader, archivers, utils
+from . import s3_uploader, archivers, utils, sdk_exceptions
 from .logger import MuteLogger
 
 
@@ -14,8 +14,6 @@ class WorkspaceHandler(object):
         :param logger_: gradient.logger
         """
         self.logger = logger_ or MuteLogger()
-        self.archive_path = None
-        self.archive_basename = None
         self.archiver_cls = archiver_cls or self.WORKSPACE_ARCHIVER_CLS
 
     def _zip_workspace(self, workspace_path, ignore_files):
@@ -32,48 +30,33 @@ class WorkspaceHandler(object):
         return zip_file_path
 
     def handle(self, input_data):
-        workspace_archive, workspace_path, workspace_url = self._validate_input(input_data)
+        workspace_path = input_data.get('workspace')
+        if workspace_path is None:
+            return None
+
         ignore_files = input_data.get('ignore_files')
 
-        if workspace_url:
-            return workspace_url  # nothing to do
+        if utils.PathParser.is_remote_path(workspace_path):
+            return workspace_path  # nothing to do
 
-        # Should be removed as soon it won't be necessary by PS_API
-        if workspace_path == 'none':
-            return 'none'
+        if utils.PathParser.is_local_path(workspace_path):
+            return self._handle_local_path(workspace_path, ignore_files)
 
-        if workspace_archive:
-            archive_path = os.path.abspath(workspace_archive)
-        else:
+        raise sdk_exceptions.WrongPathError("Invalid workspace path: {}".format(workspace_path))
+
+    def _handle_local_path(self, workspace_path, ignore_files):
+        workspace_path = os.path.abspath(workspace_path)
+        if utils.PathParser.parse_path(workspace_path) == utils.PathParser.LOCAL_DIR:
             self.logger.log('Archiving your working directory for upload as your experiment workspace...'
-                            '(See https://docs.paperspace.com/gradient/experiments/run-experiments for more information.)')
-            archive_path = self._zip_workspace(workspace_path, ignore_files)
-        self.archive_path = archive_path
-        self.archive_basename = os.path.basename(archive_path)
-        return archive_path
+                            '(See https://docs.paperspace.com/gradient/experiments/run-experiments for more '
+                            'information.)')
+            workspace_path = self._zip_workspace(workspace_path, ignore_files)
+
+        return workspace_path
 
     def _get_workspace_archiver(self):
         workspace_archiver = self.archiver_cls(logger=self.logger)
         return workspace_archiver
-
-    @staticmethod
-    def _validate_input(input_data):
-        workspace_path = input_data.get('workspace')
-        workspace_archive = None
-        workspace_url = None
-
-        if workspace_path not in ("none", None):
-            path_type = utils.PathParser.parse_path(workspace_path)
-
-            if path_type != utils.PathParser.LOCAL_DIR:
-                if path_type == utils.PathParser.LOCAL_FILE:
-                    workspace_archive = workspace_path
-                elif path_type in (utils.PathParser.GIT_URL, utils.PathParser.S3_URL):
-                    workspace_url = workspace_path
-
-                workspace_path = None
-
-        return workspace_archive, workspace_path, workspace_url
 
 
 class S3WorkspaceHandler(WorkspaceHandler):
@@ -93,13 +76,15 @@ class S3WorkspaceHandler(WorkspaceHandler):
 
     def handle(self, input_data):
         workspace = super(S3WorkspaceHandler, self).handle(input_data)
-        if not self.archive_path:
+        if workspace is None:
+            return None
+
+        if utils.PathParser.is_remote_path(workspace):
             return workspace
 
-        archive_path = workspace
         project_handle = input_data.get('projectHandle') or input_data.get("project_id")
         cluster_id = input_data.get('clusterId') or input_data.get("cluster_id")
-        workspace = self._upload(archive_path, project_handle, cluster_id=cluster_id)
+        workspace = self._upload(workspace, project_handle, cluster_id=cluster_id)
         return workspace
 
     def _upload(self, archive_path, project_id, cluster_id=None):

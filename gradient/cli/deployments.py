@@ -200,7 +200,6 @@ def deployments_metrics():
     "--workspace",
     "workspace",
     help="Path to workspace directory, archive, S3 or git repository",
-    default="none",
     cls=common.GradientOption,
 )
 @click.option(
@@ -470,7 +469,6 @@ def delete_deployment(id_, options_file, api_key):
     "--workspace",
     "workspace",
     help="Path to workspace directory, archive, S3 or git repository",
-    default="none",
     cls=common.GradientOption,
 )
 @click.option(
