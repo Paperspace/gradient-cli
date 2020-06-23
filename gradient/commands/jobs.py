@@ -1,5 +1,6 @@
 import abc
 import json
+import os
 import pydoc
 
 import six
@@ -8,6 +9,7 @@ from halo import halo
 
 from gradient import api_sdk, exceptions, JobArtifactsDownloader, cli_constants
 from gradient.api_sdk import config, sdk_exceptions
+from gradient.api_sdk import utils
 from gradient.api_sdk.clients import http_client
 from gradient.api_sdk.utils import print_dict_recursive, concatenate_urls, MultipartEncoder
 from gradient.cliutils import get_terminal_lines
@@ -59,22 +61,22 @@ class BaseCreateJobCommandMixin(object):
         self._set_project_if_not_provided(instance_dict)
         workspace_url = self.workspace_handler.handle(instance_dict)
         if workspace_url:
-            if self.workspace_handler.archive_path:
-                data = self._get_multipart_data(instance_dict)
+            if utils.PathParser.is_local_zip_file(workspace_url):
+                data = self._get_multipart_data(workspace_url, instance_dict)
             else:
                 instance_dict["workspace_file_name"] = workspace_url
 
         return instance_dict, data
 
-    def _get_multipart_data(self, json_):
-        archive_basename = self.workspace_handler.archive_basename
+    def _get_multipart_data(self, workspace_url, json_):
+        archive_basename = os.path.basename(workspace_url)
         json_["workspace_file_name"] = archive_basename
-        job_data = self._get_files_dict(archive_basename)
+        job_data = self._get_files_dict(workspace_url, archive_basename)
         monitor = MultipartEncoder(job_data).get_monitor()
         return monitor
 
-    def _get_files_dict(self, archive_basename):
-        job_data = {'file': (archive_basename, open(self.workspace_handler.archive_path, 'rb'), 'text/plain')}
+    def _get_files_dict(self, workspace_url, archive_basename):
+        job_data = {'file': (archive_basename, open(workspace_url, 'rb'), 'text/plain')}
         return job_data
 
     @staticmethod

@@ -277,7 +277,7 @@ class TestDeploymentsCreate(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
-    @mock.patch("gradient.api_sdk.workspace.utils.PathParser.parse_path")
+    @mock.patch("gradient.api_sdk.workspace.utils.PathParser.is_local_zip_file", return_value=True)
     @mock.patch("gradient.api_sdk.workspace.tempfile")
     @mock.patch("gradient.api_sdk.s3_uploader.S3FileUploader.upload")
     def test_should_send_proper_data_and_print_message_when_create_deployment_with_zipped_workspace_upload(self,
@@ -314,8 +314,6 @@ class TestDeploymentsCreate(object):
         post_patched.return_value = MockResponse(self.RESPONSE_JSON_200, 200, "fake content")
         get_patched.return_value = MockResponse(presigned_url_return_value, 200)
 
-        mock_parse_path.return_value = utils.PathParser.LOCAL_FILE
-
         mock_tempfile.gettempdir.return_value = archive_location
 
         post_params = self.BASIC_OPTIONS_REQUEST.copy()
@@ -344,17 +342,14 @@ class TestDeploymentsCreate(object):
                                             presigned_url)
         assert result.exit_code == 0
 
+    @mock.patch("gradient.api_sdk.workspace.utils.PathParser.parse_path", return_value=utils.PathParser.LOCAL_DIR)
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.workspace.WorkspaceHandler._get_workspace_archiver")
     @mock.patch("gradient.api_sdk.workspace.tempfile")
     @mock.patch("gradient.api_sdk.s3_uploader.S3FileUploader.upload")
-    def test_should_send_proper_data_and_print_message_when_create_deployment_with_workspace_zipped_and_uploaded(self,
-                                                                                                                 mock_upload,
-                                                                                                                 mock_tempfile,
-                                                                                                                 mock_get_archiver,
-                                                                                                                 get_patched,
-                                                                                                                 post_patched):
+    def test_should_send_proper_data_and_print_message_when_create_deployment_with_workspace_zipped_and_uploaded(
+            self, mock_upload, mock_tempfile, mock_get_archiver, get_patched, post_patched, _):
         bucket_name = "some-bucket"
         team_handle = "thandle"
         archive_location = '/temp_foo'

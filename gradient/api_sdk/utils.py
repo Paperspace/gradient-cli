@@ -158,6 +158,9 @@ class PathParser(object):
 
     @classmethod
     def parse_path(cls, path):
+        if path is None:
+            return None
+
         if cls.is_local_dir(path):
             return cls.LOCAL_DIR
 
@@ -187,3 +190,11 @@ class PathParser(object):
     @staticmethod
     def is_s3_url(path):
         return not os.path.exists(path) and path.lower().startswith("s3:")
+
+    @classmethod
+    def is_remote_path(cls, path):
+        return cls.is_s3_url(path) or cls.is_git_url(path)
+
+    @classmethod
+    def is_local_path(cls, path):
+        return cls.is_local_dir(path) or cls.is_local_zip_file(path)
