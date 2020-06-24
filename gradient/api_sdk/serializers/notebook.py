@@ -50,7 +50,7 @@ class NotebookSchema(BaseSchema):
     dt_teardown_finished = marshmallow.fields.DateTime(dump_to="dtTeardownStarted", load_from="dtTeardownStarted")
     dt_workspace_upload_finished = marshmallow.fields.DateTime(dump_to="dtWorkspaceUploadFinished", load_from="dtWorkspaceUploadFinished")
     dt_deleted = marshmallow.fields.DateTime(dump_to="dtDeleted", load_from="dtDeleted")
-    job_env = marshmallow.fields.Dict(dump_to="environment", load_from="environment")
+    environment = marshmallow.fields.Dict(dump_to="environment", load_from="environment")
 
     @marshmallow.pre_dump
     def preprocess(self, data, **kwargs):

@@ -94,6 +94,7 @@ class TestNotebooksCreate(object):
         "--command", "some_entrypoint",
         "--containerUser", "some_container_user",
         "--shutdownTimeout", "8",
+        "--environment", '{"key":"val"}',
         "--isPreemptible",
     ]
     EXPECTED_REQUEST_JSON_WITH_ALL_OPTIONS = {
@@ -105,6 +106,7 @@ class TestNotebooksCreate(object):
         "registryPassword": "some_password",
         "command": "c29tZV9lbnRyeXBvaW50",
         "containerUser": "some_container_user",
+        "environment": {"key": "val"},
         "shutdownTimeout": 8,
         "isPreemptible": True,
         "isPublic": False,
