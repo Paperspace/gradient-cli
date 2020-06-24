@@ -61,7 +61,7 @@ class TestNotebooksCreate(object):
         "clusterId": "321",
         "isPreemptible": False,
         "isPublic": False,
-        "workspace": "https://github.com/fake/repo.git",
+        "workspace": "none",
     }
     EXPECTED_RESPONSE_JSON = {
         "handle": "some_id",
@@ -96,6 +96,7 @@ class TestNotebooksCreate(object):
         "--containerUser", "some_container_user",
         "--shutdownTimeout", "8",
         "--isPreemptible",
+        "--workspace", "https://github.com/fake/repo.git",
     ]
     EXPECTED_REQUEST_JSON_WITH_ALL_OPTIONS = {
         "machineType": "P5000",
