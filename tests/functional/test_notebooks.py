@@ -61,7 +61,7 @@ class TestNotebooksCreate(object):
         "clusterId": "321",
         "isPreemptible": False,
         "isPublic": False,
-        "workspace": "none",
+        "workspace": "https://github.com/fake/repo.git",
     }
     EXPECTED_RESPONSE_JSON = {
         "handle": "some_id",
@@ -109,7 +109,7 @@ class TestNotebooksCreate(object):
         "shutdownTimeout": 8,
         "isPreemptible": True,
         "isPublic": False,
-        "workspace": "none",
+        "workspace": "https://github.com/fake/repo.git",
     }
     COMMAND_WITH_OPTIONS_FILE_USED = ["notebooks", "create", "--optionsFile", ]  # path added in test
 
