@@ -1,5 +1,8 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.9.1a0
+* Added basic support for autoscaling deployments
+
 # Release Notes for 0.9.0
 ##### Note: this list includes all changes made in 0.9.0a* alpha releases
 #### Breaking changes
