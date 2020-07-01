@@ -1,4 +1,5 @@
 import abc
+import itertools
 import json
 import pydoc
 
@@ -7,8 +8,8 @@ import terminaltables
 from click import style
 from halo import halo
 
-from gradient import exceptions, DeploymentsClient
-from gradient.api_sdk import sdk_exceptions, utils, models
+from gradient import exceptions, DeploymentsClient, AutoscalingMetric, AutoscalingDefinition
+from gradient.api_sdk import sdk_exceptions, utils
 from gradient.api_sdk.config import config
 from gradient.api_sdk.utils import concatenate_urls
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
@@ -27,6 +28,29 @@ class BaseDeploymentCommand(BaseCommand):
         return client
 
 
+class HandleAutoscalingOptions(object):
+    def _handle_autoscaling_options(self, kwargs):
+        autoscaling_metrics_and_resources = []
+        metrics = kwargs.pop("metrics", None) or []
+        resources = kwargs.pop("resources", None) or []
+        for metric_dict in itertools.chain(resources, metrics):
+            metric = AutoscalingMetric(
+                type=metric_dict["type"],
+                name=metric_dict["name"],
+                value_type=metric_dict["value_type"],
+                value=metric_dict["value"],
+            )
+            autoscaling_metrics_and_resources.append(metric)
+
+        autoscaling_definition = AutoscalingDefinition(
+            min_instance_count=kwargs.pop("min_instance_count", None),
+            max_instance_count=kwargs.pop("max_instance_count", None),
+            scale_cooldown_period=kwargs.pop("scale_cooldown_period", None),
+            metrics=autoscaling_metrics_and_resources,
+        )
+        kwargs["autoscaling"] = autoscaling_definition
+
+
 class HandleWorkspaceMixin(object):
     def _handle_workspace(self, instance_dict):
         handler = self.workspace_handler.handle(instance_dict)
@@ -37,7 +61,7 @@ class HandleWorkspaceMixin(object):
             instance_dict["workspace_url"] = handler
 
 
-class CreateDeploymentCommand(BaseDeploymentCommand, HandleWorkspaceMixin):
+class CreateDeploymentCommand(HandleAutoscalingOptions, BaseDeploymentCommand, HandleWorkspaceMixin):
     def __init__(self, workspace_handler, *args, **kwargs):
         super(CreateDeploymentCommand, self).__init__(*args, **kwargs)
         self.workspace_handler = workspace_handler
@@ -45,6 +69,7 @@ class CreateDeploymentCommand(BaseDeploymentCommand, HandleWorkspaceMixin):
     def execute(self, **kwargs):
         self._handle_auth(kwargs)
         self._handle_workspace(kwargs)
+        self._handle_autoscaling_options(kwargs)
         with halo.Halo(text="Creating new deployment", spinner="dots"):
             deployment_id = self.client.create(**kwargs)
 
@@ -131,13 +156,14 @@ class DeleteDeploymentCommand(BaseDeploymentCommand):
         self.logger.log("Deployment deleted")
 
 
-class UpdateDeploymentCommand(BaseDeploymentCommand, HandleWorkspaceMixin):
+class UpdateDeploymentCommand(HandleAutoscalingOptions, BaseDeploymentCommand, HandleWorkspaceMixin):
     def __init__(self, workspace_handler, *args, **kwargs):
         super(UpdateDeploymentCommand, self).__init__(*args, **kwargs)
         self.workspace_handler = workspace_handler
 
     def execute(self, deployment_id, **kwargs):
         self._handle_workspace(kwargs)
+        self._handle_autoscaling_options(kwargs)
 
         with halo.Halo(text="Updating deployment data", spinner="dots"):
             self.client.update(deployment_id, **kwargs)
@@ -151,6 +177,7 @@ class GetDeploymentDetails(DetailsCommandMixin, BaseDeploymentCommand):
         :param models.Deployment instance:
         """
         tags_string = ", ".join(instance.tags)
+        autoscaling_metrics_string = self.get_autoscaling_metrics_string(instance)
 
         data = (
             ("ID", instance.id),
@@ -166,8 +193,20 @@ class GetDeploymentDetails(DetailsCommandMixin, BaseDeploymentCommand):
             ("API type", instance.api_type),
             ("Cluster ID", instance.cluster_id),
             ("Tags", tags_string),
+            ("Min Instance Count", getattr(instance.autoscaling, "min_instance_count", "")),
+            ("Max Instance Count", getattr(instance.autoscaling, "max_instance_count", "")),
+            ("Scale Cooldown Period", getattr(instance.autoscaling, "scale_cooldown_period", "")),
+            ("Autoscaling Metrics", autoscaling_metrics_string),
         )
         return data
+
+    def get_autoscaling_metrics_string(self, instance):
+        if not instance.autoscaling or not instance.autoscaling.metrics:
+            return ""
+
+        s = "\n".join("{}/{}:{}".format(m.name, m.value_type, m.value)
+                      for m in instance.autoscaling.metrics)
+        return s
 
 
 class DeploymentAddTagsCommand(BaseDeploymentCommand):

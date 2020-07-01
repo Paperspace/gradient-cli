@@ -55,6 +55,7 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
             workspace_username=None,
             workspace_password=None,
             project_id=None,
+            autoscaling=None,
     ):
         """
         Method to create a Deployment instance.
@@ -104,6 +105,7 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
         :param str workspace_username: Project git repository username
         :param str workspace_password: Project git repository password
         :param str project_id: Project ID
+        :param models.AutoscalingDefinition autoscaling: Deployment autoscaling definition
 
         :returns: Created deployment id
         :rtype: str
@@ -135,6 +137,7 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
             workspace_username=workspace_username,
             workspace_password=workspace_password,
             project_id=project_id,
+            autoscaling=autoscaling,
         )
 
         repository = self.build_repository(repositories.CreateDeployment)
@@ -233,6 +236,7 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
             workspace_password=None,
             project_id=None,
             command=None,
+            autoscaling=None,
     ):
         deployment = models.Deployment(
             deployment_type=deployment_type,
@@ -261,6 +265,7 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
             workspace_password=workspace_password,
             project_id=project_id,
             command=command,
+            autoscaling=autoscaling,
         )
 
         repository = self.build_repository(repositories.UpdateDeployment)

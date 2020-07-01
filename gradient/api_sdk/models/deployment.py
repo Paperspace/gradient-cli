@@ -4,6 +4,22 @@ import attr
 
 
 @attr.s
+class AutoscalingMetric(object):
+    type = attr.ib(type=str)
+    name = attr.ib(type=str)
+    value_type = attr.ib(type=str)
+    value = attr.ib(type=float)
+
+
+@attr.s
+class AutoscalingDefinition(object):
+    min_instance_count = attr.ib(type=int, default=None)
+    max_instance_count = attr.ib(type=int, default=None)
+    scale_cooldown_period = attr.ib(type=int, default=None)
+    metrics = attr.ib(type=list, factory=list)  # instances of AutoscalerMetric
+
+
+@attr.s
 class Deployment(object):
     """
     Deployment class
@@ -82,6 +98,7 @@ class Deployment(object):
     workspace_username = attr.ib(type=str, default=None)
     workspace_password = attr.ib(type=str, default=None)
     metrics_url = attr.ib(type=str, default=None)
+    autoscaling = attr.ib(type=AutoscalingDefinition, default=None)
 
     dt_created = attr.ib(type=datetime.datetime, default=None)
     dt_modified = attr.ib(type=datetime.datetime, default=None)

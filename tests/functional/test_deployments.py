@@ -145,6 +145,21 @@ class TestDeploymentsCreate(object):
         "--workspacePassword", "password",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["deployments", "create", "--optionsFile", ]  # path added in test
+    BASIC_OPTIONS_COMMAND_WITH_AUTOSCALING = [
+        "deployments", "create",
+        "--deploymentType", "tfserving",
+        "--modelId", "some_model_id",
+        "--name", "some_name",
+        "--machineType", "G1",
+        "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--instanceCount", "666",
+        "--minInstanceCount", "4",
+        "--maxInstanceCount", "64",
+        "--scaleCooldownPeriod", "123",
+        "--resource", "cpu/targetAverage:10",
+        "--metric", "loss/target:2.0",
+        "--metric", "keton/target:21.37",
+    ]
 
     BASIC_OPTIONS_REQUEST = {
         "machineType": u"G1",
@@ -195,6 +210,40 @@ class TestDeploymentsCreate(object):
         "workspacePassword": u"password",
         "projectId": "some_project_id",
     }
+    BASIC_OPTIONS_COMMAND_WITH_AUTOSCALING_REQUEST = {
+        "machineType": u"G1",
+        "name": u"some_name",
+        "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "deploymentType": "TFServing",
+        "instanceCount": 666,
+        "modelId": u"some_model_id",
+        "autoscaling": {
+            "minInstanceCount": 4,
+            "maxInstanceCount": 64,
+            "scaleCooldownPeriod": 123,
+            "metrics": [
+                {
+                    "type": "Resource",
+                    "name": "cpu",
+                    "valueType": "targetAverage",
+                    "value": 10,
+                },
+                {
+                    "type": "Metric",
+                    "name": "loss",
+                    "valueType": "target",
+                    "value": 2.0,
+                },
+                {
+                    "type": "Metric",
+                    "name": "keton",
+                    "valueType": "target",
+                    "value": 21.37,
+                },
+            ],
+        },
+    }
+
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
     UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
     EXPECTED_STDOUT = "New deployment created with id: sadkfhlskdjh\n" \
@@ -467,6 +516,22 @@ class TestDeploymentsCreate(object):
             data=None,
         )
 
+        assert result.exit_code == 0
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_autoscaling_options_with_metric_and_resource_requirements(self, post_patched):
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_200)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_AUTOSCALING)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_called_once_with(self.URL,
+                                             headers=EXPECTED_HEADERS,
+                                             json=self.BASIC_OPTIONS_COMMAND_WITH_AUTOSCALING_REQUEST,
+                                             params=None,
+                                             files=None,
+                                             data=None)
         assert result.exit_code == 0
 
 
@@ -864,6 +929,12 @@ class TestDeploymentsUpdate(object):
         "--workspaceRef", "some_branch_name",
         "--workspaceUsername", "username",
         "--workspacePassword", "password",
+        "--minInstanceCount", "4",
+        "--maxInstanceCount", "64",
+        "--scaleCooldownPeriod", "123",
+        "--resource", "cpu/targetAverage:10",
+        "--metric", "loss/target:2.0",
+        "--metric", "keton/target:21.37",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["deployments", "update", "--optionsFile", ]  # path added in test
 
@@ -901,6 +972,31 @@ class TestDeploymentsUpdate(object):
             "workspaceUsername": u"username",
             "workspacePassword": u"password",
             "projectId": "some_project_id",
+            "autoscaling": {
+                "minInstanceCount": 4,
+                "maxInstanceCount": 64,
+                "scaleCooldownPeriod": 123,
+                "metrics": [
+                    {
+                        "type": "Resource",
+                        "name": "cpu",
+                        "valueType": "targetAverage",
+                        "value": 10,
+                    },
+                    {
+                        "type": "Metric",
+                        "name": "loss",
+                        "valueType": "target",
+                        "value": 2.0,
+                    },
+                    {
+                        "type": "Metric",
+                        "name": "keton",
+                        "valueType": "target",
+                        "value": 21.37,
+                    },
+                ],
+            },
         }
     }
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
@@ -1015,22 +1111,28 @@ class TestDeploymentDetails(object):
         "statusCode": 404,
     }}
 
-    DETAILS_STDOUT = """+-----------------+-----------------------------------------------------+
-| ID              | some_id                                             |
-+-----------------+-----------------------------------------------------+
-| Name            | some_name                                           |
-| State           | Stopped                                             |
-| Machine type    | p3.2xlarge                                          |
-| Instance count  | 1                                                   |
-| Command         | some deployment command                             |
-| Deployment type | TFServing                                           |
-| Model ID        | some_model_id                                       |
-| Project ID      | some_project_id                                     |
-| Endpoint        | https://paperspace.io/model-serving/some_id:predict |
-| API type        | REST                                                |
-| Cluster ID      | some_cluster_id                                     |
-| Tags            | tag1, tag2                                          |
-+-----------------+-----------------------------------------------------+
+    DETAILS_STDOUT = """+-----------------------+-----------------------------------------------------+
+| ID                    | some_id                                             |
++-----------------------+-----------------------------------------------------+
+| Name                  | some_name                                           |
+| State                 | Stopped                                             |
+| Machine type          | p3.2xlarge                                          |
+| Instance count        | 1                                                   |
+| Command               | some deployment command                             |
+| Deployment type       | TFServing                                           |
+| Model ID              | some_model_id                                       |
+| Project ID            | some_project_id                                     |
+| Endpoint              | https://paperspace.io/model-serving/some_id:predict |
+| API type              | REST                                                |
+| Cluster ID            | some_cluster_id                                     |
+| Tags                  | tag1, tag2                                          |
+| Min Instance Count    | 4                                                   |
+| Max Instance Count    | 64                                                  |
+| Scale Cooldown Period | 123                                                 |
+| Autoscaling Metrics   | cpu/targetAverage:10.0                              |
+|                       | loss/target:2.0                                     |
+|                       | keton/target:21.37                                  |
++-----------------------+-----------------------------------------------------+
 """
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")

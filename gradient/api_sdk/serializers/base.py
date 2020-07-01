@@ -5,10 +5,10 @@ class BaseSchema(marshmallow.Schema):
     MODEL = None
 
     @marshmallow.post_dump
-    def remove_none_values(self, data):
+    def remove_none_or_empty_values(self, data):
         return {
             key: value for key, value in data.items()
-            if value not in (None, {})
+            if value not in (None, {}, [])
         }
 
     def get_instance(self, obj_dict, many=False):
