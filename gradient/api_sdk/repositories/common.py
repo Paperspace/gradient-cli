@@ -2,6 +2,7 @@ import abc
 import collections
 import datetime
 import json
+import time
 
 import dateutil
 import six
@@ -409,6 +410,8 @@ class StreamMetrics(BaseRepository):
                 self.logger.debug("WebSocketConnectionClosedException: {}".format(e))
             except sdk_exceptions.EndWebsocketStream:
                 return
+
+            time.sleep(15)
 
     def _get_connection(self, kwargs):
         url = self._get_full_url(kwargs)
