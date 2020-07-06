@@ -107,6 +107,31 @@ def notebook_metrics():
     cls=common.GradientOption,
 )
 @click.option(
+    "--workspace",
+    "workspace",
+    help="S3 url or git repository. Directory uploads are not yet supported",
+    default="none",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--workspaceRef",
+    "workspace_ref",
+    help="Git commit hash, branch name or tag",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--workspaceUsername",
+    "workspace_username",
+    metavar="<username>",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--workspacePassword",
+    "workspace_password",
+    help="Workspace password",
+    cls=common.GradientOption,
+)
+@click.option(
     "--tag",
     "tags",
     multiple=True,

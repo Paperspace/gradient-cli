@@ -19,6 +19,10 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             shutdown_timeout=None,
             is_preemptible=None,
             is_public=None,
+            workspace=None,
+            workspace_ref=None,
+            workspace_username=None,
+            workspace_password=None,
             tags=None,
     ):
         """Create new notebook
@@ -36,6 +40,10 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         :param bool is_preemptible:
         :param bool is_public:
         :param list[str] tags: List of tags
+        :param str workspace: Project git repository url
+        :param str workspace_ref: Git commit hash, branch name or tag
+        :param str workspace_username: Project git repository username
+        :param str workspace_password: Project git repository password
 
         :return: Notebook ID
         :rtype str:
@@ -54,6 +62,10 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             is_preemptible=is_preemptible,
             machine_type=machine_type,
             is_public=is_public,
+            workspace=workspace,
+            workspace_username=workspace_username,
+            workspace_password=workspace_password,
+            workspace_ref=workspace_ref,
         )
 
         repository = self.build_repository(repositories.CreateNotebook)
