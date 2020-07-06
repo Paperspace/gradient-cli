@@ -25,7 +25,6 @@ class TestCreateHyperparameters(object):
         "--workerCommand", "some worker command",
         "--workerCount", "1",
         "--projectId", "some_project_id",
-        "--workspace", "none",
     ]
     COMMAND_WITH_TAGS = [
         "experiments", "hyperparameters", "create",
@@ -36,7 +35,6 @@ class TestCreateHyperparameters(object):
         "--workerCommand", "some worker command",
         "--workerCount", "1",
         "--projectId", "some_project_id",
-        "--workspace", "none",
         "--tag", "test0",
         "--tag", "test1",
         "--tags", "test2,test3",
@@ -142,7 +140,6 @@ class TestCreateHyperparameters(object):
         "--workerCommand", "some worker command",
         "--workerCount", "1",
         "--projectId", "some_project_id",
-        "--workspace", "none",
         "--apiKey", "some_key",
     ]
     EXPECTED_REQUEST_JSON_WHEN_API_KEY_PARAMETERS_WAS_USED = {
@@ -417,7 +414,6 @@ class TestCreateAndStartHyperparameters(object):
         "--workerCount", "1",
         "--projectId", "some_project_id",
         "--apiKey", "some_key",
-        "--workspace", "none",
     ]
     EXPECTED_REQUEST_JSON_WHEN_API_KEY_PARAMETERS_WAS_USED = {
         "workerContainer": "some_container",

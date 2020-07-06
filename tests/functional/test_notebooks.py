@@ -59,8 +59,9 @@ class TestNotebooksCreate(object):
         "machineType": "P5000",
         "container": "jupyter/notebook",
         "clusterId": "321",
-        'isPreemptible': False,
-        'isPublic': False,
+        "isPreemptible": False,
+        "isPublic": False,
+        "workspace": "none",
     }
     EXPECTED_RESPONSE_JSON = {
         "handle": "some_id",
@@ -96,6 +97,7 @@ class TestNotebooksCreate(object):
         "--shutdownTimeout", "8",
         "--environment", '{"key":"val"}',
         "--isPreemptible",
+        "--workspace", "https://github.com/fake/repo.git",
     ]
     EXPECTED_REQUEST_JSON_WITH_ALL_OPTIONS = {
         "machineType": "P5000",
@@ -110,6 +112,7 @@ class TestNotebooksCreate(object):
         "shutdownTimeout": 8,
         "isPreemptible": True,
         "isPublic": False,
+        "workspace": "https://github.com/fake/repo.git",
     }
     COMMAND_WITH_OPTIONS_FILE_USED = ["notebooks", "create", "--optionsFile", ]  # path added in test
 

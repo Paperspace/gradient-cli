@@ -20,11 +20,19 @@ imageUrl: https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valua
 imageUsername: some_image_username
 instanceCount: 666
 machineType: G1
+maxInstanceCount: 64
 method: some_method
+metric:
+  - loss/target:2.0
+  - keton/target:21.37
+minInstanceCount: "4"
 modelId: some_model_id
 name: some_name
 ports: '5000'
 projectId: some_project_id
+resource:
+  - cpu/targetAverage:10
+scaleCooldownPeriod: 123
 workspace: s3://some-workspace
 workspaceRef: some_branch_name
 workspaceUsername: username

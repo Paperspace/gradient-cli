@@ -39,6 +39,11 @@ class Notebook(object):
     base_container = attr.ib(type=str, default=None)
     base_container_url = attr.ib(type=str, default=None)
     environment = attr.ib(type=dict, default=None)
+    workspace = attr.ib(type=str, default=None)
+    workspace_username = attr.ib(type=str, default=None)
+    workspace_password = attr.ib(type=str, default=None)
+    workspace_ref = attr.ib(type=str, default=None)
+    should_run_on_create = attr.ib(type=str, default=None)
 
     dt_created = attr.ib(type=datetime.datetime, default=None)
     dt_modified = attr.ib(type=datetime.datetime, default=None)

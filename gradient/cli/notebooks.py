@@ -26,13 +26,6 @@ def notebook_metrics():
 
 @notebooks_group.command("create", help="Create new notebook")
 @click.option(
-    "--clusterId",
-    "cluster_id",
-    type=str,
-    help="Cluster ID",
-    cls=common.GradientOption,
-)
-@click.option(
     "--machineType",
     "machine_type",
     required=True,
@@ -41,17 +34,18 @@ def notebook_metrics():
     cls=common.GradientOption,
 )
 @click.option(
-    "--containerId",
-    "container_id",
-    type=int,
-    help="Container ID",
+    "--container",
+    "container",
+    required=True,
+    type=str,
+    help="Container name",
     cls=common.GradientOption,
 )
 @click.option(
-    "--container",
-    "container",
+    "--clusterId",
+    "cluster_id",
     type=str,
-    help="Container name",
+    help="Cluster ID",
     cls=common.GradientOption,
 )
 @click.option(
@@ -117,6 +111,30 @@ def notebook_metrics():
     "environment",
     type=json_string,
     help="Environmental variables",
+)
+@click.option(
+    "--workspace",
+    "workspace",
+    help="S3 url or git repository. Directory uploads are not yet supported",
+    default="none",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--workspaceRef",
+    "workspace_ref",
+    help="Git commit hash, branch name or tag",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--workspaceUsername",
+    "workspace_username",
+    metavar="<username>",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--workspacePassword",
+    "workspace_password",
+    help="Workspace password",
     cls=common.GradientOption,
 )
 @click.option(
@@ -434,6 +452,7 @@ def artifacts():
 @click.option(
     "--id",
     "notebook_id",
+    required=True,
     cls=common.GradientOption,
     help="ID of the notebook",
 )

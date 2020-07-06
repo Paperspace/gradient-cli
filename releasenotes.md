@@ -1,5 +1,23 @@
 # Gradient CLI Release Notes
 
+# Release Notes for 0.9.1a0
+* Added basic support for autoscaling deployments
+
+# Release Notes for 0.9.0
+##### Note: this list includes all changes made in 0.9.0a* alpha releases
+#### Breaking changes
+* Normalized parameter names in `notebooks` group and `NotebooksClient`
+### Fixes
+* Fixed NotImplementedError raised when parsing experiment with dataset volume options set
+* Fix output of `metrics stream` command
+* Fixed experiment status constants and added constants for deployment statuses
+* Fixed reading logs with `--follow`. The bug caused all log lines in a loop instead of only the new one
+* Fixed `TypeError` occurring when a job was being created without `--workspace`
+### New features
+* Added whole directory upload to `models upload` command
+* Added a command group for managing `secrets`
+* Added `notebooks logs` command for reading logs of notebooks
+
 # Release Notes for 0.9.0a2
 ### Fixes
 * Fixed NotImplementedError raised when parsing experiment with dataset volume options set
