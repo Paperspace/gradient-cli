@@ -41,11 +41,11 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         :param bool is_preemptible:
         :param bool is_public:
         :param list[str] tags: List of tags
-        :param dict environment: key value collection of envs that are used in notebook
         :param str workspace: Project git repository url
         :param str workspace_ref: Git commit hash, branch name or tag
         :param str workspace_username: Project git repository username
         :param str workspace_password: Project git repository password
+        :param dict environment: key value collection of envs that are used in notebook
 
         :return: Notebook ID
         :rtype str:

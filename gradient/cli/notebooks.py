@@ -111,6 +111,7 @@ def notebook_metrics():
     "environment",
     type=json_string,
     help="Environmental variables",
+    cls=common.GradientOption,
 )
 @click.option(
     "--workspace",
