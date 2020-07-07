@@ -98,11 +98,12 @@ class API(object):
 
 
 class GradientResponse(object):
-    def __init__(self, body, code, headers, data):
+    def __init__(self, body, code, headers, data, request=None):
         self.body = body
         self.code = code
         self.headers = headers
         self.data = data
+        self.request = request
 
     @property
     def ok(self):
@@ -120,5 +121,6 @@ class GradientResponse(object):
             content = response.content
             data = content or None
 
-        gradient_response = cls(response.content, response.status_code, response.headers, data)
+        gradient_response = cls(response.content, response.status_code, response.headers, data,
+                                request=response.request)
         return gradient_response
