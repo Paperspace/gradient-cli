@@ -311,19 +311,23 @@ class GetMetrics(GetResource):
     def _get_kwargs(self, kwargs):
         instance_id = kwargs["id"]
         built_in_metrics = self._get_built_in_metrics_comma_separated(kwargs)
+        custom_charts = self._get_custom_metrics(kwargs)
         instance = self._get_instance_by_id(instance_id)
         started_date = self._get_start_date(instance, kwargs)
         end = self._get_end_date(instance, kwargs)
         interval = kwargs.get("interval") or self.DEFAULT_INTERVAL
         metrics_api_url = self._get_metrics_api_url(instance)
         new_kwargs = {
-            "charts": built_in_metrics,
             "start": started_date,
             "interval": interval,
             "objecttype": self.OBJECT_TYPE,
             "handle": instance_id,
             "metrics_api_url": metrics_api_url,
         }
+        if built_in_metrics:
+            new_kwargs["charts"] = built_in_metrics
+        if custom_charts:
+            new_kwargs["customcharts"] = custom_charts
         if end:
             new_kwargs["end"] = end
 
@@ -344,6 +348,15 @@ class GetMetrics(GetResource):
     def _get_built_in_metrics_list(self, kwargs):
         metrics = kwargs.get("built_in_metrics") or self.DEFAULT_METRICS
         return metrics
+
+    def _get_custom_metrics(self, kwargs):
+        custom_metrics = kwargs.get("custom_metrics")
+        if not custom_metrics:
+            return None
+
+        custom_metrics_objects = [{"metric_query": m, "chart_name": m} for m in custom_metrics]
+        custom_metrics_objects_strigified = json.dumps(custom_metrics_objects)
+        return custom_metrics_objects_strigified
 
     def _get_start_date(self, instance, kwargs):
         datetime_string = kwargs.get("start") or instance.dt_started or instance.dt_created

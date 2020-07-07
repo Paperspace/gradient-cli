@@ -70,32 +70,32 @@ def common_experiments_create_options(f):
             "--ports",
             help="Port to use in new experiment",
             cls=common.GradientOption,
-            ),
-            click.option(
-                "--workspace",
-                "workspace",
-                help="Path to workspace directory, archive, S3 or git repository",
-                cls=common.GradientOption,
-            ),
-            click.option(
-                "--workspaceRef",
-                "workspace_ref",
-                help="Git commit hash, branch name or tag",
-                cls=common.GradientOption,
-            ),
-            click.option(
-                "--workspaceUsername",
-                "workspace_username",
-                metavar="<username>",
-                help="Workspace username",
-                cls=common.GradientOption,
-            ),
-            click.option(
-                "--workspacePassword",
-                "workspace_password",
-                help="Workspace password",
-                cls=common.GradientOption,
-            ),
+        ),
+        click.option(
+            "--workspace",
+            "workspace",
+            help="Path to workspace directory, archive, S3 or git repository",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--workspaceRef",
+            "workspace_ref",
+            help="Git commit hash, branch name or tag",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--workspaceUsername",
+            "workspace_username",
+            metavar="<username>",
+            help="Workspace username",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--workspacePassword",
+            "workspace_password",
+            help="Workspace password",
+            cls=common.GradientOption,
+        ),
         click.option(
             "--ignoreFiles",
             "ignore_files",
@@ -852,6 +852,13 @@ def experiment_remove_tags(id, options_file, api_key, **kwargs):
     cls=common.GradientOption,
 )
 @click.option(
+    "--customMetric",
+    "custom_metrics",
+    multiple=True,
+    help="One or more custom metrics that you want to read",
+    cls=common.GradientOption,
+)
+@click.option(
     "--interval",
     "interval",
     default="30s",
@@ -874,9 +881,10 @@ def experiment_remove_tags(id, options_file, api_key, **kwargs):
 )
 @api_key_option
 @common.options_file
-def get_experiment_metrics(experiment_id, metrics_list, interval, start, end, options_file, api_key):
+def get_experiment_metrics(experiment_id, metrics_list, custom_metrics, interval, start, end, options_file, api_key):
     command = GetExperimentMetricsCommand(api_key=api_key)
-    command.execute(experiment_id, start, end, interval, built_in_metrics=metrics_list)
+    command.execute(experiment_id=experiment_id, start=start, end=end, interval=interval,
+                    built_in_metrics=metrics_list, custom_metrics=custom_metrics)
 
 
 @experiments_metrics.command(
@@ -901,6 +909,13 @@ def get_experiment_metrics(experiment_id, metrics_list, interval, start, end, op
     cls=common.GradientOption,
 )
 @click.option(
+    "--customMetric",
+    "custom_metrics",
+    multiple=True,
+    help="One or more custom metrics that you want to read",
+    cls=common.GradientOption,
+)
+@click.option(
     "--interval",
     "interval",
     default="30s",
@@ -909,6 +924,7 @@ def get_experiment_metrics(experiment_id, metrics_list, interval, start, end, op
 )
 @api_key_option
 @common.options_file
-def get_experiment_metrics_stream(experiment_id, metrics_list, interval, options_file, api_key):
+def get_experiment_metrics_stream(experiment_id, metrics_list, custom_metrics, interval, options_file, api_key):
     command = StreamExperimentMetricsCommand(api_key=api_key)
-    command.execute(experiment_id=experiment_id, interval=interval, built_in_metrics=metrics_list)
+    command.execute(experiment_id=experiment_id, interval=interval, built_in_metrics=metrics_list,
+                    custom_metrics=custom_metrics)

@@ -806,7 +806,8 @@ class ExperimentsClient(TagsSupportMixin, utils.ExperimentsClientHelpersMixin, B
                 EXPERIMENT_MODEL_PATH_VALIDATION_ERROR
             )
 
-    def get_metrics(self, experiment_id, start=None, end=None, interval="30s", built_in_metrics=None):
+    def get_metrics(self, experiment_id, start=None, end=None, interval="30s", built_in_metrics=None,
+                    custom_metrics=None):
         """Get experiment metrics
 
         :param str experiment_id: ID of experiment
@@ -816,6 +817,7 @@ class ExperimentsClient(TagsSupportMixin, utils.ExperimentsClientHelpersMixin, B
         :param list[str] built_in_metrics: List of metrics to get if different than default
                     Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
                                             gpuTemp, gpuUtilization, gpuMemoryUtilization
+        :param list[str] custom_metrics: List of custom metrics to get
 
         :returns: Metrics of and experiment
         :rtype: dict[str,dict[str,list[dict]]]
@@ -828,10 +830,11 @@ class ExperimentsClient(TagsSupportMixin, utils.ExperimentsClientHelpersMixin, B
             end=end,
             interval=interval,
             built_in_metrics=built_in_metrics,
+            custom_metrics=custom_metrics,
         )
         return metrics
 
-    def stream_metrics(self, experiment_id, interval="30s", built_in_metrics=None):
+    def stream_metrics(self, experiment_id, interval="30s", built_in_metrics=None, custom_metrics=None):
         """Stream live experiment metrics
 
         :param str experiment_id: ID of experiment
@@ -839,6 +842,7 @@ class ExperimentsClient(TagsSupportMixin, utils.ExperimentsClientHelpersMixin, B
         :param list[str] built_in_metrics: List of metrics to get if different than default
                     Available builtin metrics: cpuPercentage, memoryUsage, gpuMemoryFree, gpuMemoryUsed, gpuPowerDraw,
                                             gpuTemp, gpuUtilization, gpuMemoryUtilization
+        :param list[str] custom_metrics: List of custom metrics to get
 
         :returns: Generator object yielding live experiment metrics
         :rtype: Iterable[dict]
@@ -849,6 +853,7 @@ class ExperimentsClient(TagsSupportMixin, utils.ExperimentsClientHelpersMixin, B
             id=experiment_id,
             interval=interval,
             built_in_metrics=built_in_metrics,
+            custom_metrics=custom_metrics,
         )
         return metrics
 

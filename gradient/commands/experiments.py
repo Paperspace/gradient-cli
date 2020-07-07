@@ -413,14 +413,8 @@ class ExperimentRemoveTagsCommand(BaseExperimentCommand):
 
 
 class GetExperimentMetricsCommand(BaseExperimentCommand):
-    def execute(self, experiment_id, start, end, interval, built_in_metrics, *args, **kwargs):
-        metrics = self.client.get_metrics(
-            experiment_id,
-            start=start,
-            end=end,
-            built_in_metrics=built_in_metrics,
-            interval=interval,
-        )
+    def execute(self, *args, **kwargs):
+        metrics = self.client.get_metrics(*args, **kwargs)
         formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
         self.logger.log(formatted_metrics)
 
