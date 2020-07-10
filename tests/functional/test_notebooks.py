@@ -95,6 +95,7 @@ class TestNotebooksCreate(object):
         "--command", "some_entrypoint",
         "--containerUser", "some_container_user",
         "--shutdownTimeout", "8",
+        "--environment", '{"key":"val"}',
         "--isPreemptible",
         "--workspace", "https://github.com/fake/repo.git",
     ]
@@ -107,6 +108,7 @@ class TestNotebooksCreate(object):
         "registryPassword": "some_password",
         "command": "c29tZV9lbnRyeXBvaW50",
         "containerUser": "some_container_user",
+        "environment": {"key": "val"},
         "shutdownTimeout": 8,
         "isPreemptible": True,
         "isPublic": False,

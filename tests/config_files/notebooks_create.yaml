@@ -9,4 +9,6 @@ registryPassword: some_password
 registryUsername: some_username
 shutdownTimeout: 8
 machineType: P5000
+environment:
+  key: val
 workspace: https://github.com/fake/repo.git

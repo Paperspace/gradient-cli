@@ -24,6 +24,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             workspace_username=None,
             workspace_password=None,
             tags=None,
+            environment=None,
     ):
         """Create new notebook
 
@@ -44,6 +45,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         :param str workspace_ref: Git commit hash, branch name or tag
         :param str workspace_username: Project git repository username
         :param str workspace_password: Project git repository password
+        :param dict environment: key value collection of envs that are used in notebook
 
         :return: Notebook ID
         :rtype str:
@@ -62,6 +64,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             is_preemptible=is_preemptible,
             machine_type=machine_type,
             is_public=is_public,
+            environment=environment,
             workspace=workspace,
             workspace_username=workspace_username,
             workspace_password=workspace_password,
