@@ -53,7 +53,8 @@ class TestNotebooksCreate(object):
         "create",
         "--machineType", "P5000",
         "--container", "jupyter/notebook",
-        "--clusterId", "321"
+        "--projectId", "pr1234",
+        "--clusterId", "321",
     ]
     EXPECTED_REQUEST_JSON = {
         "machineType": "P5000",
@@ -62,6 +63,7 @@ class TestNotebooksCreate(object):
         "isPreemptible": False,
         "isPublic": False,
         "workspace": "none",
+        "projectId": "pr1234",
     }
     EXPECTED_RESPONSE_JSON = {
         "handle": "some_id",
@@ -79,6 +81,7 @@ class TestNotebooksCreate(object):
         "create",
         "--machineType", "P5000",
         "--container", "jupyter/notebook",
+        "--projectId", "pr1234",
         "--clusterId", "321",
         "--apiKey", "some_key",
     ]
@@ -88,6 +91,7 @@ class TestNotebooksCreate(object):
         "create",
         "--machineType", "P5000",
         "--container", "jupyter/notebook",
+        "--projectId", "pr1234",
         "--clusterId", "321",
         "--name", "some_notebook_name",
         "--registryUsername", "some_username",
@@ -102,6 +106,7 @@ class TestNotebooksCreate(object):
     EXPECTED_REQUEST_JSON_WITH_ALL_OPTIONS = {
         "machineType": "P5000",
         "container": "jupyter/notebook",
+        "projectId": "pr1234",
         "clusterId": "321",
         "name": "some_notebook_name",
         "registryUsername": "some_username",

@@ -8,6 +8,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
     def create(
             self,
             machine_type,
+            project_id=None,
             cluster_id=None,
             container=None,
             container_id=None,
@@ -30,6 +31,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
 
         :param str machine_type:
         :param int container_id:
+        :param str|int project_id:
         :param str cluster_id:
         :param str container:
         :param str name:
@@ -53,6 +55,7 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
 
         notebook = models.Notebook(
             container_id=container_id,
+            project_id=project_id,
             cluster_id=cluster_id,
             container=container,
             name=name,

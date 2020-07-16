@@ -42,6 +42,14 @@ def notebook_metrics():
     cls=common.GradientOption,
 )
 @click.option(
+    "--projectId",
+    "project_id",
+    required=True,
+    type=str,
+    help="Project ID",
+    cls=common.GradientOption,
+)
+@click.option(
     "--clusterId",
     "cluster_id",
     type=str,
