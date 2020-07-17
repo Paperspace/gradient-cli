@@ -23,10 +23,11 @@ class Notebook(object):
     container_user = attr.ib(type=str, default=None)
     shutdown_timeout = attr.ib(type=int, default=None)
     is_preemptible = attr.ib(type=bool, default=None)
-    project_id = attr.ib(type=bool, default=None)
-    state = attr.ib(type=bool, default=None)
-    vm_type = attr.ib(type=bool, default=None)
-    fqdn = attr.ib(type=bool, default=None)
+    project_id = attr.ib(type=str, default=None)
+    project_handle = attr.ib(type=str, default=None)
+    state = attr.ib(type=str, default=None)
+    vm_type = attr.ib(type=str, default=None)
+    fqdn = attr.ib(type=str, default=None)
     namespace = attr.ib(type=str, default=None)
     tags = attr.ib(type=list, factory=list)
     metrics_url = attr.ib(type=str, default=None)
@@ -58,7 +59,7 @@ class Notebook(object):
 
     @property
     def url(self):
-        url = concatenate_urls(config.WEB_URL, "/{}/notebook/{}".format(self.namespace, self.project_id))
+        url = concatenate_urls(config.WEB_URL, "/{}/notebook/{}".format(self.namespace, self.project_handle))
         return url
 
 
