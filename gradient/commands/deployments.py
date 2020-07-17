@@ -77,7 +77,7 @@ class CreateDeploymentCommand(HandleAutoscalingOptions, BaseDeploymentCommand, H
         self.logger.log(self.get_instance_url(deployment_id))
 
     def get_instance_url(self, instance_id):
-        url = concatenate_urls(config.WEB_URL, "/console/deployments/{}".format(instance_id))
+        url = concatenate_urls(config.WEB_URL, "/deployments/{}".format(instance_id))
         return url
 
     def _handle_auth(self, kwargs):

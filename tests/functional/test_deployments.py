@@ -247,12 +247,12 @@ class TestDeploymentsCreate(object):
     RESPONSE_JSON_200 = example_responses.CREATE_DEPLOYMENT_WITH_BASIC_OPTIONS_RESPONSE
     UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
     EXPECTED_STDOUT = "New deployment created with id: sadkfhlskdjh\n" \
-                      "https://www.paperspace.com/console/deployments/sadkfhlskdjh\n"
+                      "https://console.paperspace.com/deployments/sadkfhlskdjh\n"
 
     EXPECTED_STDOUT_WITH_WORKSPACE_ARCHIVING = "Archiving your working directory for upload as your experiment workspace..." \
                                                "(See https://docs.paperspace.com/gradient/experiments/run-experiments for more information.)\n" \
                                                "New deployment created with id: sadkfhlskdjh\n" \
-                                               "https://www.paperspace.com/console/deployments/sadkfhlskdjh\n"
+                                               "https://console.paperspace.com/deployments/sadkfhlskdjh\n"
 
     RESPONSE_JSON_404_MODEL_NOT_FOUND = {"error": {"name": "Error", "status": 404, "message": "Unable to find model"}}
     RESPONSE_CONTENT_404_MODEL_NOT_FOUND = b'{"error":{"name":"Error","status":404,"message":"Unable to find model"}}\n'

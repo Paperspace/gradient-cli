@@ -14,7 +14,7 @@ def get_api_key(config_dir_path, config_file_name):
     return ''
 
 
-_DEFAULT_WEB_URL = "https://www.paperspace.com"
+_DEFAULT_WEB_URL = "https://console.paperspace.com"
 _DEFAULT_CONFIG_HOST = "https://api.paperspace.io"
 _DEFAULT_CONFIG_LOG_HOST = "https://logs.paperspace.io"
 _DEFAULT_CONFIG_EXPERIMENTS_HOST = "https://services.paperspace.io/experiments/v1/"

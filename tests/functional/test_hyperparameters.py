@@ -120,7 +120,7 @@ class TestCreateHyperparameters(object):
 
     EXPECTED_RESPONSE = {"handle": "eshgvasywz9k1w", "message": "success"}
     EXPECTED_STDOUT = "Hyperparameter tuning job created with ID: eshgvasywz9k1w\n" \
-                      "https://www.paperspace.com/console/projects/some_project_id/experiments/eshgvasywz9k1w\n"
+                      "https://console.paperspace.com/projects/some_project_id/experiments/eshgvasywz9k1w\n"
 
     EXPECTED_RESPONSE_JSON_WITH_ERROR = {
         "details": {
@@ -393,7 +393,7 @@ class TestCreateAndStartHyperparameters(object):
 
     EXPECTED_RESPONSE = {"handle": "eshgvasywz9k1w", "message": "success"}
     EXPECTED_STDOUT = "Hyperparameter tuning job created and started with ID: eshgvasywz9k1w\n" \
-                      "https://www.paperspace.com/console/projects/some_project_id/experiments/eshgvasywz9k1w\n"
+                      "https://console.paperspace.com/projects/some_project_id/experiments/eshgvasywz9k1w\n"
 
     EXPECTED_RESPONSE_JSON_WITH_ERROR = {
         "details": {

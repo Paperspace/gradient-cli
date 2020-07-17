@@ -548,7 +548,7 @@ class TestJobsCreate(object):
     RESPONSE_CONTENT_200 = b'{"handle":"sadkfhlskdjh","message":"success"}\n'
     EXPECTED_STDOUT = u'New job created with ID: sadkfhlskdjh\n'
     EXPECTED_STDOUT_TAGS = u'New job created with ID: sadkfhlskdjh\n' \
-                           u'https://www.paperspace.com/console/jobs/sadkfhlskdjh\n'
+                           u'https://console.paperspace.com/jobs/sadkfhlskdjh\n'
 
     RESPONSE_JSON_404_PROJECT_NOT_FOUND = {"details": {"handle": "wrong_handle"}, "error": "Project not found"}
     RESPONSE_CONTENT_404_PROJECT_NOT_FOUND = b'{"details":{"handle":"wrong_handle"},"error":"Project not found"}\n'

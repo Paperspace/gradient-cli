@@ -33,7 +33,7 @@ class CreateMachineCommand(GetMachinesClientMixin, BaseCommand):
         self.logger.log(self.get_instance_url(handle))
 
     def get_instance_url(self, machine_id):
-        url = concatenate_urls(config.WEB_URL, "console/machines/{}".format(machine_id))
+        url = concatenate_urls(config.WEB_URL, "machines/{}".format(machine_id))
         return url
 
 
