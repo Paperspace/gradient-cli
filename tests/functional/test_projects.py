@@ -202,7 +202,7 @@ class TestCreateProject(object):
     UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
 
     EXPECTED_STDOUT = "Project created with ID: pru5a4dnu\n" \
-                      "https://www.paperspace.com/console/projects/pru5a4dnu\n"
+                      "https://console.paperspace.com/projects/pru5a4dnu\n"
 
     EXPECTED_RESPONSE_JSON_WITH_ERROR = {
         "error": {

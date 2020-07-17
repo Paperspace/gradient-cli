@@ -72,7 +72,7 @@ class TestNotebooksCreate(object):
         "container": "jupyter/notebook",
     }
     EXPECTED_STDOUT = "Created new notebook with id: some_id\n" \
-                      "https://www.paperspace.com/some_namespace/notebook/prg284tu2\n"
+                      "https://console.paperspace.com/some_namespace/notebook/prg284tu2\n"
 
     COMMAND_WITH_API_KEY_USED = [
         "notebooks",
@@ -349,7 +349,7 @@ class TestNotebooksStart(object):
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to create resource: Invalid API token\n"
     EXPECTED_STDOUT_WITH_KEY = "Started notebook with id: n123\n" \
-                               "https://www.paperspace.com/some_namespace/notebook/prg284tu2\n"
+                               "https://console.paperspace.com/some_namespace/notebook/prg284tu2\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")

@@ -34,7 +34,7 @@ class CreateProjectCommand(BaseProjectCommand):
         self.logger.log(self.get_instance_url(project_id))
 
     def get_instance_url(self, project_id):
-        url = concatenate_urls(config.WEB_URL, "console/projects/{}".format(project_id))
+        url = concatenate_urls(config.WEB_URL, "projects/{}".format(project_id))
         return url
 
 

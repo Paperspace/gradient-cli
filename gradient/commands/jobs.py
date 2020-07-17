@@ -47,7 +47,7 @@ class BaseCreateJobCommandMixin(object):
 
     @staticmethod
     def get_instance_url(instance_id):
-        url = concatenate_urls(config.config.WEB_URL, "console/jobs/{}".format(instance_id))
+        url = concatenate_urls(config.config.WEB_URL, "jobs/{}".format(instance_id))
         return url
 
     def _handle_workspace(self, instance_dict):

@@ -10,7 +10,7 @@ logger = gradient.clilogger.CliLogger()
 
 LOGIN_DEPRECATION_MESSAGE = """The login command is currently disabled for logging in using `--email` and `--password`.
 
-Instead, obtain an API Key from https://www.paperspace.com/console/account/api.
+Instead, obtain an API Key from https://console.paperspace.com/account/api.
 
 Then use the `apiKey` command to save your API Key locally.
 
