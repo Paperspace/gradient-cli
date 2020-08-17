@@ -32,7 +32,7 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
             name,
             machine_type,
             image_url,
-            instance_count,
+            instance_count=None,
             model_id=None,
             container_model_path=None,
             image_username=None,
