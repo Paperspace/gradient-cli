@@ -132,7 +132,6 @@ def deployments_metrics():
     "--instanceCount",
     "instance_count",
     type=int,
-    required=True,
     help="Number of machine instances",
     cls=common.GradientOption,
 )
