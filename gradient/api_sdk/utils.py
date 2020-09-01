@@ -198,7 +198,7 @@ class PathParser(object):
     @staticmethod
     def is_http_url(path):
         normalized_path = path.lower()
-        return not os.path.exists(path) or normalized_path.startswith("http:") or normalized_path.startswith("https")
+        return not os.path.exists(path) and (normalized_path.startswith("http:") or normalized_path.startswith("https"))
 
     @classmethod
     def is_remote_path(cls, path):
