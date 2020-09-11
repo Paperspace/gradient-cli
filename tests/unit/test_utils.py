@@ -111,6 +111,26 @@ class TestPathParser(object):
         with pytest.raises(WrongPathError):
             PathParser.parse_path(path_str)
 
+    @mock.patch("os.path.exists", return_value=False)
+    @mock.patch("os.path.isdir", return_value=False)
+    @mock.patch("os.path.isfile", return_value=False)
+    def test_should_return_http_for_http_url(self, _, __, ___):
+        path_str = "http://pastebin.com/raw/2VPPwrnH"
+
+        path_type = PathParser.parse_path(path_str)
+
+        assert path_type == PathParser.HTTP_URL
+
+    @mock.patch("os.path.exists", return_value=False)
+    @mock.patch("os.path.isdir", return_value=False)
+    @mock.patch("os.path.isfile", return_value=False)
+    def test_should_return_http_for_https_url(self, _, __, ___):
+        path_str = "https://pastebin.com/raw/2VPPwrnH"
+
+        path_type = PathParser.parse_path(path_str)
+
+        assert path_type == PathParser.HTTP_URL
+
 
 class TestValidateAuthOptions(object):
     def test_should_not_raise_exception_when_only_generate_auth_was_set(self):

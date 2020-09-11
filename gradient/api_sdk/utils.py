@@ -155,6 +155,7 @@ class PathParser(object):
     LOCAL_FILE = 1
     GIT_URL = 2
     S3_URL = 3
+    HTTP_URL = 4
 
     @classmethod
     def parse_path(cls, path):
@@ -172,6 +173,9 @@ class PathParser(object):
 
         if cls.is_s3_url(path):
             return cls.S3_URL
+
+        if cls.is_http_url(path):
+            return cls.HTTP_URL
 
         raise sdk_exceptions.WrongPathError("Given path is neither local path, nor valid URL")
 
@@ -191,9 +195,14 @@ class PathParser(object):
     def is_s3_url(path):
         return not os.path.exists(path) and path.lower().startswith("s3:")
 
+    @staticmethod
+    def is_http_url(path):
+        normalized_path = path.lower()
+        return not os.path.exists(path) and (normalized_path.startswith("http:") or normalized_path.startswith("https:"))
+
     @classmethod
     def is_remote_path(cls, path):
-        return cls.is_s3_url(path) or cls.is_git_url(path)
+        return cls.is_s3_url(path) or cls.is_git_url(path) or cls.is_http_url(path)
 
     @classmethod
     def is_local_path(cls, path):
