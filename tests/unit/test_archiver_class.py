@@ -136,14 +136,14 @@ class TestZipArchiver(object):
 
 
 class TestS3FileUploader(object):
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_upload_file_to_s3_and_get_bucket_url_when_upload_was_executed(self, post_patched):
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
+    def test_should_upload_file_to_s3_and_get_bucket_url_when_upload_was_executed(self, put_patched):
         _, file_path = tempfile.mkstemp()
         uploader = gradient.api_sdk.s3_uploader.S3FileUploader()
 
         uploader.upload(file_path, "s3://some.url", {"key": "some_key"})
 
-        post_patched.assert_called_once()
+        put_patched.assert_called_once()
 
 
 class TestExperimentWorkspaceDirectoryUploader(object):
