@@ -35,7 +35,7 @@ class VerifyVersionCommand(install):
     description = 'verify that version is set'
 
     def run(self):
-        if version == '0.0.0'
+        if version == '0.0.0':
             sys.exit("No version set")
 
 
@@ -94,5 +94,8 @@ setup(
             'sphinx-click',
             'recommonmark'
         ],
+    },
+    cmdclass={
+        'verify': VerifyVersionCommand,
     },
 )
