@@ -57,6 +57,7 @@ jobs:
             if [ -n "$CIRCLE_TAG" ]; then
               VERSION="$CIRCLE_TAG"
             else
+              PR_NUMBER="${CIRCLE_PULL_REQUEST#"https://github.com/Paperspace/gradient-cli/pull/"}"
               VERSION="0.0.0.post${CIRCLE_PR_NUMBER}.dev${CIRCLE_BUILD_NUM}"
             fi
             echo "Publishing version $VERSION"
