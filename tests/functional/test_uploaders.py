@@ -49,18 +49,18 @@ def get_ps_exp_valid_response(mock_url):
 
 
 class TestS3FileUploader(object):
-    def test_should_post_file_data_and_return_valid_url(self, client, file_uploader):
+    def test_should_put_file_data_and_return_valid_url(self, client, file_uploader):
         upload_url = "s3://url"
         _mock_open = mock.mock_open(read_data="data")
         with mock.patch(open_path, _mock_open) as mock_file:
             file_uploader.upload("filename", upload_url, {"key": "foo"})
 
         file_uploader._get_client.assert_called_with(upload_url)
-        client.post.assert_called()
+        client.put.assert_called()
 
 
 class TestExperimentFileUploader(object):
-    def test_should_post_file_data_and_return_valid_url(self, client, file_uploader):
+    def test_should_put_file_data_and_return_valid_url(self, client, file_uploader):
         upload_url = "s3://url"
         mock_response = get_ps_exp_valid_response(upload_url)
 
@@ -75,11 +75,11 @@ class TestExperimentFileUploader(object):
             uploader.upload("foo", "pjHandle", "clHandle")
 
         file_uploader._get_client.assert_called_with(upload_url)
-        client.post.assert_called()
+        client.put.assert_called()
 
 
 class TestS3ModelFileUploader(object):
-    def test_should_post_file_data_and_return_valid_url(self, client, file_uploader):
+    def test_should_put_file_data_and_return_valid_url(self, client, file_uploader):
         upload_url = "s3://url"
 
         mock_response = mock.MagicMock()
@@ -98,14 +98,14 @@ class TestS3ModelFileUploader(object):
             uploader.upload("foo", "mdHandle")
 
         file_uploader._get_client.assert_called_with(upload_url)
-        client.post.assert_called()
+        client.put.assert_called()
 
 
 class TestS3ModelUploader(object):
 
     @mock.patch("os.path.isdir")
     @mock.patch("gradient.api_sdk.archivers.ZipArchiver.archive")
-    def test_should_post_file_data_and_return_valid_url(self, archive_patched, is_dir_patched, client, file_uploader):
+    def test_should_put_file_data_and_return_valid_url(self, archive_patched, is_dir_patched, client, file_uploader):
         upload_url = "s3://url"
 
         mock_response = mock.MagicMock()
@@ -127,12 +127,12 @@ class TestS3ModelUploader(object):
 
         archive_patched.assert_called_once_with("foo", "/tmp/model.zip")
         file_uploader._get_client.assert_called_with(upload_url)
-        client.post.assert_called()
+        client.put.assert_called()
 
 
 class TestExperimentWorkspaceDirectoryUploader(object):
 
-    def test_should_post_file_data_and_return_valid_url(self, client, file_uploader):
+    def test_should_put_file_data_and_return_valid_url(self, client, file_uploader):
         upload_url = "s3://url"
 
         mock_response = get_ps_exp_valid_response(upload_url)
@@ -150,4 +150,4 @@ class TestExperimentWorkspaceDirectoryUploader(object):
             uploader.upload("foo", "mdHandle")
 
         file_uploader._get_client.assert_called_with(upload_url)
-        client.post.assert_called()
+        client.put.assert_called()
