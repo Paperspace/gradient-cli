@@ -39,17 +39,16 @@ class S3FileUploader(object):
             ordered_s3_fields["file"] = (file_path, file_handle)
             multipart_encoder_monitor = self._get_multipart_encoder_monitor(ordered_s3_fields)
             self.logger.debug("Uploading file: {} to url: {}...".format(file_path, url))
-            self._upload(url, data=multipart_encoder_monitor)
+            self._upload(file_path, url, data=multipart_encoder_monitor)
             self.logger.debug("Uploading completed")
 
-    def _upload(self, url, data):
+    def _upload(self, file_path, url, data):
         """Send data to S3 and raise exception if it was not a success
 
         :param str url:
         :param encoder.MultipartEncoderMonitor data:
         """
         
-        file_path = data.encoder.fields['file'][0]
         client = self._get_client(url)
         client.headers = {"Content-Type": mimetypes.guess_type(file_path)[0] or data.content_type or ""}
 
@@ -83,13 +82,12 @@ class S3FileUploader(object):
 
 
 class S3PutFileUploader(S3FileUploader):
-    def _upload(self, url, data):
+    def _upload(self, file_path, url, data):
         """Send data to S3 and raise exception if it was not a success
 
         :param str url:
         :param encoder.MultipartEncoderMonitor data:
         """
-        file_path = data.encoder.fields['file'][0]
         client = self._get_client(url)
         client.headers = {"Content-Type": mimetypes.guess_type(file_path)[0] or ""}
 
