@@ -52,6 +52,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Make version.py
+          command: |
+            if [ -n "$CIRCLE_TAG" ]; then
+              echo "version = \"$CIRCLE_TAG\"" > gradient/version.py
+            else
+              echo "version = \"0.0.0.post${CIRCLE_PR_NUMBER}.dev${CIRCLE_BUILD_NUM}\"" > gradient/version.py
+            fi
+      - run:
           name: import GPG key
           command: |
             export GPG_TTY=$(tty)

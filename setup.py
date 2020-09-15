@@ -7,16 +7,8 @@ from codecs import open
 from setuptools import setup, find_packages
 from setuptools.command.install import install
 
-with io.open("gradient/version.py", "w", encoding="utf8") as f:
-    tag = os.getenv('CIRCLE_TAG')
-    build = os.getenv('CIRCLE_BUILD_NUM')
-    pr = os.getenv('CIRCLE_PR_NUMBER')
-    if pr:
-        version = "0.0.0.post{}.dev{}".format(pr, build)
-    else:
-        version = tag
-
-    f.write(u"version = {}".format(version))
+with io.open("gradient/version.py", "rt", encoding="utf8") as f:
+    version = re.search(r"version = \"(.*?)\"", f.read()).group(1)
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -31,12 +23,12 @@ except(IOError, ImportError, OSError):
 
 
 class VerifyVersionCommand(install):
-    """Custom command to verify the version"""
-    description = 'verify that version is set'
+    """Custom command to verify that the git tag matches our version"""
+    description = 'verify that the git tag matches our version'
 
     def run(self):
-        if version == '0.0.0':
-            sys.exit("No version set")
+        if '0.0.0' == version:
+            sys.exit("Version unspecified")
 
 
 setup(
