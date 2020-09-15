@@ -16,7 +16,7 @@ with io.open("gradient/version.py", "w", encoding="utf8") as f:
     else:
         version = tag
 
-    f.write("version = {}".format(version))
+    f.write(u"version = {}".format(version))
 
 here = os.path.abspath(os.path.dirname(__file__))
 
