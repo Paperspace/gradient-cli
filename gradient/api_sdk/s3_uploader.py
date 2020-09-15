@@ -51,7 +51,7 @@ class S3FileUploader(object):
         
         file_path = data.encoder.fields['file'][0]
         client = self._get_client(url)
-        client.headers = {"Content-Type": mimetypes.guess_type(file_path)[0] or data_content_type or ""}
+        client.headers = {"Content-Type": mimetypes.guess_type(file_path)[0] or data.content_type or ""}
 
         response = client.put("", data=data)
         if not response.ok:
