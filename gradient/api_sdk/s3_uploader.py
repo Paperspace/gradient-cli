@@ -48,9 +48,15 @@ class S3FileUploader(object):
         :param str url:
         :param encoder.MultipartEncoderMonitor data:
         """
+
+        data_content_type = data.content_type or ""
+
+        if "multipart/form-data" in data.content_type:
+            data_content_type = "application/zip"
+
         client = self._get_client(url)
-        client.headers = {"Content-Type": data.content_type or ""}
-        response = client.post("", data=data)
+        client.headers = {"Content-Type": data_content_type}
+        response = client.put("", data=data)
         if not response.ok:
             raise sdk_exceptions.S3UploadFailedError(response)
 
