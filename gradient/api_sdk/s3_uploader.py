@@ -23,7 +23,7 @@ class S3FileUploader(object):
         self.logger = logger or MuteLogger()
         self.ps_client_name = ps_client_name
 
-    def upload(self, file_path, url, s3_fields=None):
+    def upload(self, file_path, url, contentType, s3_fields=None):
         """Upload a file to S3
 
         :param str file_path:
@@ -39,23 +39,18 @@ class S3FileUploader(object):
             ordered_s3_fields["file"] = (file_path, file_handle)
             multipart_encoder_monitor = self._get_multipart_encoder_monitor(ordered_s3_fields)
             self.logger.debug("Uploading file: {} to url: {}...".format(file_path, url))
-            self._upload(url, data=multipart_encoder_monitor)
+            self._upload(url, contentType, data=multipart_encoder_monitor)
             self.logger.debug("Uploading completed")
 
-    def _upload(self, url, data):
+    def _upload(self, url, contentType, data):
         """Send data to S3 and raise exception if it was not a success
 
         :param str url:
         :param encoder.MultipartEncoderMonitor data:
         """
 
-        data_content_type = data.content_type or ""
-
-        if "multipart/form-data" in data.content_type:
-            data_content_type = "application/zip"
-
         client = self._get_client(url)
-        client.headers = {"Content-Type": data_content_type}
+        client.headers = {"Content-Type": contentType}
         response = client.put("", data=data)
         if not response.ok:
             raise sdk_exceptions.S3UploadFailedError(response)
@@ -354,7 +349,7 @@ class DeploymentWorkspaceDirectoryUploader(object):
         except (KeyError, ValueError):
             raise sdk_exceptions.PresignedUrlMalformedResponseError("Response malformed")
 
-        return presigned_url, bucket_name, workspace_url
+        return presigned_url, bucket_name, workspace_url, params['contentType']
 
     def upload(self, file_path, project_id=None, cluster_id=None, **kwargs):
         """Upload file to S3 bucket for a project
@@ -362,10 +357,11 @@ class DeploymentWorkspaceDirectoryUploader(object):
         :param str file_path:
         :param str project_id:
         :param str cluster_id:
+        :param str contentType:
 
         :rtype: str
         :return: S3 bucket's URL
         """
-        url, bucket_name, workspace_url = self._get_upload_data(file_path, project_id, cluster_id)
-        self.uploader.upload(file_path, url)
+        url, bucket_name, workspace_url, contentType = self._get_upload_data(file_path, project_id, cluster_id)
+        self.uploader.upload(file_path, url, contentType)
         return workspace_url
