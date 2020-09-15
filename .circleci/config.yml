@@ -2,18 +2,11 @@ version: 2.1
 workflows:
   build_and_deploy:
     jobs:
-      - test:
-          filters:
-            tags:
-              only: /.*/
+      - test
       - deploy:
           requires:
             - test
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
+
 executors:
   python-tox:
     docker:
