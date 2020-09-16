@@ -2,30 +2,26 @@ import getpass
 
 import click
 
-import gradient.clilogger
+from gradient.api_sdk.config import client, config
+from gradient.cli import common
 from gradient.cli.cli import cli
+from gradient.cli.validators import validate_email
 from gradient.commands import login as login_commands
 
-logger = gradient.clilogger.CliLogger()
 
-LOGIN_DEPRECATION_MESSAGE = """The login command is currently disabled for logging in using `--email` and `--password`.
-
-Instead, obtain an API Key from https://console.paperspace.com/account/api.
-
-Then use the `apiKey` command to save your API Key locally.
-
-Visit the docs @ https://docs.paperspace.com for more info!"""
-
-
-@cli.command("login", help=LOGIN_DEPRECATION_MESSAGE, hidden=True)
+@cli.command("login", help="Log in with email and password")
 @click.option(
     "--email",
     "email",
+    required=True,
+    callback=validate_email,
     help="Email used to create Paperspace account",
 )
 @click.option(
     "--password",
     "password",
+    prompt=True,
+    hide_input=True,
     help="Password used to create Paperspace account",
 )
 @click.option(
@@ -33,8 +29,10 @@ Visit the docs @ https://docs.paperspace.com for more info!"""
     "api_token_name",
     help="Name of api token used to log in",
 )
-def login(**kwargs):
-    logger.warning(LOGIN_DEPRECATION_MESSAGE)
+def login(email, password, api_token_name):
+    machines_api = client.API(config.CONFIG_HOST)
+    command = login_commands.LogInCommand(api=machines_api)
+    command.execute(email, password, api_token_name)
 
 
 @cli.command("logout", help="Log out / remove apiKey from config file")
