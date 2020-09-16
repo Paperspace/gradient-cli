@@ -386,14 +386,11 @@ class TestExperimentsCreateSingleNode(object):
         tensorboard_handler.maybe_add_to_tensorboard.assert_called_once_with(True, "sadkfhlskdjh")
 
     @mock.patch("gradient.api_sdk.workspace.s3_uploader.MultipartEncoderWithProgressbar")
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.put")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_zip_and_upload_local_workspace_when_local_path_was_passed_to_workspace_option(
-            self, 
-            get_patched,
-            post_patched, 
-            put_patched,
+            self, get_patched,
+            post_patched,
             multipart_encoder_cls_patched,
             temporary_directory_for_extracted_files,
             temporary_zip_file_path,
@@ -451,7 +448,7 @@ class TestExperimentsCreateSingleNode(object):
             params={"projectHandle": "testHandle", "workspaceName": zip_file_name},
         )
 
-        put_patched.assert_has_calls(
+        post_patched.assert_has_calls(
             [
                 mock.call(
                     "https://ps-projects.s3.amazonaws.com/",

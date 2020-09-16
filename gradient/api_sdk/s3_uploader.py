@@ -48,10 +48,8 @@ class S3FileUploader(object):
         :param str url:
         :param encoder.MultipartEncoderMonitor data:
         """
-        
         client = self._get_client(url)
         client.headers = {"Content-Type": data.content_type or ""}
-
         response = client.post("", data=data)
         if not response.ok:
             raise sdk_exceptions.S3UploadFailedError(response)
