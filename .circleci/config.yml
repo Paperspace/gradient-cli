@@ -1,4 +1,8 @@
 version: 2.1
+
+orbs:
+  release-tools: paperspace/release-tools@0.1.0
+
 workflows:
   master:
     jobs:
@@ -8,14 +12,15 @@ workflows:
               only: master
             tags:
               only: /.*/
-      - deploy:
+      - release-tools/release:
+          name: create release
+          context: semantic-release
+          workspace: .
           requires:
             - test
           filters:
-            tags:
-              only: /.*/
             branches:
-              ignore: /.*/
+              only: master
 
   pr:
     jobs:
@@ -23,12 +28,15 @@ workflows:
           filters:
             branches:
               ignore: master
+
+  release:
+    jobs:
       - deploy:
-          requires:
-            - test
           filters:
+            tags:
+              only: /.*/
             branches:
-              ignore: master
+              ignore: /.*/
 
 executors:
   python-tox:
@@ -45,6 +53,10 @@ jobs:
       - run:
           name: Run tests
           command: make run-tests
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "."
 
   deploy:
     docker:
@@ -56,10 +68,6 @@ jobs:
           command: |
             if [ -n "$CIRCLE_TAG" ]; then
               VERSION="$CIRCLE_TAG"
-            else
-              # CIRCLE_PR_NUMBER is only set on fork prs
-              PR_NUMBER="${CIRCLE_PULL_REQUEST#"https://github.com/Paperspace/gradient-cli/pull/"}"
-              VERSION="0.0.0.a${PR_NUMBER}.dev${CIRCLE_BUILD_NUM}"
             fi
             echo "Publishing version $VERSION"
             echo "version = \"${VERSION}\"" > gradient/version.py
@@ -73,7 +81,7 @@ jobs:
           command: |
             make pip-install-dev
       - run:
-          name: verify git tag vs. version
+          name: verify version is valid
           command: |
             python setup.py verify
       - run:
