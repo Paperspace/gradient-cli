@@ -66,11 +66,8 @@ jobs:
       - run:
           name: Make version.py
           command: |
-            if [ -n "$CIRCLE_TAG" ]; then
-              VERSION="$CIRCLE_TAG"
-            fi
-            echo "Publishing version $VERSION"
-            echo "version = \"${VERSION}\"" > gradient/version.py
+            echo "Publishing version $CIRCLE_TAG"
+            echo "version = \"${CIRCLE_TAG}\"" > gradient/version.py
       - run:
           name: import GPG key
           command: |
