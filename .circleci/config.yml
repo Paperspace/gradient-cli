@@ -15,7 +15,7 @@ workflows:
       - release-tools/release:
           name: create release
           context: semantic-release
-          workspace: ~/gradient-cli
+          workspace: .
           #requires:
           #  - test
           filters:
