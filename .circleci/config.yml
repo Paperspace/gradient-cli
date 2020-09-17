@@ -1,23 +1,23 @@
 version: 2.1
 
 orbs:
-  release-tools: paperspace/release-tools@dev:0.1.1
+  release-tools: paperspace/release-tools@0.1.0
 
 workflows:
   master:
     jobs:
-      #- test:
-      #    filters:
-      #      branches:
-      #        only: master
-      #      tags:
-      #        only: /.*/
+      - test:
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /.*/
       - release-tools/release:
           name: create release
           context: semantic-release
           workspace: /root/gradient-cli
-          #requires:
-          #  - test
+          requires:
+            - test
           filters:
             branches:
               only: master
