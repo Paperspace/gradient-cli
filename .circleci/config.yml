@@ -15,7 +15,7 @@ workflows:
       - release-tools/release:
           name: create release
           context: semantic-release
-          workspace: .
+          workspace: /
           requires:
             - test
           filters:
@@ -53,10 +53,6 @@ jobs:
       - run:
           name: Run tests
           command: make run-tests
-      - persist_to_workspace:
-          root: .
-          paths:
-            - "."
 
   deploy:
     docker:
