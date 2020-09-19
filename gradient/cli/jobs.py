@@ -420,6 +420,7 @@ def list_artifacts(job_id, size, links, files, options_file, api_key=None):
 @click.option(
     "--destinationDir",
     "destination_directory",
+    required=True,
     cls=common.GradientOption,
 )
 @api_key_option
