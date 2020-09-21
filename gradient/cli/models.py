@@ -88,6 +88,12 @@ def delete_model(api_key, model_id, options_file):
     cls=common.GradientOption,
 )
 @click.option(
+    "--clusterId",
+    "cluster_id",
+    help="ID of a cluster",
+    cls=common.GradientOption,
+)
+@click.option(
     "--modelSummary",
     "model_summary",
     type=json_string,
