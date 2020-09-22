@@ -527,7 +527,7 @@ class TestJobsCreate(object):
         "registryTarget": "some_registry_target",
         "isPublic": True,
         "workspaceFileName": "s3://some-path",
-        "jobEnv": {"key": "val"},
+        "envVars": '{"key": "val"}',
         "useDockerfile": True,
         "name": "some_name",
         "relDockerfilePath": "some dockerfile path",
