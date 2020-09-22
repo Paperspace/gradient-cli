@@ -81,6 +81,9 @@ class CreateJob(GetBaseJobApiUrlMixin, CreateResource):
         return
 
     def _get_request_params(self, instance_dict):
+        if 'jobEnv' in instance_dict:
+            return {**instance_dict, "envVars": json.dumps(instance_dict['jobEnv'])}
+
         return instance_dict
 
 
