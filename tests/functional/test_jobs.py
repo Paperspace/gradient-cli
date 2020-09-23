@@ -394,7 +394,7 @@ class TestListJobArtifacts(TestJobs):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_get_request_with_all_parameters_for_a_list_of_artifacts(self, get_patched):
-        get_patched.return_value = MockResponse()
+        get_patched.return_value = MockResponse(LIST_JOB_FILES_RESPONSE_JSON)
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli,
                                     ["jobs", "artifacts", "list", "--id", job_id, "--apiKey", "some_key", "--size",
@@ -412,7 +412,7 @@ class TestListJobArtifacts(TestJobs):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(self, get_patched, jobs_artifacts_list_config_path):
-        get_patched.return_value = MockResponse()
+        get_patched.return_value = MockResponse(LIST_JOB_FILES_RESPONSE_JSON)
         command = ["jobs", "artifacts", "list", "--optionsFile", jobs_artifacts_list_config_path]
         result = self.runner.invoke(cli.cli, command)
 
@@ -434,7 +434,7 @@ class TestListJobArtifacts(TestJobs):
                                                                                                               get_patched,
                                                                                                               option,
                                                                                                               param):
-        get_patched.return_value = MockResponse(status_code=200)
+        get_patched.return_value = MockResponse(LIST_JOB_FILES_RESPONSE_JSON, status_code=200)
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli,
                                     ["jobs", "artifacts", "list", "--id", job_id, "--apiKey", "some_key"] + [option])
