@@ -371,7 +371,9 @@ class JobsClient(TagsSupportMixin, BaseClient):
 
         while True:
             pagination_response = repository.list(jobId=job_id, files=files, links=links, size=size, start_after=start_after)
-            artifacts.extend(pagination_response.data)
+
+            if pagination_response.data:
+                artifacts.extend(pagination_response.data)
             start_after = pagination_response.start_after
 
             if start_after is None:

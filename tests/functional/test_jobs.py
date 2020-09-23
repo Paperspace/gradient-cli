@@ -401,7 +401,7 @@ class TestListJobArtifacts(TestJobs):
                                      "--links",
                                      "--files", "foo"])
 
-        get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
+        get_patched.assert_called_with("{}/jobs/artifactsListV2".format(self.URL),
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params={"jobId": job_id,
@@ -416,7 +416,7 @@ class TestListJobArtifacts(TestJobs):
         command = ["jobs", "artifacts", "list", "--optionsFile", jobs_artifacts_list_config_path]
         result = self.runner.invoke(cli.cli, command)
 
-        get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
+        get_patched.assert_called_with("{}/jobs/artifactsListV2".format(self.URL),
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params={"files": "keton*.py",
@@ -439,7 +439,7 @@ class TestListJobArtifacts(TestJobs):
         result = self.runner.invoke(cli.cli,
                                     ["jobs", "artifacts", "list", "--id", job_id, "--apiKey", "some_key"] + [option])
 
-        get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
+        get_patched.assert_called_with("{}/jobs/artifactsListV2".format(self.URL),
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params={"jobId": job_id,
@@ -635,7 +635,7 @@ class TestJobsCreate(object):
 
 class TestDownloadJobArtifacts(TestJobs):
     runner = CliRunner()
-    LIST_FILES_URL = "https://api.paperspace.io/jobs/artifactsList"
+    LIST_FILES_URL = "https://api.paperspace.io/jobs/artifactsListV2"
     DESTINATION_DIR_NAME = "dest"
     DESTINATION_DIR_PATH = os.path.join(tempfile.gettempdir(), "dest")
 
