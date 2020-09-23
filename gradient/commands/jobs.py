@@ -196,7 +196,7 @@ class ArtifactsListCommand(BaseJobCommand):
                 start_after = None
                 instances = []
                 while True:
-                    pagination_response = self.client.artifacts_list(**kwargs, start_after=start_after)
+                    pagination_response = self.client.artifacts_list(start_after=start_after, **kwargs)
 
                     if pagination_response.data:
                         instances.extend(pagination_response.data)
