@@ -193,7 +193,17 @@ class ArtifactsListCommand(BaseJobCommand):
     def execute(self, **kwargs):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
             try:
-                instances = self.client.artifacts_list(**kwargs)
+                start_after = None
+                instances = []
+                while True:
+                    pagination_response = self.client.artifacts_list(start_after=start_after, **kwargs)
+
+                    if pagination_response.data:
+                        instances.extend(pagination_response.data)
+                    start_after = pagination_response.start_after
+
+                    if start_after is None:
+                        break
             except sdk_exceptions.GradientSdkError as e:
                 raise exceptions.ReceivingDataFailedError(e)
 

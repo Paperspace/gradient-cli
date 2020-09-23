@@ -394,14 +394,14 @@ class TestListJobArtifacts(TestJobs):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_get_request_with_all_parameters_for_a_list_of_artifacts(self, get_patched):
-        get_patched.return_value = MockResponse()
+        get_patched.return_value = MockResponse(LIST_JOB_FILES_RESPONSE_JSON)
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli,
                                     ["jobs", "artifacts", "list", "--id", job_id, "--apiKey", "some_key", "--size",
                                      "--links",
                                      "--files", "foo"])
 
-        get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
+        get_patched.assert_called_with("{}/jobs/artifactsListV2".format(self.URL),
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params={"jobId": job_id,
@@ -412,11 +412,11 @@ class TestListJobArtifacts(TestJobs):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(self, get_patched, jobs_artifacts_list_config_path):
-        get_patched.return_value = MockResponse()
+        get_patched.return_value = MockResponse(LIST_JOB_FILES_RESPONSE_JSON)
         command = ["jobs", "artifacts", "list", "--optionsFile", jobs_artifacts_list_config_path]
         result = self.runner.invoke(cli.cli, command)
 
-        get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
+        get_patched.assert_called_with("{}/jobs/artifactsListV2".format(self.URL),
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params={"files": "keton*.py",
@@ -434,12 +434,12 @@ class TestListJobArtifacts(TestJobs):
                                                                                                               get_patched,
                                                                                                               option,
                                                                                                               param):
-        get_patched.return_value = MockResponse(status_code=200)
+        get_patched.return_value = MockResponse(LIST_JOB_FILES_RESPONSE_JSON, status_code=200)
         job_id = "some_job_id"
         result = self.runner.invoke(cli.cli,
                                     ["jobs", "artifacts", "list", "--id", job_id, "--apiKey", "some_key"] + [option])
 
-        get_patched.assert_called_with("{}/jobs/artifactsList".format(self.URL),
+        get_patched.assert_called_with("{}/jobs/artifactsListV2".format(self.URL),
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
                                        params={"jobId": job_id,
@@ -635,7 +635,7 @@ class TestJobsCreate(object):
 
 class TestDownloadJobArtifacts(TestJobs):
     runner = CliRunner()
-    LIST_FILES_URL = "https://api.paperspace.io/jobs/artifactsList"
+    LIST_FILES_URL = "https://api.paperspace.io/jobs/artifactsListV2"
     DESTINATION_DIR_NAME = "dest"
     DESTINATION_DIR_PATH = os.path.join(tempfile.gettempdir(), "dest")
 

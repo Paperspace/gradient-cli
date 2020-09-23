@@ -5720,20 +5720,22 @@ TENSORBOARD_DELETE_RESPONSE_JSON = {
     "message": "success"
 }
 
-LIST_JOB_FILES_RESPONSE_JSON = [
-    {
-        "file": "hello.txt",
-        "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/hello.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=7CT5k6buEmZe5k5E7g6BXMs2xV4%3D&response-content-disposition=attachment%3Bfilename%3D%22hello.txt%22&x-amz-security-token=some_amz_security_token"
-    },
-    {
-        "file": "hello2.txt",
-        "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/hello2.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=L1lI47cNyiROzdYkf%2FF3Cm3165E%3D&response-content-disposition=attachment%3Bfilename%3D%22hello2.txt%22&x-amz-security-token=some_amz_security_token"
-    },
-    {
-        "file": "keton/elo.txt",
-        "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/keton/elo.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=tHriojGx03S%2FKkVGQGVI5CQRFTo%3D&response-content-disposition=attachment%3Bfilename%3D%22elo.txt%22&x-amz-security-token=some_amz_security_token"
-    }
-]
+LIST_JOB_FILES_RESPONSE_JSON = {
+    'data': [
+        {
+            "file": "hello.txt",
+            "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/hello.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=7CT5k6buEmZe5k5E7g6BXMs2xV4%3D&response-content-disposition=attachment%3Bfilename%3D%22hello.txt%22&x-amz-security-token=some_amz_security_token"
+        },
+        {
+            "file": "hello2.txt",
+            "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/hello2.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=L1lI47cNyiROzdYkf%2FF3Cm3165E%3D&response-content-disposition=attachment%3Bfilename%3D%22hello2.txt%22&x-amz-security-token=some_amz_security_token"
+        },
+        {
+            "file": "keton/elo.txt",
+            "url": "https://ps-projects.s3.amazonaws.com/some/path/artifacts/keton/elo.txt?AWSAccessKeyId=some_aws_access_key_id&Expires=713274132&Signature=tHriojGx03S%2FKkVGQGVI5CQRFTo%3D&response-content-disposition=attachment%3Bfilename%3D%22elo.txt%22&x-amz-security-token=some_amz_security_token"
+        }
+    ],
+}
 
 GET_PRESIGNED_URL_FOR_S3_BUCKET_RESPONSE_JSON = {
     "data": {

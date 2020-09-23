@@ -126,12 +126,11 @@ class GetJob(GetBaseJobApiUrlMixin, GetResource):
 
 class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
     def _parse_objects(self, data, **kwargs):
-        serializer = serializers.ArtifactSchema()
-        files = serializer.get_instance(data, many=True)
-        return files
+        serializer = serializers.utils.paginate_schema(serializers.ArtifactSchema)
+        return serializer.get_instance(data)
 
     def get_request_url(self, **kwargs):
-        return "/jobs/artifactsList"
+        return "/jobs/artifactsListV2"
 
     def _get_request_params(self, kwargs):
         params = {
@@ -146,6 +145,9 @@ class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
 
         if kwargs.get("links"):
             params["links"] = kwargs.get("links")
+        
+        if kwargs.get("start_after"):
+            params["startAfter"] = kwargs.get("start_after")
 
         return params
 
