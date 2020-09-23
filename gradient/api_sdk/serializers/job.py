@@ -17,12 +17,7 @@ class JSONField(marshmallow.fields.Field):
         return json.dumps(value)
 
     def _deserialize(self, value, attr, data, **kwargs):
-        try:
-            result = json.loads(value)
-            if not result:
-                return None
-        except error:
-            raise "Could not parse %s json" % attr
+        return value
 
 
 class JobSchema(BaseSchema):
@@ -91,7 +86,8 @@ class JobSchema(BaseSchema):
     tpu_dataset_dir = marshmallow.fields.Str(dump_to="tpuDatasetDir", load_from="tpuDatasetDir")
     tpu_model_dir = marshmallow.fields.Str(dump_to="tpuModelDir", load_from="tpuModelDir")
     target_node_attrs = marshmallow.fields.Dict(dump_to="targetNodeAttrs", load_from="targetNodeAttrs")
-    job_env = JSONField(dump_to="envVars", load_from="jobEnv")
+    job_env = marshmallow.fields.Dict(dump_to="jobEnv", load_from="jobEnv")
+    env_vars = JSONField(dumpt_to="envVars", load_from="envVars")
     shared_mem_mbytes = marshmallow.fields.Int(dump_to="sharedMemMBytes", load_from="sharedMemMBytes")
     shutdown_timeout = marshmallow.fields.Int(dump_to="shutdownTimeout", load_from="shutdownTimeout")
     is_preemptible = marshmallow.fields.Bool(dump_to="isPreemptible", load_from="isPreemptible")
