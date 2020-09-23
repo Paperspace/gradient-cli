@@ -342,7 +342,7 @@ class JobsClient(TagsSupportMixin, BaseClient):
         data = repository.get(jobId=job_id)
         return data
 
-    def artifacts_list(self, job_id, files=None, size=False, links=True):
+    def artifacts_list(self, job_id, files=None, size=False, links=True, start_after=None):
         """
         Method to retrieve all artifacts files.
 
@@ -354,32 +354,21 @@ class JobsClient(TagsSupportMixin, BaseClient):
                 job_id='your_job_id_here',
                 files='your_files,here',
                 size=False,
-                links=True
+                links=True,
+                start_after='key',
             )
 
         :param str job_id: to limit artifact from this job.
         :param str files: to limit result only to file names provided. You can use wildcard option ``*``.
         :param bool size: flag to show file size. Default value is set to False.
         :param bool links: flag to show file url. Default value is set to True.
+        :params str start_after: key to list after
 
         :returns: list of files with description if specified from job artifacts.
-        :rtype: list[Artifact]
+        :rtype: Pagination
         """
-        start_after = None
-        artifacts = []
         repository = self.build_repository(ListJobArtifacts)
-
-        while True:
-            pagination_response = repository.list(jobId=job_id, files=files, links=links, size=size, start_after=start_after)
-
-            if pagination_response.data:
-                artifacts.extend(pagination_response.data)
-            start_after = pagination_response.start_after
-
-            if start_after is None:
-                break
-
-        return artifacts
+        return repository.list(jobId=job_id, files=files, links=links, size=size, start_after=start_after)
 
     def get_metrics(self, job_id, start=None, end=None, interval="30s", built_in_metrics=None):
         """Get job metrics

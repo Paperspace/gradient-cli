@@ -107,7 +107,18 @@ class JobArtifactsDownloader(ResourceDownloader):
     CLIENT_CLASS = JobsClient
 
     def _get_files_list(self, job_id):
-        files = self.client.artifacts_list(job_id)
+        start_after = None
+        files = []
+        while True:
+            pagination_response = self.client.artifacts_list(job_id, start_after=start_after)
+
+            if pagination_response.data:
+                files.extend(pagination_response.data)
+            start_after = pagination_response.start_after
+
+            if start_after is None:
+                break
+
         files = tuple((f.file, f.url) for f in files)
         return files
 
