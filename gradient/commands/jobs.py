@@ -212,6 +212,7 @@ class ArtifactsListCommand(BaseJobCommand):
 
         data = [tuple(columns)]
         for artifact in artifacts:
+            print(artifact)
             row = [artifact.file]
             if show_size:
                 row.append(artifact.size)

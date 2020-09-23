@@ -365,8 +365,18 @@ class JobsClient(TagsSupportMixin, BaseClient):
         :returns: list of files with description if specified from job artifacts.
         :rtype: list[Artifact]
         """
+        start_after = None
+        artifacts = []
         repository = self.build_repository(ListJobArtifacts)
-        artifacts = repository.list(jobId=job_id, files=files, links=links, size=size)
+
+        while True:
+            pagination_response = repository.list(jobId=job_id, files=files, links=links, size=size, start_after=start_after)
+            artifacts.extend(pagination_response.data)
+            start_after = pagination_response.start_after
+
+            if start_after is None:
+                break
+
         return artifacts
 
     def get_metrics(self, job_id, start=None, end=None, interval="30s", built_in_metrics=None):

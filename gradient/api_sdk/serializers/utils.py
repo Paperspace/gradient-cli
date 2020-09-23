@@ -1,6 +1,12 @@
+import marshmallow
+
+from .base import BaseSchema
+
+from .. import models
 from ..sdk_exceptions import GradientSdkError
 from ..serializers import SingleNodeExperimentSchema, MultiNodeExperimentSchema, HyperparameterSchema, \
     MpiMultiNodeExperimentSchema
+
 
 EXPERIMENT_ID_TO_EXPERIMENT_SERIALIZER_MAPPING = {
     1: SingleNodeExperimentSchema,
@@ -23,3 +29,12 @@ def get_serializer_for_experiment(experiment_dict):
         raise GradientSdkError("No experiment type with ID: {}".format(str(e)))
 
     return serializer
+
+
+def paginate_schema(schema):
+    class PaginationSchema(BaseSchema):
+        MODEL = models.Pagination
+        data = marshmallow.fields.Nested(schema, many=True, dump_only=True)
+        start_after = marshmallow.fields.String(dump_to='startAfter', load_from='startAfter')
+
+    return PaginationSchema()
