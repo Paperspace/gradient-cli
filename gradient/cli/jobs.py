@@ -169,7 +169,14 @@ def common_jobs_create_options(f):
             "--jobEnv",
             "job_env",
             type=json_string,
-            help="Environmental variables ",
+            help="Environmental variables (deprecated)",
+            cls=common.GradientOption,
+        ),
+        click.option(
+            "--envVars",
+            "env_vars",
+            type=json_string,
+            help="Environmental variables",
             cls=common.GradientOption,
         ),
         click.option(

@@ -41,6 +41,7 @@ class JobsClient(TagsSupportMixin, BaseClient):
             working_directory=None,
             experiment_id=None,
             job_env=None,
+            env_vars=None,
             use_dockerfile=None,
             is_preemptible=None,
             project=None,
@@ -75,7 +76,7 @@ class JobsClient(TagsSupportMixin, BaseClient):
                 name='Example job',
                 command='pip install -r requirements.txt && python mnist.py',
                 ports='5000:5000',
-                job_env={
+                env_vars={
                     'CUSTOM_ENV'='Some value that will be set as system environment',
                 }
             )
@@ -113,7 +114,8 @@ class JobsClient(TagsSupportMixin, BaseClient):
         :param str working_directory: location of code to run. By default ``/paperspace``
         :param str experiment_id: Id of experiment to which job should be connected. If not provided there will be
             created new experiment for this job.
-        :param dict job_env: key value collection of envs that are used in code
+        :param dict job_env: key value collection of envs that are used in code (deprecated)
+        :param dict env_vars: key value collection of envs that are used in code
         :param bool use_dockerfile: determines whether to build from Dockerfile (default false).
             Do not include a --container argument when using this flag.
         :param bool is_preemptible: flag if we you want to use spot instance. By default False
@@ -152,6 +154,7 @@ class JobsClient(TagsSupportMixin, BaseClient):
             working_directory=working_directory,
             experiment_id=experiment_id,
             job_env=job_env,
+            env_vars=env_vars,
             use_dockerfile=use_dockerfile,
             is_preemptible=is_preemptible,
             project=project,

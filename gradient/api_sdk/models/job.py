@@ -65,6 +65,7 @@ class Job(object):
     tpu_model_dir = attr.ib(type=str, default=None)
     target_node_attrs = attr.ib(type=dict, default=None)
     job_env = attr.ib(type=dict, default=None)
+    env_vars = attr.ib(type=dict, default=None)
     shared_mem_mbytes = attr.ib(type=int, default=None)
     shutdown_timeout = attr.ib(type=int, default=None)
     is_preemptible = attr.ib(type=bool, default=None)
