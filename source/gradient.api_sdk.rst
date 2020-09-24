@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    gradient.api_sdk.clients
    gradient.api_sdk.models
@@ -14,10 +15,26 @@ Subpackages
 Submodules
 ----------
 
-gradient.api\_sdk.exceptions module
------------------------------------
+gradient.api\_sdk.archivers module
+----------------------------------
 
-.. automodule:: gradient.api_sdk.exceptions
+.. automodule:: gradient.api_sdk.archivers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.config module
+-------------------------------
+
+.. automodule:: gradient.api_sdk.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.constants module
+----------------------------------
+
+.. automodule:: gradient.api_sdk.constants
    :members:
    :undoc-members:
    :show-inheritance:
@@ -30,10 +47,42 @@ gradient.api\_sdk.logger module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.s3\_downloader module
+---------------------------------------
+
+.. automodule:: gradient.api_sdk.s3_downloader
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.s3\_uploader module
+-------------------------------------
+
+.. automodule:: gradient.api_sdk.s3_uploader
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.sdk\_exceptions module
+----------------------------------------
+
+.. automodule:: gradient.api_sdk.sdk_exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.utils module
 ------------------------------
 
 .. automodule:: gradient.api_sdk.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.validation\_messages module
+---------------------------------------------
+
+.. automodule:: gradient.api_sdk.validation_messages
    :members:
    :undoc-members:
    :show-inheritance:
@@ -45,7 +94,6 @@ gradient.api\_sdk.workspace module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------
