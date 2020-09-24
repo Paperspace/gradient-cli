@@ -4,14 +4,6 @@ gradient.api\_sdk.repositories package
 Submodules
 ----------
 
-gradient.api\_sdk.repositories.clusters module
-----------------------------------------------
-
-.. automodule:: gradient.api_sdk.repositories.clusters
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 gradient.api\_sdk.repositories.common module
 --------------------------------------------
 
@@ -52,14 +44,6 @@ gradient.api\_sdk.repositories.jobs module
    :undoc-members:
    :show-inheritance:
 
-gradient.api\_sdk.repositories.machine\_types module
-----------------------------------------------------
-
-.. automodule:: gradient.api_sdk.repositories.machine_types
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 gradient.api\_sdk.repositories.machines module
 ----------------------------------------------
 
@@ -92,22 +76,6 @@ gradient.api\_sdk.repositories.projects module
    :undoc-members:
    :show-inheritance:
 
-gradient.api\_sdk.repositories.secrets module
----------------------------------------------
-
-.. automodule:: gradient.api_sdk.repositories.secrets
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gradient.api\_sdk.repositories.tags module
-------------------------------------------
-
-.. automodule:: gradient.api_sdk.repositories.tags
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 gradient.api\_sdk.repositories.tensorboards module
 --------------------------------------------------
 
@@ -115,6 +83,7 @@ gradient.api\_sdk.repositories.tensorboards module
    :members:
    :undoc-members:
    :show-inheritance:
+
 
 Module contents
 ---------------

@@ -22,7 +22,6 @@ pyyaml = "*"
 python-dateutil = ">=2.0,<3.0"
 websocket-client = "*"
 gradient-utils = ">=0.1.1"
-attrs = "*"
 
 [dev-packages]
 twine = "*"
@@ -32,4 +31,3 @@ mock = "*"
 coverage = "*"
 tox = "*"
 sphinx = "*"
-sphinx-click = "*"

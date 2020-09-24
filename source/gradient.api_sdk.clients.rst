@@ -12,14 +12,6 @@ gradient.api\_sdk.clients.base\_client module
    :undoc-members:
    :show-inheritance:
 
-gradient.api\_sdk.clients.clusters module
------------------------------------------
-
-.. automodule:: gradient.api_sdk.clients.clusters
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 gradient.api\_sdk.clients.deployment\_client module
 ---------------------------------------------------
 
@@ -56,14 +48,6 @@ gradient.api\_sdk.clients.job\_client module
 --------------------------------------------
 
 .. automodule:: gradient.api_sdk.clients.job_client
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gradient.api\_sdk.clients.machine\_types\_client module
--------------------------------------------------------
-
-.. automodule:: gradient.api_sdk.clients.machine_types_client
    :members:
    :undoc-members:
    :show-inheritance:
@@ -108,14 +92,6 @@ gradient.api\_sdk.clients.sdk\_client module
    :undoc-members:
    :show-inheritance:
 
-gradient.api\_sdk.clients.secret\_client module
------------------------------------------------
-
-.. automodule:: gradient.api_sdk.clients.secret_client
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 gradient.api\_sdk.clients.tensorboards\_client module
 -----------------------------------------------------
 
@@ -123,6 +99,7 @@ gradient.api\_sdk.clients.tensorboards\_client module
    :members:
    :undoc-members:
    :show-inheritance:
+
 
 Module contents
 ---------------
