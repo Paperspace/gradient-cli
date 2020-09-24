@@ -51,7 +51,7 @@ class ModelsClient(TagsSupportMixin, BaseClient):
             summary=json.dumps(model_summary) if model_summary else None,
             notes=notes,
             project_id=project_id,
-            cluster_id=cluster_id
+            cluster_id=cluster_id,
         )
 
         repository = self.build_repository(repositories.UploadModel)
