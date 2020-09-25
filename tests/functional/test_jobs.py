@@ -486,7 +486,7 @@ class TestJobsCreate(object):
         "--isPreemptible", "True",
         "--projectId", "some_project_id",
         "--isPublic", "True",
-        "--jobEnv", '{"key":"val"}',
+        "--envVars", '{"key":"val"}',
         "--machineType", "K80",
         "--name", "some_name",
         "--nodeAttrs", '{"key":"val"}',

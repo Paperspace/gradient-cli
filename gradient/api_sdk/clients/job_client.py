@@ -76,9 +76,7 @@ class JobsClient(TagsSupportMixin, BaseClient):
                 name='Example job',
                 command='pip install -r requirements.txt && python mnist.py',
                 ports='5000:5000',
-                env_vars={
-                    'CUSTOM_ENV'='Some value that will be set as system environment',
-                }
+                env_vars={'CUSTOM_ENV': 'Some value that will be set as system environment'}
             )
 
         :param str machine_type: Type of machine on which job should run. This field is **required**.
