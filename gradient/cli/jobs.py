@@ -166,10 +166,10 @@ def common_jobs_create_options(f):
             cls=common.GradientOption,
         ),
         click.option(
-            "--jobEnv",
-            "job_env",
+            "--envVars",
+            "env_vars",
             type=json_string,
-            help="Environmental variables ",
+            help="Environmental variables",
             cls=common.GradientOption,
         ),
         click.option(

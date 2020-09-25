@@ -1,7 +1,23 @@
+import json
+
 import marshmallow
 
 from .base import BaseSchema
 from .. import models
+
+
+class JSONField(marshmallow.fields.Field):
+    """Field that serializes to json
+    """
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        if value is None:
+            return None
+
+        return json.dumps(value)
+
+    def _deserialize(self, value, attr, data, **kwargs):
+        return value
 
 
 class JobSchema(BaseSchema):
@@ -71,6 +87,7 @@ class JobSchema(BaseSchema):
     tpu_model_dir = marshmallow.fields.Str(dump_to="tpuModelDir", load_from="tpuModelDir")
     target_node_attrs = marshmallow.fields.Dict(dump_to="targetNodeAttrs", load_from="targetNodeAttrs")
     job_env = marshmallow.fields.Dict(dump_to="jobEnv", load_from="jobEnv")
+    env_vars = JSONField(dump_to="envVars", load_from="envVars")
     shared_mem_mbytes = marshmallow.fields.Int(dump_to="sharedMemMBytes", load_from="sharedMemMBytes")
     shutdown_timeout = marshmallow.fields.Int(dump_to="shutdownTimeout", load_from="shutdownTimeout")
     is_preemptible = marshmallow.fields.Bool(dump_to="isPreemptible", load_from="isPreemptible")

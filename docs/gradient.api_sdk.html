@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>gradient.api_sdk package &#8212; Gradient-CLI alpha documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/gradient.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="gradient.api_sdk.clients package" href="gradient.api_sdk.clients.html" />
@@ -43,16 +44,15 @@
 <li class="toctree-l1 current"><a class="reference internal" href="gradient.html">gradient package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="gradient.html#subpackages">Subpackages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.cli_constants">gradient.cli_constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.clilogger">gradient.clilogger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.cliutils">gradient.cliutils module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.config">gradient.config module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.constants">gradient.constants module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.exceptions">gradient.exceptions module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.logger">gradient.logger module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.login">gradient.login module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.main">gradient.main module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.utils">gradient.utils module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.version">gradient.version module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.version_checker">gradient.version_checker module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.workspace">gradient.workspace module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient">Module contents</a></li>
 </ul>
 </li>
@@ -82,7 +82,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -108,22 +108,28 @@
 <li class="toctree-l1"><a class="reference internal" href="gradient.api_sdk.clients.html">gradient.api_sdk.clients package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.base_client">gradient.api_sdk.clients.base_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.clusters">gradient.api_sdk.clients.clusters module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.deployment_client">gradient.api_sdk.clients.deployment_client module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.experiment_client">gradient.api_sdk.clients.experiment_client module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.http_client">gradient.api_sdk.clients.http_client module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.hyperparameter_client">gradient.api_sdk.clients.hyperparameter_client module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.job_client">gradient.api_sdk.clients.job_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.machine_types_client">gradient.api_sdk.clients.machine_types_client module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.machines_client">gradient.api_sdk.clients.machines_client module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.model_client">gradient.api_sdk.clients.model_client module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.notebook_client">gradient.api_sdk.clients.notebook_client module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.project_client">gradient.api_sdk.clients.project_client module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.sdk_client">gradient.api_sdk.clients.sdk_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.secret_client">gradient.api_sdk.clients.secret_client module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients.tensorboards_client">gradient.api_sdk.clients.tensorboards_client module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.clients.html#module-gradient.api_sdk.clients">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradient.api_sdk.models.html">gradient.api_sdk.models package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.artifact">gradient.api_sdk.models.artifact module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.cluster">gradient.api_sdk.models.cluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.dataset">gradient.api_sdk.models.dataset module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.deployment">gradient.api_sdk.models.deployment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.experiment">gradient.api_sdk.models.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.hyperparameter">gradient.api_sdk.models.hyperparameter module</a></li>
@@ -133,28 +139,38 @@
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.model">gradient.api_sdk.models.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.notebook">gradient.api_sdk.models.notebook module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.project">gradient.api_sdk.models.project module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.secret">gradient.api_sdk.models.secret module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.tag">gradient.api_sdk.models.tag module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.tensorboard">gradient.api_sdk.models.tensorboard module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models.vm_type">gradient.api_sdk.models.vm_type module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.models.html#module-gradient.api_sdk.models">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradient.api_sdk.repositories.html">gradient.api_sdk.repositories package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.clusters">gradient.api_sdk.repositories.clusters module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.common">gradient.api_sdk.repositories.common module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.deployments">gradient.api_sdk.repositories.deployments module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.experiments">gradient.api_sdk.repositories.experiments module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.hyperparameter">gradient.api_sdk.repositories.hyperparameter module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.jobs">gradient.api_sdk.repositories.jobs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.machine_types">gradient.api_sdk.repositories.machine_types module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.machines">gradient.api_sdk.repositories.machines module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.models">gradient.api_sdk.repositories.models module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.notebooks">gradient.api_sdk.repositories.notebooks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.projects">gradient.api_sdk.repositories.projects module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.secrets">gradient.api_sdk.repositories.secrets module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.tags">gradient.api_sdk.repositories.tags module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories.tensorboards">gradient.api_sdk.repositories.tensorboards module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.repositories.html#module-gradient.api_sdk.repositories">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradient.api_sdk.serializers.html">gradient.api_sdk.serializers package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.artifact">gradient.api_sdk.serializers.artifact module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.base">gradient.api_sdk.serializers.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.cluster">gradient.api_sdk.serializers.cluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.dataset">gradient.api_sdk.serializers.dataset module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.deployment">gradient.api_sdk.serializers.deployment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.experiment">gradient.api_sdk.serializers.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.hyperparameter">gradient.api_sdk.serializers.hyperparameter module</a></li>
@@ -164,8 +180,11 @@
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.model">gradient.api_sdk.serializers.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.notebook">gradient.api_sdk.serializers.notebook module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.project">gradient.api_sdk.serializers.project module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.secret">gradient.api_sdk.serializers.secret module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.tag">gradient.api_sdk.serializers.tag module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.tensorboard">gradient.api_sdk.serializers.tensorboard module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.utils">gradient.api_sdk.serializers.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers.vm_type">gradient.api_sdk.serializers.vm_type module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.api_sdk.serializers.html#module-gradient.api_sdk.serializers">Module contents</a></li>
 </ul>
 </li>
@@ -175,92 +194,999 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-gradient.api_sdk.exceptions">
-<span id="gradient-api-sdk-exceptions-module"></span><h2>gradient.api_sdk.exceptions module<a class="headerlink" href="#module-gradient.api_sdk.exceptions" title="Permalink to this headline">¶</a></h2>
-<dl class="exception">
-<dt id="gradient.api_sdk.exceptions.GradientSdkError">
-<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.exceptions.</code><code class="sig-name descname">GradientSdkError</code><a class="headerlink" href="#gradient.api_sdk.exceptions.GradientSdkError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<div class="section" id="module-gradient.api_sdk.archivers">
+<span id="gradient-api-sdk-archivers-module"></span><h2>gradient.api_sdk.archivers module<a class="headerlink" href="#module-gradient.api_sdk.archivers" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="gradient.api_sdk.archivers.ZipArchiver">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.archivers.</code><code class="sig-name descname">ZipArchiver</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.archivers.ZipArchiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.archivers.ZipArchiver.DEFAULT_EXCLUDED_PATHS">
+<code class="sig-name descname">DEFAULT_EXCLUDED_PATHS</code><em class="property"> = ['.git/*', '.idea/*', '.pytest_cache/*']</em><a class="headerlink" href="#gradient.api_sdk.archivers.ZipArchiver.DEFAULT_EXCLUDED_PATHS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.archivers.ZipArchiver.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.archivers.ZipArchiver.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
-<dl class="exception">
-<dt id="gradient.api_sdk.exceptions.ResourceFetchingError">
-<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.exceptions.</code><code class="sig-name descname">ResourceFetchingError</code><a class="headerlink" href="#gradient.api_sdk.exceptions.ResourceFetchingError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.exceptions.GradientSdkError" title="gradient.api_sdk.exceptions.GradientSdkError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.exceptions.GradientSdkError</span></code></a></p>
+<dl class="py method">
+<dt id="gradient.api_sdk.archivers.ZipArchiver.archive">
+<code class="sig-name descname">archive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_dir_path</span></em>, <em class="sig-param"><span class="n">output_file_path</span></em>, <em class="sig-param"><span class="n">overwrite_existing_archive</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.archivers.ZipArchiver.archive" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_dir_path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>output_file_path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>overwrite_existing_archive</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>exclude</strong> (<em>list|tuple|None</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="exception">
-<dt id="gradient.api_sdk.exceptions.ResourceCreatingError">
-<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.exceptions.</code><code class="sig-name descname">ResourceCreatingError</code><a class="headerlink" href="#gradient.api_sdk.exceptions.ResourceCreatingError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.exceptions.GradientSdkError" title="gradient.api_sdk.exceptions.GradientSdkError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.exceptions.GradientSdkError</span></code></a></p>
+<dl class="py method">
+<dt id="gradient.api_sdk.archivers.ZipArchiver.get_excluded_paths">
+<code class="sig-name descname">get_excluded_paths</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.archivers.ZipArchiver.get_excluded_paths" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exclude</strong> (<em>list|tuple|None</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>set</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="exception">
-<dt id="gradient.api_sdk.exceptions.ResourceCreatingDataError">
-<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.exceptions.</code><code class="sig-name descname">ResourceCreatingDataError</code><a class="headerlink" href="#gradient.api_sdk.exceptions.ResourceCreatingDataError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.exceptions.ResourceCreatingError" title="gradient.api_sdk.exceptions.ResourceCreatingError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.exceptions.ResourceCreatingError</span></code></a></p>
+<dl class="py method">
+<dt id="gradient.api_sdk.archivers.ZipArchiver.get_file_paths">
+<em class="property">static </em><code class="sig-name descname">get_file_paths</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_path</span></em>, <em class="sig-param"><span class="n">excluded_paths</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.archivers.ZipArchiver.get_file_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a dictionary of all files in input_dir excluding specified in excluded_paths</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>excluded_paths</strong> (<em>list|tuple|set|None</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary with full paths as values as keys and relative paths</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict[str,str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.archivers.ZipArchiverWithProgressbar">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.archivers.</code><code class="sig-name descname">ZipArchiverWithProgressbar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.archivers.ZipArchiverWithProgressbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.archivers.ZipArchiver" title="gradient.api_sdk.archivers.ZipArchiver"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.archivers.ZipArchiver</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.config">
+<span id="gradient-api-sdk-config-module"></span><h2>gradient.api_sdk.config module<a class="headerlink" href="#module-gradient.api_sdk.config" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="gradient.api_sdk.config.get_api_key">
+<code class="sig-prename descclassname">gradient.api_sdk.config.</code><code class="sig-name descname">get_api_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_dir_path</span></em>, <em class="sig-param"><span class="n">config_file_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.config.get_api_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="gradient.api_sdk.config.get_help_colors_dict">
+<code class="sig-prename descclassname">gradient.api_sdk.config.</code><code class="sig-name descname">get_help_colors_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">use_colors</span></em>, <em class="sig-param"><span class="n">help_headers_color</span></em>, <em class="sig-param"><span class="n">help_options_color</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.config.get_help_colors_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.config.config">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.config.</code><code class="sig-name descname">config</code><a class="headerlink" href="#gradient.api_sdk.config.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.DEBUG">
+<code class="sig-name descname">DEBUG</code><em class="property"> = False</em><a class="headerlink" href="#gradient.api_sdk.config.config.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.WEB_URL">
+<code class="sig-name descname">WEB_URL</code><em class="property"> = 'https://console.paperspace.com'</em><a class="headerlink" href="#gradient.api_sdk.config.config.WEB_URL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.CONFIG_HOST">
+<code class="sig-name descname">CONFIG_HOST</code><em class="property"> = 'http://localhost:3102'</em><a class="headerlink" href="#gradient.api_sdk.config.config.CONFIG_HOST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.CONFIG_LOG_HOST">
+<code class="sig-name descname">CONFIG_LOG_HOST</code><em class="property"> = 'https://logs.paperspace.io'</em><a class="headerlink" href="#gradient.api_sdk.config.config.CONFIG_LOG_HOST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.CONFIG_EXPERIMENTS_HOST">
+<code class="sig-name descname">CONFIG_EXPERIMENTS_HOST</code><em class="property"> = 'https://services.paperspace.io/experiments/v1/'</em><a class="headerlink" href="#gradient.api_sdk.config.config.CONFIG_EXPERIMENTS_HOST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.CONFIG_EXPERIMENTS_HOST_V2">
+<code class="sig-name descname">CONFIG_EXPERIMENTS_HOST_V2</code><em class="property"> = 'https://services.paperspace.io/experiments/v2/'</em><a class="headerlink" href="#gradient.api_sdk.config.config.CONFIG_EXPERIMENTS_HOST_V2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.CONFIG_SERVICE_HOST">
+<code class="sig-name descname">CONFIG_SERVICE_HOST</code><em class="property"> = 'https://services.paperspace.io'</em><a class="headerlink" href="#gradient.api_sdk.config.config.CONFIG_SERVICE_HOST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.CONFIG_DIR_PATH">
+<code class="sig-name descname">CONFIG_DIR_PATH</code><em class="property"> = '/home/paperspace/.paperspace'</em><a class="headerlink" href="#gradient.api_sdk.config.config.CONFIG_DIR_PATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.CONFIG_FILE_NAME">
+<code class="sig-name descname">CONFIG_FILE_NAME</code><em class="property"> = 'config.json'</em><a class="headerlink" href="#gradient.api_sdk.config.config.CONFIG_FILE_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.PAPERSPACE_API_KEY">
+<code class="sig-name descname">PAPERSPACE_API_KEY</code><em class="property"> = '8fdc3a838623c045046ac9f623c5ad'</em><a class="headerlink" href="#gradient.api_sdk.config.config.PAPERSPACE_API_KEY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.HELP_HEADERS_COLOR">
+<code class="sig-name descname">HELP_HEADERS_COLOR</code><em class="property"> = 'yellow'</em><a class="headerlink" href="#gradient.api_sdk.config.config.HELP_HEADERS_COLOR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.HELP_OPTIONS_COLOR">
+<code class="sig-name descname">HELP_OPTIONS_COLOR</code><em class="property"> = 'green'</em><a class="headerlink" href="#gradient.api_sdk.config.config.HELP_OPTIONS_COLOR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.USE_CONSOLE_COLORS">
+<code class="sig-name descname">USE_CONSOLE_COLORS</code><em class="property"> = True</em><a class="headerlink" href="#gradient.api_sdk.config.config.USE_CONSOLE_COLORS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.config.config.HELP_COLORS_DICT">
+<code class="sig-name descname">HELP_COLORS_DICT</code><em class="property"> = {'help_headers_color': 'yellow', 'help_options_color': 'green'}</em><a class="headerlink" href="#gradient.api_sdk.config.config.HELP_COLORS_DICT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.constants">
+<span id="gradient-api-sdk-constants-module"></span><h2>gradient.api_sdk.constants module<a class="headerlink" href="#module-gradient.api_sdk.constants" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="gradient.api_sdk.constants.ExperimentType">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.constants.</code><code class="sig-name descname">ExperimentType</code><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentType.SINGLE_NODE">
+<code class="sig-name descname">SINGLE_NODE</code><em class="property"> = 1</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentType.SINGLE_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentType.GRPC_MULTI_NODE">
+<code class="sig-name descname">GRPC_MULTI_NODE</code><em class="property"> = 2</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentType.GRPC_MULTI_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentType.MPI_MULTI_NODE">
+<code class="sig-name descname">MPI_MULTI_NODE</code><em class="property"> = 3</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentType.MPI_MULTI_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentType.HYPERPARAMETER_TUNING">
+<code class="sig-name descname">HYPERPARAMETER_TUNING</code><em class="property"> = 4</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentType.HYPERPARAMETER_TUNING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.constants.ExperimentType.get_type_str">
+<em class="property">classmethod </em><code class="sig-name descname">get_type_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state_int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentType.get_type_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.constants.ExperimentState">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.constants.</code><code class="sig-name descname">ExperimentState</code><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.PENDING">
+<code class="sig-name descname">PENDING</code><em class="property"> = 1</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.PENDING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.PROVISIONED">
+<code class="sig-name descname">PROVISIONED</code><em class="property"> = 2</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.PROVISIONED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.NETWORK_SETUP">
+<code class="sig-name descname">NETWORK_SETUP</code><em class="property"> = 3</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.NETWORK_SETUP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.RUNNING">
+<code class="sig-name descname">RUNNING</code><em class="property"> = 4</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.RUNNING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.STOPPED">
+<code class="sig-name descname">STOPPED</code><em class="property"> = 5</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.STOPPED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.ERROR">
+<code class="sig-name descname">ERROR</code><em class="property"> = 6</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.FAILED">
+<code class="sig-name descname">FAILED</code><em class="property"> = 7</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.FAILED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.CANCELLED">
+<code class="sig-name descname">CANCELLED</code><em class="property"> = 8</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.CANCELLED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.NETWORK_TEARDOWN">
+<code class="sig-name descname">NETWORK_TEARDOWN</code><em class="property"> = 9</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.NETWORK_TEARDOWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.CREATED">
+<code class="sig-name descname">CREATED</code><em class="property"> = 10</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.CREATED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.PROVISIONING">
+<code class="sig-name descname">PROVISIONING</code><em class="property"> = 11</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.PROVISIONING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.NETWORK_SETTING_UP">
+<code class="sig-name descname">NETWORK_SETTING_UP</code><em class="property"> = 12</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.NETWORK_SETTING_UP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.NETWORK_TEARING_DOWN">
+<code class="sig-name descname">NETWORK_TEARING_DOWN</code><em class="property"> = 13</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.NETWORK_TEARING_DOWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ExperimentState.ABORTING">
+<code class="sig-name descname">ABORTING</code><em class="property"> = 14</em><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.ABORTING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.constants.ExperimentState.get_state_str">
+<em class="property">classmethod </em><code class="sig-name descname">get_state_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state_int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.constants.ExperimentState.get_state_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.constants.Region">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.constants.</code><code class="sig-name descname">Region</code><a class="headerlink" href="#gradient.api_sdk.constants.Region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.Region.CA1">
+<code class="sig-name descname">CA1</code><em class="property"> = 'West Coast (CA1)'</em><a class="headerlink" href="#gradient.api_sdk.constants.Region.CA1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.Region.NY2">
+<code class="sig-name descname">NY2</code><em class="property"> = 'East Coast (NY2)'</em><a class="headerlink" href="#gradient.api_sdk.constants.Region.NY2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.Region.AMS1">
+<code class="sig-name descname">AMS1</code><em class="property"> = 'Europe (AMS1)'</em><a class="headerlink" href="#gradient.api_sdk.constants.Region.AMS1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.constants.RunMode">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.constants.</code><code class="sig-name descname">RunMode</code><a class="headerlink" href="#gradient.api_sdk.constants.RunMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.RunMode.RUN_MODE_DEFAULT">
+<code class="sig-name descname">RUN_MODE_DEFAULT</code><em class="property"> = 1</em><a class="headerlink" href="#gradient.api_sdk.constants.RunMode.RUN_MODE_DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.RunMode.RUN_MODE_PYTHON_COMMAND">
+<code class="sig-name descname">RUN_MODE_PYTHON_COMMAND</code><em class="property"> = 2</em><a class="headerlink" href="#gradient.api_sdk.constants.RunMode.RUN_MODE_PYTHON_COMMAND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.RunMode.RUN_MODE_SHELL_COMMAND">
+<code class="sig-name descname">RUN_MODE_SHELL_COMMAND</code><em class="property"> = 3</em><a class="headerlink" href="#gradient.api_sdk.constants.RunMode.RUN_MODE_SHELL_COMMAND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.RunMode.RUN_MODE_PYTHON_MODULE">
+<code class="sig-name descname">RUN_MODE_PYTHON_MODULE</code><em class="property"> = 4</em><a class="headerlink" href="#gradient.api_sdk.constants.RunMode.RUN_MODE_PYTHON_MODULE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.constants.ModelTypes">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.constants.</code><code class="sig-name descname">ModelTypes</code><a class="headerlink" href="#gradient.api_sdk.constants.ModelTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ModelTypes.ONNX">
+<code class="sig-name descname">ONNX</code><em class="property"> = 'ONNX'</em><a class="headerlink" href="#gradient.api_sdk.constants.ModelTypes.ONNX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ModelTypes.TENSORFLOW">
+<code class="sig-name descname">TENSORFLOW</code><em class="property"> = 'Tensorflow'</em><a class="headerlink" href="#gradient.api_sdk.constants.ModelTypes.TENSORFLOW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ModelTypes.GENERIC">
+<code class="sig-name descname">GENERIC</code><em class="property"> = 'Custom'</em><a class="headerlink" href="#gradient.api_sdk.constants.ModelTypes.GENERIC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.constants.ApiTypes">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.constants.</code><code class="sig-name descname">ApiTypes</code><a class="headerlink" href="#gradient.api_sdk.constants.ApiTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ApiTypes.REST">
+<code class="sig-name descname">REST</code><em class="property"> = 'REST'</em><a class="headerlink" href="#gradient.api_sdk.constants.ApiTypes.REST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.ApiTypes.GRPC">
+<code class="sig-name descname">GRPC</code><em class="property"> = 'GRPC'</em><a class="headerlink" href="#gradient.api_sdk.constants.ApiTypes.GRPC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.constants.BuiltinMetrics">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.constants.</code><code class="sig-name descname">BuiltinMetrics</code><a class="headerlink" href="#gradient.api_sdk.constants.BuiltinMetrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.BuiltinMetrics.cpu_percentage">
+<code class="sig-name descname">cpu_percentage</code><em class="property"> = 'cpuPercentage'</em><a class="headerlink" href="#gradient.api_sdk.constants.BuiltinMetrics.cpu_percentage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.BuiltinMetrics.memory_usage">
+<code class="sig-name descname">memory_usage</code><em class="property"> = 'memoryUsage'</em><a class="headerlink" href="#gradient.api_sdk.constants.BuiltinMetrics.memory_usage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.BuiltinMetrics.gpu_memory_free">
+<code class="sig-name descname">gpu_memory_free</code><em class="property"> = 'gpuMemoryFree'</em><a class="headerlink" href="#gradient.api_sdk.constants.BuiltinMetrics.gpu_memory_free" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.BuiltinMetrics.gpu_memory_used">
+<code class="sig-name descname">gpu_memory_used</code><em class="property"> = 'gpuMemoryUsed'</em><a class="headerlink" href="#gradient.api_sdk.constants.BuiltinMetrics.gpu_memory_used" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.BuiltinMetrics.gpu_power_draw">
+<code class="sig-name descname">gpu_power_draw</code><em class="property"> = 'gpuPowerDraw'</em><a class="headerlink" href="#gradient.api_sdk.constants.BuiltinMetrics.gpu_power_draw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.BuiltinMetrics.gpu_temp">
+<code class="sig-name descname">gpu_temp</code><em class="property"> = 'gpuTemp'</em><a class="headerlink" href="#gradient.api_sdk.constants.BuiltinMetrics.gpu_temp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.BuiltinMetrics.gpu_utilization">
+<code class="sig-name descname">gpu_utilization</code><em class="property"> = 'gpuUtilization'</em><a class="headerlink" href="#gradient.api_sdk.constants.BuiltinMetrics.gpu_utilization" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.BuiltinMetrics.gpu_memory_utilization">
+<code class="sig-name descname">gpu_memory_utilization</code><em class="property"> = 'gpuMemoryUtilization'</em><a class="headerlink" href="#gradient.api_sdk.constants.BuiltinMetrics.gpu_memory_utilization" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.constants.DatasetVolumeKinds">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.constants.</code><code class="sig-name descname">DatasetVolumeKinds</code><a class="headerlink" href="#gradient.api_sdk.constants.DatasetVolumeKinds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.DatasetVolumeKinds.DYNAMIC">
+<code class="sig-name descname">DYNAMIC</code><em class="property"> = 'dynamic'</em><a class="headerlink" href="#gradient.api_sdk.constants.DatasetVolumeKinds.DYNAMIC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.DatasetVolumeKinds.SHARED">
+<code class="sig-name descname">SHARED</code><em class="property"> = 'shared'</em><a class="headerlink" href="#gradient.api_sdk.constants.DatasetVolumeKinds.SHARED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.constants.DeploymentState">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.constants.</code><code class="sig-name descname">DeploymentState</code><a class="headerlink" href="#gradient.api_sdk.constants.DeploymentState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.DeploymentState.BUILDING">
+<code class="sig-name descname">BUILDING</code><em class="property"> = 1</em><a class="headerlink" href="#gradient.api_sdk.constants.DeploymentState.BUILDING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.DeploymentState.PROVISIONING">
+<code class="sig-name descname">PROVISIONING</code><em class="property"> = 2</em><a class="headerlink" href="#gradient.api_sdk.constants.DeploymentState.PROVISIONING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.DeploymentState.STARTING">
+<code class="sig-name descname">STARTING</code><em class="property"> = 3</em><a class="headerlink" href="#gradient.api_sdk.constants.DeploymentState.STARTING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.DeploymentState.RUNNING">
+<code class="sig-name descname">RUNNING</code><em class="property"> = 4</em><a class="headerlink" href="#gradient.api_sdk.constants.DeploymentState.RUNNING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.DeploymentState.STOPPING">
+<code class="sig-name descname">STOPPING</code><em class="property"> = 5</em><a class="headerlink" href="#gradient.api_sdk.constants.DeploymentState.STOPPING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.DeploymentState.STOPPED">
+<code class="sig-name descname">STOPPED</code><em class="property"> = 6</em><a class="headerlink" href="#gradient.api_sdk.constants.DeploymentState.STOPPED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.constants.DeploymentState.ERROR">
+<code class="sig-name descname">ERROR</code><em class="property"> = 7</em><a class="headerlink" href="#gradient.api_sdk.constants.DeploymentState.ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.constants.DeploymentState.get_state_str">
+<em class="property">classmethod </em><code class="sig-name descname">get_state_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state_int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.constants.DeploymentState.get_state_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
 <div class="section" id="module-gradient.api_sdk.logger">
 <span id="gradient-api-sdk-logger-module"></span><h2>gradient.api_sdk.logger module<a class="headerlink" href="#module-gradient.api_sdk.logger" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.logger.Logger">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.logger.</code><code class="sig-name descname">Logger</code><a class="headerlink" href="#gradient.api_sdk.logger.Logger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="method">
+<dl class="py method">
 <dt id="gradient.api_sdk.logger.Logger.log">
-<em class="property">abstract </em><code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param">msg</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.Logger.log" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.Logger.log" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gradient.api_sdk.logger.Logger.warning">
-<em class="property">abstract </em><code class="sig-name descname">warning</code><span class="sig-paren">(</span><em class="sig-param">msg</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.Logger.warning" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">warning</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.Logger.warning" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gradient.api_sdk.logger.Logger.error">
-<em class="property">abstract </em><code class="sig-name descname">error</code><span class="sig-paren">(</span><em class="sig-param">msg</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.Logger.error" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.Logger.error" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gradient.api_sdk.logger.Logger.debug">
-<code class="sig-name descname">debug</code><span class="sig-paren">(</span><em class="sig-param">msg</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.Logger.debug" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">debug</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.Logger.debug" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.logger.MuteLogger">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.logger.</code><code class="sig-name descname">MuteLogger</code><a class="headerlink" href="#gradient.api_sdk.logger.MuteLogger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.logger.Logger" title="gradient.api_sdk.logger.Logger"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.logger.Logger</span></code></a></p>
-<dl class="method">
+<dl class="py method">
 <dt id="gradient.api_sdk.logger.MuteLogger.log">
-<code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param">msg</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.MuteLogger.log" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.MuteLogger.log" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gradient.api_sdk.logger.MuteLogger.warning">
-<code class="sig-name descname">warning</code><span class="sig-paren">(</span><em class="sig-param">msg</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.MuteLogger.warning" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">warning</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.MuteLogger.warning" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gradient.api_sdk.logger.MuteLogger.error">
-<code class="sig-name descname">error</code><span class="sig-paren">(</span><em class="sig-param">msg</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.MuteLogger.error" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.logger.MuteLogger.error" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </div>
+<div class="section" id="module-gradient.api_sdk.s3_downloader">
+<span id="gradient-api-sdk-s3-downloader-module"></span><h2>gradient.api_sdk.s3_downloader module<a class="headerlink" href="#module-gradient.api_sdk.s3_downloader" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_downloader.S3FilesDownloader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_downloader.</code><code class="sig-name descname">S3FilesDownloader</code><span class="sig-paren">(</span><em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_downloader.S3FilesDownloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_downloader.S3FilesDownloader.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_downloader.S3FilesDownloader.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_downloader.S3FilesDownloader.download_list">
+<code class="sig-name descname">download_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sources</span></em>, <em class="sig-param"><span class="n">destination_dir</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_downloader.S3FilesDownloader.download_list" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sources</strong> (<em>tuple</em><em>[</em><em>tuple</em><em>[</em><em>str</em><em>,</em><em>str</em><em>]</em><em>]</em>) – tuple/list of (file_path, file_url) pairs</p></li>
+<li><p><strong>destination_dir</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_downloader.S3FilesDownloader.download_file">
+<code class="sig-name descname">download_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span></em>, <em class="sig-param"><span class="n">destination_dir</span></em>, <em class="sig-param"><span class="n">max_retries</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_downloader.S3FilesDownloader.download_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_downloader.ResourceDownloader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_downloader.</code><code class="sig-name descname">ResourceDownloader</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em>, <em class="sig-param">ps_client_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_downloader.ResourceDownloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.s3_downloader.ResourceDownloader.CLIENT_CLASS">
+<code class="sig-name descname">CLIENT_CLASS</code><em class="property"> = None</em><a class="headerlink" href="#gradient.api_sdk.s3_downloader.ResourceDownloader.CLIENT_CLASS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_downloader.ResourceDownloader.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em>, <em class="sig-param">ps_client_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_downloader.ResourceDownloader.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_downloader.ResourceDownloader.download">
+<code class="sig-name descname">download</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">job_id</span></em>, <em class="sig-param"><span class="n">destination</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_downloader.ResourceDownloader.download" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_downloader.JobArtifactsDownloader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_downloader.</code><code class="sig-name descname">JobArtifactsDownloader</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em>, <em class="sig-param">ps_client_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_downloader.JobArtifactsDownloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.s3_downloader.ResourceDownloader" title="gradient.api_sdk.s3_downloader.ResourceDownloader"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.s3_downloader.ResourceDownloader</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.s3_downloader.JobArtifactsDownloader.CLIENT_CLASS">
+<code class="sig-name descname">CLIENT_CLASS</code><a class="headerlink" href="#gradient.api_sdk.s3_downloader.JobArtifactsDownloader.CLIENT_CLASS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.clients.html#gradient.api_sdk.clients.job_client.JobsClient" title="gradient.api_sdk.clients.job_client.JobsClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.clients.job_client.JobsClient</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_downloader.ModelFilesDownloader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_downloader.</code><code class="sig-name descname">ModelFilesDownloader</code><span class="sig-paren">(</span><em class="sig-param">api_key</em>, <em class="sig-param">logger=&lt;gradient.api_sdk.logger.MuteLogger object&gt;</em>, <em class="sig-param">ps_client_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_downloader.ModelFilesDownloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.s3_downloader.ResourceDownloader" title="gradient.api_sdk.s3_downloader.ResourceDownloader"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.s3_downloader.ResourceDownloader</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.s3_downloader.ModelFilesDownloader.CLIENT_CLASS">
+<code class="sig-name descname">CLIENT_CLASS</code><a class="headerlink" href="#gradient.api_sdk.s3_downloader.ModelFilesDownloader.CLIENT_CLASS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.clients.html#gradient.api_sdk.clients.model_client.ModelsClient" title="gradient.api_sdk.clients.model_client.ModelsClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.clients.model_client.ModelsClient</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.s3_uploader">
+<span id="gradient-api-sdk-s3-uploader-module"></span><h2>gradient.api_sdk.s3_uploader module<a class="headerlink" href="#module-gradient.api_sdk.s3_uploader" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_uploader.S3FileUploader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_uploader.</code><code class="sig-name descname">S3FileUploader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">multipart_encoder_cls</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3FileUploader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.s3_uploader.S3FileUploader.DEFAULT_MULTIPART_ENCODER_CLS">
+<code class="sig-name descname">DEFAULT_MULTIPART_ENCODER_CLS</code><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3FileUploader.DEFAULT_MULTIPART_ENCODER_CLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#gradient.api_sdk.utils.MultipartEncoder" title="gradient.api_sdk.utils.MultipartEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.utils.MultipartEncoder</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.S3FileUploader.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">multipart_encoder_cls</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3FileUploader.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>multipart_encoder_cls</strong> (<em>type</em><em>(</em><a class="reference internal" href="#gradient.api_sdk.utils.MultipartEncoder" title="gradient.api_sdk.utils.MultipartEncoder"><em>MultipartEncoder</em></a><em>)</em>) – </p></li>
+<li><p><strong>logger</strong> (<a class="reference internal" href="#gradient.api_sdk.logger.Logger" title="gradient.api_sdk.logger.Logger"><em>Logger</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.S3FileUploader.upload">
+<code class="sig-name descname">upload</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span></em>, <em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">s3_fields</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3FileUploader.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload a file to S3</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>url</strong> (<em>str</em>) – </p></li>
+<li><p><strong>bucket_name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>s3_fields</strong> (<em>dict</em><em>[</em><em>str</em><em>,</em><em>str</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.S3FileUploader.get_bucket_url">
+<em class="property">static </em><code class="sig-name descname">get_bucket_url</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bucket_name</span></em>, <em class="sig-param"><span class="n">s3_fields</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3FileUploader.get_bucket_url" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bucket_name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>s3_fields</strong> (<em>dict</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_uploader.S3PutFileUploader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_uploader.</code><code class="sig-name descname">S3PutFileUploader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">multipart_encoder_cls</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3PutFileUploader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.s3_uploader.S3FileUploader" title="gradient.api_sdk.s3_uploader.S3FileUploader"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.s3_uploader.S3FileUploader</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_uploader.ExperimentFileUploader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_uploader.</code><code class="sig-name descname">ExperimentFileUploader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">uploader</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.ExperimentFileUploader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.ExperimentFileUploader.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">uploader</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.ExperimentFileUploader.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_key</strong> (<em>str</em>) – </p></li>
+<li><p><strong>uploader</strong> (<a class="reference internal" href="#gradient.api_sdk.s3_uploader.S3FileUploader" title="gradient.api_sdk.s3_uploader.S3FileUploader"><em>S3FileUploader</em></a>) – </p></li>
+<li><p><strong>logger</strong> (<a class="reference internal" href="#gradient.api_sdk.logger.Logger" title="gradient.api_sdk.logger.Logger"><em>Logger</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.ExperimentFileUploader.upload">
+<code class="sig-name descname">upload</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span></em>, <em class="sig-param"><span class="n">project_id</span></em>, <em class="sig-param"><span class="n">cluster_id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.ExperimentFileUploader.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload file to S3 bucket for a project</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>project_id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>cluster_id</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>S3 bucket’s URL</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_uploader.S3ProjectFileUploader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_uploader.</code><code class="sig-name descname">S3ProjectFileUploader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">uploader</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3ProjectFileUploader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.s3_uploader.ExperimentFileUploader" title="gradient.api_sdk.s3_uploader.ExperimentFileUploader"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.s3_uploader.ExperimentFileUploader</span></code></a></p>
+<p>DEPRECATED: This class will be renamed to ExperimentFileUploader in release v0.8</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_uploader.S3ModelFileUploader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_uploader.</code><code class="sig-name descname">S3ModelFileUploader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">multipart_encoder_cls</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">s3uploader</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3ModelFileUploader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.s3_uploader.S3ModelFileUploader.DEFAULT_MULTIPART_ENCODER_CLS">
+<code class="sig-name descname">DEFAULT_MULTIPART_ENCODER_CLS</code><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3ModelFileUploader.DEFAULT_MULTIPART_ENCODER_CLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#gradient.api_sdk.utils.MultipartEncoderWithProgressbar" title="gradient.api_sdk.utils.MultipartEncoderWithProgressbar"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.utils.MultipartEncoderWithProgressbar</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.S3ModelFileUploader.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">multipart_encoder_cls</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">s3uploader</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3ModelFileUploader.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_key</strong> (<em>str</em>) – </p></li>
+<li><p><strong>logger</strong> (<a class="reference internal" href="#gradient.api_sdk.logger.Logger" title="gradient.api_sdk.logger.Logger"><em>Logger</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.S3ModelFileUploader.upload">
+<code class="sig-name descname">upload</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span></em>, <em class="sig-param"><span class="n">model_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3ModelFileUploader.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload file to S3 bucket for a project</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>model_id</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>S3 bucket’s URL</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_uploader.S3ModelUploader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_uploader.</code><code class="sig-name descname">S3ModelUploader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">multipart_encoder_cls</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">s3uploader</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3ModelUploader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.s3_uploader.S3ModelFileUploader" title="gradient.api_sdk.s3_uploader.S3ModelFileUploader"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.s3_uploader.S3ModelFileUploader</span></code></a></p>
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.S3ModelUploader.upload">
+<code class="sig-name descname">upload</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span></em>, <em class="sig-param"><span class="n">model_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3ModelUploader.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload file to S3 bucket for a project</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>model_id</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>S3 bucket’s URL</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_uploader.ExperimentWorkspaceDirectoryUploader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_uploader.</code><code class="sig-name descname">ExperimentWorkspaceDirectoryUploader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">temp_dir</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">archiver</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">project_uploader</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.ExperimentWorkspaceDirectoryUploader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.ExperimentWorkspaceDirectoryUploader.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">temp_dir</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">archiver</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">project_uploader</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.ExperimentWorkspaceDirectoryUploader.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_key</strong> (<em>str</em>) – </p></li>
+<li><p><strong>temp_dir</strong> (<em>str</em>) – </p></li>
+<li><p><strong>archiver</strong> (<a class="reference internal" href="#gradient.api_sdk.archivers.ZipArchiver" title="gradient.api_sdk.archivers.ZipArchiver"><em>ZipArchiver</em></a>) – </p></li>
+<li><p><strong>project_uploader</strong> (<a class="reference internal" href="#gradient.api_sdk.s3_uploader.ExperimentFileUploader" title="gradient.api_sdk.s3_uploader.ExperimentFileUploader"><em>ExperimentFileUploader</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.ExperimentWorkspaceDirectoryUploader.upload">
+<code class="sig-name descname">upload</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">workspace_dir_path</span></em>, <em class="sig-param"><span class="n">project_id</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">temp_file_name</span><span class="o">=</span><span class="default_value">'temp.zip'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.ExperimentWorkspaceDirectoryUploader.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Archive and upload a workspace directory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>workspace_dir_path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>project_id</strong> (<em>str</em>) – </p></li>
+<li><p><strong>exclude</strong> (<em>list|tuple|None</em>) – </p></li>
+<li><p><strong>temp_file_name</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>URL to the S3 bucket</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.ExperimentWorkspaceDirectoryUploader.get_archive_path">
+<code class="sig-name descname">get_archive_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">temp_file_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.ExperimentWorkspaceDirectoryUploader.get_archive_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_uploader.S3WorkspaceDirectoryUploader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_uploader.</code><code class="sig-name descname">S3WorkspaceDirectoryUploader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">temp_dir</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">archiver</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">project_uploader</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.S3WorkspaceDirectoryUploader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.s3_uploader.ExperimentWorkspaceDirectoryUploader" title="gradient.api_sdk.s3_uploader.ExperimentWorkspaceDirectoryUploader"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.s3_uploader.ExperimentWorkspaceDirectoryUploader</span></code></a></p>
+<p>DEPRECATED: This class will be renamed to ExperimentWorkspaceDirectoryUploader in release v0.8</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.s3_uploader.DeploymentWorkspaceDirectoryUploader">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.s3_uploader.</code><code class="sig-name descname">DeploymentWorkspaceDirectoryUploader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">uploader</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.DeploymentWorkspaceDirectoryUploader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.DeploymentWorkspaceDirectoryUploader.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">uploader</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ps_client_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.DeploymentWorkspaceDirectoryUploader.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_key</strong> (<em>str</em>) – </p></li>
+<li><p><strong>uploader</strong> (<a class="reference internal" href="#gradient.api_sdk.s3_uploader.S3FileUploader" title="gradient.api_sdk.s3_uploader.S3FileUploader"><em>S3FileUploader</em></a>) – </p></li>
+<li><p><strong>logger</strong> (<a class="reference internal" href="#gradient.api_sdk.logger.Logger" title="gradient.api_sdk.logger.Logger"><em>Logger</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.s3_uploader.DeploymentWorkspaceDirectoryUploader.upload">
+<code class="sig-name descname">upload</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span></em>, <em class="sig-param"><span class="n">project_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.s3_uploader.DeploymentWorkspaceDirectoryUploader.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload file to S3 bucket for a project</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>project_id</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>S3 bucket’s URL</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.sdk_exceptions">
+<span id="gradient-api-sdk-sdk-exceptions-module"></span><h2>gradient.api_sdk.sdk_exceptions module<a class="headerlink" href="#module-gradient.api_sdk.sdk_exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.GradientSdkError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">GradientSdkError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.GradientSdkError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.ResourceFetchingError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">ResourceFetchingError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.ResourceFetchingError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.GradientSdkError" title="gradient.api_sdk.sdk_exceptions.GradientSdkError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.GradientSdkError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.ResourceCreatingError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">ResourceCreatingError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.ResourceCreatingError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.GradientSdkError" title="gradient.api_sdk.sdk_exceptions.GradientSdkError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.GradientSdkError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.MalformedResponseError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">MalformedResponseError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.MalformedResponseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.GradientSdkError" title="gradient.api_sdk.sdk_exceptions.GradientSdkError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.GradientSdkError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.ResourceCreatingDataError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">ResourceCreatingDataError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.ResourceCreatingDataError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.ResourceCreatingError" title="gradient.api_sdk.sdk_exceptions.ResourceCreatingError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.ResourceCreatingError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.ArchiveUploadError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">ArchiveUploadError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.ArchiveUploadError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.GradientSdkError" title="gradient.api_sdk.sdk_exceptions.GradientSdkError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.GradientSdkError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.PresignedUrlMalformedResponseError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">PresignedUrlMalformedResponseError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.PresignedUrlMalformedResponseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.ArchiveUploadError" title="gradient.api_sdk.sdk_exceptions.ArchiveUploadError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.ArchiveUploadError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.PresignedUrlError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">PresignedUrlError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.PresignedUrlError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.ArchiveUploadError" title="gradient.api_sdk.sdk_exceptions.ArchiveUploadError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.ArchiveUploadError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.S3UploadFailedError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">S3UploadFailedError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.S3UploadFailedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.ArchiveUploadError" title="gradient.api_sdk.sdk_exceptions.ArchiveUploadError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.ArchiveUploadError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.ProjectAccessDeniedError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">ProjectAccessDeniedError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.ProjectAccessDeniedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.ArchiveUploadError" title="gradient.api_sdk.sdk_exceptions.ArchiveUploadError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.ArchiveUploadError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.ReceivingDataFailedError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">ReceivingDataFailedError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.ReceivingDataFailedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.ArchiveUploadError" title="gradient.api_sdk.sdk_exceptions.ArchiveUploadError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.ArchiveUploadError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.WrongPathError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">WrongPathError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.WrongPathError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.ArchiveUploadError" title="gradient.api_sdk.sdk_exceptions.ArchiveUploadError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.ArchiveUploadError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.PresignedUrlUnreachableError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">PresignedUrlUnreachableError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.PresignedUrlUnreachableError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.ArchiveUploadError" title="gradient.api_sdk.sdk_exceptions.ArchiveUploadError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.ArchiveUploadError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.PresignedUrlAccessDeniedError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">PresignedUrlAccessDeniedError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.PresignedUrlAccessDeniedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.ArchiveUploadError" title="gradient.api_sdk.sdk_exceptions.ArchiveUploadError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.ArchiveUploadError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.PresignedUrlConnectionError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">PresignedUrlConnectionError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.PresignedUrlConnectionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.ArchiveUploadError" title="gradient.api_sdk.sdk_exceptions.ArchiveUploadError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.ArchiveUploadError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.InvalidParametersError">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">InvalidParametersError</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.InvalidParametersError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.sdk_exceptions.GradientSdkError" title="gradient.api_sdk.sdk_exceptions.GradientSdkError"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.sdk_exceptions.GradientSdkError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="gradient.api_sdk.sdk_exceptions.EndWebsocketStream">
+<em class="property">exception </em><code class="sig-prename descclassname">gradient.api_sdk.sdk_exceptions.</code><code class="sig-name descname">EndWebsocketStream</code><a class="headerlink" href="#gradient.api_sdk.sdk_exceptions.EndWebsocketStream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-gradient.api_sdk.utils">
 <span id="gradient-api-sdk-utils-module"></span><h2>gradient.api_sdk.utils module<a class="headerlink" href="#module-gradient.api_sdk.utils" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.utils.MessageExtractor">
 <em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">MessageExtractor</code><a class="headerlink" href="#gradient.api_sdk.utils.MessageExtractor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="method">
+<dl class="py method">
 <dt id="gradient.api_sdk.utils.MessageExtractor.get_message_from_response_data">
-<code class="sig-name descname">get_message_from_response_data</code><span class="sig-paren">(</span><em class="sig-param">response_data</em>, <em class="sig-param">sep='\n'</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.MessageExtractor.get_message_from_response_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_message_from_response_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">response_data</span></em>, <em class="sig-param"><span class="n">sep</span><span class="o">=</span><span class="default_value">'\n'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.MessageExtractor.get_message_from_response_data" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
@@ -268,21 +1194,225 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gradient.api_sdk.utils.MessageExtractor.get_error_messages">
-<code class="sig-name descname">get_error_messages</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">add_prefix=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.MessageExtractor.get_error_messages" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_error_messages</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">add_prefix</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.MessageExtractor.get_error_messages" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="gradient.api_sdk.utils.print_dict_recursive">
-<code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">print_dict_recursive</code><span class="sig-paren">(</span><em class="sig-param">input_dict</em>, <em class="sig-param">logger</em>, <em class="sig-param">indent=0</em>, <em class="sig-param">tabulator='  '</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.print_dict_recursive" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">print_dict_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_dict</span></em>, <em class="sig-param"><span class="n">logger</span></em>, <em class="sig-param"><span class="n">indent</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">tabulator</span><span class="o">=</span><span class="default_value">'  '</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.print_dict_recursive" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py class">
+<dt id="gradient.api_sdk.utils.ExperimentsClientHelpersMixin">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">ExperimentsClientHelpersMixin</code><a class="headerlink" href="#gradient.api_sdk.utils.ExperimentsClientHelpersMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gradient.api_sdk.utils.validate_auth_options">
+<code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">validate_auth_options</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">auth_username</span></em>, <em class="sig-param"><span class="n">auth_password</span></em>, <em class="sig-param"><span class="n">generate_auth</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.validate_auth_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="gradient.api_sdk.utils.generate_credential">
+<code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">generate_credential</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.generate_credential" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="gradient.api_sdk.utils.generate_credentials_pair">
+<code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">generate_credentials_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.generate_credentials_pair" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="gradient.api_sdk.utils.base64_encode">
+<code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">base64_encode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.base64_encode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="gradient.api_sdk.utils.base64_encode_attribute">
+<code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">base64_encode_attribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.base64_encode_attribute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="gradient.api_sdk.utils.concatenate_urls">
+<code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">concatenate_urls</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fst_part</span></em>, <em class="sig-param"><span class="n">snd_part</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.concatenate_urls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.utils.MultipartEncoder">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">MultipartEncoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fields</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.MultipartEncoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="gradient.api_sdk.utils.MultipartEncoder.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fields</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.MultipartEncoder.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.utils.MultipartEncoder.get_monitor">
+<code class="sig-name descname">get_monitor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.MultipartEncoder.get_monitor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.utils.MultipartEncoderWithProgressbar">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">MultipartEncoderWithProgressbar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fields</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.MultipartEncoderWithProgressbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.utils.MultipartEncoder" title="gradient.api_sdk.utils.MultipartEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.utils.MultipartEncoder</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.utils.PathParser">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.utils.</code><code class="sig-name descname">PathParser</code><a class="headerlink" href="#gradient.api_sdk.utils.PathParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.utils.PathParser.LOCAL_DIR">
+<code class="sig-name descname">LOCAL_DIR</code><em class="property"> = 0</em><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.LOCAL_DIR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.utils.PathParser.LOCAL_FILE">
+<code class="sig-name descname">LOCAL_FILE</code><em class="property"> = 1</em><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.LOCAL_FILE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.utils.PathParser.GIT_URL">
+<code class="sig-name descname">GIT_URL</code><em class="property"> = 2</em><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.GIT_URL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.utils.PathParser.S3_URL">
+<code class="sig-name descname">S3_URL</code><em class="property"> = 3</em><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.S3_URL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.utils.PathParser.HTTP_URL">
+<code class="sig-name descname">HTTP_URL</code><em class="property"> = 4</em><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.HTTP_URL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.utils.PathParser.parse_path">
+<em class="property">classmethod </em><code class="sig-name descname">parse_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.parse_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.utils.PathParser.is_local_dir">
+<em class="property">static </em><code class="sig-name descname">is_local_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.is_local_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.utils.PathParser.is_local_zip_file">
+<em class="property">static </em><code class="sig-name descname">is_local_zip_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.is_local_zip_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.utils.PathParser.is_git_url">
+<em class="property">static </em><code class="sig-name descname">is_git_url</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.is_git_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.utils.PathParser.is_s3_url">
+<em class="property">static </em><code class="sig-name descname">is_s3_url</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.is_s3_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.utils.PathParser.is_http_url">
+<em class="property">static </em><code class="sig-name descname">is_http_url</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.is_http_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.utils.PathParser.is_remote_path">
+<em class="property">classmethod </em><code class="sig-name descname">is_remote_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.is_remote_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.utils.PathParser.is_local_path">
+<em class="property">classmethod </em><code class="sig-name descname">is_local_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.utils.PathParser.is_local_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.validation_messages">
+<span id="gradient-api-sdk-validation-messages-module"></span><h2>gradient.api_sdk.validation_messages module<a class="headerlink" href="#module-gradient.api_sdk.validation_messages" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-gradient.api_sdk.workspace">
 <span id="gradient-api-sdk-workspace-module"></span><h2>gradient.api_sdk.workspace module<a class="headerlink" href="#module-gradient.api_sdk.workspace" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="gradient.api_sdk.workspace.WorkspaceHandler">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.workspace.</code><code class="sig-name descname">WorkspaceHandler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logger_</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">archiver_cls</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.workspace.WorkspaceHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.workspace.WorkspaceHandler.WORKSPACE_ARCHIVER_CLS">
+<code class="sig-name descname">WORKSPACE_ARCHIVER_CLS</code><a class="headerlink" href="#gradient.api_sdk.workspace.WorkspaceHandler.WORKSPACE_ARCHIVER_CLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#gradient.api_sdk.archivers.ZipArchiver" title="gradient.api_sdk.archivers.ZipArchiver"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.archivers.ZipArchiver</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.workspace.WorkspaceHandler.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logger_</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">archiver_cls</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.workspace.WorkspaceHandler.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>logger</strong> – gradient.logger</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.workspace.WorkspaceHandler.handle">
+<code class="sig-name descname">handle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.workspace.WorkspaceHandler.handle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.workspace.S3WorkspaceHandler">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.workspace.</code><code class="sig-name descname">S3WorkspaceHandler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">client_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">uploader_cls</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.workspace.S3WorkspaceHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.workspace.WorkspaceHandler" title="gradient.api_sdk.workspace.WorkspaceHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.workspace.WorkspaceHandler</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.workspace.S3WorkspaceHandler.WORKSPACE_UPLOADER_CLS">
+<code class="sig-name descname">WORKSPACE_UPLOADER_CLS</code><a class="headerlink" href="#gradient.api_sdk.workspace.S3WorkspaceHandler.WORKSPACE_UPLOADER_CLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#gradient.api_sdk.s3_uploader.ExperimentFileUploader" title="gradient.api_sdk.s3_uploader.ExperimentFileUploader"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.s3_uploader.ExperimentFileUploader</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.workspace.S3WorkspaceHandler.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">client_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">uploader_cls</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.workspace.S3WorkspaceHandler.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_key</strong> (<em>str</em>) – </p></li>
+<li><p><strong>client_name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>uploader_cls</strong> (<em>object</em>) – </p></li>
+<li><p><strong>logger</strong> (<em>gradient.logger</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.workspace.S3WorkspaceHandler.handle">
+<code class="sig-name descname">handle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.workspace.S3WorkspaceHandler.handle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.workspace.S3WorkspaceHandlerWithProgressbar">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.workspace.</code><code class="sig-name descname">S3WorkspaceHandlerWithProgressbar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">client_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">uploader_cls</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.workspace.S3WorkspaceHandlerWithProgressbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.workspace.S3WorkspaceHandler" title="gradient.api_sdk.workspace.S3WorkspaceHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.workspace.S3WorkspaceHandler</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.workspace.S3WorkspaceHandlerWithProgressbar.WORKSPACE_ARCHIVER_CLS">
+<code class="sig-name descname">WORKSPACE_ARCHIVER_CLS</code><a class="headerlink" href="#gradient.api_sdk.workspace.S3WorkspaceHandlerWithProgressbar.WORKSPACE_ARCHIVER_CLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#gradient.api_sdk.archivers.ZipArchiverWithProgressbar" title="gradient.api_sdk.archivers.ZipArchiverWithProgressbar"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.archivers.ZipArchiverWithProgressbar</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-gradient.api_sdk">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gradient.api_sdk" title="Permalink to this headline">¶</a></h2>
@@ -300,7 +1430,7 @@
       &copy;2019, Paperspace.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

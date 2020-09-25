@@ -4,10 +4,34 @@ gradient.api\_sdk.serializers package
 Submodules
 ----------
 
+gradient.api\_sdk.serializers.artifact module
+---------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.artifact
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.serializers.base module
 -----------------------------------------
 
 .. automodule:: gradient.api_sdk.serializers.base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.serializers.cluster module
+--------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.cluster
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.serializers.dataset module
+--------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.dataset
    :members:
    :undoc-members:
    :show-inheritance:
@@ -84,6 +108,22 @@ gradient.api\_sdk.serializers.project module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.serializers.secret module
+-------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.secret
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.serializers.tag module
+----------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.tag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.serializers.tensorboard module
 ------------------------------------------------
 
@@ -100,6 +140,13 @@ gradient.api\_sdk.serializers.utils module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.serializers.vm\_type module
+---------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.vm_type
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------

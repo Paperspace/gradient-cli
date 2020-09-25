@@ -4,6 +4,14 @@ gradient.commands package
 Submodules
 ----------
 
+gradient.commands.clusters module
+---------------------------------
+
+.. automodule:: gradient.commands.clusters
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.commands.common module
 -------------------------------
 
@@ -52,6 +60,14 @@ gradient.commands.login module
    :undoc-members:
    :show-inheritance:
 
+gradient.commands.machine\_types module
+---------------------------------------
+
+.. automodule:: gradient.commands.machine_types
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.commands.machines module
 ---------------------------------
 
@@ -84,10 +100,10 @@ gradient.commands.projects module
    :undoc-members:
    :show-inheritance:
 
-gradient.commands.run module
-----------------------------
+gradient.commands.secrets module
+--------------------------------
 
-.. automodule:: gradient.commands.run
+.. automodule:: gradient.commands.secrets
    :members:
    :undoc-members:
    :show-inheritance:
@@ -99,7 +115,6 @@ gradient.commands.tensorboards module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

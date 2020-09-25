@@ -7,7 +7,7 @@ experimentId: some_experiment_id
 ignoreFiles: file1,file2
 isPreemptible: 'true'
 isPublic: 'true'
-jobEnv:
+envVars:
   key: val
 machineType: some_machine_type
 module: 3

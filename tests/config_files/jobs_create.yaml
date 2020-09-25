@@ -8,7 +8,7 @@ experimentId: some_experiment_id
 ignoreFiles: file1,file2
 isPreemptible: --projectId
 isPublic: --workspaceUrl
-jobEnv:
+envVars:
   key: val
 machineType: K80
 name: some_name
