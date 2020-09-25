@@ -5,14 +5,38 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    gradient.api_sdk
    gradient.cli
    gradient.commands
-   gradient.wizards
 
 Submodules
 ----------
+
+gradient.cli\_constants module
+------------------------------
+
+.. automodule:: gradient.cli_constants
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.clilogger module
+-------------------------
+
+.. automodule:: gradient.clilogger
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.cliutils module
+------------------------
+
+.. automodule:: gradient.cliutils
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 gradient.config module
 ----------------------
@@ -22,26 +46,10 @@ gradient.config module
    :undoc-members:
    :show-inheritance:
 
-gradient.constants module
--------------------------
-
-.. automodule:: gradient.constants
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 gradient.exceptions module
 --------------------------
 
 .. automodule:: gradient.exceptions
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gradient.logger module
-----------------------
-
-.. automodule:: gradient.logger
    :members:
    :undoc-members:
    :show-inheritance:
@@ -62,14 +70,6 @@ gradient.main module
    :undoc-members:
    :show-inheritance:
 
-gradient.utils module
----------------------
-
-.. automodule:: gradient.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 gradient.version module
 -----------------------
 
@@ -85,15 +85,6 @@ gradient.version\_checker module
    :members:
    :undoc-members:
    :show-inheritance:
-
-gradient.workspace module
--------------------------
-
-.. automodule:: gradient.workspace
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 
 Module contents
 ---------------

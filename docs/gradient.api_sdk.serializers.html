@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>gradient.api_sdk.serializers package &#8212; Gradient-CLI alpha documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/gradient.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="gradient.cli package" href="gradient.cli.html" />
@@ -43,16 +44,15 @@
 <li class="toctree-l1 current"><a class="reference internal" href="gradient.html">gradient package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="gradient.html#subpackages">Subpackages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.cli_constants">gradient.cli_constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.clilogger">gradient.clilogger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.cliutils">gradient.cliutils module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.config">gradient.config module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.constants">gradient.constants module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.exceptions">gradient.exceptions module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.logger">gradient.logger module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.login">gradient.login module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.main">gradient.main module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.utils">gradient.utils module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.version">gradient.version module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.version_checker">gradient.version_checker module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient.workspace">gradient.workspace module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient.html#module-gradient">Module contents</a></li>
 </ul>
 </li>
@@ -84,7 +84,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -106,28 +106,48 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-gradient.api_sdk.serializers.artifact">
+<span id="gradient-api-sdk-serializers-artifact-module"></span><h2>gradient.api_sdk.serializers.artifact module<a class="headerlink" href="#module-gradient.api_sdk.serializers.artifact" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.artifact.ArtifactSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.artifact.</code><code class="sig-name descname">ArtifactSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.artifact.ArtifactSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.artifact.ArtifactSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.artifact.ArtifactSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.artifact.Artifact" title="gradient.api_sdk.models.artifact.Artifact"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.artifact.Artifact</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.artifact.ArtifactSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.artifact.ArtifactSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-gradient.api_sdk.serializers.base">
 <span id="gradient-api-sdk-serializers-base-module"></span><h2>gradient.api_sdk.serializers.base module<a class="headerlink" href="#module-gradient.api_sdk.serializers.base" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.base.BaseSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.base.</code><code class="sig-name descname">BaseSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.base.BaseSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.base.</code><code class="sig-name descname">BaseSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.base.BaseSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">marshmallow.schema.Schema</span></code></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.base.BaseSchema.MODEL">
 <code class="sig-name descname">MODEL</code><em class="property"> = None</em><a class="headerlink" href="#gradient.api_sdk.serializers.base.BaseSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="gradient.api_sdk.serializers.base.BaseSchema.remove_none_values">
-<code class="sig-name descname">remove_none_values</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.base.BaseSchema.remove_none_values" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="gradient.api_sdk.serializers.base.BaseSchema.remove_none_or_empty_values">
+<code class="sig-name descname">remove_none_or_empty_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.base.BaseSchema.remove_none_or_empty_values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gradient.api_sdk.serializers.base.BaseSchema.get_instance">
-<code class="sig-name descname">get_instance</code><span class="sig-paren">(</span><em class="sig-param">obj_dict</em>, <em class="sig-param">many=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.base.BaseSchema.get_instance" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_instance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj_dict</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.base.BaseSchema.get_instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.base.BaseSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.base.BaseSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -135,21 +155,123 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-gradient.api_sdk.serializers.cluster">
+<span id="gradient-api-sdk-serializers-cluster-module"></span><h2>gradient.api_sdk.serializers.cluster module<a class="headerlink" href="#module-gradient.api_sdk.serializers.cluster" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.cluster.ClusterSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.cluster.</code><code class="sig-name descname">ClusterSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.cluster.ClusterSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.cluster.ClusterSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.cluster.ClusterSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.cluster.Cluster" title="gradient.api_sdk.models.cluster.Cluster"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.cluster.Cluster</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.cluster.ClusterSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.cluster.ClusterSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.serializers.dataset">
+<span id="gradient-api-sdk-serializers-dataset-module"></span><h2>gradient.api_sdk.serializers.dataset module<a class="headerlink" href="#module-gradient.api_sdk.serializers.dataset" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.dataset.DatasetVolumeOptionsSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.dataset.</code><code class="sig-name descname">DatasetVolumeOptionsSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.dataset.DatasetVolumeOptionsSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.dataset.DatasetVolumeOptionsSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.dataset.DatasetVolumeOptionsSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.dataset.VolumeOptions" title="gradient.api_sdk.models.dataset.VolumeOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.dataset.VolumeOptions</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.dataset.DatasetVolumeOptionsSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.dataset.DatasetVolumeOptionsSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.dataset.DatasetSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.dataset.</code><code class="sig-name descname">DatasetSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.dataset.DatasetSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.dataset.DatasetSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.dataset.DatasetSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.dataset.Dataset" title="gradient.api_sdk.models.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.dataset.Dataset</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.dataset.DatasetSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.dataset.DatasetSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-gradient.api_sdk.serializers.deployment">
 <span id="gradient-api-sdk-serializers-deployment-module"></span><h2>gradient.api_sdk.serializers.deployment module<a class="headerlink" href="#module-gradient.api_sdk.serializers.deployment" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="gradient.api_sdk.serializers.deployment.DeploymentSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.deployment.</code><code class="sig-name descname">DeploymentSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.deployment.DeploymentSchema" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.deployment.AutoscalingMetricSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.deployment.</code><code class="sig-name descname">AutoscalingMetricSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.deployment.AutoscalingMetricSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.deployment.AutoscalingMetricSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.deployment.AutoscalingMetricSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.deployment.AutoscalingMetric" title="gradient.api_sdk.models.deployment.AutoscalingMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.deployment.AutoscalingMetric</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.deployment.AutoscalingMetricSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.deployment.AutoscalingMetricSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.deployment.AutoscalingDefinitionSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.deployment.</code><code class="sig-name descname">AutoscalingDefinitionSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.deployment.AutoscalingDefinitionSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.deployment.AutoscalingDefinitionSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.deployment.AutoscalingDefinitionSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.deployment.AutoscalingDefinition" title="gradient.api_sdk.models.deployment.AutoscalingDefinition"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.deployment.AutoscalingDefinition</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.deployment.AutoscalingDefinitionSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.deployment.AutoscalingDefinitionSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.deployment.DeploymentSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.deployment.</code><code class="sig-name descname">DeploymentSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.deployment.DeploymentSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.deployment.DeploymentSchema.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.deployment.DeploymentSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.deployment.Deployment" title="gradient.api_sdk.models.deployment.Deployment"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.deployment.Deployment</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.deployment.DeploymentSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.deployment.DeploymentSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.deployment.DeploymentCreateSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.deployment.</code><code class="sig-name descname">DeploymentCreateSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.deployment.DeploymentCreateSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.deployment.DeploymentSchema" title="gradient.api_sdk.serializers.deployment.DeploymentSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.deployment.DeploymentSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.deployment.DeploymentCreateSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.deployment.DeploymentCreateSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -157,52 +279,84 @@
 </div>
 <div class="section" id="module-gradient.api_sdk.serializers.experiment">
 <span id="gradient-api-sdk-serializers-experiment-module"></span><h2>gradient.api_sdk.serializers.experiment module<a class="headerlink" href="#module-gradient.api_sdk.serializers.experiment" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.experiment.BaseExperimentSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.experiment.</code><code class="sig-name descname">BaseExperimentSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.BaseExperimentSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.experiment.</code><code class="sig-name descname">BaseExperimentSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.BaseExperimentSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="method">
+<dl class="py method">
 <dt id="gradient.api_sdk.serializers.experiment.BaseExperimentSchema.get_instance">
-<code class="sig-name descname">get_instance</code><span class="sig-paren">(</span><em class="sig-param">obj_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.BaseExperimentSchema.get_instance" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_instance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj_dict</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.BaseExperimentSchema.get_instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.experiment.BaseExperimentSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.BaseExperimentSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.experiment.SingleNodeExperimentSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.experiment.</code><code class="sig-name descname">SingleNodeExperimentSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.SingleNodeExperimentSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.experiment.</code><code class="sig-name descname">SingleNodeExperimentSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.SingleNodeExperimentSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.experiment.BaseExperimentSchema" title="gradient.api_sdk.serializers.experiment.BaseExperimentSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.experiment.BaseExperimentSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.experiment.SingleNodeExperimentSchema.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.SingleNodeExperimentSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.experiment.SingleNodeExperiment" title="gradient.api_sdk.models.experiment.SingleNodeExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.experiment.SingleNodeExperiment</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
+<dt id="gradient.api_sdk.serializers.experiment.SingleNodeExperimentSchema.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.SingleNodeExperimentSchema.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.experiment.SingleNodeExperimentSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.SingleNodeExperimentSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.experiment.MultiNodeExperimentSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.experiment.</code><code class="sig-name descname">MultiNodeExperimentSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.MultiNodeExperimentSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.experiment.</code><code class="sig-name descname">MultiNodeExperimentSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.MultiNodeExperimentSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.experiment.BaseExperimentSchema" title="gradient.api_sdk.serializers.experiment.BaseExperimentSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.experiment.BaseExperimentSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.experiment.MultiNodeExperimentSchema.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.MultiNodeExperimentSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.experiment.MultiNodeExperiment" title="gradient.api_sdk.models.experiment.MultiNodeExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.experiment.MultiNodeExperiment</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
+<dt id="gradient.api_sdk.serializers.experiment.MultiNodeExperimentSchema.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.MultiNodeExperimentSchema.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.experiment.MultiNodeExperimentSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.MultiNodeExperimentSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.experiment.MpiMultiNodeExperimentSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.experiment.</code><code class="sig-name descname">MpiMultiNodeExperimentSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.MpiMultiNodeExperimentSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.experiment.BaseExperimentSchema" title="gradient.api_sdk.serializers.experiment.BaseExperimentSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.experiment.BaseExperimentSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.experiment.MpiMultiNodeExperimentSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.MpiMultiNodeExperimentSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.experiment.MpiMultiNodeExperiment" title="gradient.api_sdk.models.experiment.MpiMultiNodeExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.experiment.MpiMultiNodeExperiment</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.serializers.experiment.MpiMultiNodeExperimentSchema.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.MpiMultiNodeExperimentSchema.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.experiment.MpiMultiNodeExperimentSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.experiment.MpiMultiNodeExperimentSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -210,17 +364,22 @@
 </div>
 <div class="section" id="module-gradient.api_sdk.serializers.hyperparameter">
 <span id="gradient-api-sdk-serializers-hyperparameter-module"></span><h2>gradient.api_sdk.serializers.hyperparameter module<a class="headerlink" href="#module-gradient.api_sdk.serializers.hyperparameter" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.hyperparameter.HyperparameterSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.hyperparameter.</code><code class="sig-name descname">HyperparameterSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.hyperparameter.HyperparameterSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.hyperparameter.</code><code class="sig-name descname">HyperparameterSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.hyperparameter.HyperparameterSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.experiment.BaseExperimentSchema" title="gradient.api_sdk.serializers.experiment.BaseExperimentSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.experiment.BaseExperimentSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.hyperparameter.HyperparameterSchema.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.hyperparameter.HyperparameterSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.hyperparameter.Hyperparameter" title="gradient.api_sdk.models.hyperparameter.Hyperparameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.hyperparameter.Hyperparameter</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
+<dt id="gradient.api_sdk.serializers.hyperparameter.HyperparameterSchema.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.hyperparameter.HyperparameterSchema.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.hyperparameter.HyperparameterSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.hyperparameter.HyperparameterSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -230,17 +389,24 @@
 </div>
 <div class="section" id="module-gradient.api_sdk.serializers.job">
 <span id="gradient-api-sdk-serializers-job-module"></span><h2>gradient.api_sdk.serializers.job module<a class="headerlink" href="#module-gradient.api_sdk.serializers.job" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.job.JSONField">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.job.</code><code class="sig-name descname">JSONField</code><span class="sig-paren">(</span><em class="sig-param">default=&lt;marshmallow.missing&gt;</em>, <em class="sig-param">attribute=None</em>, <em class="sig-param">load_from=None</em>, <em class="sig-param">dump_to=None</em>, <em class="sig-param">error=None</em>, <em class="sig-param">validate=None</em>, <em class="sig-param">required=False</em>, <em class="sig-param">allow_none=None</em>, <em class="sig-param">load_only=False</em>, <em class="sig-param">dump_only=False</em>, <em class="sig-param">missing=&lt;marshmallow.missing&gt;</em>, <em class="sig-param">error_messages=None</em>, <em class="sig-param">**metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.job.JSONField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">marshmallow.fields.Field</span></code></p>
+<p>Field that serializes to json</p>
+</dd></dl>
+
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.job.JobSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.job.</code><code class="sig-name descname">JobSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.job.JobSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.job.</code><code class="sig-name descname">JobSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.job.JobSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.job.JobSchema.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.job.JobSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.job.Job" title="gradient.api_sdk.models.job.Job"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.job.Job</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.job.JobSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.job.JobSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -250,17 +416,22 @@
 </div>
 <div class="section" id="module-gradient.api_sdk.serializers.log">
 <span id="gradient-api-sdk-serializers-log-module"></span><h2>gradient.api_sdk.serializers.log module<a class="headerlink" href="#module-gradient.api_sdk.serializers.log" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.log.LogRowSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.log.</code><code class="sig-name descname">LogRowSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.log.LogRowSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.log.</code><code class="sig-name descname">LogRowSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.log.LogRowSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.log.LogRowSchema.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.log.LogRowSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.log.LogRow" title="gradient.api_sdk.models.log.LogRow"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.log.LogRow</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
+<dt id="gradient.api_sdk.serializers.log.LogRowSchema.rstrip_log_line">
+<code class="sig-name descname">rstrip_log_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.log.LogRowSchema.rstrip_log_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.log.LogRowSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.log.LogRowSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -270,45 +441,45 @@
 </div>
 <div class="section" id="module-gradient.api_sdk.serializers.machine">
 <span id="gradient-api-sdk-serializers-machine-module"></span><h2>gradient.api_sdk.serializers.machine module<a class="headerlink" href="#module-gradient.api_sdk.serializers.machine" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.machine.MachineEventSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.machine.</code><code class="sig-name descname">MachineEventSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.machine.MachineEventSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.machine.</code><code class="sig-name descname">MachineEventSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.machine.MachineEventSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.machine.MachineEventSchema.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.machine.MachineEventSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.machine.MachineEvent" title="gradient.api_sdk.models.machine.MachineEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.machine.MachineEvent</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.machine.MachineEventSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.machine.MachineEventSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.machine.MachineSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.machine.</code><code class="sig-name descname">MachineSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.machine.MachineSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.machine.</code><code class="sig-name descname">MachineSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.machine.MachineSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.machine.MachineSchema.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.machine.MachineSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.machine.Machine" title="gradient.api_sdk.models.machine.Machine"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.machine.Machine</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.machine.MachineSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.machine.MachineSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.machine.MachineSchemaForListing">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.machine.</code><code class="sig-name descname">MachineSchemaForListing</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.machine.MachineSchemaForListing" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.machine.</code><code class="sig-name descname">MachineSchemaForListing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.machine.MachineSchemaForListing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.machine.MachineSchema" title="gradient.api_sdk.serializers.machine.MachineSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.machine.MachineSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.machine.MachineSchemaForListing.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.machine.MachineSchemaForListing.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -318,19 +489,36 @@
 </div>
 <div class="section" id="module-gradient.api_sdk.serializers.model">
 <span id="gradient-api-sdk-serializers-model-module"></span><h2>gradient.api_sdk.serializers.model module<a class="headerlink" href="#module-gradient.api_sdk.serializers.model" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.model.Model">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.model.Model" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.model.Model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.model.Model.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.model.Model.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.model.Model" title="gradient.api_sdk.models.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.model.Model</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.model.Model.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.model.Model.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.model.ModelFileSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.model.</code><code class="sig-name descname">ModelFileSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.model.ModelFileSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.model.ModelFileSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.model.ModelFileSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.model.ModelFile" title="gradient.api_sdk.models.model.ModelFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.model.ModelFile</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.model.ModelFileSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.model.ModelFileSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -338,19 +526,41 @@
 </div>
 <div class="section" id="module-gradient.api_sdk.serializers.notebook">
 <span id="gradient-api-sdk-serializers-notebook-module"></span><h2>gradient.api_sdk.serializers.notebook module<a class="headerlink" href="#module-gradient.api_sdk.serializers.notebook" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.notebook.NotebookSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.notebook.</code><code class="sig-name descname">NotebookSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.notebook.NotebookSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.notebook.</code><code class="sig-name descname">NotebookSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.notebook.NotebookSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.notebook.NotebookSchema.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.notebook.NotebookSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.notebook.Notebook" title="gradient.api_sdk.models.notebook.Notebook"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.notebook.Notebook</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
+<dt id="gradient.api_sdk.serializers.notebook.NotebookSchema.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.notebook.NotebookSchema.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.notebook.NotebookSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.notebook.NotebookSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.notebook.NotebookStartSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.notebook.</code><code class="sig-name descname">NotebookStartSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.notebook.NotebookStartSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.notebook.NotebookStartSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.notebook.NotebookStartSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.notebook.NotebookStart" title="gradient.api_sdk.models.notebook.NotebookStart"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.notebook.NotebookStart</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.notebook.NotebookStartSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.notebook.NotebookStartSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -358,17 +568,17 @@
 </div>
 <div class="section" id="module-gradient.api_sdk.serializers.project">
 <span id="gradient-api-sdk-serializers-project-module"></span><h2>gradient.api_sdk.serializers.project module<a class="headerlink" href="#module-gradient.api_sdk.serializers.project" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.project.Project">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.project.</code><code class="sig-name descname">Project</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.project.Project" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.project.</code><code class="sig-name descname">Project</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.project.Project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.project.Project.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.project.Project.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.project.Project" title="gradient.api_sdk.models.project.Project"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.project.Project</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.project.Project.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.project.Project.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -376,103 +586,143 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-gradient.api_sdk.serializers.secret">
+<span id="gradient-api-sdk-serializers-secret-module"></span><h2>gradient.api_sdk.serializers.secret module<a class="headerlink" href="#module-gradient.api_sdk.serializers.secret" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.secret.SecretSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.secret.</code><code class="sig-name descname">SecretSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.secret.SecretSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.secret.SecretSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.secret.SecretSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.secret.Secret" title="gradient.api_sdk.models.secret.Secret"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.secret.Secret</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.secret.SecretSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.secret.SecretSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.serializers.tag">
+<span id="gradient-api-sdk-serializers-tag-module"></span><h2>gradient.api_sdk.serializers.tag module<a class="headerlink" href="#module-gradient.api_sdk.serializers.tag" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.tag.TagSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tag.</code><code class="sig-name descname">TagSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.tag.TagSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.tag.TagSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.tag.TagSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.tag.Tag" title="gradient.api_sdk.models.tag.Tag"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.tag.Tag</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.tag.TagSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.tag.TagSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-gradient.api_sdk.serializers.tensorboard">
 <span id="gradient-api-sdk-serializers-tensorboard-module"></span><h2>gradient.api_sdk.serializers.tensorboard module<a class="headerlink" href="#module-gradient.api_sdk.serializers.tensorboard" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.tensorboard.InstanceType">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tensorboard.</code><code class="sig-name descname">InstanceType</code><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceType" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tensorboard.</code><code class="sig-name descname">InstanceType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>An enumeration.</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.tensorboard.InstanceType.CPU">
 <code class="sig-name descname">CPU</code><em class="property"> = 'cpu'</em><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceType.CPU" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.tensorboard.InstanceType.GPU">
 <code class="sig-name descname">GPU</code><em class="property"> = 'gpu'</em><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceType.GPU" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.tensorboard.InstanceSize">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tensorboard.</code><code class="sig-name descname">InstanceSize</code><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceSize" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tensorboard.</code><code class="sig-name descname">InstanceSize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceSize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>An enumeration.</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.tensorboard.InstanceSize.SMALL">
 <code class="sig-name descname">SMALL</code><em class="property"> = 'small'</em><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceSize.SMALL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.tensorboard.InstanceSize.MEDIUM">
 <code class="sig-name descname">MEDIUM</code><em class="property"> = 'medium'</em><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceSize.MEDIUM" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.tensorboard.InstanceSize.LARGE">
 <code class="sig-name descname">LARGE</code><em class="property"> = 'large'</em><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceSize.LARGE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.tensorboard.InstanceSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tensorboard.</code><code class="sig-name descname">InstanceSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tensorboard.</code><code class="sig-name descname">InstanceSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.tensorboard.InstanceSchema.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.tensorboard.Instance" title="gradient.api_sdk.models.tensorboard.Instance"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.tensorboard.Instance</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.tensorboard.InstanceSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.InstanceSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.tensorboard.TBExperimentSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tensorboard.</code><code class="sig-name descname">TBExperimentSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.TBExperimentSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tensorboard.</code><code class="sig-name descname">TBExperimentSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.TBExperimentSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.tensorboard.TBExperimentSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.TBExperimentSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.tensorboard.TensorboardDetailSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tensorboard.</code><code class="sig-name descname">TensorboardDetailSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.TensorboardDetailSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tensorboard.</code><code class="sig-name descname">TensorboardDetailSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.TensorboardDetailSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.tensorboard.TensorboardDetailSchema.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.TensorboardDetailSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.tensorboard.Tensorboard" title="gradient.api_sdk.models.tensorboard.Tensorboard"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.tensorboard.Tensorboard</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.tensorboard.TensorboardDetailSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.TensorboardDetailSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="gradient.api_sdk.serializers.tensorboard.TensorboardSchema">
-<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tensorboard.</code><code class="sig-name descname">TensorboardSchema</code><span class="sig-paren">(</span><em class="sig-param">extra=None</em>, <em class="sig-param">only=None</em>, <em class="sig-param">exclude=()</em>, <em class="sig-param">prefix=''</em>, <em class="sig-param">strict=None</em>, <em class="sig-param">many=False</em>, <em class="sig-param">context=None</em>, <em class="sig-param">load_only=()</em>, <em class="sig-param">dump_only=()</em>, <em class="sig-param">partial=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.TensorboardSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.tensorboard.</code><code class="sig-name descname">TensorboardSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.TensorboardSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.tensorboard.TensorboardSchema.MODEL">
 <code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.TensorboardSchema.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.tensorboard.Tensorboard" title="gradient.api_sdk.models.tensorboard.Tensorboard"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.tensorboard.Tensorboard</span></code></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="gradient.api_sdk.serializers.tensorboard.TensorboardSchema.opts">
 <code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.tensorboard.TensorboardSchema.opts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -482,9 +732,9 @@
 </div>
 <div class="section" id="module-gradient.api_sdk.serializers.utils">
 <span id="gradient-api-sdk-serializers-utils-module"></span><h2>gradient.api_sdk.serializers.utils module<a class="headerlink" href="#module-gradient.api_sdk.serializers.utils" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<dl class="py function">
 <dt id="gradient.api_sdk.serializers.utils.get_serializer_for_experiment">
-<code class="sig-prename descclassname">gradient.api_sdk.serializers.utils.</code><code class="sig-name descname">get_serializer_for_experiment</code><span class="sig-paren">(</span><em class="sig-param">experiment_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.utils.get_serializer_for_experiment" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gradient.api_sdk.serializers.utils.</code><code class="sig-name descname">get_serializer_for_experiment</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">experiment_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.utils.get_serializer_for_experiment" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>experiment_dict</strong> (<em>dict</em>) – </p>
@@ -493,6 +743,48 @@
 <dd class="field-even"><p>serializers.BaseExperimentSchema</p>
 </dd>
 </dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.api_sdk.serializers.vm_type">
+<span id="gradient-api-sdk-serializers-vm-type-module"></span><h2>gradient.api_sdk.serializers.vm_type module<a class="headerlink" href="#module-gradient.api_sdk.serializers.vm_type" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.vm_type.VmTypeGpuModelSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.vm_type.</code><code class="sig-name descname">VmTypeGpuModelSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.vm_type.VmTypeGpuModelSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.vm_type.VmTypeGpuModelSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.vm_type.VmTypeGpuModelSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.vm_type.VmTypeGpuModel" title="gradient.api_sdk.models.vm_type.VmTypeGpuModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.vm_type.VmTypeGpuModel</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.vm_type.VmTypeGpuModelSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.vm_type.VmTypeGpuModelSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.api_sdk.serializers.vm_type.VmTypeSchema">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.api_sdk.serializers.vm_type.</code><code class="sig-name descname">VmTypeSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">strict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.vm_type.VmTypeSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.api_sdk.serializers.base.BaseSchema" title="gradient.api_sdk.serializers.base.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.serializers.base.BaseSchema</span></code></a></p>
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.vm_type.VmTypeSchema.MODEL">
+<code class="sig-name descname">MODEL</code><a class="headerlink" href="#gradient.api_sdk.serializers.vm_type.VmTypeSchema.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="gradient.api_sdk.models.html#gradient.api_sdk.models.vm_type.VmType" title="gradient.api_sdk.models.vm_type.VmType"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.api_sdk.models.vm_type.VmType</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gradient.api_sdk.serializers.vm_type.VmTypeSchema.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.api_sdk.serializers.vm_type.VmTypeSchema.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="gradient.api_sdk.serializers.vm_type.VmTypeSchema.opts">
+<code class="sig-name descname">opts</code><em class="property"> = &lt;marshmallow.schema.SchemaOpts object&gt;</em><a class="headerlink" href="#gradient.api_sdk.serializers.vm_type.VmTypeSchema.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -512,7 +804,7 @@
       &copy;2019, Paperspace.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

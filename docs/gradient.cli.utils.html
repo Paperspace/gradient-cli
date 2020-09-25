@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gradient.cli.utils package &#8212; Gradient-CLI alpha documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/gradient.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Gradient-CLI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gradient.html">gradient package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">gradient</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="gradient-cli-utils-package">
+<h1>gradient.cli.utils package<a class="headerlink" href="#gradient-cli-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gradient.cli.utils.flag_with_value">
+<span id="gradient-cli-utils-flag-with-value-module"></span><h2>gradient.cli.utils.flag_with_value module<a class="headerlink" href="#module-gradient.cli.utils.flag_with_value" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://stackoverflow.com/questions/40753999/python-click-make-option-value-optional">https://stackoverflow.com/questions/40753999/python-click-make-option-value-optional</a></p>
+<dl class="py class">
+<dt id="gradient.cli.utils.flag_with_value.RegisterReaderOptionMixin">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.cli.utils.flag_with_value.</code><code class="sig-name descname">RegisterReaderOptionMixin</code><a class="headerlink" href="#gradient.cli.utils.flag_with_value.RegisterReaderOptionMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mark this option as getting a _set option</p>
+<dl class="py attribute">
+<dt id="gradient.cli.utils.flag_with_value.RegisterReaderOptionMixin.register_reader">
+<code class="sig-name descname">register_reader</code><em class="property"> = True</em><a class="headerlink" href="#gradient.cli.utils.flag_with_value.RegisterReaderOptionMixin.register_reader" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.cli.utils.flag_with_value.RegisterWriterOptionMixin">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.cli.utils.flag_with_value.</code><code class="sig-name descname">RegisterWriterOptionMixin</code><a class="headerlink" href="#gradient.cli.utils.flag_with_value.RegisterWriterOptionMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Fix the help for the _set suffix</p>
+<dl class="py method">
+<dt id="gradient.cli.utils.flag_with_value.RegisterWriterOptionMixin.get_help_record">
+<code class="sig-name descname">get_help_record</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.utils.flag_with_value.RegisterWriterOptionMixin.get_help_record" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.cli.utils.flag_with_value.RegisterWriterCommandMixin">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.cli.utils.flag_with_value.</code><code class="sig-name descname">RegisterWriterCommandMixin</code><a class="headerlink" href="#gradient.cli.utils.flag_with_value.RegisterWriterCommandMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="gradient.cli.utils.flag_with_value.RegisterWriterCommandMixin.parse_args">
+<code class="sig-name descname">parse_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.utils.flag_with_value.RegisterWriterCommandMixin.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate any opt= to opt_set= as needed</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.cli.utils.flag_with_value.GradientRegisterReaderOption">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.cli.utils.flag_with_value.</code><code class="sig-name descname">GradientRegisterReaderOption</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">param_decls</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_default</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">prompt</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">confirmation_prompt</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">hide_input</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_flag</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">flag_value</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">multiple</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">count</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">allow_from_autoenv</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">help</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">hidden</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">show_choices</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">show_envvar</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">attrs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.utils.flag_with_value.GradientRegisterReaderOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.cli.utils.flag_with_value.RegisterReaderOptionMixin" title="gradient.cli.utils.flag_with_value.RegisterReaderOptionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.cli.utils.flag_with_value.RegisterReaderOptionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.cli.common.GradientOption</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.cli.utils.flag_with_value.GradientRegisterWriterOption">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.cli.utils.flag_with_value.</code><code class="sig-name descname">GradientRegisterWriterOption</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">param_decls</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_default</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">prompt</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">confirmation_prompt</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">hide_input</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_flag</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">flag_value</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">multiple</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">count</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">allow_from_autoenv</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">help</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">hidden</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">show_choices</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">show_envvar</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">attrs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.utils.flag_with_value.GradientRegisterWriterOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gradient.cli.utils.flag_with_value.RegisterWriterOptionMixin" title="gradient.cli.utils.flag_with_value.RegisterWriterOptionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.cli.utils.flag_with_value.RegisterWriterOptionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.cli.common.GradientOption</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="gradient.cli.utils.flag_with_value.GradientRegisterWriterCommand">
+<em class="property">class </em><code class="sig-prename descclassname">gradient.cli.utils.flag_with_value.</code><code class="sig-name descname">GradientRegisterWriterCommand</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gradient.cli.utils.flag_with_value.GradientRegisterWriterCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">click_didyoumean.DYMMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">click_help_colors.core.HelpColorsMixin</span></code>, <a class="reference internal" href="#gradient.cli.utils.flag_with_value.RegisterWriterCommandMixin" title="gradient.cli.utils.flag_with_value.RegisterWriterCommandMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">gradient.cli.utils.flag_with_value.RegisterWriterCommandMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">click.core.Command</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gradient.cli.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gradient.cli.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2019, Paperspace.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/gradient.cli.utils.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
