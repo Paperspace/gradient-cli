@@ -278,7 +278,6 @@ class TestModelUpload(object):
         "summary": """{"key": "value"}""",
         "notes": "some notes",
         "projectId": "some_project_id",
-        "clusterId": "some_cluster_id",
     }
 
     COMMAND_WITH_API_KEY_PARAMETER_USED = [
@@ -297,7 +296,8 @@ class TestModelUpload(object):
     EXPECTED_STDOUT = "Model uploaded with ID: some_model_id\n"
 
     GET_PRESIGNED_URL = "https://api.paperspace.io/mlModels/getPresignedModelUrl"
-    GET_PRESIGNED_URL_PARAMS = {"fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": ""}
+    GET_PRESIGNED_URL_PARAMS = {"fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": "", "clusterId": "some_cluster_id"}
+    GET_PRESIGNED_URL_PARAMS_BASIC = {"fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": ""}
     GET_PRESIGNED_URL_RESPONSE = example_responses.MODEL_UPLOAD_GET_PRESIGNED_URL_RESPONSE
 
     CREATE_MODEL_V2_REPONSE = example_responses.MODEL_CREATE_RESPONSE_JSON_V2
@@ -339,7 +339,7 @@ class TestModelUpload(object):
             ])
             get_patched.assert_called_once_with(self.GET_PRESIGNED_URL,
                                                 headers=EXPECTED_HEADERS,
-                                                params=self.GET_PRESIGNED_URL_PARAMS,
+                                                params=self.GET_PRESIGNED_URL_PARAMS_BASIC,
                                                 json=None,
                                                 )
             assert put_patched.call_args.kwargs["data"].encoder.fields["file"][0] == self.MODEL_FILE
@@ -523,7 +523,7 @@ class TestModelUpload(object):
                     mock.call(
                         self.GET_PRESIGNED_URL,
                         headers=EXPECTED_HEADERS,
-                        params=self.GET_PRESIGNED_URL_PARAMS,
+                        params=self.GET_PRESIGNED_URL_PARAMS_BASIC,
                         json=None,
                     ),
                 ]

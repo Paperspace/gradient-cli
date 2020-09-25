@@ -51,11 +51,10 @@ class ModelsClient(TagsSupportMixin, BaseClient):
             summary=json.dumps(model_summary) if model_summary else None,
             notes=notes,
             project_id=project_id,
-            cluster_id=cluster_id,
         )
 
         repository = self.build_repository(repositories.UploadModel)
-        model_id = repository.create(model, path=path)
+        model_id = repository.create(model, path=path, cluster_id=cluster_id)
 
         if tags:
             self.add_tags(entity_id=model_id, tags=tags)
