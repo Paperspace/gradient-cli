@@ -29,7 +29,7 @@ class ModelsClient(TagsSupportMixin, BaseClient):
         repository = self.build_repository(repositories.DeleteModel)
         repository.delete(model_id)
 
-    def upload(self, path, name, model_type, model_summary=None, notes=None, tags=None, project_id=None):
+    def upload(self, path, name, model_type, model_summary=None, notes=None, tags=None, project_id=None, cluster_id=None):
         """Upload model
 
         :param file path: path to Model
@@ -39,6 +39,7 @@ class ModelsClient(TagsSupportMixin, BaseClient):
         :param str|None notes: Optional model description
         :param list[str] tags: List of tags
         :param str|None project_id: ID of a project
+        :param str|None cluster_id: ID of a cluster
 
         :return: ID of new model
         :rtype: str
@@ -53,7 +54,7 @@ class ModelsClient(TagsSupportMixin, BaseClient):
         )
 
         repository = self.build_repository(repositories.UploadModel)
-        model_id = repository.create(model, path=path)
+        model_id = repository.create(model, path=path, cluster_id=cluster_id)
 
         if tags:
             self.add_tags(entity_id=model_id, tags=tags)

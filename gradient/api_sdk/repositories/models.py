@@ -86,21 +86,21 @@ class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
     def _get_request_json(self, instance_dict):
         return None
 
-    def create(self, instance, data=None, path=None):
+    def create(self, instance, data=None, path=None, cluster_id=None):
         model_id = super(UploadModel, self).create(instance, data=data, path=path)
         try:
-            self._upload_model(path, model_id)
+            self._upload_model(path, model_id, cluster_id=cluster_id)
         except BaseException:
             self._delete_model(model_id)
             raise
 
         return model_id
 
-    def _upload_model(self, file_path, model_id):
+    def _upload_model(self, file_path, model_id, cluster_id=None):
         model_uploader = s3_uploader.S3ModelUploader(
             self.api_key, logger=self.logger, ps_client_name=self.ps_client_name
         )
-        model_uploader.upload(file_path, model_id)
+        model_uploader.upload(file_path, model_id, cluster_id=cluster_id)
 
     def _delete_model(self, model_id):
         repository = DeleteModel(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)

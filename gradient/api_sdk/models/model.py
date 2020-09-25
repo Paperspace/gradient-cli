@@ -10,6 +10,7 @@ class Model(object):
     :param str name:
     :param str project_id:
     :param str experiment_id:
+    :param str cluster_id:
     :param list tags:
     :param str model_type:
     :param str url:
@@ -22,6 +23,7 @@ class Model(object):
     name = attr.ib(type=str, default=None)
     project_id = attr.ib(type=str, default=None)
     experiment_id = attr.ib(type=str, default=None)
+    cluster_id = attr.ib(type=str, default=None)
     tags = attr.ib(type=list, factory=list)
     model_type = attr.ib(type=str, default=None)
     url = attr.ib(type=str, default=None)

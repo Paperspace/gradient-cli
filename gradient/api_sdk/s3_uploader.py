@@ -193,7 +193,7 @@ class S3ModelFileUploader(object):
             multipart_encoder_cls=self.multipart_encoder_cls
         )
 
-    def upload(self, file_path, model_id):
+    def upload(self, file_path, model_id, cluster_id=None):
         """Upload file to S3 bucket for a project
 
         :param str file_path:
@@ -202,11 +202,11 @@ class S3ModelFileUploader(object):
         :rtype: str
         :return: S3 bucket's URL
         """
-        url = self._get_upload_data(file_path, model_id)
+        url = self._get_upload_data(file_path, model_id, cluster_id=cluster_id)
         self.s3uploader.upload(file_path, url)
         return url
 
-    def _get_upload_data(self, file_path, model_id):
+    def _get_upload_data(self, file_path, model_id, cluster_id=None):
         """Ask API for data required to upload a file to S3
 
         :param str file_path:
@@ -221,6 +221,8 @@ class S3ModelFileUploader(object):
             "modelHandle": model_id,
             "contentType": mimetypes.guess_type(file_path)[0] or "",
         }
+        if cluster_id:
+            params["clusterId"] = cluster_id
 
         response = self.ps_api_client.get("/mlModels/getPresignedModelUrl", params=params)
         if not response.ok:
@@ -239,11 +241,11 @@ class S3ModelFileUploader(object):
 
 
 class S3ModelUploader(S3ModelFileUploader):
-    def upload(self, file_path, model_id):
+    def upload(self, file_path, model_id, cluster_id=None):
         if os.path.isdir(file_path):
             file_path = self._zip_model_directory(file_path)
 
-        return super(S3ModelUploader, self).upload(file_path, model_id)
+        return super(S3ModelUploader, self).upload(file_path, model_id, cluster_id=cluster_id)
 
     def _zip_model_directory(self, dir_path):
         archiver = self._get_archiver()
