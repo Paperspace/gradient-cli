@@ -65,7 +65,7 @@ For example, to create a new experiment use:
 ```
 gradient experiments create [type] [--options]
 ```
-The two available experiment types are `singlenode` and `multinode`. Various command options include setting the instance type, container, project, etc.  You can view a full list of Experiment options in the [https://docs.paperspace.com/gradient/experiments/using-experiments](docs).  
+The two available experiment types are `singlenode` and `multinode`. Various command options include setting the instance type, container, project, etc.  You can view a full list of Experiment options in the [docs](https://docs.paperspace.com/gradient/experiments/using-experiments).  
 
 For a full list of available commands run `gradient experiments --help`. 
 Note that some options are required to create new experiment.
