@@ -381,7 +381,6 @@ class ListMetrics(GetResource):
     OBJECT_TYPE = None
 
     DEFAULT_INTERVAL = "30s"
-    DEFAULT_METRICS = ["training_loss", "training_total"]
 
     @abc.abstractmethod
     def _get_instance_by_id(self, instance_id, **kwargs):
@@ -401,14 +400,12 @@ class ListMetrics(GetResource):
 
     def _get_kwargs(self, kwargs):
         instance_id = kwargs["id"]
-        built_in_metrics = self._get_built_in_metrics_comma_separated(kwargs)
         instance = self._get_instance_by_id(instance_id)
         started_date = self._get_start_date(instance, kwargs)
         end = self._get_end_date(instance, kwargs)
         interval = kwargs.get("interval") or self.DEFAULT_INTERVAL
         metrics_api_url = self._get_metrics_api_url(instance)
         new_kwargs = {
-            "charts": built_in_metrics,
             "start": started_date,
             "interval": interval,
             "objecttype": self.OBJECT_TYPE,
@@ -426,15 +423,6 @@ class ListMetrics(GetResource):
     def _get_api_url(self, **kwargs):
         api_url = kwargs["metrics_api_url"]
         return api_url
-
-    def _get_built_in_metrics_comma_separated(self, kwargs):
-        metrics_list = self._get_built_in_metrics_list(kwargs)
-        metrics_list = ",".join(metrics_list)
-        return metrics_list
-
-    def _get_built_in_metrics_list(self, kwargs):
-        metrics = kwargs.get("built_in_metrics") or self.DEFAULT_METRICS
-        return metrics
 
     def _get_start_date(self, instance, kwargs):
         datetime_string = kwargs.get("start") or instance.dt_started or instance.dt_created
