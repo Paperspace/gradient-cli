@@ -122,16 +122,17 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
 
         return handle
 
-    def fork(self, id, tags=None):
+    def fork(self, id, project_id, tags=None):
         """Fork an existing notebook
         :param str|int id:
+        :param str project_id:
         :param list[str] tags: List of tags
 
         :return: Notebook ID
         :rtype str:
         """
         repository = self.build_repository(repositories.ForkNotebook)
-        handle = repository.fork(id)
+        handle = repository.fork(id, project_id)
 
         if tags:
             self.add_tags(entity_id=handle, tags=tags)

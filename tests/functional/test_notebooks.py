@@ -234,9 +234,11 @@ class TestNotebooksFork(object):
         "notebooks",
         "fork",
         "--id", "n1234",
+        "--projectId", "p1234",
     ]
     EXPECTED_REQUEST_JSON = {
         "notebookId": "n1234",
+        "projectId": "p1234",
     }
     EXPECTED_RESPONSE_JSON = {
         "handle": "n1234",
@@ -251,6 +253,7 @@ class TestNotebooksFork(object):
         "notebooks",
         "fork",
         "--id", "n1234",
+        "--projectId", "p1234",
         "--apiKey", "some_key",
     ]
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}

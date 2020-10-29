@@ -237,14 +237,23 @@ def start_notebook(api_key, options_file, **notebook):
 @click.option(
     "--id",
     "id_",
+    required=True,
     help="Notebook ID",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--projectId",
+    "project_id",
+    required=True,
+    type=str,
+    help="Project ID",
     cls=common.GradientOption,
 )
 @common.api_key_option
 @common.options_file
-def delete_notebook(id_, api_key, options_file):
+def fork_notebook(id_, project_id, api_key, options_file):
     command = notebooks.ForkNotebookCommand(api_key=api_key)
-    command.execute(id_=id_)
+    command.execute(id_=id_, project_id=project_id)
 
 
 @notebooks_group.command("delete", help="Delete existing notebook")

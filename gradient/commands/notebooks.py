@@ -69,9 +69,9 @@ class StartNotebookCommand(BaseNotebookCommand):
 class ForkNotebookCommand(BaseNotebookCommand):
     WAITING_FOR_RESPONSE_MESSAGE = "Forking notebook"
 
-    def execute(self, id_):
+    def execute(self, id_, project_id):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
-            handle = self.client.fork(id_)
+            handle = self.client.fork(id_, project_id)
 
         self.logger.log("Notebook forked to id: {}".format(handle))
 
