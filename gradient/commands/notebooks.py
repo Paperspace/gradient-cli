@@ -120,6 +120,7 @@ class ShowNotebookDetailsCommand(DetailsCommandMixin, BaseNotebookCommand):
         data = (
             ("Name", instance.name),
             ("ID", instance.id),
+            ("Project", instance.project_handle),
             ("VM Type", instance.vm_type),
             ("State", instance.state),
             ("FQDN", instance.fqdn),
