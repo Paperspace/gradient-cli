@@ -648,6 +648,7 @@ class TestNotebooksdetails(object):
 | Name    | some_name                         |
 +---------+-----------------------------------+
 | ID      | ngw7piq9                          |
+| Project | prg284tu2                         |
 | VM Type | K80                               |
 | State   | Running                           |
 | FQDN    | ngw7piq9.dgradient.paperspace.com |
@@ -658,6 +659,7 @@ class TestNotebooksdetails(object):
 | Name    | some_name                         |
 +---------+-----------------------------------+
 | ID      | ngw7piq9                          |
+| Project | prg284tu2                         |
 | VM Type | K80                               |
 | State   | Running                           |
 | FQDN    | ngw7piq9.dgradient.paperspace.com |
