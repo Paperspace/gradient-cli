@@ -37,8 +37,8 @@ class ForkNotebook(GetNotebookApiUrlMixin, BaseRepository):
     SERIALIZER_CLS = serializers.NotebookSchema
     VALIDATION_ERROR_MESSAGE = "Failed to fork notebook"
 
-    def fork(self, id):
-        instance = {"notebookId": id}
+    def fork(self, id_, project_id):
+        instance = {"notebookId": id_, "projectId": project_id}
         handle = self._send_request(instance)
         return handle
 

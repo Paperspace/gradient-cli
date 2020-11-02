@@ -234,9 +234,11 @@ class TestNotebooksFork(object):
         "notebooks",
         "fork",
         "--id", "n1234",
+        "--projectId", "p1234",
     ]
     EXPECTED_REQUEST_JSON = {
         "notebookId": "n1234",
+        "projectId": "p1234",
     }
     EXPECTED_RESPONSE_JSON = {
         "handle": "n1234",
@@ -251,6 +253,7 @@ class TestNotebooksFork(object):
         "notebooks",
         "fork",
         "--id", "n1234",
+        "--projectId", "p1234",
         "--apiKey", "some_key",
     ]
     RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
@@ -645,6 +648,7 @@ class TestNotebooksdetails(object):
 | Name    | some_name                         |
 +---------+-----------------------------------+
 | ID      | ngw7piq9                          |
+| Project | prg284tu2                         |
 | VM Type | K80                               |
 | State   | Running                           |
 | FQDN    | ngw7piq9.dgradient.paperspace.com |
@@ -655,6 +659,7 @@ class TestNotebooksdetails(object):
 | Name    | some_name                         |
 +---------+-----------------------------------+
 | ID      | ngw7piq9                          |
+| Project | prg284tu2                         |
 | VM Type | K80                               |
 | State   | Running                           |
 | FQDN    | ngw7piq9.dgradient.paperspace.com |
