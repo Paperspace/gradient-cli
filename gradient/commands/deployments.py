@@ -236,7 +236,7 @@ class GetDeploymentMetricsCommand(BaseDeploymentCommand):
 
 class ListDeploymentMetricsCommand(BaseDeploymentCommand):
     def execute(self, deployment_id, start, end, interval, *args, **kwargs):
-        metrics = self.client.get_metrics(
+        metrics = self.client.list_metrics(
             deployment_id,
             start=start,
             end=end,
