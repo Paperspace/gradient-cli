@@ -234,6 +234,17 @@ class GetDeploymentMetricsCommand(BaseDeploymentCommand):
         self.logger.log(formatted_metrics)
 
 
+class ListDeploymentMetricsCommand(BaseDeploymentCommand):
+    def execute(self, deployment_id, start, end, interval, *args, **kwargs):
+        metrics = self.client.get_metrics(
+            deployment_id,
+            start=start,
+            end=end,
+            interval=interval,
+        )
+        formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
+        self.logger.log(formatted_metrics)
+
 class StreamDeploymentMetricsCommand(StreamMetricsCommand, BaseDeploymentCommand):
     pass
 

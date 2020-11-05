@@ -296,6 +296,29 @@ class DeploymentsClient(TagsSupportMixin, BaseClient):
         )
         return metrics
 
+    
+    def list_metrics(self, deployment_id, start=None, end=None, interval="30s"):
+        """Get model deployment metrics
+
+        :param str deployment_id: ID of deployment
+        :param datetime.datetime|str start:
+        :param datetime.datetime|str end:
+        :param str interval:
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+
+        :returns: Metrics of a model deployment job
+        :rtype: dict[str,dict[str,list[dict]]]
+        """
+
+        repository = self.build_repository(repositories.ListDeploymentMetrics)
+        metrics = repository.get(
+            id=deployment_id,
+            start=start,
+            end=end,
+            interval=interval,
+        )
+        return metrics
+
     def stream_metrics(self, deployment_id, interval="30s", built_in_metrics=None):
         """Stream live model deployment metrics
 

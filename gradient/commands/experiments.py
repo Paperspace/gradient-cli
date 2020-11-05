@@ -424,6 +424,16 @@ class GetExperimentMetricsCommand(BaseExperimentCommand):
         formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
         self.logger.log(formatted_metrics)
 
+class ListExperimentMetricsCommand(BaseExperimentCommand):
+    def execute(self, experiment_id, start, end, interval, *args, **kwargs):
+        metrics = self.client.list_metrics(
+            experiment_id,
+            start=start,
+            end=end,
+            interval=interval,
+        )
+        formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
+        self.logger.log(formatted_metrics)
 
 class StreamExperimentMetricsCommand(StreamMetricsCommand, BaseExperimentCommand):
     pass

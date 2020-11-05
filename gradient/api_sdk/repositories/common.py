@@ -410,7 +410,7 @@ class ListMetrics(GetResource):
             "interval": interval,
             "objecttype": self.OBJECT_TYPE,
             "handle": instance_id,
-            "metrics_api_url": metrics_api_url,
+            "metrics_api_url": metrics_api_url if config.CONFIG_HOST != "http://localhost:3102" else f'{metrics_api_url}:8080',
         }
         if end:
             new_kwargs["end"] = end
@@ -446,8 +446,8 @@ class ListMetrics(GetResource):
         return params
 
     def _parse_object(self, instance_dict, **kwargs):
-        charts = instance_dict["charts"]
-        return charts
+        chart_names = instance_dict["chart_names"]
+        return chart_names
 
     def _format_datetime(self, some_datetime):
         if not isinstance(some_datetime, datetime.datetime):
