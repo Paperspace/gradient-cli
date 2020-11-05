@@ -190,6 +190,26 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
         )
         return metrics
 
+    def list_metrics(self, notebook_id, start=None, end=None, interval="30s"):
+        """List notebook metrics
+
+        :param str notebook_id: notebook ID
+        :param datetime.datetime|str start:
+        :param datetime.datetime|str end:
+        :param str interval:
+        :returns: Metrics of a notebook
+        :rtype: dict[str,dict[str,list[dict]]]
+        """
+
+        repository = self.build_repository(repositories.ListNotebookMetrics)
+        metrics = repository.get(
+            id=notebook_id,
+            start=start,
+            end=end,
+            interval=interval,
+        )
+        return metrics
+
     def stream_metrics(self, notebook_id, interval="30s", built_in_metrics=None):
         """Stream live notebook metrics
 

@@ -6,7 +6,7 @@ from gradient.cli.cli import cli
 from gradient.cli.cli_types import ChoiceType, json_string
 from gradient.cli.common import validate_comma_split_option, api_key_option, ClickGroup
 from gradient.commands import notebooks
-from gradient.commands.notebooks import GetNotebookMetricsCommand, StreamNotebookMetricsCommand
+from gradient.commands.notebooks import GetNotebookMetricsCommand, ListNotebookMetricsCommand, StreamNotebookMetricsCommand
 
 
 @cli.group("notebooks", help="Manage notebooks", cls=common.ClickGroup)
@@ -403,6 +403,46 @@ def notebook_remove_tags(id, options_file, api_key, **kwargs):
 def get_deployment_metrics(notebook_id, metrics_list, interval, start, end, options_file, api_key):
     command = GetNotebookMetricsCommand(api_key=api_key)
     command.execute(notebook_id, start, end, interval, built_in_metrics=metrics_list)
+
+
+@notebook_metrics.command(
+    "list",
+    short_help="List notebook metrics",
+    help="List notebook metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "notebook_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the notebook",
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--start",
+    "start",
+    type=click.DateTime(),
+    help="Timestamp of first time series metric to collect",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--end",
+    "end",
+    type=click.DateTime(),
+    help="Timestamp of last time series metric to collect",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def list_deployment_metrics(notebook_id, interval, start, end, options_file, api_key):
+    command = ListNotebookMetricsCommand(api_key=api_key)
+    command.execute(notebook_id, start, end, interval)
 
 
 @notebook_metrics.command(

@@ -12,7 +12,7 @@ from .machine_types import ListMachineTypes
 from .machines import CheckMachineAvailability, CreateMachine, CreateResource, StartMachine, StopMachine, \
     RestartMachine, GetMachine, UpdateMachine, GetMachineUtilization
 from .models import DeleteModel, ListModels, UploadModel, GetModel, ListModelFiles
-from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks, GetNotebookMetrics, \
+from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks, GetNotebookMetrics, ListNotebookMetrics, \
     StreamNotebookMetrics, StopNotebook, StartNotebook, ForkNotebook, ListNotebookArtifacts, ListNotebookLogs
 from .projects import CreateProject, ListProjects, DeleteProject, GetProject
 from .secrets import ListSecrets, SetSecret, DeleteSecret
