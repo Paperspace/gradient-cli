@@ -7,7 +7,7 @@ from .experiments import ListExperiments, GetExperiment, ListExperimentLogs, Sta
     StreamExperimentMetrics
 from .hyperparameter import CreateHyperparameterJob, CreateAndStartHyperparameterJob, ListHyperparameterJobs, \
     GetHyperparameterTuningJob, StartHyperparameterTuningJob
-from .jobs import ListJobs, ListResources, ListJobArtifacts, ListJobLogs, GetJob, GetJobMetrics, ListJobMetrics, StreamJobMetrics
+from .jobs import ListJobs, ListResources, ListJobArtifacts, ListJobLogs, GetJob, GetJobMetrics, StreamJobMetrics
 from .machine_types import ListMachineTypes
 from .machines import CheckMachineAvailability, CreateMachine, CreateResource, StartMachine, StopMachine, \
     RestartMachine, GetMachine, UpdateMachine, GetMachineUtilization

@@ -838,6 +838,8 @@ class ExperimentsClient(TagsSupportMixin, utils.ExperimentsClientHelpersMixin, B
         :param datetime.datetime|str start:
         :param datetime.datetime|str end:
         :param str interval:
+        :param list[str] built_in_metrics: List of metrics to get if different than default
+
         :returns: Metrics of and experiment
         :rtype: dict[str,dict[str,list[dict]]]
         """
