@@ -224,6 +224,13 @@ def jobs_metrics_get_config_path():
 
 
 @pytest.fixture
+def jobs_metrics_list_config_path():
+    p = Path(__file__)
+    fixture_dir = p.parent / "config_files" / "jobs_metrics_list.yaml"
+    return str(fixture_dir.resolve())
+
+
+@pytest.fixture
 def jobs_metrics_stream_config_path():
     p = Path(__file__)
     fixture_dir = p.parent / "config_files" / "jobs_metrics_stream.yaml"
