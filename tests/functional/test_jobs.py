@@ -754,9 +754,9 @@ class TestJobsMetricsListCommand(object):
     }
 
     EXPECTED_STDOUT = """{
-  chart_names: ["training_created", "training_total"],
-  handle: "jstkd2lapucirs",
-  object_type: "mljob"
+  "chart_names": ["training_created", "training_total"],
+  "handle": "jstkd2lapucirs",
+  "object_type": "mljob"
 }
 """
 
@@ -768,7 +768,7 @@ class TestJobsMetricsListCommand(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_read_all_available_metrics_when_metrics_get_command_was_used_with_basic_options(
+    def test_should_read_all_available_metrics_when_metrics_list_command_was_used_with_basic_options(
             self, post_patched, get_patched):
         post_patched.return_value = MockResponse(self.GET_JOB_RESPONSE_JSON)
         get_patched.return_value = MockResponse(self.GET_METRICS_RESPONSE_JSON)
@@ -796,7 +796,7 @@ class TestJobsMetricsListCommand(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_read_metrics_when_metrics_get_command_was_used_with_all_options(
+    def test_should_read_metrics_when_metrics_list_command_was_used_with_all_options(
             self, post_patched, get_patched):
         post_patched.return_value = MockResponse(self.GET_JOB_RESPONSE_JSON)
         get_patched.return_value = MockResponse(self.GET_METRICS_RESPONSE_JSON)
@@ -825,12 +825,12 @@ class TestJobsMetricsListCommand(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
-    def test_should_read_metrics_when_metrics_get_was_executed_and_options_file_was_used(
-            self, post_patched, get_patched, jobs_metrics_get_config_path):
+    def test_should_read_metrics_when_metrics_list_was_executed_and_options_file_was_used(
+            self, post_patched, get_patched, jobs_metrics_list_config_path):
         post_patched.return_value = MockResponse(self.GET_JOB_RESPONSE_JSON)
         get_patched.return_value = MockResponse(self.GET_METRICS_RESPONSE_JSON)
 
-        command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [jobs_metrics_get_config_path]
+        command = self.FULL_OPTIONS_COMMAND_WITH_OPTIONS_FILE[:] + [jobs_metrics_list_config_path]
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
 
