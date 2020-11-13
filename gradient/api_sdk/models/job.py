@@ -2,6 +2,13 @@ import attr
 
 
 @attr.s
+class JobDataset(object):
+    id = attr.ib(type=str, default=None)
+    name = attr.ib(type=str, default=None)
+    output = attr.ib(type=bool, default=None)
+
+
+@attr.s
 class Job(object):
     id = attr.ib(type=str, default=None)
     name = attr.ib(type=str, default=None)
@@ -85,3 +92,4 @@ class Job(object):
     registry_target_username = attr.ib(type=str, default=None)
     registry_target_password = attr.ib(type=str, default=None)
     tags = attr.ib(type=list, factory=list)
+    datasets = attr.ib(type=list, factory=list)

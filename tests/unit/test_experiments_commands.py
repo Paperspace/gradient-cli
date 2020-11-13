@@ -9,7 +9,8 @@ class TestHandleDatasetDataMethod(object):
         input_data = {
             "some_key": "some_value",
             "dataset_uri_list": ["uri1", "uri2"],
-            "dataset_name_list": ["name1", None],
+            "dataset_id_list": [None, None, "test"],
+            "dataset_name_list": ["name1", None, "name2"],
             "dataset_access_key_id_list": [None, "key_id"],
             "dataset_secret_access_key_list": ["none", "secret"],
             # "dataset_version_id_list": []  # this key does not exist if parameter was not used
@@ -21,9 +22,11 @@ class TestHandleDatasetDataMethod(object):
             "datasets": [
                 {
                     "uri": "uri1",
+                    "id": None,
                     "name": "name1",
                     "aws_access_key_id": None,
                     "aws_secret_access_key": None,
+                    "aws_endpoint": None,
                     "version_id": None,
                     "etag": "etag",
                     "volume_kind": None,
@@ -31,9 +34,23 @@ class TestHandleDatasetDataMethod(object):
                 },
                 {
                     "uri": "uri2",
+                    "id": None,
                     "name": None,
                     "aws_access_key_id": "key_id",
                     "aws_secret_access_key": "secret",
+                    "aws_endpoint": None,
+                    "version_id": None,
+                    "etag": None,
+                    "volume_kind": None,
+                    "volume_size": None,
+                },
+                {
+                    "uri": None,
+                    "id": "test",
+                    "name": "name2",
+                    "aws_access_key_id": None,
+                    "aws_secret_access_key": None,
+                    "aws_endpoint": None,
                     "version_id": None,
                     "etag": None,
                     "volume_kind": None,

@@ -57,6 +57,7 @@ class JobsClient(TagsSupportMixin, BaseClient):
             registry_target_password=None,
             build_only=False,
             tags=None,
+            datasets=None,
     ):
         """
         Method to create and start job in paperspace gradient.
@@ -131,6 +132,7 @@ class JobsClient(TagsSupportMixin, BaseClient):
         :param str registry_target_password: password for custom docker registry
         :param bool build_only: determines whether to only build and not run image
         :param list[str] tags: List of tags
+        :param list[object] datasets: List of input/output datasets
 
         :returns: Job handle
         :rtype: str
@@ -165,6 +167,7 @@ class JobsClient(TagsSupportMixin, BaseClient):
             registry_target_username=registry_target_username,
             registry_target_password=registry_target_password,
             build_only=build_only,
+            datasets=datasets,
         )
         repository = self.build_repository(CreateJob)
         handle = repository.create(job, data=data)

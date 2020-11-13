@@ -1,18 +1,24 @@
 import attr
 
-
-@attr.s
-class VolumeOptions(object):
-    kind = attr.ib(type=str, default=None)
-    size = attr.ib(type=str, default=None)
+from .storage_provider import StorageProvider
+from .dataset_version import DatasetVersion
 
 
 @attr.s
 class Dataset(object):
-    uri = attr.ib(type=str, default=None)
-    aws_access_key_id = attr.ib(type=str, default=None)
-    aws_secret_access_key = attr.ib(type=str, default=None)
-    etag = attr.ib(type=str, default=None)
-    version_id = attr.ib(type=str, default=None)
+    """
+    Dataset class
+    """
+    id = attr.ib(type=str, default=None)
     name = attr.ib(type=str, default=None)
-    volume_options = attr.ib(type=VolumeOptions, factory=VolumeOptions)
+    description = attr.ib(type=str, default=None)
+    storage_provider_id = attr.ib(type=str, default=None)
+    storage_provider = attr.ib(type=StorageProvider, factory=StorageProvider)
+
+
+@attr.s
+class DatasetRef(Dataset):
+    """
+    Dataset reference
+    """
+    version = attr.ib(type=DatasetVersion, factory=DatasetVersion)

@@ -2,7 +2,7 @@ import copy
 
 import marshmallow
 
-from . import dataset
+from . import experiment_dataset
 from .base import BaseSchema
 from .tag import TagSchema
 from .. import models, utils
@@ -16,7 +16,7 @@ class BaseExperimentSchema(BaseSchema):
     workspace_ref = marshmallow.fields.Str(dump_to="workspaceRef", load_from="workspaceRef")
     workspace_username = marshmallow.fields.Str(dump_to="workspaceUsername", load_from="workspaceUsername")
     workspace_password = marshmallow.fields.Str(dump_to="workspacePassword", load_from="workspacePassword")
-    datasets = marshmallow.fields.Nested(dataset.DatasetSchema, many=True)
+    datasets = marshmallow.fields.Nested(experiment_dataset.ExperimentDatasetSchema, many=True)
     working_directory = marshmallow.fields.Str(dump_to="workingDirectory", load_from="workingDirectory")
     artifact_directory = marshmallow.fields.Str(dump_to="artifactDirectory", load_from="artifactDirectory")
     cluster_id = marshmallow.fields.String(dump_to="clusterId", load_from="clusterId")

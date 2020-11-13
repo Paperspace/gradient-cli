@@ -178,6 +178,14 @@ def common_experiments_create_options(f):
 def dataset_options(f):
     options = [
         click.option(
+            "--datasetId",
+            "dataset_id_list",
+            metavar="<dateset id>",
+            multiple=True,
+            help="Dataset ID",
+            cls=common.GradientDatasetOption,
+        ),
+        click.option(
             "--datasetUri",
             "dataset_uri_list",
             metavar="<dateset uri>",
@@ -206,6 +214,13 @@ def dataset_options(f):
             "dataset_secret_access_key_list",
             multiple=True,
             help="S3 bucket's Secret Access Key",
+            cls=common.GradientDatasetOption,
+        ),
+        click.option(
+            "--datasetAwsEndpoint",
+            "dataset_endpoint_list",
+            multiple=True,
+            help="S3 endpoint URL",
             cls=common.GradientDatasetOption,
         ),
         click.option(

@@ -48,7 +48,7 @@ class ExperimentsClient(TagsSupportMixin, utils.ExperimentsClientHelpersMixin, B
         :param str workspace_username: Project git repository username
         :param str workspace_password: Project git repository password
         :param dict|list[dict]|tuple[dict] datasets: Dict or list of dicts describing dataset(s) used in experiment.
-                                                     Required keys: "url"
+                                                     Required keys: "id" or "url"
                                                      Optional keys: "tag" for S3 tag and "auth" for S3 token
         :param str working_directory: Working directory for the experiment
         :param str artifact_directory: Artifacts directory
@@ -860,14 +860,14 @@ class ExperimentsClient(TagsSupportMixin, utils.ExperimentsClientHelpersMixin, B
             datasets = [datasets]
 
         for ds in datasets:
-            if not ds.get("uri"):
+            if not (ds.get("id") or ds.get("uri")):
                 raise ResourceCreatingDataError("Error while creating experiment with dataset: "
-                                                "\"uri\" key is required and it's value must be a valid S3 URI")
+                                                'id or uri key is required')
 
         for ds in datasets:
             volume_options = ds.setdefault("volume_options", {})
             volume_options.setdefault("kind", ds.pop("volume_kind", None))
             volume_options.setdefault("size", ds.pop("volume_size", None))
 
-        datasets = [models.Dataset(**ds) for ds in datasets]
+        datasets = [models.ExperimentDataset(**ds) for ds in datasets]
         return datasets

@@ -93,6 +93,27 @@ class ListCommandMixin(object):
 
 
 @six.add_metaclass(abc.ABCMeta)
+class ListCommandPagerMixin(ListCommandMixin):
+    def _get_instances(self, kwargs):
+        limit = kwargs.get('limit') or 20
+        offset = 0
+
+        while True:
+            with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
+                results = self.client.list(limit=limit + 1, offset=offset, **kwargs)
+            has_more = len(results) > limit
+            yield results[:limit], has_more
+            if not has_more:
+                break
+            offset += limit
+
+    def execute(self, **kwargs):
+        for instances, has_more in self._get_instances(kwargs):
+            self._log_objects_list(instances)
+            yield has_more
+
+
+@six.add_metaclass(abc.ABCMeta)
 class DetailsCommandMixin(object):
     WAITING_FOR_RESPONSE_MESSAGE = "Waiting for data..."
 
@@ -108,6 +129,9 @@ class DetailsCommandMixin(object):
         return instance
 
     def _log_object(self, instance):
+        if instance is None:
+            self.logger.warning("Not found")
+            return
 
         table_str = self._make_table(instance)
         if len(table_str.splitlines()) > get_terminal_lines():
