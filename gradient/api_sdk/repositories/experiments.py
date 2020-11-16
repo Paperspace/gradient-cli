@@ -229,7 +229,7 @@ class ListExperimentMetrics(GetExperimentMetricsApiUrlMixin, ListMetrics):
         except sdk_exceptions.ResourceFetchingError as e:
             if '{"version":' in str(e):
                 # TODO: metrics are not working for v1 experiments at the moment
-                raise sdk_exceptions.GradientSdkError("Metrics are available for private clusters only")
+                raise sdk_exceptions.GradientSdkError("Custom metrics are available for private clusters only")
             else:
                 raise
 
