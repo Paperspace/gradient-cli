@@ -73,3 +73,9 @@ Contributing
 ============
 
 Want to contribute?  Contact us at hello@paperspace.com
+
+
+### Pre-Release Testing
+
+Have a Paperspace QA tester install your change directly from the branch to test it.
+They can do it with `pip install git+https://github.com/Paperspace/gradient-cli.git@MYBRANCH`.
