@@ -1,4 +1,8 @@
 from .clusters import ListClusters
+from .datasets import ListDatasets, CreateDataset, DeleteDataset, GetDataset, GetDatasetRef, UpdateDataset
+from .dataset_tags import ListDatasetTags, GetDatasetTag, SetDatasetTag, DeleteDatasetTag
+from .dataset_versions import ListDatasetVersions, CreateDatasetVersion, DeleteDatasetVersion, \
+    GenerateDatasetVersionPreSignedS3Urls, GetDatasetVersion, UpdateDatasetVersion
 from .deployments import ListDeployments, CreateDeployment, StartDeployment, StopDeployment, DeleteDeployment, \
     UpdateDeployment, GetDeployment, GetDeploymentMetrics, StreamDeploymentMetrics, ListDeploymentLogs
 from .experiments import ListExperiments, GetExperiment, ListExperimentLogs, StartExperiment, StopExperiment, \
@@ -16,4 +20,6 @@ from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebook
     StreamNotebookMetrics, StopNotebook, StartNotebook, ForkNotebook, ListNotebookArtifacts, ListNotebookLogs
 from .projects import CreateProject, ListProjects, DeleteProject, GetProject
 from .secrets import ListSecrets, SetSecret, DeleteSecret
+from .storage_providers import ListStorageProviders, CreateStorageProvider, DeleteStorageProvider, \
+    GetStorageProvider, UpdateStorageProvider
 from .tensorboards import CreateTensorboard, GetTensorboard, ListTensorboards, UpdateTensorboard, DeleteTensorboard

@@ -20,6 +20,14 @@ class JSONField(marshmallow.fields.Field):
         return value
 
 
+class JobDatasetSchema(BaseSchema):
+    MODEL = models.JobDataset
+
+    id = marshmallow.fields.Str(required=True)
+    name = marshmallow.fields.Str(required=True)
+    output = marshmallow.fields.Bool()
+
+
 class JobSchema(BaseSchema):
     MODEL = models.Job
 
@@ -109,3 +117,4 @@ class JobSchema(BaseSchema):
         dump_to="registryTargetPassword", load_from="registryTargetPassword")
 
     tags = marshmallow.fields.Str(many=True, load_only=True)
+    datasets = marshmallow.fields.Nested(JobDatasetSchema, dump_only=True, many=True)

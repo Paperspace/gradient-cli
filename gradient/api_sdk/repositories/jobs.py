@@ -81,6 +81,9 @@ class CreateJob(GetBaseJobApiUrlMixin, CreateResource):
         return
 
     def _get_request_params(self, instance_dict):
+        if instance_dict.get('datasets'):
+            instance_dict['datasets'] = json.dumps(instance_dict['datasets'])
+
         return instance_dict
 
 
@@ -145,7 +148,7 @@ class ListJobArtifacts(GetBaseJobApiUrlMixin, ListResources):
 
         if kwargs.get("links"):
             params["links"] = kwargs.get("links")
-        
+
         if kwargs.get("start_after"):
             params["startAfter"] = kwargs.get("start_after")
 

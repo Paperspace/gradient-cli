@@ -1,4 +1,6 @@
+import os
 import sys
+import tempfile
 
 import mock
 from pytest import fixture
@@ -125,7 +127,7 @@ class TestS3ModelUploader(object):
         with mock.patch(open_path, _mock_open) as mock_file:
             uploader.upload("foo", "mdHandle")
 
-        archive_patched.assert_called_once_with("foo", "/tmp/model.zip")
+        archive_patched.assert_called_once_with("foo", os.path.join(tempfile.gettempdir(), "model.zip"))
         file_uploader._get_client.assert_called_with(upload_url)
         client.post.assert_called()
 

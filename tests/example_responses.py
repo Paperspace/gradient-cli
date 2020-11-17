@@ -8116,3 +8116,190 @@ LIST_SECRETS_RESPONSE = [
         "name": "aws_secret_access_key"
     }
 ]
+
+LIST_DATASETS_RESPONSE = [
+    {
+        "description": None,
+        "dtCreated": "2020-10-09T18:34:07.097Z",
+        "dtModified": "2020-10-09T18:34:07.097Z",
+        "id": "dsttn2y7j1ux882",
+        "name": "test1",
+        "storageProvider": {
+            "config": {
+                "accessKey": "AKIAVWO7J5OJV4XSVOPA",
+                "bucket": "chris-dev-cluster",
+                "secretAccessKey": "********"
+            },
+            "dtCreated": "2020-10-09T18:17:34.192Z",
+            "dtModified": "2020-10-09T18:29:22.368Z",
+            "id": "spltautet072md4",
+            "name": "test1",
+            "type": "s3"
+        }
+    }
+]
+
+SHOW_DATASET_DETAILS_RESPONSE = {
+    "description": None,
+    "dtCreated": "2020-10-09T18:34:07.097Z",
+    "dtModified": "2020-10-09T18:34:07.097Z",
+    "id": "dsttn2y7j1ux882",
+    "name": "test1",
+    "storageProvider": {
+        "config": {
+            "accessKey": "AKIAVWO7J5OJV4XSVOPA",
+            "bucket": "chris-dev-cluster",
+            "secretAccessKey": "********"
+        },
+        "dtCreated": "2020-10-09T18:17:34.192Z",
+        "dtModified": "2020-10-09T18:29:22.368Z",
+        "id": "spltautet072md4",
+        "name": "test1",
+        "type": "s3"
+    }
+}
+
+CREATE_DATASET_RESPONSE = {
+    "description": None,
+    "dtCreated": "2020-10-09T18:34:07.097Z",
+    "dtModified": "2020-10-09T18:34:07.097Z",
+    "id": "dsttn2y7j1ux882",
+    "name": "test1",
+    "storageProvider": {
+        "config": {
+            "accessKey": "AKIAVWO7J5OJV4XSVOPA",
+            "bucket": "chris-dev-cluster",
+            "secretAccessKey": "********"
+        },
+        "dtCreated": "2020-10-09T18:17:34.192Z",
+        "dtModified": "2020-10-09T18:29:22.368Z",
+        "id": "spltautet072md4",
+        "name": "test1",
+        "type": "s3"
+    }
+}
+
+UPDATE_DATASET_RESPONSE = {
+    "description": "Test dataset",
+    "dtCreated": "2020-10-09T18:34:07.097Z",
+    "dtModified": "2020-10-09T18:34:07.097Z",
+    "id": "dsttn2y7j1ux882",
+    "name": "test1",
+    "storageProvider": {
+        "config": {
+            "accessKey": "AKIAVWO7J5OJV4XSVOPA",
+            "bucket": "chris-dev-cluster",
+            "secretAccessKey": "********"
+        },
+        "dtCreated": "2020-10-09T18:17:34.192Z",
+        "dtModified": "2020-10-09T18:29:22.368Z",
+        "id": "spltautet072md4",
+        "name": "test1",
+        "type": "s3"
+    }
+}
+
+LIST_DATASET_VERSIONS_RESPONSE = [
+    {
+        "dtCreated": "2020-10-29T22:56:15.514Z",
+        "dtModified": "2020-10-29T22:56:16.213Z",
+        "isCommitted": True,
+        "message": None,
+        "tags": [
+            {
+                "name": "hello"
+            }
+        ],
+        "version": "1rn19s2"
+    }
+]
+
+SHOW_DATASET_VERSION_DETAILS_RESPONSE = {
+    "dtCreated": "2020-10-29T22:56:15.514Z",
+    "dtModified": "2020-10-29T22:56:16.213Z",
+    "isCommitted": True,
+    "message": None,
+    "tags": [
+        {
+            "name": "hello"
+        }
+    ],
+    "version": "1rn19s2"
+}
+
+UPDATE_DATASET_VERSION_RESPONSE = {
+    "dtCreated": "2020-10-29T22:56:15.514Z",
+    "dtModified": "2020-10-29T23:27:14.955Z",
+    "isCommitted": True,
+    "message": "Test message",
+    "tags": [
+        {
+            "name": "hello"
+        }
+    ],
+    "version": "1rn19s2"
+}
+
+SET_DATASET_VERSION_TAG_RESPONSE = {
+    "dtCreated": "2020-10-29T22:57:40.723Z",
+    "dtModified": "2020-10-29T23:48:42.948Z",
+    "name": "hello",
+    "version": {
+        "message": "Test message",
+        "version": "1rn19s2"
+    }
+}
+
+LIST_STORAGE_PROVIDERS_RESPONSE = [
+    {
+        "config": {
+            "accessKey": "AKIBAEG7J3OJ24XAV33B",
+            "bucket": "bucket",
+            "secretAccessKey": "********"
+        },
+        "dtCreated": "2020-10-09T18:17:34.192Z",
+        "dtModified": "2020-10-09T18:29:22.368Z",
+        "id": "spltautet072md4",
+        "name": "test1",
+        "type": "s3"
+    }
+]
+
+SHOW_STORAGE_PROVIDER_DETAILS_RESPONSE = {
+    "config": {
+        "accessKey": "AKIBAEG7J3OJ24XAV33B",
+        "bucket": "bucket",
+        "secretAccessKey": "********"
+    },
+    "dtCreated": "2020-10-09T18:17:34.192Z",
+    "dtModified": "2020-10-09T18:29:22.368Z",
+    "id": "spltautet072md4",
+    "name": "test1",
+    "type": "s3"
+}
+
+CREATE_STORAGE_PROVIDER_RESPONSE = {
+    "config": {
+        "accessKey": "AKIBAEG7J3OJ24XAV33B",
+        "bucket": "bucket",
+        "secretAccessKey": "********"
+    },
+    "dtCreated": "2020-10-09T18:17:34.192Z",
+    "dtModified": "2020-10-09T18:29:22.368Z",
+    "id": "spltautet072md4",
+    "name": "test1",
+    "type": "s3"
+}
+
+UPDATE_STORAGE_PROVIDER_RESPONSE = {
+    "config": {
+        "accessKey": "AKIBAEG7J3OJ24XAV33B",
+        "bucket": "bucket",
+        "secretAccessKey": "********"
+    },
+    "dtCreated": "2020-10-09T18:17:34.192Z",
+    "dtModified": "2020-10-09T18:29:22.368Z",
+    "id": "spltautet072md4",
+    "name": "test2",
+    "type": "s3"
+}

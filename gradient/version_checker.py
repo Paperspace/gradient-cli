@@ -1,3 +1,4 @@
+import os
 import sys
 from platform import system
 
@@ -83,6 +84,8 @@ class GradientVersionChecker(object):
         if not hasattr(sys.stdin, "isatty"):
             return False
         if not sys.stdin.isatty() or not sys.stdout.isatty():
+            return False
+        if os.getenv("PAPERSPACE_CLI_DEV") == "true":
             return False
 
         return True

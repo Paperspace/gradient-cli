@@ -279,6 +279,13 @@ def common_jobs_create_options(f):
             "tags_comma",
             help="Separated by comma tags that you want add to experiment",
             cls=common.GradientOption
+        ),
+        click.option(
+            "--dataset",
+            "datasets",
+            help="Separated by comma tags that you want add to experiment",
+            cls=common.GradientOption,
+            multiple=True,
         )
     ]
     return reduce(lambda x, opt: opt(x), reversed(options), f)
@@ -289,11 +296,30 @@ def common_jobs_create_options(f):
 @api_key_option
 @common.options_file
 @click.pass_context
-def create_job(ctx, api_key, options_file, **kwargs):
+def create_job(ctx, api_key, options_file, datasets=None, **kwargs):
     kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
 
     del_if_value_is_none(kwargs)
     jsonify_dicts(kwargs)
+
+    if datasets:
+        values = []
+
+        for value in datasets:
+            name, _, ref = value.partition("@")
+            if not (name and ref):
+                raise click.UsageError(
+                    "Dataset '%s' must have an @ (ex: images@dsr8k5qzn401lb5:klfoyy9)" % value)
+
+            dataset = {"id": ref, "name": name}
+            if ":" not in ref:
+                dataset["output"] = True
+
+            values.append(dataset)
+
+        kwargs["datasets"] = values
+
+
 
     command = jobs_commands.CreateJobCommand(api_key=api_key, workspace_handler=get_workspace_handler())
     job_handle = command.execute(kwargs)

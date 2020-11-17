@@ -4,6 +4,7 @@ from click._compat import get_text_stderr
 
 import gradient.cli.auth
 import gradient.cli.clusters
+import gradient.cli.datasets
 import gradient.cli.deployments
 import gradient.cli.experiments
 import gradient.cli.hyperparameters
@@ -14,6 +15,7 @@ import gradient.cli.models
 import gradient.cli.notebooks
 import gradient.cli.projects
 import gradient.cli.secrets
+import gradient.cli.storage_providers
 import gradient.cli.tensorboards
 
 

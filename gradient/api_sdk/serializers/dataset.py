@@ -1,25 +1,22 @@
 import marshmallow as ma
 
-from .base import BaseSchema
-from .tag import TagSchema
 from .. import models
-
-
-class DatasetVolumeOptionsSchema(BaseSchema):
-    MODEL = models.VolumeOptions
-
-    kind = ma.fields.Str(required=True)
-    size = ma.fields.Str(required=True)
+from ..serializers.base import BaseSchema
+from .dataset_version import DatasetVersionSchema
+from .storage_provider import StorageProviderSchema
 
 
 class DatasetSchema(BaseSchema):
     MODEL = models.Dataset
 
-    uri = ma.fields.String(required=True)
-    aws_access_key_id = ma.fields.String(dump_to="awsAccessKeyId", load_from="awsAccessKeyId")
-    aws_secret_access_key = ma.fields.String(dump_to="awsSecretAccessKey", load_from="awsSecretAccessKey")
-    etag = ma.fields.String()
-    version_id = ma.fields.String(dump_to="versionId", load_from="versionId")
-    name = ma.fields.String()
-    tags = ma.fields.Nested(TagSchema, only="name", many=True, load_only=True)
-    volume_options = ma.fields.Nested(DatasetVolumeOptionsSchema, dump_to="volumeOptions", load_from="volumeOptions")
+    id = ma.fields.Str()
+    name = ma.fields.Str()
+    description = ma.fields.Str()
+    storage_provider_id = ma.fields.Str(dump_to="storageProviderId", dump_only=True)
+    storage_provider = ma.fields.Nested(StorageProviderSchema, load_from="storageProvider", load_only=True)
+
+
+class DatasetRefSchema(DatasetSchema):
+    MODEL = models.DatasetRef
+
+    version = ma.fields.Nested(DatasetVersionSchema, load_only=True)
