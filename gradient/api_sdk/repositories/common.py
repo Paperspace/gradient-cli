@@ -410,7 +410,7 @@ class ListMetrics(GetResource):
             "interval": interval,
             "objecttype": self.OBJECT_TYPE,
             "handle": instance_id,
-            "metrics_api_url": metrics_api_url if config.CONFIG_HOST != "http://localhost:3102" else "% s:8080"% metrics_api_url,
+            "metrics_api_url": "% s:8080"% metrics_api_url if 'local' in metrics_api_url else metrics_api_url,
         }
         if end:
             new_kwargs["end"] = end
