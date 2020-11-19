@@ -3,7 +3,7 @@ import abc
 import six
 import websocket
 
-from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource, GetResource, GetMetrics, \
+from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource, GetResource, GetMetrics, ListMetrics, \
     StreamMetrics, ListLogs
 from .. import config, serializers, sdk_exceptions
 from ..repositories.jobs import ListJobs
@@ -208,6 +208,32 @@ class GetExperimentMetrics(GetExperimentMetricsApiUrlMixin, GetMetrics):
 
         return rv
 
+class ListExperimentMetrics(GetExperimentMetricsApiUrlMixin, ListMetrics):
+    OBJECT_TYPE = "experiment"
+
+    def _get_instance_by_id(self, instance_id, **kwargs):
+        repository = GetExperiment(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        instance = repository.get(experiment_id=instance_id)
+        return instance
+
+    def _get_start_date(self, instance, kwargs):
+        rv = super(ListExperimentMetrics, self)._get_start_date(instance, kwargs)
+        if rv is None:
+            raise sdk_exceptions.GradientSdkError("Experiment has not started yet")
+
+        return rv
+
+    def _get_instance(self, response, **kwargs):
+        try:
+            rv = super(ListExperimentMetrics, self)._get_instance(response, **kwargs)
+        except sdk_exceptions.ResourceFetchingError as e:
+            if '{"version":' in str(e):
+                # TODO: metrics are not working for v1 experiments at the moment
+                raise sdk_exceptions.GradientSdkError("Custom metrics are available for private clusters only")
+            else:
+                raise
+
+        return rv
 
 class StreamExperimentMetrics(GetExperimentMetricsApiUrlMixin, StreamMetrics):
     OBJECT_TYPE = "experiment"

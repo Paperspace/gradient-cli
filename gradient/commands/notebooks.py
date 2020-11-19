@@ -154,6 +154,18 @@ class GetNotebookMetricsCommand(BaseNotebookCommand):
         self.logger.log(formatted_metrics)
 
 
+class ListNotebookMetricsCommand(BaseNotebookCommand):
+    def execute(self, notebook_id, start, end, interval, *args, **kwargs):
+        metrics = self.client.list_metrics(
+            notebook_id,
+            start=start,
+            end=end,
+            interval=interval,
+        )
+        formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
+        self.logger.log(formatted_metrics)
+
+
 class StreamNotebookMetricsCommand(StreamMetricsCommand, BaseNotebookCommand):
     pass
 

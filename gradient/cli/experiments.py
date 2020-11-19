@@ -13,7 +13,7 @@ from gradient.cli.utils.flag_with_value import GradientRegisterReaderOption, Gra
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.commands import experiments as experiments_commands
 from gradient.commands.experiments import ExperimentAddTagsCommand, ExperimentRemoveTagsCommand, \
-    GetExperimentMetricsCommand, StreamExperimentMetricsCommand
+    GetExperimentMetricsCommand, ListExperimentMetricsCommand, StreamExperimentMetricsCommand
 
 MULTI_NODE_CREATE_EXPERIMENT_COMMANDS = {
     constants.ExperimentType.GRPC_MULTI_NODE: experiments_commands.CreateMultiNodeExperimentCommand,
@@ -892,6 +892,46 @@ def experiment_remove_tags(id, options_file, api_key, **kwargs):
 def get_experiment_metrics(experiment_id, metrics_list, interval, start, end, options_file, api_key):
     command = GetExperimentMetricsCommand(api_key=api_key)
     command.execute(experiment_id, start, end, interval, built_in_metrics=metrics_list)
+
+
+@experiments_metrics.command(
+    "list",
+    short_help="List experiment metrics",
+    help="List experiment metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "experiment_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the experiment",
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--start",
+    "start",
+    type=click.DateTime(),
+    help="Timestamp of first time series metric to collect",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--end",
+    "end",
+    type=click.DateTime(),
+    help="Timestamp of last time series metric to collect",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def list_experiment_metrics(experiment_id, interval, start, end, options_file, api_key):
+    command = ListExperimentMetricsCommand(api_key=api_key)
+    command.execute(experiment_id, start, end, interval)
 
 
 @experiments_metrics.command(

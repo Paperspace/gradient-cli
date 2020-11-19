@@ -13,7 +13,7 @@ from gradient.cli.common import (
 )
 from gradient.commands import jobs as jobs_commands
 from gradient.commands.jobs import JobAddTagsCommand, JobRemoveTagsCommand, StreamJobMetricsCommand, \
-    GetJobMetricsCommand
+    GetJobMetricsCommand, ListJobMetricsCommand
 from gradient.api_sdk.workspace import WorkspaceHandler
 
 
@@ -565,6 +565,44 @@ def get_job_metrics(job_id, metrics_list, interval, start, end, options_file, ap
     command = GetJobMetricsCommand(api_key=api_key)
     command.execute(job_id, start, end, interval, built_in_metrics=metrics_list)
 
+@jobs_metrics.command(
+    "list",
+    short_help="List job metrics",
+    help="List job metrics. Shows CPU and RAM usage by default",
+)
+@click.option(
+    "--id",
+    "job_id",
+    required=True,
+    cls=common.GradientOption,
+    help="ID of the job",
+)
+@click.option(
+    "--interval",
+    "interval",
+    default="30s",
+    help="Interval",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--start",
+    "start",
+    type=click.DateTime(),
+    help="Timestamp of first time series metric to collect",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--end",
+    "end",
+    type=click.DateTime(),
+    help="Timestamp of last time series metric to collect",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def list_job_metrics(job_id, interval, start, end, options_file, api_key):
+    command = ListJobMetricsCommand(api_key=api_key)
+    command.execute(job_id, start, end, interval)
 
 @jobs_metrics.command(
     "stream",

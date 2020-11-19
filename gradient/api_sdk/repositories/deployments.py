@@ -1,5 +1,5 @@
 from .common import ListResources, CreateResource, StartResource, StopResource, DeleteResource, AlterResource, \
-    GetResource, GetMetrics, StreamMetrics, ListLogs
+    GetResource, GetMetrics, ListMetrics, StreamMetrics, ListLogs
 from .. import serializers, config, sdk_exceptions
 from ..sdk_exceptions import ResourceFetchingError, MalformedResponseError
 
@@ -175,6 +175,20 @@ class GetDeploymentMetrics(GetMetrics):
 
         return rv
 
+class ListDeploymentMetrics(ListMetrics):
+    OBJECT_TYPE = "modelDeployment"
+
+    def _get_instance_by_id(self, instance_id, **kwargs):
+        repository = GetDeployment(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        instance = repository.get(deployment_id=instance_id)
+        return instance
+
+    def _get_start_date(self, instance, kwargs):
+        rv = super(ListDeploymentMetrics, self)._get_start_date(instance, kwargs)
+        if rv is None:
+            raise sdk_exceptions.GradientSdkError("Deployment job has not started yet")
+
+        return rv
 
 class StreamDeploymentMetrics(StreamMetrics):
     OBJECT_TYPE = "modelDeployment"

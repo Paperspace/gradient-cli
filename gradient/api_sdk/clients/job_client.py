@@ -6,7 +6,7 @@ Remember that in code snippets all highlighted lines are required other lines ar
 from .base_client import BaseClient, TagsSupportMixin
 from ..models import Artifact, Job
 from ..repositories.jobs import ListJobs, ListJobLogs, ListJobArtifacts, CreateJob, DeleteJob, StopJob, \
-    DeleteJobArtifacts, GetJobArtifacts, GetJobMetrics, StreamJobMetrics
+    DeleteJobArtifacts, GetJobArtifacts, GetJobMetrics, ListJobMetrics, StreamJobMetrics
 
 
 class JobsClient(TagsSupportMixin, BaseClient):
@@ -393,6 +393,26 @@ class JobsClient(TagsSupportMixin, BaseClient):
             end=end,
             interval=interval,
             built_in_metrics=built_in_metrics,
+        )
+        return metrics
+
+    def list_metrics(self, job_id, start=None, end=None, interval="30s"):
+        """List job metrics
+
+        :param str job_id: ID of a job
+        :param datetime.datetime|str start:
+        :param datetime.datetime|str end:
+        :param str interval:
+        :returns: Metrics of a job
+        :rtype: dict[str,dict[str,list[dict]]]
+        """
+
+        repository = self.build_repository(ListJobMetrics)
+        metrics = repository.get(
+            id=job_id,
+            start=start,
+            end=end,
+            interval=interval,
         )
         return metrics
 

@@ -831,6 +831,27 @@ class ExperimentsClient(TagsSupportMixin, utils.ExperimentsClientHelpersMixin, B
         )
         return metrics
 
+    def list_metrics(self, experiment_id, start=None, end=None, interval="30s"):
+        """List experiment metrics
+
+        :param str experiment_id: ID of experiment
+        :param datetime.datetime|str start:
+        :param datetime.datetime|str end:
+        :param str interval:
+        :returns: Metrics of and experiment
+        :rtype: dict[str,dict[str,list[dict]]]
+        """
+
+        repository = self.build_repository(repositories.ListExperimentMetrics)
+        metrics = repository.get(
+            id=experiment_id,
+            start=start,
+            end=end,
+            interval=interval,
+        )
+        return metrics
+
+
     def stream_metrics(self, experiment_id, interval="30s", built_in_metrics=None):
         """Stream live experiment metrics
 

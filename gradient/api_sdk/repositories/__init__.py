@@ -4,19 +4,19 @@ from .dataset_tags import ListDatasetTags, GetDatasetTag, SetDatasetTag, DeleteD
 from .dataset_versions import ListDatasetVersions, CreateDatasetVersion, DeleteDatasetVersion, \
     GenerateDatasetVersionPreSignedS3Urls, GetDatasetVersion, UpdateDatasetVersion
 from .deployments import ListDeployments, CreateDeployment, StartDeployment, StopDeployment, DeleteDeployment, \
-    UpdateDeployment, GetDeployment, GetDeploymentMetrics, StreamDeploymentMetrics, ListDeploymentLogs
+    UpdateDeployment, GetDeployment, GetDeploymentMetrics, ListDeploymentMetrics, StreamDeploymentMetrics, ListDeploymentLogs
 from .experiments import ListExperiments, GetExperiment, ListExperimentLogs, StartExperiment, StopExperiment, \
     CreateSingleNodeExperiment, CreateMultiNodeExperiment, RunSingleNodeExperiment, RunMultiNodeExperiment, \
-    CreateMpiMultiNodeExperiment, RunMpiMultiNodeExperiment, DeleteExperiment, GetExperimentMetrics, \
+    CreateMpiMultiNodeExperiment, RunMpiMultiNodeExperiment, DeleteExperiment, GetExperimentMetrics, ListExperimentMetrics, \
     StreamExperimentMetrics
 from .hyperparameter import CreateHyperparameterJob, CreateAndStartHyperparameterJob, ListHyperparameterJobs, \
     GetHyperparameterTuningJob, StartHyperparameterTuningJob
-from .jobs import ListJobs, ListResources, ListJobArtifacts, ListJobLogs, GetJob, GetJobMetrics, StreamJobMetrics
+from .jobs import ListJobs, ListResources, ListJobArtifacts, ListJobLogs, GetJob, GetJobMetrics, ListJobMetrics, StreamJobMetrics
 from .machine_types import ListMachineTypes
 from .machines import CheckMachineAvailability, CreateMachine, CreateResource, StartMachine, StopMachine, \
     RestartMachine, GetMachine, UpdateMachine, GetMachineUtilization
 from .models import DeleteModel, ListModels, UploadModel, GetModel, ListModelFiles
-from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks, GetNotebookMetrics, \
+from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks, GetNotebookMetrics, ListNotebookMetrics, \
     StreamNotebookMetrics, StopNotebook, StartNotebook, ForkNotebook, ListNotebookArtifacts, ListNotebookLogs
 from .projects import CreateProject, ListProjects, DeleteProject, GetProject
 from .secrets import ListSecrets, SetSecret, DeleteSecret

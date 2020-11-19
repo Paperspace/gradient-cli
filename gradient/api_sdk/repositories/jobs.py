@@ -1,7 +1,7 @@
 import json
 
 import gradient.api_sdk.config
-from .common import ListResources, CreateResource, GetResource, DeleteResource, StopResource, GetMetrics, StreamMetrics, \
+from .common import ListResources, CreateResource, GetResource, DeleteResource, StopResource, GetMetrics, ListMetrics, StreamMetrics, \
     ListLogs
 from .. import serializers, sdk_exceptions
 from ..clients import http_client
@@ -209,6 +209,20 @@ class GetJobMetrics(GetMetrics):
 
         return rv
 
+class ListJobMetrics(ListMetrics):
+    OBJECT_TYPE = "mljob"
+
+    def _get_instance_by_id(self, instance_id, **kwargs):
+        repository = GetJob(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        instance = repository.get(job_id=instance_id)
+        return instance
+
+    def _get_start_date(self, instance, kwargs):
+        rv = super(ListJobMetrics, self)._get_start_date(instance, kwargs)
+        if rv is None:
+            raise sdk_exceptions.GradientSdkError("Job has not started yet")
+
+        return rv
 
 class StreamJobMetrics(StreamMetrics):
     OBJECT_TYPE = "mljob"
