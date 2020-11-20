@@ -703,7 +703,7 @@ def deployment_remove_tags(id, options_file, api_key, **kwargs):
     "--metric",
     "metrics_list",
     multiple=True,
-    type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
+    type=str,
     default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
     help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
     cls=common.GradientOption,
