@@ -863,7 +863,7 @@ def experiment_remove_tags(id, options_file, api_key, **kwargs):
     multiple=True,
     type=str,
     default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
-    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    help=("One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage. Custom metrics are {}".format("hello")), # TODO replace "hello" with custom metrics
     cls=common.GradientOption,
 )
 @click.option(
