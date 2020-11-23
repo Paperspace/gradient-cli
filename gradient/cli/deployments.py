@@ -705,7 +705,7 @@ def deployment_remove_tags(id, options_file, api_key, **kwargs):
     multiple=True,
     type=str,
     default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
-    help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
+    help=("One or more metrics that you want to read: {}. Defaults to cpuPercentage and memoryUsage. To view available custom metrics, use command: `gradient deployments metrics list`".format(', '.join(map(str, constants.METRICS_MAP)))),
     cls=common.GradientOption,
 )
 @click.option(
