@@ -682,25 +682,22 @@ class DeleteDatasetFilesCommand(BaseDatasetFilesCommand):
                             pool.put(self._delete, url=pre_signed.url)
 
 
-class ImportDatasetCommand(BaseDatasetVersionsCommand):
-    def __init__(self, api_key):
-        self.api_key = api_key
-
-    @classmethod
+class ImportDatasetCommand(BaseDatasetsCommand):
     def create_secret(self, key, value, expires_in=86400):
-        print(self)
         client = api_sdk.clients.SecretsClient(
             api_key=self.api_key,
+            logger=self.logger,
             ps_client_name=CLI_PS_CLIENT_NAME,
         )
 
         response = client.ephemeral(key, value, expires_in)
         return response
-    @classmethod
+
+
     def get_command_string(self, url):
         return "go-getter {} /data/output".format(url)
 
-    @classmethod
+
     def get_command(self, url, http_auth, access_key, secret_key):
         if url.scheme == 'git' or url.scheme == 's3':
             return self.get_command_string(url.geturl())
@@ -708,12 +705,11 @@ class ImportDatasetCommand(BaseDatasetVersionsCommand):
         if url.scheme == 'https':
             if not http_auth:
                 return self.get_command_string(url.geturl())
-            u = urlparse(url.geturl())
-            http_auth_url = "https://${{HTTP_AUTH}}@{}".format(u.path)
+            http_auth_url = "https://${{HTTP_AUTH}}@{}".format(url.path)
             return self.get_command_string(http_auth_url)
 
         return ""
-    @classmethod
+    
     def get_env_vars(self, url, http_auth, access_key, secret_key):
         if url.scheme == 'git':
             return ""
@@ -732,13 +728,14 @@ class ImportDatasetCommand(BaseDatasetVersionsCommand):
             return "{\"HTTP_AUTH\":\"%s\"}" % http_auth_secret
         
         return ""
-    @classmethod
+
     def import_dataset(self, workflow):
         client = api_sdk.clients.JobsClient(
             api_key=self.api_key,
             ps_client_name=CLI_PS_CLIENT_NAME,
         )
         client.create(**workflow)
+
 
     def execute(self, cluster_id, machine_type, dataset_id, dataset_url, http_auth, access_key, secret_key):
         workflow = {
@@ -753,6 +750,8 @@ class ImportDatasetCommand(BaseDatasetVersionsCommand):
         url = urlparse(dataset_url)
 
         if url.scheme not in ['s3', 'git', 'https']:
+            self.logger.log('Invalid URL format supported [git | https| s3]: {}'.format(dataset_url))
+            return
 
 
         command = self.get_command(url, http_auth, access_key, secret_key)
