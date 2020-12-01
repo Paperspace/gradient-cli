@@ -173,21 +173,14 @@ def update_dataset(
 @click.option(
     "--url",
     "dataset_url",
-    help="Dataset URL",
-    cls=common.GradientOption,
-    required=True,
-)
-@click.option(
-    "--type",
-    "url_type",
-    help="Dataset Type s3|git|https",
+    help="URL",
     cls=common.GradientOption,
     required=True,
 )
 @click.option(
     "--httpAuth",
     "http_auth",
-    help="Dataset HttpAuth username:password",
+    help="HttpAuth username:password",
     cls=common.GradientOption,
 )
 @click.option(
@@ -204,11 +197,11 @@ def update_dataset(
 )
 @api_key_option
 @common.options_file
-def import_dataset(cluster_id, machine_type, dataset_id, dataset_url, url_type, http_auth, access_key, secret_key, api_key, options_file):
+def import_dataset(cluster_id, machine_type, dataset_id, dataset_url, http_auth, access_key, secret_key, api_key, options_file):
     validate_dataset_id(dataset_id)
     
-    command = commands.ImportDatasetCommand(api_key="ae2ea576ef51c046295bec0d004c67")
-    command.execute(cluster_id, machine_type, dataset_id, dataset_url, url_type, http_auth, access_key, secret_key)
+    command = commands.ImportDatasetCommand(api_key=api_key)
+    command.execute(cluster_id, machine_type, dataset_id, dataset_url, http_auth, access_key, secret_key)
 
 @datasets.command("delete", help="Delete dataset")
 @click.option(

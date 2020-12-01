@@ -24,6 +24,8 @@ from gradient.commands.common import BaseCommand, DetailsCommandMixin, ListComma
 from gradient.exceptions import ApplicationError
 
 S3_XMLNS = 'http://s3.amazonaws.com/doc/2006-03-01/'
+DATASET_IMPORTER_IMAGE = "paperspace/dataset-importer:latest"
+PROJECT_NAME = "Job Builder"
 
 
 class WorkerPool(object):
@@ -682,42 +684,41 @@ class DeleteDatasetFilesCommand(BaseDatasetFilesCommand):
 
 class ImportDatasetCommand(BaseDatasetVersionsCommand):
     def __init__(self, api_key):
-        print(api_key)
         self.api_key = api_key
 
     @classmethod
     def create_secret(self, key, value, expires_in=86400):
         print(self)
         client = api_sdk.clients.SecretsClient(
-            api_key="ae2ea576ef51c046295bec0d004c67",
+            api_key=self.api_key,
             ps_client_name=CLI_PS_CLIENT_NAME,
         )
 
-        response = client.ephemral(key, value, expires_in)
+        response = client.ephemeral(key, value, expires_in)
         return response
     @classmethod
     def get_command_string(self, url):
         return "go-getter {} /data/output".format(url)
 
     @classmethod
-    def get_command(self, dataset_url, url_type, http_auth, access_key, secret_key):
-        if url_type == 'git' or url_type == 's3':
-            return self.get_command_string(dataset_url)
+    def get_command(self, url, http_auth, access_key, secret_key):
+        if url.scheme == 'git' or url.scheme == 's3':
+            return self.get_command_string(url.geturl())
         
-        if url_type == 'https':
+        if url.scheme == 'https':
             if not http_auth:
-                return self.get_command_string(dataset_url)
-            u = urlparse(dataset_url)
+                return self.get_command_string(url.geturl())
+            u = urlparse(url.geturl())
             http_auth_url = "https://${{HTTP_AUTH}}@{}".format(u.path)
             return self.get_command_string(http_auth_url)
 
         return ""
     @classmethod
-    def get_env_vars(self, url_type, http_auth, access_key, secret_key):
-        if url_type == 'git':
+    def get_env_vars(self, url, http_auth, access_key, secret_key):
+        if url.scheme == 'git':
             return ""
 
-        if url_type == 's3':
+        if url.scheme == 's3' and access_key and secret_key:
             access_key_secret = self.create_secret('AWS_ACCESS_KEY_ID', access_key)
             secret_key_secret = self.create_secret('AWS_ACCESS_KEY_SECRET', secret_key)
 
@@ -726,7 +727,7 @@ class ImportDatasetCommand(BaseDatasetVersionsCommand):
 
             return "{\"AWS_ACCESS_KEY_ID\":\"%s\", \"AWS_ACCESS_KEY_SECRET\":\"%s\"}" % (access_key_value, secret_key_value)
 
-        if url_type == 'https':
+        if url.scheme == 'https':
             http_auth_secret = self.create_secret('HTTP_AUTH', http_auth)
             return "{\"HTTP_AUTH\":\"%s\"}" % http_auth_secret
         
@@ -734,26 +735,31 @@ class ImportDatasetCommand(BaseDatasetVersionsCommand):
     @classmethod
     def import_dataset(self, workflow):
         client = api_sdk.clients.JobsClient(
-            api_key="ae2ea576ef51c046295bec0d004c67",
-            ps_client_name="etest",
+            api_key=self.api_key,
+            ps_client_name=CLI_PS_CLIENT_NAME,
         )
         client.create(**workflow)
 
-    def execute(self, cluster_id, machine_type, dataset_id, dataset_url, url_type, http_auth, access_key, secret_key):
+    def execute(self, cluster_id, machine_type, dataset_id, dataset_url, http_auth, access_key, secret_key):
         workflow = {
             "cluster_id": cluster_id,
-            "container": "paperspace/dataset-importer:latest",
+            "container": DATASET_IMPORTER_IMAGE,
             "machine_type": machine_type,
-            "project": "Job Builder",
+            "project": PROJECT_NAME,
             "datasets": [{ "id": dataset_id, "name": "output", "output": True }],
             "project_id": None
         }
 
-        command = self.get_command(dataset_url, url_type, http_auth, access_key, secret_key)
+        url = urlparse(dataset_url)
+
+        if url.scheme not in ['s3', 'git', 'https']:
+
+
+        command = self.get_command(url, http_auth, access_key, secret_key)
         if command:
             workflow["command"] = command
 
-        env_vars = self.get_env_vars(url_type, http_auth, access_key, secret_key)
+        env_vars = self.get_env_vars(url, http_auth, access_key, secret_key)
         if env_vars:
             workflow["env_vars"] = json.loads(env_vars)
 
