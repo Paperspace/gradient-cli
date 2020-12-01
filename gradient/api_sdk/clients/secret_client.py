@@ -57,3 +57,19 @@ class SecretsClient(BaseClient):
 
         repository = self.build_repository(repositories.DeleteSecret)
         repository.delete(entity=entity, entity_id=entity_id, name=name)
+
+    def ephemral(self, key, value, expires_in):
+        """Create ephemral secret.
+
+        :param str key: secret key
+        :param str value: secret value
+        :param str expires_in: seconds secrets expire in
+
+        :returns:
+        :rtype: str
+        """
+
+        repository = self.build_repository(repositories.EphemeralSecret)
+        ephemralSecret = repository.create(key=key, value=value, expires_in=expires_in)
+        return ephemralSecret
+

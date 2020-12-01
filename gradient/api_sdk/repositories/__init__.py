@@ -19,7 +19,7 @@ from .models import DeleteModel, ListModels, UploadModel, GetModel, ListModelFil
 from .notebooks import CreateNotebook, DeleteNotebook, GetNotebook, ListNotebooks, GetNotebookMetrics, ListNotebookMetrics, \
     StreamNotebookMetrics, StopNotebook, StartNotebook, ForkNotebook, ListNotebookArtifacts, ListNotebookLogs
 from .projects import CreateProject, ListProjects, DeleteProject, GetProject
-from .secrets import ListSecrets, SetSecret, DeleteSecret
+from .secrets import ListSecrets, SetSecret, DeleteSecret, EphemeralSecret
 from .storage_providers import ListStorageProviders, CreateStorageProvider, DeleteStorageProvider, \
     GetStorageProvider, UpdateStorageProvider
 from .tensorboards import CreateTensorboard, GetTensorboard, ListTensorboards, UpdateTensorboard, DeleteTensorboard

@@ -4,6 +4,11 @@ from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.common import ClickGroup, api_key_option
 from gradient.commands import datasets as commands
+from gradient.cli import common
+from gradient.cli.common import (
+    api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts,
+    validate_comma_split_option,
+)
 
 EXAMPLE_ID = 'dsr8k5qzn401lb5'
 EXAMPLE_VERSION = 'klfoyy9'
@@ -143,6 +148,67 @@ def update_dataset(
         description=description,
     )
 
+@datasets.command("import", help="Import dataset")
+@click.option(
+    "--clusterId",
+    "cluster_id",
+    help="Cluster id",
+    cls=common.GradientOption,
+    required=True,
+)
+@click.option(
+    "--machineType",
+    "machine_type",
+    help="Virtual machine type",
+    cls=common.GradientOption,
+    required=True,
+)
+@click.option(
+    "--datasetId",
+    "dataset_id",
+    help="Dataset ID",
+    cls=common.GradientOption,
+    required=True,
+)
+@click.option(
+    "--url",
+    "dataset_url",
+    help="Dataset URL",
+    cls=common.GradientOption,
+    required=True,
+)
+@click.option(
+    "--type",
+    "url_type",
+    help="Dataset Type s3|git|https",
+    cls=common.GradientOption,
+    required=True,
+)
+@click.option(
+    "--httpAuth",
+    "http_auth",
+    help="Dataset HttpAuth username:password",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--accessKey",
+    "access_key",
+    help="Dataset S3 access key",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--secretKey",
+    "secret_key",
+    help="Dataset S3 secret key",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def import_dataset(cluster_id, machine_type, dataset_id, dataset_url, url_type, http_auth, access_key, secret_key, api_key, options_file):
+    validate_dataset_id(dataset_id)
+    
+    command = commands.ImportDatasetCommand(api_key="ae2ea576ef51c046295bec0d004c67")
+    command.execute(cluster_id, machine_type, dataset_id, dataset_url, url_type, http_auth, access_key, secret_key)
 
 @datasets.command("delete", help="Delete dataset")
 @click.option(

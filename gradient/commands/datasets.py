@@ -5,11 +5,13 @@ import os
 import re
 import threading
 import uuid
+import json
 try:
     import queue
 except ImportError:
     import Queue as queue
 from xml.etree import ElementTree
+from urllib.parse import urlparse
 
 import halo
 import requests
@@ -676,3 +678,83 @@ class DeleteDatasetFilesCommand(BaseDatasetFilesCommand):
                         for pre_signed in pre_signeds:
                             update_status()
                             pool.put(self._delete, url=pre_signed.url)
+
+
+class ImportDatasetCommand(BaseDatasetVersionsCommand):
+    def __init__(self, api_key):
+        print(api_key)
+        self.api_key = api_key
+
+    @classmethod
+    def create_secret(self, key, value, expires_in=86400):
+        print(self)
+        client = api_sdk.clients.SecretsClient(
+            api_key="ae2ea576ef51c046295bec0d004c67",
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
+
+        response = client.ephemral(key, value, expires_in)
+        return response
+    @classmethod
+    def get_command_string(self, url):
+        return "go-getter {} /data/output".format(url)
+
+    @classmethod
+    def get_command(self, dataset_url, url_type, http_auth, access_key, secret_key):
+        if url_type == 'git' or url_type == 's3':
+            return self.get_command_string(dataset_url)
+        
+        if url_type == 'https':
+            if not http_auth:
+                return self.get_command_string(dataset_url)
+            u = urlparse(dataset_url)
+            http_auth_url = "https://${{HTTP_AUTH}}@{}".format(u.path)
+            return self.get_command_string(http_auth_url)
+
+        return ""
+    @classmethod
+    def get_env_vars(self, url_type, http_auth, access_key, secret_key):
+        if url_type == 'git':
+            return ""
+
+        if url_type == 's3':
+            access_key_secret = self.create_secret('AWS_ACCESS_KEY_ID', access_key)
+            secret_key_secret = self.create_secret('AWS_ACCESS_KEY_SECRET', secret_key)
+
+            access_key_value = "secret:ephemeral:{}".format(access_key_secret["AWS_ACCESS_KEY_ID"])
+            secret_key_value = "secret:ephemeral:{}".format(secret_key_secret["AWS_ACCESS_KEY_SECRET"])
+
+            return "{\"AWS_ACCESS_KEY_ID\":\"%s\", \"AWS_ACCESS_KEY_SECRET\":\"%s\"}" % (access_key_value, secret_key_value)
+
+        if url_type == 'https':
+            http_auth_secret = self.create_secret('HTTP_AUTH', http_auth)
+            return "{\"HTTP_AUTH\":\"%s\"}" % http_auth_secret
+        
+        return ""
+    @classmethod
+    def import_dataset(self, workflow):
+        client = api_sdk.clients.JobsClient(
+            api_key="ae2ea576ef51c046295bec0d004c67",
+            ps_client_name="etest",
+        )
+        client.create(**workflow)
+
+    def execute(self, cluster_id, machine_type, dataset_id, dataset_url, url_type, http_auth, access_key, secret_key):
+        workflow = {
+            "cluster_id": cluster_id,
+            "container": "paperspace/dataset-importer:latest",
+            "machine_type": machine_type,
+            "project": "Job Builder",
+            "datasets": [{ "id": dataset_id, "name": "output", "output": True }],
+            "project_id": None
+        }
+
+        command = self.get_command(dataset_url, url_type, http_auth, access_key, secret_key)
+        if command:
+            workflow["command"] = command
+
+        env_vars = self.get_env_vars(url_type, http_auth, access_key, secret_key)
+        if env_vars:
+            workflow["env_vars"] = json.loads(env_vars)
+
+        return self.import_dataset(workflow)
