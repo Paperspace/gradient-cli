@@ -70,6 +70,6 @@ class SecretsClient(BaseClient):
         """
 
         repository = self.build_repository(repositories.EphemeralSecret)
-        ephemralSecret = repository.create(key=key, value=value, expires_in=expires_in)
-        return ephemralSecret
+        ephemeral_secret = repository.create(key=key, value=value, expires_in=expires_in)
+        return ephemeral_secret
 

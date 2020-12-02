@@ -180,19 +180,19 @@ def update_dataset(
 @click.option(
     "--httpAuth",
     "http_auth",
-    help="HttpAuth username:password",
+    help="Http Auth username:password",
     cls=common.GradientOption,
 )
 @click.option(
-    "--accessKey",
+    "--s3AccessKey",
     "access_key",
-    help="Dataset S3 access key",
+    help="S3 access key",
     cls=common.GradientOption,
 )
 @click.option(
-    "--secretKey",
+    "--s3SecretKey",
     "secret_key",
-    help="Dataset S3 secret key",
+    help="S3 secret key",
     cls=common.GradientOption,
 )
 @api_key_option

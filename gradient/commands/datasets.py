@@ -26,6 +26,7 @@ from gradient.exceptions import ApplicationError
 S3_XMLNS = 'http://s3.amazonaws.com/doc/2006-03-01/'
 DATASET_IMPORTER_IMAGE = "paperspace/dataset-importer:latest"
 PROJECT_NAME = "Job Builder"
+SUPPORTED_URL = "['s3', 'git', 'https', 'http']"
 
 
 class WorkerPool(object):
@@ -702,10 +703,10 @@ class ImportDatasetCommand(BaseDatasetsCommand):
         if url.scheme == 'git' or url.scheme == 's3':
             return self.get_command_string(url.geturl())
         
-        if url.scheme == 'https':
+        if url.scheme == 'https' or url.scheme == 'http':
             if not http_auth:
                 return self.get_command_string(url.geturl())
-            http_auth_url = "https://${{HTTP_AUTH}}@{}".format(url.path)
+            http_auth_url = "https://${{HTTP_AUTH}}@%s" % url.path
             return self.get_command_string(http_auth_url)
 
         return ""
@@ -718,15 +719,15 @@ class ImportDatasetCommand(BaseDatasetsCommand):
             access_key_secret = self.create_secret('AWS_ACCESS_KEY_ID', access_key)
             secret_key_secret = self.create_secret('AWS_ACCESS_KEY_SECRET', secret_key)
 
-            access_key_value = "secret:ephemeral:{}".format(access_key_secret["AWS_ACCESS_KEY_ID"])
-            secret_key_value = "secret:ephemeral:{}".format(secret_key_secret["AWS_ACCESS_KEY_SECRET"])
+            access_key_value = "secret:ephemeral:%s" % access_key_secret["AWS_ACCESS_KEY_ID"]
+            secret_key_value = "secret:ephemeral:%s" % secret_key_secret["AWS_ACCESS_KEY_SECRET"]
 
             return {
                 "AWS_ACCESS_KEY_ID": access_key_value,
                 "AWS_ACCESS_KEY_SECRET": secret_key_value
             }
 
-        if url.scheme == 'https':
+        if url.scheme == 'https' and http_auth:
             http_auth_secret = self.create_secret('HTTP_AUTH', http_auth)
             return {
                 "HTTP_AUTH": http_auth_secret
@@ -754,8 +755,8 @@ class ImportDatasetCommand(BaseDatasetsCommand):
 
         url = urlparse(dataset_url)
 
-        if url.scheme not in ['s3', 'git', 'https']:
-            self.logger.log('Invalid URL format supported [git | https| s3]: {}'.format(dataset_url))
+        if url.scheme not in SUPPORTED_URL:
+            self.logger.log('Invalid URL format supported [ git | s3 | https | http ]: {}'.format(dataset_url))
             return
 
 
