@@ -11,7 +11,7 @@ progressbar2 = "*"
 cryptography = {extras = ["security"]}
 six = "*"
 gradient-statsd = "*"
-click = "*"
+click = "7.1.2"
 terminaltables = "*"
 click-didyoumean = "*"
 click-help-colors = "0.8"
