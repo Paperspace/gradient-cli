@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "804324756c331ac3751cee53f6cb973784d643f4490d63b4c6d667b4e5ec6557"
+            "sha256": "7e7e3dfd08b8725ab7ea2cb9e4613e6cd235a55efa24a0c04148c82ea69e9afe"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -113,11 +113,11 @@
         },
         "click-help-colors": {
             "hashes": [
-                "sha256:311bfac0ce694fcc2a9d91f27d15caf8240bb5f1445b923728ba16ef9664cc57",
-                "sha256:9f660cb64b9ed0927c906af51169ad27c60771c14e6bc9076d490b05bfa7befd"
+                "sha256:0d841a4058ec88c47f93ff6f32547a055f8e0a0273f6bd6cb3e08430f195131d",
+                "sha256:119e5faf69cfc919c995c5962326ac8fd87f11e56a371af594e3dfd8458f4c6e"
             ],
             "index": "pypi",
-            "version": "==0.8.1"
+            "version": "==0.8"
         },
         "cloudpickle": {
             "hashes": [
