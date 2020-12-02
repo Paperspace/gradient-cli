@@ -27,6 +27,7 @@ S3_XMLNS = 'http://s3.amazonaws.com/doc/2006-03-01/'
 DATASET_IMPORTER_IMAGE = "paperspace/dataset-importer:latest"
 PROJECT_NAME = "Job Builder"
 SUPPORTED_URL = "['s3', 'git', 'https', 'http']"
+IMPORTER_COMMAND = "go-getter"
 
 
 class WorkerPool(object):
@@ -696,10 +697,11 @@ class ImportDatasetCommand(BaseDatasetsCommand):
 
 
     def get_command_string(self, url):
-        return "go-getter {} /data/output".format(url)
+        return "%s %s /data/output" % (IMPORTER_COMMAND, url)
 
 
-    def get_command(self, url, http_auth, access_key, secret_key):
+    def get_command(self, url, http_auth):
+        
         if url.scheme == 'git' or url.scheme == 's3':
             return self.get_command_string(url.geturl())
         
