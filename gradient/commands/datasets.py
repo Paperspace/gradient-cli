@@ -762,11 +762,11 @@ class ImportDatasetCommand(BaseDatasetsCommand):
             return
 
 
-        command = self.get_command(url, http_auth, access_key, secret_key)
+        command = self.get_command(url, http_auth)
         if command:
             workflow["command"] = command
 
-        env_vars = self.get_env_vars(url, http_auth, access_key, secret_key)
+        env_vars = self.get_env_vars(url, http_auth)
         if env_vars:
             workflow["env_vars"] = env_vars
 
