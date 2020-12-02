@@ -721,11 +721,16 @@ class ImportDatasetCommand(BaseDatasetsCommand):
             access_key_value = "secret:ephemeral:{}".format(access_key_secret["AWS_ACCESS_KEY_ID"])
             secret_key_value = "secret:ephemeral:{}".format(secret_key_secret["AWS_ACCESS_KEY_SECRET"])
 
-            return "{\"AWS_ACCESS_KEY_ID\":\"%s\", \"AWS_ACCESS_KEY_SECRET\":\"%s\"}" % (access_key_value, secret_key_value)
+            return {
+                "AWS_ACCESS_KEY_ID": access_key_value,
+                "AWS_ACCESS_KEY_SECRET": secret_key_value
+            }
 
         if url.scheme == 'https':
             http_auth_secret = self.create_secret('HTTP_AUTH', http_auth)
-            return "{\"HTTP_AUTH\":\"%s\"}" % http_auth_secret
+            return {
+                "HTTP_AUTH": http_auth_secret
+            }
         
         return ""
 
@@ -760,6 +765,6 @@ class ImportDatasetCommand(BaseDatasetsCommand):
 
         env_vars = self.get_env_vars(url, http_auth, access_key, secret_key)
         if env_vars:
-            workflow["env_vars"] = json.loads(env_vars)
+            workflow["env_vars"] = env_vars
 
         return self.import_dataset(workflow)
