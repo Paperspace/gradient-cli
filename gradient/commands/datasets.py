@@ -20,7 +20,10 @@ import six
 from gradient import api_sdk
 from gradient.api_sdk.sdk_exceptions import ResourceFetchingError
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
+from gradient.cli.jobs import get_workspace_handler
+from gradient.commands import jobs as jobs_commands
 from gradient.commands.common import BaseCommand, DetailsCommandMixin, ListCommandPagerMixin
+from gradient.commands.jobs import BaseCreateJobCommandMixin, BaseJobCommand, CreateJobCommand
 from gradient.exceptions import ApplicationError
 
 S3_XMLNS = 'http://s3.amazonaws.com/doc/2006-03-01/'
@@ -688,7 +691,7 @@ class DeleteDatasetFilesCommand(BaseDatasetFilesCommand):
                             pool.put(self._delete, url=pre_signed.url)
 
 
-class ImportDatasetCommand(BaseDatasetsCommand):
+class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
     def create_secret(self, key, value, expires_in=86400):
         client = api_sdk.clients.SecretsClient(
             api_key=self.api_key,
@@ -732,12 +735,12 @@ class ImportDatasetCommand(BaseDatasetsCommand):
         
         return ""
 
-    def import_dataset(self, workflow):
+    def _create(self, workflow):
         client = api_sdk.clients.JobsClient(
             api_key=self.api_key,
             ps_client_name=CLI_PS_CLIENT_NAME,
         )
-        client.create(**workflow)
+        return self.client.create(**workflow)
 
 
     def execute(self, cluster_id, machine_type, dataset_id, dataset_url, http_auth, access_key, secret_key):
@@ -765,4 +768,5 @@ class ImportDatasetCommand(BaseDatasetsCommand):
         if env_vars:
             workflow["env_vars"] = env_vars
 
-        return self.import_dataset(workflow)
+        command = CreateJobCommand(api_key=self.api_key, workspace_handler=get_workspace_handler())
+        command.execute(workflow)

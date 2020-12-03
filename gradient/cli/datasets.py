@@ -5,6 +5,7 @@ from gradient.cli.cli import cli
 from gradient.cli.common import ClickGroup, api_key_option
 from gradient.commands import datasets as commands
 from gradient.cli import common
+from gradient.cli.jobs import get_workspace_handler
 from gradient.cli.common import (
     api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts,
     validate_comma_split_option,
@@ -200,7 +201,7 @@ def update_dataset(
 def import_dataset(cluster_id, machine_type, dataset_id, dataset_url, http_auth, access_key, secret_key, api_key, options_file):
     validate_dataset_id(dataset_id)
     
-    command = commands.ImportDatasetCommand(api_key=api_key)
+    command = commands.ImportDatasetCommand(api_key=api_key, workspace_handler=get_workspace_handler())
     command.execute(cluster_id, machine_type, dataset_id, dataset_url, http_auth, access_key, secret_key)
 
 @datasets.command("delete", help="Delete dataset")
