@@ -172,11 +172,16 @@ def update_dataset(
     required=True,
 )
 @click.option(
-    "--url",
-    "dataset_url",
-    help="URL ",
+    "--s3Url",
+    "s3_url",
+    help="S3 URL https://s3-us-east-1.amazonaws.com/bucket/path",
     cls=common.GradientOption,
-    required=True,
+)
+@click.option(
+    "--httpUrl",
+    "http_url",
+    help="HTTP/S URL https://data.something.org/all_my_data.zip}}",
+    cls=common.GradientOption,
 )
 @click.option(
     "--httpAuth",
@@ -198,11 +203,11 @@ def update_dataset(
 )
 @api_key_option
 @common.options_file
-def import_dataset(cluster_id, machine_type, dataset_id, dataset_url, http_auth, access_key, secret_key, api_key, options_file):
+def import_dataset(cluster_id, machine_type, dataset_id, s3_url, http_url, http_auth, access_key, secret_key, api_key, options_file):
     validate_dataset_id(dataset_id)
     
     command = commands.ImportDatasetCommand(api_key=api_key, workspace_handler=get_workspace_handler())
-    command.execute(cluster_id, machine_type, dataset_id, dataset_url, http_auth, access_key, secret_key)
+    command.execute(cluster_id, machine_type, dataset_id, s3_url, http_url, http_auth, access_key, secret_key)
 
 @datasets.command("delete", help="Delete dataset")
 @click.option(

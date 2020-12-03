@@ -19,6 +19,7 @@ import six
 
 from gradient import api_sdk
 from gradient.api_sdk.sdk_exceptions import ResourceFetchingError
+from gradient.api_sdk.utils import base64_encode
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.cli.jobs import get_workspace_handler
 from gradient.commands import jobs as jobs_commands
@@ -29,7 +30,7 @@ from gradient.exceptions import ApplicationError
 S3_XMLNS = 'http://s3.amazonaws.com/doc/2006-03-01/'
 DATASET_IMPORTER_IMAGE = "paperspace/dataset-importer:latest"
 PROJECT_NAME = "Job Builder"
-SUPPORTED_URL = ['s3', 'git', 'https', 'http']
+SUPPORTED_URL = ['https', 'http']
 IMPORTER_COMMAND = "go-getter"
 HTTP_SECRET = "HTTP_AUTH"
 S3_ACCESS_KEY = "AWS_ACCESS_KEY_ID"
@@ -702,17 +703,21 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
         response = client.ephemeral(key, value, expires_in)
         return response
 
-    def get_command(self, url, http_auth):
-        command_url = url.geturl()
+    def get_command(self, s3_url, http_url, http_auth):
+        command = "%s %s /data/output" % (IMPORTER_COMMAND, (s3_url or http_url))
+        if s3_url:
+            command = "%s s3::%s /data/output" % (IMPORTER_COMMAND, s3_url)
 
-        if (url.scheme == 'https' or url.scheme == 'http') and http_auth is not None:
-            return "%s https://${{HTTP_AUTH}}@%s /data/output" % (IMPORTER_COMMAND, url.path)
+        if http_url and http_auth is not None:
+            url = urlparse(http_url)
+            command_string = "%s https://${{HTTP_AUTH}}@%s /data/output" % (IMPORTER_COMMAND, url.path)
+            command = base64_encode(command_string)
 
-        return "%s %s /data/output" % (IMPORTER_COMMAND, command_url)
+        return command
     
-    def get_env_vars(self, url, secrets):
-        if url.scheme == 's3' and S3_ACCESS_KEY in secrets and S3_SECRET_KEY in secrets:
-            if not secrets[S3_ACCESS_KEY] or not secrets[S3_SECRET_KEY]:
+    def get_env_vars(self, s3_url, http_url, secrets):
+        if s3_url is not None:
+            if secrets[S3_ACCESS_KEY] is None or secrets[S3_SECRET_KEY] is None:
                 self.logger.log('s3AccessKey and s3SecretKey required')
                 return 
 
@@ -727,7 +732,7 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
                 S3_SECRET_KEY: secret_key_value,
             }
 
-        if url.scheme == 'https' and url.scheme == 'http' and HTTP_SECRET in secrets:
+        if http_url and secrets[S3_ACCESS_KEY] is not None:
             http_auth_secret = self.create_secret(HTTP_SECRET, secrets[HTTP_SECRET])
             return {
                 HTTP_SECRET: http_auth_secret
@@ -743,7 +748,7 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
         return self.client.create(**workflow)
 
 
-    def execute(self, cluster_id, machine_type, dataset_id, dataset_url, http_auth, access_key, secret_key):
+    def execute(self, cluster_id, machine_type, dataset_id, s3_url, http_url, http_auth, access_key, secret_key):
         workflow = {
             "cluster_id": cluster_id,
             "container": DATASET_IMPORTER_IMAGE,
@@ -753,20 +758,20 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
             "project_id": None
         }
 
-        url = urlparse(dataset_url)
+        dataset_url = s3_url or http_url
 
+        url = urlparse(dataset_url)
         if url.scheme not in SUPPORTED_URL:
             self.logger.log('Invalid URL format supported [{}] Format:{} URL:{}'.format(','.join(SUPPORTED_URL), url.scheme, dataset_url))
             return
 
-        command = self.get_command(url, http_auth)
+        command = self.get_command(s3_url, http_url, http_auth)
         if command:
             workflow["command"] = command
 
-        env_vars = self.get_env_vars(url, { HTTP_SECRET: http_auth, S3_ACCESS_KEY: access_key, S3_SECRET_KEY: secret_key })
+        env_vars = self.get_env_vars(s3_url, http_url, { HTTP_SECRET: http_auth, S3_ACCESS_KEY: access_key, S3_SECRET_KEY: secret_key })
         if env_vars:
             workflow["env_vars"] = env_vars
 
         command = CreateJobCommand(api_key=self.api_key, workspace_handler=get_workspace_handler())
-        print(workflow)
         command.execute(workflow)
