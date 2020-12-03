@@ -56,7 +56,7 @@ setup(
     install_requires=[
         'requests[security]',
         'six',
-        'click>=7.0',
+        'click=7.1.2',
         'terminaltables',
         'click-didyoumean',
         'click-help-colors',
