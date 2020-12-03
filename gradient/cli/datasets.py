@@ -4,6 +4,12 @@ from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.common import ClickGroup, api_key_option
 from gradient.commands import datasets as commands
+from gradient.cli import common
+from gradient.cli.jobs import get_workspace_handler
+from gradient.cli.common import (
+    api_key_option, del_if_value_is_none, ClickGroup, jsonify_dicts,
+    validate_comma_split_option,
+)
 
 EXAMPLE_ID = 'dsr8k5qzn401lb5'
 EXAMPLE_VERSION = 'klfoyy9'
@@ -143,6 +149,65 @@ def update_dataset(
         description=description,
     )
 
+@datasets.command("import", help="Import dataset")
+@click.option(
+    "--clusterId",
+    "cluster_id",
+    help="Cluster ID",
+    cls=common.GradientOption,
+    required=True,
+)
+@click.option(
+    "--machineType",
+    "machine_type",
+    help="Virtual machine type",
+    cls=common.GradientOption,
+    required=True,
+)
+@click.option(
+    "--datasetId",
+    "dataset_id",
+    help="Dataset ID",
+    cls=common.GradientOption,
+    required=True,
+)
+@click.option(
+    "--s3Url",
+    "s3_url",
+    help="S3 URL https://s3-us-east-1.amazonaws.com/bucket/path",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--httpUrl",
+    "http_url",
+    help="HTTP/S URL https://data.something.org/all_my_data.zip}}",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--httpAuth",
+    "http_auth",
+    help="Http Auth username:password",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--s3AccessKey",
+    "access_key",
+    help="S3 access key",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--s3SecretKey",
+    "secret_key",
+    help="S3 secret key",
+    cls=common.GradientOption,
+)
+@api_key_option
+@common.options_file
+def import_dataset(cluster_id, machine_type, dataset_id, s3_url, http_url, http_auth, access_key, secret_key, api_key, options_file):
+    validate_dataset_id(dataset_id)
+    
+    command = commands.ImportDatasetCommand(api_key=api_key, workspace_handler=get_workspace_handler())
+    command.execute(cluster_id, machine_type, dataset_id, s3_url, http_url, http_auth, access_key, secret_key)
 
 @datasets.command("delete", help="Delete dataset")
 @click.option(

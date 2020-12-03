@@ -53,3 +53,19 @@ class DeleteSecret(SecretsMixin, BaseRepository):
     def delete(self, **kwargs):
         response = self._get(**kwargs)
         self._validate_response(response)
+
+class EphemeralSecret(SecretsMixin, BaseRepository):
+    def get_request_url(self, **kwargs):
+        return "/secrets/ephemeral?expiresIn={}".format(kwargs.get("expires_in"))
+
+    def _get_request_json(self, kwargs):
+        return { kwargs.get("key"): kwargs.get("value") }
+
+    def _send_request(self, client, url, json=None, params=None):
+        response = client.post(url, json=json)
+        return response
+
+    def create(self, **kwargs):
+        response = self._get(**kwargs)
+        self._validate_response(response)
+        return response.data

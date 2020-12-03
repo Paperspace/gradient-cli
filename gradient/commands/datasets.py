@@ -5,11 +5,13 @@ import os
 import re
 import threading
 import uuid
+import json
 try:
     import queue
 except ImportError:
     import Queue as queue
 from xml.etree import ElementTree
+from urllib.parse import urlparse
 
 import halo
 import requests
@@ -17,11 +19,23 @@ import six
 
 from gradient import api_sdk
 from gradient.api_sdk.sdk_exceptions import ResourceFetchingError
+from gradient.api_sdk.utils import base64_encode
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
+from gradient.cli.jobs import get_workspace_handler
+from gradient.commands import jobs as jobs_commands
 from gradient.commands.common import BaseCommand, DetailsCommandMixin, ListCommandPagerMixin
+from gradient.commands.jobs import BaseCreateJobCommandMixin, BaseJobCommand, CreateJobCommand
 from gradient.exceptions import ApplicationError
 
 S3_XMLNS = 'http://s3.amazonaws.com/doc/2006-03-01/'
+DATASET_IMPORTER_IMAGE = "paperspace/dataset-importer:latest"
+PROJECT_NAME = "Job Builder"
+SUPPORTED_URL = ['https', 'http']
+IMPORTER_COMMAND = "go-getter"
+HTTP_SECRET = "HTTP_AUTH"
+S3_ACCESS_KEY = "AWS_ACCESS_KEY_ID"
+S3_SECRET_KEY = "AWS_SECRET_ACCESS_KEY"
+S3_REGION_KEY = "AWS_DEFAULT_REGION"
 
 
 class WorkerPool(object):
@@ -676,3 +690,92 @@ class DeleteDatasetFilesCommand(BaseDatasetFilesCommand):
                         for pre_signed in pre_signeds:
                             update_status()
                             pool.put(self._delete, url=pre_signed.url)
+
+
+class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
+    def create_secret(self, key, value, expires_in=86400):
+        client = api_sdk.clients.SecretsClient(
+            api_key=self.api_key,
+            logger=self.logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
+
+        response = client.ephemeral(key, value, expires_in)
+        return response
+
+    def get_command(self, s3_url, http_url, http_auth):
+        command = "%s %s /data/output" % (IMPORTER_COMMAND, (s3_url or http_url))
+        if s3_url:
+            command = "%s s3::%s /data/output" % (IMPORTER_COMMAND, s3_url)
+
+        if http_url and http_auth is not None:
+            url = urlparse(http_url)
+            command_string = "%s https://${{HTTP_AUTH}}@%s /data/output" % (IMPORTER_COMMAND, url.path)
+            command = base64_encode(command_string)
+
+        return command
+    
+    def get_env_vars(self, s3_url, http_url, secrets):
+        if s3_url is not None:
+            if secrets[S3_ACCESS_KEY] is None or secrets[S3_SECRET_KEY] is None:
+                self.logger.log('s3AccessKey and s3SecretKey required')
+                return 
+
+            access_key_secret = self.create_secret(S3_ACCESS_KEY, secrets[S3_ACCESS_KEY])
+            secret_key_secret = self.create_secret(S3_SECRET_KEY, secrets[S3_SECRET_KEY])
+
+            access_key_value = "secret:ephemeral:%s" % access_key_secret[S3_ACCESS_KEY]
+            secret_key_value = "secret:ephemeral:%s" % secret_key_secret[S3_SECRET_KEY]
+
+            return {
+                S3_ACCESS_KEY: access_key_value,
+                S3_SECRET_KEY: secret_key_value,
+            }
+
+        if http_url and secrets[S3_ACCESS_KEY] is not None:
+            http_auth_secret = self.create_secret(HTTP_SECRET, secrets[HTTP_SECRET])
+            return {
+                HTTP_SECRET: http_auth_secret
+            }
+        
+        return ""
+
+    def _create(self, workflow):
+        client = api_sdk.clients.JobsClient(
+            api_key=self.api_key,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
+        return self.client.create(**workflow)
+
+
+    def execute(self, cluster_id, machine_type, dataset_id, s3_url, http_url, http_auth, access_key, secret_key):
+        if s3_url is None and http_url is None:
+            self.logger.log('Error: --s3Url or --httpUrl required')
+            return
+
+        workflow = {
+            "cluster_id": cluster_id,
+            "container": DATASET_IMPORTER_IMAGE,
+            "machine_type": machine_type,
+            "project": PROJECT_NAME,
+            "datasets": [{ "id": dataset_id, "name": "output", "output": True }],
+            "project_id": None
+        }
+
+        dataset_url = s3_url or http_url
+
+        url = urlparse(dataset_url)
+        if url.scheme not in SUPPORTED_URL:
+            self.logger.log('Invalid URL format supported [{}] Format:{} URL:{}'.format(','.join(SUPPORTED_URL), url.scheme, dataset_url))
+            return
+
+        command = self.get_command(s3_url, http_url, http_auth)
+        if command:
+            workflow["command"] = command
+
+        env_vars = self.get_env_vars(s3_url, http_url, { HTTP_SECRET: http_auth, S3_ACCESS_KEY: access_key, S3_SECRET_KEY: secret_key })
+        if env_vars:
+            workflow["env_vars"] = env_vars
+
+        command = CreateJobCommand(api_key=self.api_key, workspace_handler=get_workspace_handler())
+        command.execute(workflow)
