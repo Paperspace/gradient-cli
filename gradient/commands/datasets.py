@@ -28,6 +28,9 @@ DATASET_IMPORTER_IMAGE = "paperspace/dataset-importer:latest"
 PROJECT_NAME = "Job Builder"
 SUPPORTED_URL = "['s3', 'git', 'https', 'http']"
 IMPORTER_COMMAND = "go-getter"
+HTTP_SECRET = "HTTP_AUTH"
+S3_ACCESS_KEY = "AWS_ACCESS_KEY_ID"
+S3_SECRET_KEY = "AWS_ACCESS_KEY_SECRET"
 
 
 class WorkerPool(object):
@@ -713,26 +716,28 @@ class ImportDatasetCommand(BaseDatasetsCommand):
 
         return ""
     
-    def get_env_vars(self, url, http_auth, access_key, secret_key):
+    def get_env_vars(self, url, secrets):
+        # http_auth, access_key, secret_key
+
         if url.scheme == 'git':
             return ""
 
-        if url.scheme == 's3' and access_key and secret_key:
-            access_key_secret = self.create_secret('AWS_ACCESS_KEY_ID', access_key)
-            secret_key_secret = self.create_secret('AWS_ACCESS_KEY_SECRET', secret_key)
+        if url.scheme == 's3' and secrets[S3_ACCESS_KEY] and secrets[S3_SECRET_KEY]:
+            access_key_secret = self.create_secret(S3_ACCESS_KEY, secrets[S3_ACCESS_KEY])
+            secret_key_secret = self.create_secret(S3_SECRET_KEY, secrets[S3_SECRET_KEY])
 
-            access_key_value = "secret:ephemeral:%s" % access_key_secret["AWS_ACCESS_KEY_ID"]
-            secret_key_value = "secret:ephemeral:%s" % secret_key_secret["AWS_ACCESS_KEY_SECRET"]
+            access_key_value = "secret:ephemeral:%s" % access_key_secret[S3_ACCESS_KEY]
+            secret_key_value = "secret:ephemeral:%s" % secret_key_secret[S3_SECRET_KEY]
 
             return {
-                "AWS_ACCESS_KEY_ID": access_key_value,
-                "AWS_ACCESS_KEY_SECRET": secret_key_value
+                S3_ACCESS_KEY: access_key_value,
+                S3_SECRET_KEY: secret_key_value
             }
 
-        if url.scheme == 'https' and http_auth:
-            http_auth_secret = self.create_secret('HTTP_AUTH', http_auth)
+        if url.scheme == 'https' and secrets[HTTP_SECRET]:
+            http_auth_secret = self.create_secret(HTTP_SECRET, secrets[HTTP_SECRET])
             return {
-                "HTTP_AUTH": http_auth_secret
+                HTTP_SECRET: http_auth_secret
             }
         
         return ""
@@ -766,7 +771,7 @@ class ImportDatasetCommand(BaseDatasetsCommand):
         if command:
             workflow["command"] = command
 
-        env_vars = self.get_env_vars(url, http_auth)
+        env_vars = self.get_env_vars(url, {"HTTP_AUTH": http_auth, "AWS_ACCESS_KEY_ID": access_key, "AWS_ACCESS_KEY_SECRET": secret_key})
         if env_vars:
             workflow["env_vars"] = env_vars
 
