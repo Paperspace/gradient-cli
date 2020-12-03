@@ -27,7 +27,6 @@ recommonmark = "*"
 sphinx-click = "*"
 
 [dev-packages]
-click = "7.1.2"
 twine = "*"
 pypandoc = "*"
 pytest = "*"
