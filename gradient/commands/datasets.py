@@ -761,7 +761,7 @@ class ImportDatasetCommand(BaseDatasetsCommand):
         if command:
             workflow["command"] = command
 
-        env_vars = self.get_env_vars(url, {HTTP_SECRET: http_auth, S3_ACCESS_KEY: access_key, S3_SECRET_KEY: secret_key})
+        env_vars = self.get_env_vars(url, { HTTP_SECRET: http_auth, S3_ACCESS_KEY: access_key, S3_SECRET_KEY: secret_key })
         if env_vars:
             workflow["env_vars"] = env_vars
 
