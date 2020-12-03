@@ -152,7 +152,7 @@ def update_dataset(
 @click.option(
     "--clusterId",
     "cluster_id",
-    help="Cluster id",
+    help="Cluster ID",
     cls=common.GradientOption,
     required=True,
 )
@@ -173,7 +173,7 @@ def update_dataset(
 @click.option(
     "--url",
     "dataset_url",
-    help="URL",
+    help="URL ",
     cls=common.GradientOption,
     required=True,
 )

@@ -26,11 +26,12 @@ from gradient.exceptions import ApplicationError
 S3_XMLNS = 'http://s3.amazonaws.com/doc/2006-03-01/'
 DATASET_IMPORTER_IMAGE = "paperspace/dataset-importer:latest"
 PROJECT_NAME = "Job Builder"
-SUPPORTED_URL = "['s3', 'git', 'https', 'http']"
+SUPPORTED_URL = ['s3', 'git', 'https', 'http']
 IMPORTER_COMMAND = "go-getter"
 HTTP_SECRET = "HTTP_AUTH"
 S3_ACCESS_KEY = "AWS_ACCESS_KEY_ID"
-S3_SECRET_KEY = "AWS_ACCESS_KEY_SECRET"
+S3_SECRET_KEY = "AWS_SECRET_ACCESS_KEY"
+S3_REGION_KEY = "AWS_DEFAULT_REGION"
 
 
 class WorkerPool(object):
@@ -698,31 +699,20 @@ class ImportDatasetCommand(BaseDatasetsCommand):
         response = client.ephemeral(key, value, expires_in)
         return response
 
-
-    def get_command_string(self, url):
-        return "%s %s /data/output" % (IMPORTER_COMMAND, url)
-
-
     def get_command(self, url, http_auth):
-        
-        if url.scheme == 'git' or url.scheme == 's3':
-            return self.get_command_string(url.geturl())
-        
-        if url.scheme == 'https' or url.scheme == 'http':
-            if not http_auth:
-                return self.get_command_string(url.geturl())
-            http_auth_url = "https://${{HTTP_AUTH}}@%s" % url.path
-            return self.get_command_string(http_auth_url)
+        command_url = url.geturl()
 
-        return ""
+        if url.scheme == 'https' or url.scheme == 'http' and http_auth:
+            return "%s https://${{HTTP_AUTH}}@%s /data/output" % (IMPORTER_COMMAND, url.path)
+
+        return "%s %s /data/output" % (IMPORTER_COMMAND, command_url)
     
     def get_env_vars(self, url, secrets):
-        # http_auth, access_key, secret_key
+        if url.scheme == 's3' and S3_ACCESS_KEY in secrets and S3_SECRET_KEY in secrets:
+            if not secrets[S3_ACCESS_KEY] or not secrets[S3_SECRET_KEY]:
+                self.logger.log('s3AccessKey and s3SecretKey required')
+                return 
 
-        if url.scheme == 'git':
-            return ""
-
-        if url.scheme == 's3' and secrets[S3_ACCESS_KEY] and secrets[S3_SECRET_KEY]:
             access_key_secret = self.create_secret(S3_ACCESS_KEY, secrets[S3_ACCESS_KEY])
             secret_key_secret = self.create_secret(S3_SECRET_KEY, secrets[S3_SECRET_KEY])
 
@@ -731,10 +721,10 @@ class ImportDatasetCommand(BaseDatasetsCommand):
 
             return {
                 S3_ACCESS_KEY: access_key_value,
-                S3_SECRET_KEY: secret_key_value
+                S3_SECRET_KEY: secret_key_value,
             }
 
-        if url.scheme == 'https' and secrets[HTTP_SECRET]:
+        if url.scheme == 'https' and url.scheme == 'http' and HTTP_SECRET in secrets:
             http_auth_secret = self.create_secret(HTTP_SECRET, secrets[HTTP_SECRET])
             return {
                 HTTP_SECRET: http_auth_secret
@@ -763,7 +753,7 @@ class ImportDatasetCommand(BaseDatasetsCommand):
         url = urlparse(dataset_url)
 
         if url.scheme not in SUPPORTED_URL:
-            self.logger.log('Invalid URL format supported [ git | s3 | https | http ]: {}'.format(dataset_url))
+            self.logger.log('Invalid URL format supported [{}] Format:{} URL:{}'.format(','.join(SUPPORTED_URL), url.scheme, dataset_url))
             return
 
 
@@ -771,7 +761,7 @@ class ImportDatasetCommand(BaseDatasetsCommand):
         if command:
             workflow["command"] = command
 
-        env_vars = self.get_env_vars(url, {"HTTP_AUTH": http_auth, "AWS_ACCESS_KEY_ID": access_key, "AWS_ACCESS_KEY_SECRET": secret_key})
+        env_vars = self.get_env_vars(url, {HTTP_SECRET: http_auth, S3_ACCESS_KEY: access_key, S3_SECRET_KEY: secret_key})
         if env_vars:
             workflow["env_vars"] = env_vars
 
