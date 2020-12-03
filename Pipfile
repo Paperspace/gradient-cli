@@ -14,7 +14,7 @@ gradient-statsd = "*"
 click >= 7.0, < 8.0  # https://github.com/click-contrib/click-help-colors/issues/12
 terminaltables = "*"
 click-didyoumean = "*"
-click-help-colors = "*"
+click-help-colors = >= 0.6
 colorama = "*"
 click-completion = "*"
 halo = "*"
