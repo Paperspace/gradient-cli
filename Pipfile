@@ -11,10 +11,10 @@ progressbar2 = "*"
 cryptography = {extras = ["security"]}
 six = "*"
 gradient-statsd = "*"
-click >= 7.0, < 8.0  # https://github.com/click-contrib/click-help-colors/issues/12
+click = "7.1.2" 
 terminaltables = "*"
 click-didyoumean = "*"
-click-help-colors >= 0.7, < 0.8  # https://github.com/click-contrib/click-help-colors/issues/12
+click-help-colors = "0.8"
 colorama = "*"
 click-completion = "*"
 halo = "*"
