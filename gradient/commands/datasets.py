@@ -705,7 +705,7 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
     def get_command(self, url, http_auth):
         command_url = url.geturl()
 
-        if url.scheme == 'https' or url.scheme == 'http' and http_auth:
+        if (url.scheme == 'https' or url.scheme == 'http') and http_auth is not None:
             return "%s https://${{HTTP_AUTH}}@%s /data/output" % (IMPORTER_COMMAND, url.path)
 
         return "%s %s /data/output" % (IMPORTER_COMMAND, command_url)
@@ -759,7 +759,6 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
             self.logger.log('Invalid URL format supported [{}] Format:{} URL:{}'.format(','.join(SUPPORTED_URL), url.scheme, dataset_url))
             return
 
-
         command = self.get_command(url, http_auth)
         if command:
             workflow["command"] = command
@@ -769,4 +768,5 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
             workflow["env_vars"] = env_vars
 
         command = CreateJobCommand(api_key=self.api_key, workspace_handler=get_workspace_handler())
+        print(workflow)
         command.execute(workflow)
