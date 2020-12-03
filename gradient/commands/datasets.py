@@ -749,6 +749,10 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
 
 
     def execute(self, cluster_id, machine_type, dataset_id, s3_url, http_url, http_auth, access_key, secret_key):
+        if s3_url is None and http_url is None:
+            self.logger.log('Error: --s3Url or --httpUrl required')
+            return
+
         workflow = {
             "cluster_id": cluster_id,
             "container": DATASET_IMPORTER_IMAGE,
