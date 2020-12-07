@@ -708,12 +708,7 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
         command = "%s %s /data/output" % (IMPORTER_COMMAND, (s3_url or http_url))
         if s3_url:
             if AWS_HOST in s3_url:
-                striped_url = s3_url
-                if "http://" in striped_url:
-                    striped_url = s3_url.replace('http://', "")
-                if "https://" in striped_url:
-                    striped_url = s3_url.replace('https://', "")
-
+                striped_url = s3_url.replace('http://', "").replace('https://', "")
                 command = "%s %s /data/output" % (IMPORTER_COMMAND, striped_url)
             else:
                 command = "%s s3::%s /data/output" % (IMPORTER_COMMAND, s3_url)
