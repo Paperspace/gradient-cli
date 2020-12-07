@@ -31,11 +31,12 @@ S3_XMLNS = 'http://s3.amazonaws.com/doc/2006-03-01/'
 DATASET_IMPORTER_IMAGE = "paperspace/dataset-importer:latest"
 PROJECT_NAME = "Job Builder"
 SUPPORTED_URL = ['https', 'http']
-IMPORTER_COMMAND = "go-getter"
+IMPORTER_COMMAND = "go-getter -progress"
 HTTP_SECRET = "HTTP_AUTH"
 S3_ACCESS_KEY = "AWS_ACCESS_KEY_ID"
 S3_SECRET_KEY = "AWS_SECRET_ACCESS_KEY"
 S3_REGION_KEY = "AWS_DEFAULT_REGION"
+AWS_HOST = "amazonaws.com"
 
 
 class WorkerPool(object):
@@ -706,7 +707,16 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
     def get_command(self, s3_url, http_url, http_auth):
         command = "%s %s /data/output" % (IMPORTER_COMMAND, (s3_url or http_url))
         if s3_url:
-            command = "%s s3::%s /data/output" % (IMPORTER_COMMAND, s3_url)
+            if AWS_HOST in s3_url:
+                striped_url = s3_url
+                if "http://" in striped_url:
+                    striped_url = s3_url.replace('http://', "")
+                if "https://" in striped_url:
+                    striped_url = s3_url.replace('https://', "")
+
+                command = "%s %s /data/output" % (IMPORTER_COMMAND, striped_url)
+            else:
+                command = "%s s3::%s /data/output" % (IMPORTER_COMMAND, s3_url)
 
         if http_url and http_auth is not None:
             url = urlparse(http_url)
@@ -759,7 +769,7 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
             "machine_type": machine_type,
             "project": PROJECT_NAME,
             "datasets": [{ "id": dataset_id, "name": "output", "output": True }],
-            "project_id": None
+            "project_id": None # required to submit job
         }
 
         dataset_url = s3_url or http_url

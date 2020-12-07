@@ -180,7 +180,7 @@ def update_dataset(
 @click.option(
     "--httpUrl",
     "http_url",
-    help="HTTP/S URL https://data.something.org/all_my_data.zip}}",
+    help="HTTP/S URL https://data.something.org/all_my_data.zip",
     cls=common.GradientOption,
 )
 @click.option(
