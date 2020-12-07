@@ -722,9 +722,6 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
     
     def get_env_vars(self, s3_url, http_url, secrets):
         if s3_url is not None:
-            if secrets[S3_ACCESS_KEY] is None or secrets[S3_SECRET_KEY] is None:
-                self.logger.log('s3AccessKey and s3SecretKey required')
-                return 
 
             access_key_secret = self.create_secret(S3_ACCESS_KEY, secrets[S3_ACCESS_KEY])
             secret_key_secret = self.create_secret(S3_SECRET_KEY, secrets[S3_SECRET_KEY])
@@ -757,6 +754,9 @@ class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
         if s3_url is None and http_url is None:
             self.logger.log('Error: --s3Url or --httpUrl required')
             return
+        if s3_url and access_key is None or secret_key is None:
+            self.logger.log('Error: s3AccessKey and s3SecretKey required for s3')
+            return 
 
         workflow = {
             "cluster_id": cluster_id,
