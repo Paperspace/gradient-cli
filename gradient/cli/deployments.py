@@ -98,6 +98,7 @@ def deployments_metrics():
 @click.option(
     "--projectId",
     "project_id",
+    required=True,
     help="Project ID",
     cls=common.GradientOption,
 )
