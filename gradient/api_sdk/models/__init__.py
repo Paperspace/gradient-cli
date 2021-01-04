@@ -20,3 +20,4 @@ from .storage_provider import StorageProvider
 from .tag import Tag
 from .tensorboard import Instance, Tensorboard
 from .vm_type import VmType, VmTypeGpuModel
+from .workflows import Workflow, WorkflowRun, WorkflowSpec
