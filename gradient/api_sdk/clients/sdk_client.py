@@ -1,5 +1,5 @@
 from . import DeploymentsClient, ExperimentsClient, HyperparameterJobsClient, ModelsClient, ProjectsClient, \
-    MachinesClient, NotebooksClient, SecretsClient
+    MachinesClient, NotebooksClient, SecretsClient, WorkflowsClient
 from .job_client import JobsClient
 from .. import logger as sdk_logger
 
@@ -19,3 +19,4 @@ class SdkClient(object):
         self.machines = MachinesClient(api_key=api_key, logger=logger)
         self.notebooks = NotebooksClient(api_key=api_key, logger=logger)
         self.secrets = SecretsClient(api_key=api_key, logger=logger)
+        self.workflows = WorkflowsClient(api_key=api_key, logger=logger)
