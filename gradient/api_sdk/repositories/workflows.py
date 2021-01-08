@@ -13,6 +13,9 @@ class WorkflowsMixin(object):
 
 class ListWorkflows(WorkflowsMixin, ListResources):
     def get_request_url(self, **kwargs):
+        project_id = kwargs.get("project_id")
+        if project_id is not None:
+            return "/workflows?filter[where][projectId]={}".format(project_id)
         return "/workflows"
 
     def _get_instances(self, response, **kwargs):
@@ -83,3 +86,44 @@ class GetWorkflowRun(WorkflowRunsMixin, BaseRepository):
             return {}
 
         return gradient_response.data
+
+
+class CreateWorkflow(WorkflowsMixin, BaseRepository):
+    def get_request_url(self, **kwargs):
+        return "/workflows"
+
+    def _get_request_json(self, kwargs):
+        return {"name": kwargs.get("name"), "projectId": kwargs.get("project_id")}
+
+    def _send_request(self, client, url, json=None, params=None):
+        response = client.post(url, json=json, params=params)
+        return response
+
+    def create(self, **kwargs):
+        response = self._get(**kwargs)
+        self._validate_response(response)
+
+        if not response.data:
+            return {}
+
+        return response.data
+        
+class CreateWorkflowRun(WorkflowsMixin, BaseRepository):
+    def get_request_url(self, **kwargs):
+        return "/workflows/{}/runs".format(kwargs.get("id"))
+
+    def _get_request_json(self, kwargs):
+        return {"spec": kwargs.get("spec"), "clusterId": kwargs.get("cluster_id"), "run": True, "markDefault": False }
+
+    def _send_request(self, client, url, json=None, params=None):
+        response = client.post(url, json=json, params=params)
+        return response
+
+    def create(self, **kwargs):
+        response = self._get(**kwargs)
+        self._validate_response(response)
+
+        if not response.data:
+            return {}
+
+        return response.data

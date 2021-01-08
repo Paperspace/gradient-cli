@@ -1,11 +1,14 @@
 import abc
 import json
+import os
 
 import six
+import yaml
 
 from halo import halo
 from gradient import api_sdk
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
+from gradient.exceptions import ApplicationError
 from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
 
 
@@ -33,6 +36,37 @@ class BaseWorkflowCommand(BaseCommand):
             ps_client_name=CLI_PS_CLIENT_NAME,
         )
         return client
+
+
+class CreateWorkflowCommand(BaseWorkflowCommand, DetailsCommandMixin):
+    def _get_table_data(self, instance):
+        data = [('Name', 'ID')]
+        data.append((
+            instance['name'],
+            instance['id'],
+        ))
+
+        return data
+
+    def execute(self, name, project_id):
+        workflow = self.client.create(name, project_id)
+        self._log_object(workflow)
+
+        return workflow
+
+class CreateWorkflowRunCommand(BaseWorkflowCommand):
+    def execute(self, spec_path=None, workflow_id=None, cluster_id=None):
+        if spec_path:
+            if not os.path.exists(spec_path):
+                raise ApplicationError('Source path not found: {}'.format(spec_path))
+
+        yaml_spec = open(spec_path, 'r')
+        spec = yaml.load(yaml_spec, Loader=yaml.FullLoader)
+
+        workflow = self.client.run_workflow(spec=spec, workflow_id=workflow_id, cluster_id=cluster_id)
+        print(workflow)
+        return workflow
+
 
 class ListWorkflowsCommand(ListCommandMixin, BaseWorkflowCommand):
     def _get_instances(self, kwargs):
@@ -73,9 +107,6 @@ class GetWorkflowCommand(DetailJSONCommandMixin, BaseWorkflowCommand):
 
     def get_instance(self, workflow_id):
         instance = self.client.get(workflow_id=workflow_id)
-        if not hasattr(instance, 'spec'):
-            instance['spec'] = "None"
-
         return instance
 
 class GetWorkflowRunCommand(DetailJSONCommandMixin, BaseWorkflowCommand):

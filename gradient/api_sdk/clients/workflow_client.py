@@ -5,6 +5,35 @@ from ...exceptions import ReceivingDataFailedError
 
 class WorkflowsClient(BaseClient):
 
+    def create(self, name, project_id):
+        """Create workflow with spec 
+
+        :param str name: workflow name
+        :param str project_id: project id
+
+        :returns:  workflow create response
+        :rtype: list[models.Workflow]
+        """
+
+        repository = self.build_repository(repositories.CreateWorkflow)
+        workflow = repository.create(name=name, project_id=project_id)
+        return workflow
+
+    def run_workflow(self, spec, workflow_id, cluster_id):
+        """Create workflow with spec 
+
+        :param obj spec: workflow spec
+        :param str workflow_id: workflow id
+        :param str cluster_id: cluster id
+
+        :returns:  workflow create response
+        :rtype: list[models.Workflow]
+        """
+
+        repository = self.build_repository(repositories.CreateWorkflow)
+        workflow = repository.create(spec=spec, id=workflow_id, cluster_id=cluster_id)
+        return workflow
+
     def list(self, project_id):
         """List workflows by project
 
