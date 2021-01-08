@@ -9,7 +9,7 @@ from halo import halo
 from gradient import api_sdk
 from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.exceptions import ApplicationError
-from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin
+from gradient.commands.common import BaseCommand, ListCommandMixin, DetailsCommandMixin, LogsCommandMixin
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -55,16 +55,24 @@ class CreateWorkflowCommand(BaseWorkflowCommand, DetailsCommandMixin):
         return workflow
 
 class CreateWorkflowRunCommand(BaseWorkflowCommand):
-    def execute(self, spec_path=None, workflow_id=None, cluster_id=None):
+    def execute(self, spec_path=None, input_path=None, workflow_id=None, cluster_id=None):
+        spec = None
+        inputs = None
         if spec_path:
             if not os.path.exists(spec_path):
                 raise ApplicationError('Source path not found: {}'.format(spec_path))
+            else:
+                yaml_spec = open(spec_path, 'r')
+                spec = yaml.safe_load(yaml_spec)
 
-        yaml_spec = open(spec_path, 'r')
-        spec = yaml.load(yaml_spec, Loader=yaml.FullLoader)
+        if input_path:
+            if not os.path.exists(input_path):
+                raise ApplicationError('Source path not found: {}'.format(input_path))
+            else:
+                yaml_inputs = open(input_path, 'r')
+                inputs = yaml.safe_load(yaml_inputs)
 
-        workflow = self.client.run_workflow(spec=spec, workflow_id=workflow_id, cluster_id=cluster_id)
-        print(workflow)
+        workflow = self.client.run_workflow(spec=spec, inputs=inputs, workflow_id=workflow_id, cluster_id=cluster_id)
         return workflow
 
 
@@ -120,5 +128,6 @@ class GetWorkflowRunCommand(DetailJSONCommandMixin, BaseWorkflowCommand):
         instances = self.client.get_run(workflow_id=workflow_id, run=run)
         return instances
 
-
+class WorkflowLogsCommand(LogsCommandMixin, BaseWorkflowCommand):
+    ENTITY = "Workflows"
 

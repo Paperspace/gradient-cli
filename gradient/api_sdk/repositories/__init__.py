@@ -23,4 +23,4 @@ from .secrets import ListSecrets, SetSecret, DeleteSecret, EphemeralSecret
 from .storage_providers import ListStorageProviders, CreateStorageProvider, DeleteStorageProvider, \
     GetStorageProvider, UpdateStorageProvider
 from .tensorboards import CreateTensorboard, GetTensorboard, ListTensorboards, UpdateTensorboard, DeleteTensorboard
-from .workflows import ListWorkflows, GetWorkflow, ListWorkflowRuns, GetWorkflowRun, CreateWorkflow, CreateWorkflowRun
+from .workflows import ListWorkflows, GetWorkflow, ListWorkflowRuns, GetWorkflowRun, CreateWorkflow, CreateWorkflowRun, ListWorkflowLogs

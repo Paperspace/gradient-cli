@@ -1,7 +1,7 @@
-from .common import BaseRepository, ListResources, GetResource
+from .common import BaseRepository, ListResources, GetResource, ListLogs
 from .. import config, serializers
 from ..clients import http_client
-
+import json
 
 class WorkflowsMixin(object):
     SERIALIZER_CLS = serializers.WorkflowSchema
@@ -112,18 +112,37 @@ class CreateWorkflowRun(WorkflowsMixin, BaseRepository):
     def get_request_url(self, **kwargs):
         return "/workflows/{}/runs".format(kwargs.get("id"))
 
-    def _get_request_json(self, kwargs):
+    def _get_request_json(self, **kwargs):
+        if kwargs.get("inputs") is not None:
+            return {"spec": kwargs.get("spec"), "clusterId": kwargs.get("cluster_id"), "run": True, "markDefault": False, "inputs": kwargs.get("inputs") }
+
         return {"spec": kwargs.get("spec"), "clusterId": kwargs.get("cluster_id"), "run": True, "markDefault": False }
 
-    def _send_request(self, client, url, json=None, params=None):
-        response = client.post(url, json=json, params=params)
-        return response
+    def _send_create_request(self, **kwargs):
+        url = self.get_request_url(**kwargs)
+        client = self._get_client(**kwargs)
+        json_ = self._get_request_json(**kwargs)
+
+        response = client.post(url, json=json_)
+        gradient_response = http_client.GradientResponse.interpret_response(response)
+
+        json_formatted_str = json.dumps(gradient_response.data, indent=4)
+        return gradient_response
 
     def create(self, **kwargs):
-        response = self._get(**kwargs)
+        response = self._send_create_request(**kwargs)
         self._validate_response(response)
 
         if not response.data:
             return {}
 
         return response.data
+
+class ListWorkflowLogs(ListLogs):
+    def _get_request_params(self, kwargs):
+        params = {
+            "jobId": kwargs["id"],
+            "line": kwargs["line"],
+            "limit": kwargs["limit"],
+        }
+        return params
