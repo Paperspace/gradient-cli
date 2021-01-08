@@ -17,6 +17,17 @@ class WorkflowsClient(BaseClient):
         repository = self.build_repository(repositories.ListWorkflows)
         workflows = repository.list(project_id=project_id)
         return workflows
+
+    def get(self, workflow_id):
+        """Get a Workflow
+
+        :param str workflow_id: Workflow ID [required]
+
+        :returns: workflow
+        :rtype: models.Workflow
+        """
+        repository = self.build_repository(repositories.GetWorkflow)
+        return repository.get(id=workflow_id)
     
 
     def list_runs(self, workflow_id):
@@ -25,10 +36,22 @@ class WorkflowsClient(BaseClient):
         :param str workflow_id: workflow ID
 
         :returns: list of workflow runs
-        :rtype: list[models.WorkflowRun]
         """
 
         repository = self.build_repository(repositories.ListWorkflowRuns)
-        workflows = repository.list(workflow_id=workflow_id)
-        return workflows
+        workflows_runs = repository.get(id=workflow_id)
+        return workflows_runs
+
+    def get_run(self, workflow_id, run):
+        """List workflows runs by workflow id
+
+        :param str workflow_id: workflow ID
+        :param str run: run count
+
+        :returns: list of workflow runs
+        """
+
+        repository = self.build_repository(repositories.GetWorkflowRun)
+        workflows_runs = repository.get(id=workflow_id, run=run)
+        return workflows_runs
 

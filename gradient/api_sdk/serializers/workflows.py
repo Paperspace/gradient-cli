@@ -5,6 +5,8 @@ from .. import models
 
 
 class WorkflowSchema(BaseSchema):
+    MODEL = models.Workflow
+
     id = ma.fields.Str(dump_to="id", load_from="id")
     team_id = ma.fields.Str(dump_to="teamId", load_from="teamId")
     project_id = ma.fields.Int(required=True, dump_to="projectId", load_from="projectId")
@@ -16,6 +18,8 @@ class WorkflowSchema(BaseSchema):
 
 
 class WorkflowSpecSchema(BaseSchema):
+    MODEL = models.WorkflowSpec
+
     id = ma.fields.Str(dump_to="id", load_from="id")
     data = ma.fields.Str(dump_to="data", load_from="data")
     hash_sha256 = ma.fields.Str(dump_to="hashSha256", load_from="hashSha256")
@@ -23,6 +27,8 @@ class WorkflowSpecSchema(BaseSchema):
 
 
 class WorkflowRunSchema(BaseSchema):
+    MODEL = models.WorkflowRun
+
     id = ma.fields.Str(dump_to="id", load_from="id")
     team_id = ma.fields.Int(dump_to="teamId", load_from="teamId")
     workflow_id = ma.fields.Str(dump_to="workflowId", load_from="workflowId")

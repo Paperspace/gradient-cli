@@ -1,6 +1,7 @@
 from . import DeploymentsClient, ExperimentsClient, HyperparameterJobsClient, ModelsClient, ProjectsClient, \
-    MachinesClient, NotebooksClient, SecretsClient, WorkflowsClient
+    MachinesClient, NotebooksClient, SecretsClient
 from .job_client import JobsClient
+from .workflow_client import WorkflowsClient
 from .. import logger as sdk_logger
 
 
