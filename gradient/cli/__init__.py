@@ -17,6 +17,7 @@ import gradient.cli.projects
 import gradient.cli.secrets
 import gradient.cli.storage_providers
 import gradient.cli.tensorboards
+import gradient.cli.workflows
 
 
 def show(self, file=None):

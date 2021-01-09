@@ -15,3 +15,4 @@ from .secret_client import SecretsClient
 from .storage_provider_client import StorageProvidersClient
 from .sdk_client import SdkClient
 from .tensorboards_client import TensorboardClient
+from .workflow_client import WorkflowsClient

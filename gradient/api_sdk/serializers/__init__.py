@@ -17,3 +17,4 @@ from .storage_provider import StorageProviderSchema
 from .tag import TagSchema
 from .tensorboard import InstanceSchema, TensorboardSchema, TensorboardDetailSchema
 from .vm_type import VmTypeSchema, VmTypeGpuModelSchema
+from .workflows import WorkflowSchema, WorkflowRunSchema, WorkflowSpecSchema
