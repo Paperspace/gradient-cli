@@ -102,7 +102,7 @@ def get_workflow(api_key, workflow_id, options_file):
 
 @workflows.command("runList", help="List workflow runs")
 @click.option(
-    "--workflowId",
+    "--id",
     "workflow_id",
     required=True,
     help="Workflow ID",
