@@ -109,3 +109,28 @@ class WorkflowsClient(BaseClient):
         repository = self.build_repository(repositories.ListWorkflowLogs)
         logs = repository.yield_logs(id=job_id, line=line, limit=limit)
         return logs
+    
+    def logs(self, job_id, line=1, limit=10000):
+        """Get log generator. Polls the API for new logs
+
+        .. code-block:: python
+            :linenos:
+            :emphasize-lines: 2
+
+            job_logs_generator = job_client.yield_logs(
+                job_id='Your_job_id_here',
+                line=100,
+                limit=100
+            )
+
+        :param str job_id:
+        :param int line: line number at which logs starts to display on screen
+        :param int limit: maximum lines displayed on screen, default set to 10 000
+
+        :returns: generator yielding LogRow instances
+        :rtype: Iterator[models.LogRow]
+        """
+
+        repository = self.build_repository(repositories.ListWorkflowLogs)
+        logs = repository.list(id=job_id, line=line, limit=limit)
+        return logs

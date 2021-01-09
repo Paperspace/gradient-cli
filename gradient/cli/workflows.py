@@ -67,7 +67,11 @@ def create_workflow(api_key, name, project_id, options_file):
 def create_workflow_run(ctx, api_key, workflow_id, cluster_id, spec_path, input_path, options_file):
     command = CreateWorkflowRunCommand(api_key=api_key)
     workflow_run = command.execute(spec_path=spec_path, input_path=input_path, workflow_id=workflow_id, cluster_id=cluster_id)
-    ctx.invoke(list_logs, workflow_log_id=workflow_run['status']['logId'], line=1, limit=100, follow=True, api_key=api_key)
+    try:
+        logId = workflow_run['status']['logId']
+        ctx.invoke(list_logs, workflow_log_id=logId, line=1, limit=100, follow=True, api_key=api_key)
+    except KeyError:
+        pass
 
 
 @workflows.command("list", help="List workflows")
@@ -108,7 +112,7 @@ def get_workflows_list(api_key, project_id, options_file):
     "run",
     prompt=False,
     required=False,
-    help="Specify  run",
+    help="Specify workload run",
     cls=common.GradientOption,
 )
 @api_key_option
@@ -131,6 +135,14 @@ def get_workflow(api_key, workflow_id, show_runs, run, options_file):
 @click.option(
     "--id",
     "workflow_id",
+    help="Workflow ID",
+    required=True,
+    cls=common.GradientOption,
+)
+@click.option(
+    "--run",
+    "run",
+    help="Specify workload run",
     required=True,
     cls=common.GradientOption,
 )
@@ -163,10 +175,17 @@ def get_workflow(api_key, workflow_id, show_runs, run, options_file):
 )
 @api_key_option
 @common.options_file
-def list_logs(api_key, workflow_id, workflow_log_id, line, limit, follow, options_file):
+@click.pass_context
+def list_logs(ctx, api_key, workflow_id, workflow_log_id, run, line, limit, follow, options_file):
     command = WorkflowLogsCommand(api_key=api_key)
     if workflow_log_id:
         command.execute(workflow_log_id, line, limit, follow)
     else:
-        command.execute(workflow_id, line, limit, follow)
+        getRunCommand = GetWorkflowRunCommand(api_key=api_key)
+        workflow_run = getRunCommand.get_instance(workflow_id, run)
+        try:
+            logId = workflow_run['status']['logId']
+            command.execute(logId, line, limit, follow)
+        except KeyError:
+            pass
 

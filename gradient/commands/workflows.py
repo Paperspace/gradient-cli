@@ -125,8 +125,8 @@ class GetWorkflowRunCommand(DetailJSONCommandMixin, BaseWorkflowCommand):
         self._log_object(instance)
 
     def get_instance(self, workflow_id, run):
-        instances = self.client.get_run(workflow_id=workflow_id, run=run)
-        return instances
+        instance = self.client.get_run(workflow_id=workflow_id, run=run)
+        return instance
 
 class WorkflowLogsCommand(LogsCommandMixin, BaseWorkflowCommand):
     ENTITY = "Workflows"
