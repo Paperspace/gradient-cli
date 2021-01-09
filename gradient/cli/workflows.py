@@ -64,7 +64,7 @@ def create_workflow(api_key, name, project_id, options_file):
 @api_key_option
 @common.options_file
 @click.pass_context
-def create_workflow(ctx, api_key, workflow_id, cluster_id, spec_path, input_path, options_file):
+def create_workflow_run(ctx, api_key, workflow_id, cluster_id, spec_path, input_path, options_file):
     command = CreateWorkflowRunCommand(api_key=api_key)
     workflow_run = command.execute(spec_path=spec_path, input_path=input_path, workflow_id=workflow_id, cluster_id=cluster_id)
     ctx.invoke(list_logs, workflow_log_id=workflow_run['status']['logId'], line=1, limit=100, follow=True, api_key=api_key)
@@ -93,19 +93,14 @@ def get_workflows_list(api_key, project_id, options_file):
     cls=common.GradientOption,
     help="Workflow Id",
 )
-@api_key_option
-@common.options_file
-def get_workflow(api_key, workflow_id, options_file):
-    command = GetWorkflowCommand(api_key=api_key)
-    command.execute(workflow_id)
-
-
-@workflows.command("runList", help="List workflow runs")
 @click.option(
-    "--id",
-    "workflow_id",
-    required=True,
-    help="Workflow ID",
+    "--show-runs",
+    "show_runs",
+    prompt=False,
+    required=False,
+    is_flag=True,
+    default=False,
+    help="Fetch runs",
     cls=common.GradientOption,
 )
 @click.option(
@@ -113,18 +108,23 @@ def get_workflow(api_key, workflow_id, options_file):
     "run",
     prompt=False,
     required=False,
-    help="Specify which run to get",
+    help="Specify  run",
     cls=common.GradientOption,
 )
 @api_key_option
 @common.options_file
-def get_workflows_runs(api_key, workflow_id, run, options_file):
-    if run is None:
-        command = ListWorkflowRunsCommand(api_key=api_key)
-        command.execute(workflow_id=workflow_id)
+def get_workflow(api_key, workflow_id, show_runs, run, options_file):
+    if show_runs:
+        if run is None:
+            command = ListWorkflowRunsCommand(api_key=api_key)
+            command.execute(workflow_id=workflow_id)
+        else:
+            command = GetWorkflowRunCommand(api_key=api_key)
+            command.execute(workflow_id=workflow_id, run=run)
     else:
-        command = GetWorkflowRunCommand(api_key=api_key)
-        command.execute(workflow_id=workflow_id, run=run)
+        command = GetWorkflowCommand(api_key=api_key)
+        command.execute(workflow_id)
+
 
 
 @workflows.command("logs", help="List logs for specific workflow")
