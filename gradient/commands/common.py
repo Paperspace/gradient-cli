@@ -38,8 +38,6 @@ class BaseCommand:
                 raise exceptions.ReceivingDataFailedError(e)
         return resp.json()
 
-
-
     @abc.abstractmethod
     def execute(self, *args, **kwargs):
         pass
