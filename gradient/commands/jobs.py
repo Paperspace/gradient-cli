@@ -28,7 +28,7 @@ class BaseJobCommand(BaseCommand):
 
 
 @six.add_metaclass(abc.ABCMeta)
-class BaseCreateJobCommandMixin(object):
+class BaseCreateJobCommandMixin(BaseJobCommand):
     SPINNER_MESSAGE = "Creating new job"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "New job created with ID: {}"
 
@@ -47,7 +47,7 @@ class BaseCreateJobCommandMixin(object):
 
     @staticmethod
     def get_instance_url(instance_id):
-        url = concatenate_urls(config.config.WEB_URL, "jobs/{}".format(instance_id))
+        url = concatenate_urls(config.config.WEB_URL, "{}/jobs/{}".format(self.get_namespace(), instance_id))
         return url
 
     def _handle_workspace(self, instance_dict):
@@ -158,7 +158,7 @@ class JobLogsCommand(LogsCommandMixin, BaseJobCommand):
     ENTITY = "Job"
 
 
-class CreateJobCommand(BaseCreateJobCommandMixin, BaseJobCommand):
+class CreateJobCommand(BaseCreateJobCommandMixin):
 
     def _create(self, json_, data):
         # because ignore_files is used by workspace handlers and not needed anymore (will fail if not "popped")

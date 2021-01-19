@@ -692,7 +692,7 @@ class DeleteDatasetFilesCommand(BaseDatasetFilesCommand):
                             pool.put(self._delete, url=pre_signed.url)
 
 
-class ImportDatasetCommand(BaseCreateJobCommandMixin, BaseJobCommand):
+class ImportDatasetCommand(BaseCreateJobCommandMixin):
     def create_secret(self, key, value, expires_in=86400):
         client = api_sdk.clients.SecretsClient(
             api_key=self.api_key,
