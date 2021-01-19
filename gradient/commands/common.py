@@ -8,8 +8,12 @@ import terminaltables
 from click import style
 from halo import halo
 
+from gradient import api_sdk, exceptions
+from gradient.api_sdk import sdk_exceptions
+from gradient.api_sdk.config import config
 from gradient.clilogger import CliLogger
 from gradient.cliutils import get_terminal_lines, TerminalPrinter
+from gradient.cli_constants import CLI_PS_CLIENT_NAME
 from gradient.exceptions import ApplicationError
 
 
@@ -19,6 +23,22 @@ class BaseCommand:
         self.api_key = api_key
         self.client = self._get_client(api_key, logger)
         self.logger = logger
+
+    def get_namespace(self):
+        client = api_sdk.clients.http_client.API(
+            config.CONFIG_HOST,
+            api_key=self.api_key,
+            logger=self.logger,
+            ps_client_name=CLI_PS_CLIENT_NAME,
+        )
+
+        try:
+            resp = client.get(url='/teams/namespace')
+        except sdk_exceptions.GradientSdkError as e:
+                raise exceptions.ReceivingDataFailedError(e)
+        return resp.json()
+
+
 
     @abc.abstractmethod
     def execute(self, *args, **kwargs):
