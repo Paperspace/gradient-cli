@@ -36,7 +36,7 @@ class BaseCommand:
             resp = client.get(url='/teams/namespace')
         except sdk_exceptions.GradientSdkError as e:
                 raise exceptions.ReceivingDataFailedError(e)
-        if resp.ok:
+        if isinstance(resp.json(), str):
             return resp.json()
         return ''
 
