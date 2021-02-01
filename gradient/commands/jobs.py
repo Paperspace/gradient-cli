@@ -45,8 +45,7 @@ class BaseCreateJobCommandMixin(BaseJobCommand):
         self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(job_id))
         self.logger.log(self.get_instance_url(job_id))
 
-    @staticmethod
-    def get_instance_url(instance_id):
+    def get_instance_url(self, instance_id):
         url = concatenate_urls(config.config.WEB_URL, "{}/jobs/{}".format(self.get_namespace(), instance_id))
         return url
 
