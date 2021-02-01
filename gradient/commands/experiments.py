@@ -86,7 +86,7 @@ class TensorboardHandler(object):
 
 
 @six.add_metaclass(abc.ABCMeta)
-class BaseCreateExperimentCommandMixin(object):
+class BaseCreateExperimentCommandMixin(BaseCommand):
     SPINNER_MESSAGE = "Creating new experiment"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created with ID: {}"
 
@@ -108,7 +108,7 @@ class BaseCreateExperimentCommandMixin(object):
         return experiment_id
 
     def get_instance_url(self, instance_id, project_id):
-        url = concatenate_urls(config.WEB_URL, "projects/{}/experiments/{}".format(project_id, instance_id))
+        url = concatenate_urls(config.WEB_URL, "{}/projects/{}/experiments/{}".format(self.get_namespace(), project_id, instance_id))
         return url
 
     def _handle_workspace(self, instance_dict):
