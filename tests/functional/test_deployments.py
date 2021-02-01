@@ -320,18 +320,23 @@ class TestDeploymentsCreate(object):
         post_params['workspaceUrl'] = workspace_url
 
         cli_command = self.BASIC_OPTIONS_COMMAND + ['--workspace', workspace_path]
-
+  
         runner = CliRunner()
         result = runner.invoke(cli.cli, cli_command)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        get_patched.assert_called_once_with(self.GET_PRESIGNED_URL,
-                                            headers=EXPECTED_HEADERS,
-                                            json=None,
-                                            params={
-                                                "contentType": content_type,
-                                                "fileName": archive_name,
-                                            })
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_PRESIGNED_URL,
+                    headers=EXPECTED_HEADERS,
+                    json=None,
+                    params={
+                        "contentType": content_type,
+                        "fileName": archive_name,
+                    })
+            ]
+        )
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=post_params,
@@ -389,13 +394,18 @@ class TestDeploymentsCreate(object):
 
         assert result.output == self.EXPECTED_STDOUT_WITH_WORKSPACE_ARCHIVING, result.exc_info
         mocked_archiver.archive.assert_called()
-        get_patched.assert_called_once_with(self.GET_PRESIGNED_URL,
-                                            headers=EXPECTED_HEADERS,
-                                            json=None,
-                                            params={
-                                                "contentType": content_type,
-                                                "fileName": archive_name,
-                                            })
+        get_patched.assert_has_calls(
+            [
+                mock.call(
+                    self.GET_PRESIGNED_URL,
+                    headers=EXPECTED_HEADERS,
+                    json=None,
+                    params={
+                        "contentType": content_type,
+                        "fileName": archive_name,
+                    })
+            ]
+        )
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS,
                                              json=post_params,
