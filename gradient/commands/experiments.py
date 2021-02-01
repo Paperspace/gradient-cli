@@ -86,7 +86,7 @@ class TensorboardHandler(object):
 
 
 @six.add_metaclass(abc.ABCMeta)
-class BaseCreateExperimentCommandMixin(object):
+class BaseCreateExperimentCommandMixin(BaseCommand):
     SPINNER_MESSAGE = "Creating new experiment"
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created with ID: {}"
 
