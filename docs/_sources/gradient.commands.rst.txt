@@ -20,6 +20,14 @@ gradient.commands.common module
    :undoc-members:
    :show-inheritance:
 
+gradient.commands.datasets module
+---------------------------------
+
+.. automodule:: gradient.commands.datasets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.commands.deployments module
 ------------------------------------
 
@@ -108,10 +116,26 @@ gradient.commands.secrets module
    :undoc-members:
    :show-inheritance:
 
+gradient.commands.storage\_providers module
+-------------------------------------------
+
+.. automodule:: gradient.commands.storage_providers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.commands.tensorboards module
 -------------------------------------
 
 .. automodule:: gradient.commands.tensorboards
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.commands.workflows module
+----------------------------------
+
+.. automodule:: gradient.commands.workflows
    :members:
    :undoc-members:
    :show-inheritance:

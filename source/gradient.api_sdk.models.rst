@@ -28,6 +28,22 @@ gradient.api\_sdk.models.dataset module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.models.dataset\_tag module
+--------------------------------------------
+
+.. automodule:: gradient.api_sdk.models.dataset_tag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.models.dataset\_version module
+------------------------------------------------
+
+.. automodule:: gradient.api_sdk.models.dataset_version
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.models.deployment module
 ------------------------------------------
 
@@ -40,6 +56,14 @@ gradient.api\_sdk.models.experiment module
 ------------------------------------------
 
 .. automodule:: gradient.api_sdk.models.experiment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.models.experiment\_dataset module
+---------------------------------------------------
+
+.. automodule:: gradient.api_sdk.models.experiment_dataset
    :members:
    :undoc-members:
    :show-inheritance:
@@ -92,6 +116,14 @@ gradient.api\_sdk.models.notebook module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.models.pagination module
+------------------------------------------
+
+.. automodule:: gradient.api_sdk.models.pagination
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.models.project module
 ---------------------------------------
 
@@ -104,6 +136,14 @@ gradient.api\_sdk.models.secret module
 --------------------------------------
 
 .. automodule:: gradient.api_sdk.models.secret
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.models.storage\_provider module
+-------------------------------------------------
+
+.. automodule:: gradient.api_sdk.models.storage_provider
    :members:
    :undoc-members:
    :show-inheritance:
@@ -128,6 +168,14 @@ gradient.api\_sdk.models.vm\_type module
 ----------------------------------------
 
 .. automodule:: gradient.api_sdk.models.vm_type
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.models.workflows module
+-----------------------------------------
+
+.. automodule:: gradient.api_sdk.models.workflows
    :members:
    :undoc-members:
    :show-inheritance:

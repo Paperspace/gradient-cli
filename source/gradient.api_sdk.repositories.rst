@@ -20,6 +20,30 @@ gradient.api\_sdk.repositories.common module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.repositories.dataset\_tags module
+---------------------------------------------------
+
+.. automodule:: gradient.api_sdk.repositories.dataset_tags
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.repositories.dataset\_versions module
+-------------------------------------------------------
+
+.. automodule:: gradient.api_sdk.repositories.dataset_versions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.repositories.datasets module
+----------------------------------------------
+
+.. automodule:: gradient.api_sdk.repositories.datasets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.repositories.deployments module
 -------------------------------------------------
 
@@ -100,6 +124,14 @@ gradient.api\_sdk.repositories.secrets module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.repositories.storage\_providers module
+--------------------------------------------------------
+
+.. automodule:: gradient.api_sdk.repositories.storage_providers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.repositories.tags module
 ------------------------------------------
 
@@ -112,6 +144,14 @@ gradient.api\_sdk.repositories.tensorboards module
 --------------------------------------------------
 
 .. automodule:: gradient.api_sdk.repositories.tensorboards
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.repositories.workflows module
+-----------------------------------------------
+
+.. automodule:: gradient.api_sdk.repositories.workflows
    :members:
    :undoc-members:
    :show-inheritance:
