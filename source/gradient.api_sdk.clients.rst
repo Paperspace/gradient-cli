@@ -20,6 +20,30 @@ gradient.api\_sdk.clients.clusters module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.clients.dataset\_client module
+------------------------------------------------
+
+.. automodule:: gradient.api_sdk.clients.dataset_client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.clients.dataset\_tag\_client module
+-----------------------------------------------------
+
+.. automodule:: gradient.api_sdk.clients.dataset_tag_client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.clients.dataset\_version\_client module
+---------------------------------------------------------
+
+.. automodule:: gradient.api_sdk.clients.dataset_version_client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.clients.deployment\_client module
 ---------------------------------------------------
 
@@ -116,10 +140,26 @@ gradient.api\_sdk.clients.secret\_client module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.clients.storage\_provider\_client module
+----------------------------------------------------------
+
+.. automodule:: gradient.api_sdk.clients.storage_provider_client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.clients.tensorboards\_client module
 -----------------------------------------------------
 
 .. automodule:: gradient.api_sdk.clients.tensorboards_client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.clients.workflow\_client module
+-------------------------------------------------
+
+.. automodule:: gradient.api_sdk.clients.workflow_client
    :members:
    :undoc-members:
    :show-inheritance:

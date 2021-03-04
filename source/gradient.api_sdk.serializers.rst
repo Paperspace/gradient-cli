@@ -36,6 +36,22 @@ gradient.api\_sdk.serializers.dataset module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.serializers.dataset\_tag module
+-------------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.dataset_tag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.serializers.dataset\_version module
+-----------------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.dataset_version
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.serializers.deployment module
 -----------------------------------------------
 
@@ -48,6 +64,14 @@ gradient.api\_sdk.serializers.experiment module
 -----------------------------------------------
 
 .. automodule:: gradient.api_sdk.serializers.experiment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.serializers.experiment\_dataset module
+--------------------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.experiment_dataset
    :members:
    :undoc-members:
    :show-inheritance:
@@ -116,6 +140,14 @@ gradient.api\_sdk.serializers.secret module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.serializers.storage\_provider module
+------------------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.storage_provider
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.serializers.tag module
 ----------------------------------------
 
@@ -144,6 +176,14 @@ gradient.api\_sdk.serializers.vm\_type module
 ---------------------------------------------
 
 .. automodule:: gradient.api_sdk.serializers.vm_type
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gradient.api\_sdk.serializers.workflows module
+----------------------------------------------
+
+.. automodule:: gradient.api_sdk.serializers.workflows
    :members:
    :undoc-members:
    :show-inheritance:
