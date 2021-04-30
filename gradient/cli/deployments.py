@@ -206,6 +206,7 @@ def deployments_metrics():
 @click.option(
     "--clusterId",
     "cluster_id",
+    required=True,
     help="Cluster ID",
     cls=common.GradientOption,
 )
