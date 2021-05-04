@@ -71,6 +71,7 @@ class TestDeploymentsCreate(object):
         "--name", "some_name",
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--clusterId", "some_cluster_id",
         "--instanceCount", "666",
     ]
     BASIC_OPTIONS_COMMAND_WITH_CURRENT_DIR_AS_WORKSPACE = [
@@ -80,6 +81,7 @@ class TestDeploymentsCreate(object):
         "--name", "some_name",
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--clusterId", "some_cluster_id",
         "--instanceCount", "666",
         "--workspace", ".",
     ]
@@ -90,6 +92,7 @@ class TestDeploymentsCreate(object):
         "--name", "some_name",
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--clusterId", "some_cluster_id",
         "--instanceCount", "666",
         "--tag", "test0",
         "--tag", "test1",
@@ -112,6 +115,7 @@ class TestDeploymentsCreate(object):
         "--name", "some_name",
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "--clusterId", "some_cluster_id",
         "--instanceCount", "666",
         "--apiKey", "some_key",
     ]
@@ -153,6 +157,7 @@ class TestDeploymentsCreate(object):
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
         "--instanceCount", "666",
+        "--clusterId", "some_cluster_id",
         "--minInstanceCount", "4",
         "--maxInstanceCount", "64",
         "--scaleCooldownPeriod", "123",
@@ -165,6 +170,7 @@ class TestDeploymentsCreate(object):
         "machineType": u"G1",
         "name": u"some_name",
         "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
+        "cluster": "some_cluster_id",
         "deploymentType": "TFServing",
         "instanceCount": 666,
         "modelId": u"some_model_id",
@@ -217,6 +223,7 @@ class TestDeploymentsCreate(object):
         "deploymentType": "TFServing",
         "instanceCount": 666,
         "modelId": u"some_model_id",
+        "cluster": "some_cluster_id",
         "autoscaling": {
             "minInstanceCount": 4,
             "maxInstanceCount": 64,
@@ -266,7 +273,7 @@ class TestDeploymentsCreate(object):
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
@@ -334,10 +341,11 @@ class TestDeploymentsCreate(object):
                     params={
                         "contentType": content_type,
                         "fileName": archive_name,
+                        "clusterHandle": 'some_cluster_id',
                     })
             ]
         )
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=post_params,
                                              params=None,
@@ -360,7 +368,7 @@ class TestDeploymentsCreate(object):
         archive_location = '/temp_foo'
         archive_name = "workspace.zip"
         uuid = 111
-        content_type = "application/zip"
+        content_type = "application/zip",
         presigned_url = "https://{bucket_name}.s3.amazonaws.com/{team_handle}/deployments/{uuid}/{archive_name}?AWSAccessKeyId=AWSKEY&Content-Type={content_type}&Expires=0&Signature=bar".format(
             bucket_name=bucket_name,
             team_handle=team_handle,
@@ -401,12 +409,13 @@ class TestDeploymentsCreate(object):
                     headers=EXPECTED_HEADERS,
                     json=None,
                     params={
-                        "contentType": content_type,
+                        "contentType": 'application/zip',
                         "fileName": archive_name,
+                        "clusterHandle": 'some_cluster_id',
                     })
             ]
         )
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=post_params,
                                              params=None,
@@ -457,7 +466,7 @@ class TestDeploymentsCreate(object):
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_API_KEY)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
@@ -490,7 +499,7 @@ class TestDeploymentsCreate(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
@@ -511,7 +520,7 @@ class TestDeploymentsCreate(object):
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_TAGS)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
@@ -536,7 +545,7 @@ class TestDeploymentsCreate(object):
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_AUTOSCALING)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_COMMAND_WITH_AUTOSCALING_REQUEST,
                                              params=None,
