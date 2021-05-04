@@ -105,7 +105,6 @@ class TestDeploymentsCreate(object):
         "--name", "some_name",
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
-        "--clusterId", "some_cluster_id",
         "--instanceCount", "666",
         "--clusterId", "some_cluster_id",
     ]
@@ -128,7 +127,6 @@ class TestDeploymentsCreate(object):
         "--name", "some_name",
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
-        "--clusterId", "some_cluster_id",
         "--instanceCount", "666",
         "--command", "some deployment command",
         "--containerModelPath", "some/container/model/path",
@@ -143,6 +141,7 @@ class TestDeploymentsCreate(object):
         "--ports", "5000,6000:7000",
         "--authUsername", "some_username",
         "--authPassword", "some_password",
+        "--clusterId", "some_cluster_id",
         "--apiKey", "some_key",
         "--workspace", "s3://some-workspace",
         "--workspaceRef", "some_branch_name",
@@ -157,8 +156,8 @@ class TestDeploymentsCreate(object):
         "--name", "some_name",
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
-        "--clusterId", "some_cluster_id",
         "--instanceCount", "666",
+        "--clusterId", "some_cluster_id",
         "--minInstanceCount", "4",
         "--maxInstanceCount", "64",
         "--scaleCooldownPeriod", "123",
@@ -171,7 +170,7 @@ class TestDeploymentsCreate(object):
         "machineType": u"G1",
         "name": u"some_name",
         "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
-        "clusterId": "some_cluster_id",
+        "cluster": "some_cluster_id",
         "deploymentType": "TFServing",
         "instanceCount": 666,
         "modelId": u"some_model_id",
@@ -180,7 +179,6 @@ class TestDeploymentsCreate(object):
         "machineType": u"G1",
         "name": u"some_name",
         "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
-        "clusterId": "some_cluster_id",
         "deploymentType": "TFServing",
         "instanceCount": 666,
         "modelId": u"some_model_id",
@@ -195,11 +193,11 @@ class TestDeploymentsCreate(object):
         "machineType": u"G1",
         "name": u"some_name",
         "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
-        "clusterId": "some_cluster_id",
         "deploymentType": "TFServing",
         "instanceCount": 666,
         "command": "some deployment command",
         "modelId": u"some_model_id",
+        "cluster": "some_cluster_id",
         "containerModelPath": "some/container/model/path",
         "imageUsername": "some_image_username",
         "imagePassword": "some_image_password",
@@ -222,10 +220,10 @@ class TestDeploymentsCreate(object):
         "machineType": u"G1",
         "name": u"some_name",
         "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
-        "clusterId": "some_cluster_id",
         "deploymentType": "TFServing",
         "instanceCount": 666,
         "modelId": u"some_model_id",
+        "cluster": "some_cluster_id",
         "autoscaling": {
             "minInstanceCount": 4,
             "maxInstanceCount": 64,
@@ -275,7 +273,7 @@ class TestDeploymentsCreate(object):
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
@@ -343,10 +341,11 @@ class TestDeploymentsCreate(object):
                     params={
                         "contentType": content_type,
                         "fileName": archive_name,
+                        "clusterHandle": 'some_cluster_id',
                     })
             ]
         )
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=post_params,
                                              params=None,
@@ -368,8 +367,9 @@ class TestDeploymentsCreate(object):
         team_handle = "thandle"
         archive_location = '/temp_foo'
         archive_name = "workspace.zip"
+        cluster_handle = "some_cluster_id"
         uuid = 111
-        content_type = "application/zip"
+        content_type = "application/zip",
         presigned_url = "https://{bucket_name}.s3.amazonaws.com/{team_handle}/deployments/{uuid}/{archive_name}?AWSAccessKeyId=AWSKEY&Content-Type={content_type}&Expires=0&Signature=bar".format(
             bucket_name=bucket_name,
             team_handle=team_handle,
@@ -412,10 +412,11 @@ class TestDeploymentsCreate(object):
                     params={
                         "contentType": content_type,
                         "fileName": archive_name,
+                        "clusterHandle": cluster_handle,
                     })
             ]
         )
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=post_params,
                                              params=None,
@@ -466,7 +467,7 @@ class TestDeploymentsCreate(object):
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_API_KEY)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
@@ -499,7 +500,7 @@ class TestDeploymentsCreate(object):
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND)
 
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
@@ -520,7 +521,7 @@ class TestDeploymentsCreate(object):
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_TAGS)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_REQUEST,
                                              params=None,
@@ -545,7 +546,7 @@ class TestDeploymentsCreate(object):
         result = runner.invoke(cli.cli, self.BASIC_OPTIONS_COMMAND_WITH_AUTOSCALING)
 
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
-        post_patched.assert_called_once_with(self.URL,
+        post_patched.assert_called_once_with(self.URL_V2,
                                              headers=EXPECTED_HEADERS,
                                              json=self.BASIC_OPTIONS_COMMAND_WITH_AUTOSCALING_REQUEST,
                                              params=None,
@@ -928,7 +929,6 @@ class TestDeploymentsUpdate(object):
         "--name", "some_name",
         "--machineType", "G1",
         "--imageUrl", "https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
-        "--clusterId", "some_cluster_id",
         "--instanceCount", "666",
         "--command", "echo Bazinga!",
         "--containerModelPath", "some/container/model/path",
@@ -943,6 +943,7 @@ class TestDeploymentsUpdate(object):
         "--ports", "5000",
         "--authUsername", "some_username",
         "--authPassword", "some_password",
+        "--clusterId", "some_cluster_id",
         "--apiKey", "some_key",
         "--workspace", "s3://some-workspace",
         "--workspaceRef", "some_branch_name",
@@ -969,11 +970,11 @@ class TestDeploymentsUpdate(object):
             "machineType": u"G1",
             "name": u"some_name",
             "imageUrl": u"https://www.latlmes.com/breaking/paperspace-now-has-a-100-bilion-valuation",
-            "clusterId": "some_cluster_id",
             "deploymentType": "TFServing",
             "instanceCount": 666,
             "command": "echo Bazinga!",
             "modelId": u"some_model_id",
+            "clusterId": "some_cluster_id",
             "containerModelPath": "some/container/model/path",
             "imageUsername": "some_image_username",
             "imagePassword": "some_image_password",
