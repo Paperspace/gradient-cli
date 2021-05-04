@@ -367,7 +367,6 @@ class TestDeploymentsCreate(object):
         team_handle = "thandle"
         archive_location = '/temp_foo'
         archive_name = "workspace.zip"
-        cluster_handle = "some_cluster_id"
         uuid = 111
         content_type = "application/zip",
         presigned_url = "https://{bucket_name}.s3.amazonaws.com/{team_handle}/deployments/{uuid}/{archive_name}?AWSAccessKeyId=AWSKEY&Content-Type={content_type}&Expires=0&Signature=bar".format(
@@ -410,9 +409,9 @@ class TestDeploymentsCreate(object):
                     headers=EXPECTED_HEADERS,
                     json=None,
                     params={
-                        "contentType": content_type,
+                        "contentType": 'application/zip',
                         "fileName": archive_name,
-                        "clusterHandle": cluster_handle,
+                        "clusterHandle": 'some_cluster_id',
                     })
             ]
         )
