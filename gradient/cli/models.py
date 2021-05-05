@@ -60,12 +60,7 @@ def delete_model(api_key, model_id, options_file):
     command.execute(model_id=model_id)
 
 
-@models_group.command("upload", help="Upload a model file or directory")
-@click.argument(
-    "PATH",
-    type=click.Path(exists=True),
-    cls=common.GradientArgument,
-)
+@models_group.command("create", help="Create a model from an url or dataset id")
 @click.option(
     "--name",
     "name",
@@ -79,6 +74,12 @@ def delete_model(api_key, model_id, options_file):
     required=True,
     type=ChoiceType(constants.MODEL_TYPES_MAP, case_sensitive=False),
     help="Model type",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--datasetVersionId",
+    "dataset_version_id",
+    help="Dataset version ID of a model",
     cls=common.GradientOption,
 )
 @click.option(
@@ -121,9 +122,9 @@ def delete_model(api_key, model_id, options_file):
 )
 @common.api_key_option
 @common.options_file
-def upload_model(api_key, options_file, **model):
+def create_model(api_key, options_file, **model):
     model["tags"] = validate_comma_split_option(model.pop("tags_comma"), model.pop("tags"))
-    command = models_commands.UploadModel(api_key=api_key)
+    command = models_commands.CreateModel(api_key=api_key)
     command.execute(**model)
 
 

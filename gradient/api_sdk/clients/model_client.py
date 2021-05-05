@@ -61,6 +61,39 @@ class ModelsClient(TagsSupportMixin, BaseClient):
 
         return model_id
 
+    def create(self, name, model_type, dataset_version_id=None, model_summary=None, notes=None, tags=None, project_id=None, cluster_id=None):
+        """Create model
+
+        :param str name: Model name
+        :param str model_type: Model Type
+        :param str dataset_version_id: Dataset Version ID of a model
+        :param dict|None model_summary: Dictionary describing model parameters like loss, accuracy, etc.
+        :param str|None notes: Optional model description
+        :param list[str] tags: List of tags
+        :param str|None project_id: ID of a project
+        :param str|None cluster_id: ID of a cluster
+
+        :return: ID of new model
+        :rtype: str
+        """
+
+        model = models.Model(
+            name=name,
+            model_type=model_type,
+            dataset_version_id=dataset_version_id,
+            summary=json.dumps(model_summary) if model_summary else None,
+            notes=notes,
+            project_id=project_id,
+        )
+
+        repository = self.build_repository(repositories.CreateModel)
+        model_id = repository.create(model, cluster_id=cluster_id)
+
+        if tags:
+            self.add_tags(entity_id=model_id, tags=tags)
+
+        return model_id
+
     def get(self, model_id):
         """Get model instance
 

@@ -107,6 +107,24 @@ class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
         repository.delete(model_id)
 
 
+class CreateModel(GetBaseModelsApiUrlMixin, CreateResource):
+    SERIALIZER_CLS = serializers.Model
+    HANDLE_FIELD = "id"
+
+    def get_request_url(self, **kwargs):
+        return "/mlModels/createModelV2"
+
+    def _get_request_params(self, kwargs):
+        return kwargs
+
+    def _get_request_json(self, instance_dict):
+        return None
+
+    def create(self, instance, data=None, path=None, cluster_id=None):
+        model_id = super(CreateModel, self).create(instance, data=data, path=path)
+        return model_id
+
+
 class GetModel(GetBaseModelsApiUrlMixin, GetResource):
     SERIALIZER_CLS = serializers.Model
 

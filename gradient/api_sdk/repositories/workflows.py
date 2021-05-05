@@ -125,7 +125,6 @@ class CreateWorkflowRun(WorkflowsMixin, BaseRepository):
 
         response = client.post(url, json=json_)
         gradient_response = http_client.GradientResponse.interpret_response(response)
-
         json_formatted_str = json.dumps(gradient_response.data, indent=4)
         return gradient_response
 
