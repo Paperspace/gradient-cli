@@ -69,7 +69,8 @@ def create_workflow_run(ctx, api_key, workflow_id, cluster_id, spec_path, input_
     workflow_run = command.execute(spec_path=spec_path, input_path=input_path, workflow_id=workflow_id, cluster_id=cluster_id)
     try:
         logId = workflow_run['status']['logId']
-        ctx.invoke(list_logs, workflow_log_id=logId, line=1, limit=100, follow=True, api_key=api_key)
+        # disable broken workflow-logs until we implement a functional job-specific or job-concatted log system
+        # ctx.invoke(list_logs, workflow_log_id=logId, line=1, limit=100, follow=True, api_key=api_key)
     except KeyError:
         pass
 
