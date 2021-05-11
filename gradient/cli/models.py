@@ -79,6 +79,7 @@ def delete_model(api_key, model_id, options_file):
 @click.option(
     "--datasetRef",
     "dataset_ref",
+    required=True,
     help="Dataset ref to associate a model with",
     cls=common.GradientOption,
 )
