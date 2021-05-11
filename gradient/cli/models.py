@@ -77,9 +77,9 @@ def delete_model(api_key, model_id, options_file):
     cls=common.GradientOption,
 )
 @click.option(
-    "--datasetVersionId",
-    "dataset_version_id",
-    help="Dataset version ID of a model",
+    "--datasetRef",
+    "dataset_ref",
+    help="Dataset ref to associate a model with",
     cls=common.GradientOption,
 )
 @click.option(

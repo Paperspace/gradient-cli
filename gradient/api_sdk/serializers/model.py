@@ -19,7 +19,7 @@ class Model(BaseSchema):
     summary = marshmallow.fields.Dict()
     detail = marshmallow.fields.Dict()
     notes = marshmallow.fields.Str()
-    dataset_version_id = marshmallow.fields.Str(dump_to="datasetVersionId", load_from="datasetVersionId")
+    dataset_ref = marshmallow.fields.Str(dump_to="datasetRef", load_from="datasetRef")
 
 
 class ModelFileSchema(BaseSchema):

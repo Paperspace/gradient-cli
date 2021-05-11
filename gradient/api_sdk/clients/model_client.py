@@ -61,12 +61,12 @@ class ModelsClient(TagsSupportMixin, BaseClient):
 
         return model_id
 
-    def create(self, name, model_type, dataset_version_id=None, model_summary=None, notes=None, tags=None, project_id=None, cluster_id=None):
+    def create(self, name, model_type, dataset_ref=None, model_summary=None, notes=None, tags=None, project_id=None, cluster_id=None):
         """Create model
 
         :param str name: Model name
         :param str model_type: Model Type
-        :param str dataset_version_id: Dataset Version ID of a model
+        :param str dataset_ref: Dataset ref to associate a model with
         :param dict|None model_summary: Dictionary describing model parameters like loss, accuracy, etc.
         :param str|None notes: Optional model description
         :param list[str] tags: List of tags
@@ -80,7 +80,7 @@ class ModelsClient(TagsSupportMixin, BaseClient):
         model = models.Model(
             name=name,
             model_type=model_type,
-            dataset_version_id=dataset_version_id,
+            dataset_ref=dataset_ref,
             summary=json.dumps(model_summary) if model_summary else None,
             notes=notes,
             project_id=project_id,

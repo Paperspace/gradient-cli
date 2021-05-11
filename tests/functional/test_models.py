@@ -249,7 +249,7 @@ class TestModelCreate(object):
          "--name", "some_name",
         "--modelType", "tensorflow",
         "--modelSummary", """{"key": "value"}""",
-        "--datasetVersionId", "lu56aiq",
+        "--datasetRef", "dsr8k5qzn401lb5:latest",
         "--notes", "some notes",
         "--projectId", "some_project_id",
         "--clusterId", "some_cluster_id",
@@ -260,7 +260,7 @@ class TestModelCreate(object):
         "summary": """{"key": "value"}""",
         "notes": "some notes",
         "projectId": "some_project_id",
-        "datasetVersionId": "lu56aiq",
+        "datasetRef": "dsr8k5qzn401lb5:latest",
     }
 
 

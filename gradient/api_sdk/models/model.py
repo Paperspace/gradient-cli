@@ -18,7 +18,7 @@ class Model(object):
     :param str deployment_state:
     :param str summary:
     :param str detail:
-    :param str dataset_version_id:
+    :param str dataset_ref:
     """
     id = attr.ib(type=str, default=None)
     name = attr.ib(type=str, default=None)
@@ -33,7 +33,7 @@ class Model(object):
     summary = attr.ib(type=dict, default=None)
     detail = attr.ib(type=dict, default=None)
     notes = attr.ib(type=str, default=None)
-    dataset_version_id = attr.ib(type=str, default=None)
+    dataset_ref = attr.ib(type=str, default=None)
 
 
 @attr.s
