@@ -61,7 +61,7 @@ class ModelsClient(TagsSupportMixin, BaseClient):
 
         return model_id
 
-    def create(self, name, model_type, dataset_ref, model_summary=None, notes=None, tags=None, project_id=None, cluster_id=None):
+    def create(self, name, model_type, dataset_ref, model_summary=None, notes=None, tags=None, project_id=None):
         """Create model
 
         :param str name: Model name
@@ -71,7 +71,6 @@ class ModelsClient(TagsSupportMixin, BaseClient):
         :param str|None notes: Optional model description
         :param list[str] tags: List of tags
         :param str|None project_id: ID of a project
-        :param str|None cluster_id: ID of a cluster
 
         :return: ID of new model
         :rtype: str

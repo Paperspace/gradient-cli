@@ -239,10 +239,12 @@ class TestModelCreate(object):
         "models", "create",
         "--name", "some_name",
         "--modelType", "custom",
+        "--datasetRef", "dsr8k5qzn401lb5:latest",
     ]
     BASE_PARAMS = {
         "name": "some_name",
         "modelType": "Custom",
+        "datasetRef": "dsr8k5qzn401lb5:latest"
     }
     COMMAND_WITH_ALL_OPTIONS = [
         "models", "create",
@@ -252,7 +254,6 @@ class TestModelCreate(object):
         "--datasetRef", "dsr8k5qzn401lb5:latest",
         "--notes", "some notes",
         "--projectId", "some_project_id",
-        "--clusterId", "some_cluster_id",
     ]
     ALL_OPTIONS_PARAMS = {
         "name": "some_name",
@@ -341,7 +342,6 @@ class TestModelUpload(object):
         "--modelSummary", """{"key": "value"}""",
         "--notes", "some notes",
         "--projectId", "some_project_id",
-        "--clusterId", "some_cluster_id",
     ]
     ALL_OPTIONS_PARAMS = {
         "name": "some_name",
@@ -359,7 +359,6 @@ class TestModelUpload(object):
         "--modelSummary", """{"key": "value"}""",
         "--notes", "some notes",
         "--projectId", "some_project_id",
-        "--clusterId", "some_cluster_id",
         "--apiKey", "some_key",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["models", "upload", "--optionsFile", ]  # path added in test
@@ -367,7 +366,7 @@ class TestModelUpload(object):
     EXPECTED_STDOUT = "Model uploaded with ID: some_model_id\n"
 
     GET_PRESIGNED_URL = "https://api.paperspace.io/mlModels/getPresignedModelUrl"
-    GET_PRESIGNED_URL_PARAMS = {"fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": "", "clusterId": "some_cluster_id"}
+    GET_PRESIGNED_URL_PARAMS = {"fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": ""}
     GET_PRESIGNED_URL_PARAMS_BASIC = {"fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": ""}
     GET_PRESIGNED_URL_RESPONSE = example_responses.MODEL_UPLOAD_GET_PRESIGNED_URL_RESPONSE
 
