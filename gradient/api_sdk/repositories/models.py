@@ -120,7 +120,7 @@ class CreateModel(GetBaseModelsApiUrlMixin, CreateResource):
     def _get_request_json(self, instance_dict):
         return None
 
-    def create(self, instance, data=None, path=None, cluster_id=None):
+    def create(self, instance, data=None, path=None):
         model_id = super(CreateModel, self).create(instance, data=data, path=path)
         return model_id
 

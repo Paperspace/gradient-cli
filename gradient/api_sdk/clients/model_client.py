@@ -86,7 +86,7 @@ class ModelsClient(TagsSupportMixin, BaseClient):
         )
 
         repository = self.build_repository(repositories.CreateModel)
-        model_id = repository.create(model, cluster_id=cluster_id)
+        model_id = repository.create(model)
 
         if tags:
             self.add_tags(entity_id=model_id, tags=tags)

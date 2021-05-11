@@ -248,7 +248,7 @@ class TestModelCreate(object):
     }
     COMMAND_WITH_ALL_OPTIONS = [
         "models", "create",
-         "--name", "some_name",
+        "--name", "some_name",
         "--modelType", "tensorflow",
         "--modelSummary", """{"key": "value"}""",
         "--datasetRef", "dsr8k5qzn401lb5:latest",
