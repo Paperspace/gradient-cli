@@ -342,6 +342,7 @@ class TestModelUpload(object):
         "--modelSummary", """{"key": "value"}""",
         "--notes", "some notes",
         "--projectId", "some_project_id",
+        "--clusterId", "some_cluster_id",
     ]
     ALL_OPTIONS_PARAMS = {
         "name": "some_name",
@@ -359,6 +360,7 @@ class TestModelUpload(object):
         "--modelSummary", """{"key": "value"}""",
         "--notes", "some notes",
         "--projectId", "some_project_id",
+        "--clusterId", "some_cluster_id",
         "--apiKey", "some_key",
     ]
     COMMAND_WITH_OPTIONS_FILE = ["models", "upload", "--optionsFile", ]  # path added in test
