@@ -366,7 +366,7 @@ class TestModelUpload(object):
     EXPECTED_STDOUT = "Model uploaded with ID: some_model_id\n"
 
     GET_PRESIGNED_URL = "https://api.paperspace.io/mlModels/getPresignedModelUrl"
-    GET_PRESIGNED_URL_PARAMS = {"fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": ""}
+    GET_PRESIGNED_URL_PARAMS = {"fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": "", "clusterId": "some_cluster_id"}
     GET_PRESIGNED_URL_PARAMS_BASIC = {"fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": ""}
     GET_PRESIGNED_URL_RESPONSE = example_responses.MODEL_UPLOAD_GET_PRESIGNED_URL_RESPONSE
 
