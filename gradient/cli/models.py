@@ -60,6 +60,69 @@ def delete_model(api_key, model_id, options_file):
     command.execute(model_id=model_id)
 
 
+@models_group.command("create", help="Create a model from an url or dataset id")
+@click.option(
+    "--name",
+    "name",
+    required=True,
+    help="Model name",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--modelType",
+    "model_type",
+    required=True,
+    type=ChoiceType(constants.MODEL_TYPES_MAP, case_sensitive=False),
+    help="Model type",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--datasetRef",
+    "dataset_ref",
+    required=True,
+    help="Dataset ref to associate a model with",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--projectId",
+    "project_id",
+    help="ID of a project",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--modelSummary",
+    "model_summary",
+    type=json_string,
+    help="Model summary",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--notes",
+    "notes",
+    help="Additional notes",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--tag",
+    "tags",
+    multiple=True,
+    help="One or many tags that you want to add to experiment",
+    cls=common.GradientOption
+)
+@click.option(
+    "--tags",
+    "tags_comma",
+    help="Separated by comma tags that you want add to experiment",
+    cls=common.GradientOption
+)
+@common.api_key_option
+@common.options_file
+def create_model(api_key, options_file, **model):
+    model["tags"] = validate_comma_split_option(model.pop("tags_comma"), model.pop("tags"))
+    command = models_commands.CreateModel(api_key=api_key)
+    command.execute(**model)
+
+
 @models_group.command("upload", help="Upload a model file or directory")
 @click.argument(
     "PATH",

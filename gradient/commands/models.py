@@ -49,6 +49,16 @@ class DeleteModelCommand(GetModelsClientMixin, BaseCommand):
         self.logger.log("Model deleted")
 
 
+class CreateModel(GetModelsClientMixin, BaseCommand):
+    SPINNER_MESSAGE = "Creating model"
+
+    def execute(self, **kwargs):
+        with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
+            model_id = self.client.create(**kwargs)
+
+        self.logger.log("Model created with ID: {}".format(model_id))
+
+
 class UploadModel(GetModelsClientMixin, BaseCommand):
     SPINNER_MESSAGE = "Uploading model"
 

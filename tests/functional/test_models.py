@@ -233,6 +233,78 @@ class TestDeleteModel(object):
 
         assert result.output == "Failed to delete resource: Invalid API token\n"
 
+class TestModelCreate(object):
+    URL = "https://api.paperspace.io/mlModels/createModelV2"
+    BASE_COMMAND = [
+        "models", "create",
+        "--name", "some_name",
+        "--modelType", "custom",
+        "--datasetRef", "dsr8k5qzn401lb5:latest",
+    ]
+    BASE_PARAMS = {
+        "name": "some_name",
+        "modelType": "Custom",
+        "datasetRef": "dsr8k5qzn401lb5:latest"
+    }
+    COMMAND_WITH_ALL_OPTIONS = [
+        "models", "create",
+        "--name", "some_name",
+        "--modelType", "tensorflow",
+        "--modelSummary", """{"key": "value"}""",
+        "--datasetRef", "dsr8k5qzn401lb5:latest",
+        "--notes", "some notes",
+        "--projectId", "some_project_id",
+    ]
+    ALL_OPTIONS_PARAMS = {
+        "name": "some_name",
+        "modelType": "Tensorflow",
+        "summary": """{"key": "value"}""",
+        "notes": "some notes",
+        "projectId": "some_project_id",
+        "datasetRef": "dsr8k5qzn401lb5:latest",
+    }
+
+
+    EXPECTED_STDOUT = "Model created with ID: some_model_id\n"
+
+    CREATE_MODEL_V2_REPONSE = example_responses.MODEL_CREATE_RESPONSE_JSON_V2
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_post_request_when_models_create_command_was_used_with_basic_options(
+            self, post_patched):
+        post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.BASE_COMMAND)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_has_calls([
+            mock.call(self.URL,
+                        headers=EXPECTED_HEADERS,
+                        json=None,
+                        files=None,
+                        data=None,
+                        params=self.BASE_PARAMS),
+        ])
+
+    @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
+    def test_should_send_post_request_when_models_update_command_was_used_with_all_options(
+            self, post_patched):
+        post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
+
+        runner = CliRunner()
+        result = runner.invoke(cli.cli, self.COMMAND_WITH_ALL_OPTIONS)
+
+        assert result.output == self.EXPECTED_STDOUT, result.exc_info
+        post_patched.assert_has_calls([
+            mock.call(self.URL,
+                        headers=EXPECTED_HEADERS,
+                        json=None,
+                        files=None,
+                        data=None,
+                        params=self.ALL_OPTIONS_PARAMS),
+        ])
+
 
 class TestModelUpload(object):
     URL = "https://api.paperspace.io/mlModels/createModelV2"

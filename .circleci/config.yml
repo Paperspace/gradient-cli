@@ -2,6 +2,10 @@ version: 2.1
 
 orbs:
   release-tools: paperspace/release-tools@0.1.1
+  docker-tools: paperspace/docker-tools@0.0.4
+
+_docker_image: &docker_image paperspace/gradient-sdk
+_workspace_root: &workspace_root .
 
 workflows:
   master:
@@ -21,6 +25,19 @@ workflows:
           filters:
             branches:
               only: master
+      - docker-tools/build_and_push:
+          name: build_and_push_master
+          context: docker-deploy
+          docker_username: ${DOCKER_USERNAME}
+          docker_password: ${DOCKER_PASSWORD}
+          workspace_root: *workspace_root
+          docker_image: *docker_image
+          docker_tag: 0.0.0-latest
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
 
   pr:
     jobs:
@@ -28,10 +45,34 @@ workflows:
           filters:
             branches:
               ignore: master
+      - docker-tools/build_and_push:
+          name: build_and_push
+          context: docker-deploy
+          docker_username: ${DOCKER_USERNAME}
+          docker_password: ${DOCKER_PASSWORD}
+          workspace_root: *workspace_root
+          docker_image: *docker_image
+          requires:
+            - test
+          filters:
+            branches:
+              ignore: master
+
 
   release:
     jobs:
       - deploy:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
+      - docker-tools/tag:
+          name: tag
+          context: docker-deploy
+          docker_username: ${DOCKER_USERNAME}
+          docker_password: ${DOCKER_PASSWORD}
+          docker_image: *docker_image
           filters:
             tags:
               only: /.*/
@@ -99,3 +140,5 @@ jobs:
           name: upload to pypi
           command: |
             python -m twine upload dist/*
+
+  build-docker:
