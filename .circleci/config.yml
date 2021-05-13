@@ -78,6 +78,21 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
+      - docker-tools/build_and_push:
+          name: build_and_push_latest
+          context: docker-deploy
+          docker_username: ${DOCKER_USERNAME}
+          docker_password: ${DOCKER_PASSWORD}
+          workspace_root: *workspace_root
+          docker_image: *docker_image
+          docker_tag: latest
+          requires:
+            - test
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
 
 executors:
   python-tox:
