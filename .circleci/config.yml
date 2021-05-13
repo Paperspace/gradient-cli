@@ -25,19 +25,6 @@ workflows:
           filters:
             branches:
               only: master
-      - docker-tools/build_and_push:
-          name: build_and_push_master
-          context: docker-deploy
-          docker_username: ${DOCKER_USERNAME}
-          docker_password: ${DOCKER_PASSWORD}
-          workspace_root: *workspace_root
-          docker_image: *docker_image
-          docker_tag: 0.0.0-latest
-          requires:
-            - test
-          filters:
-            branches:
-              only: master
 
   pr:
     jobs:
@@ -45,19 +32,6 @@ workflows:
           filters:
             branches:
               ignore: master
-      - docker-tools/build_and_push:
-          name: build_and_push
-          context: docker-deploy
-          docker_username: ${DOCKER_USERNAME}
-          docker_password: ${DOCKER_PASSWORD}
-          workspace_root: *workspace_root
-          docker_image: *docker_image
-          requires:
-            - test
-          filters:
-            branches:
-              ignore: master
-
 
   release:
     jobs:
@@ -78,6 +52,7 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
+          build_args: --build-arg VERSION=${CIRCLE_TAG}
       - docker-tools/build_and_push:
           name: build_and_push_latest
           context: docker-deploy
@@ -91,6 +66,7 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
+          build_args: --build-arg VERSION=${CIRCLE_TAG}
 
 executors:
   python-tox:

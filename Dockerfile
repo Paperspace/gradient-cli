@@ -1,7 +1,9 @@
 FROM python:3.8
 
+ARG VERSION
+
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir gradient==1.5.0
+    pip install --no-cache-dir gradient==$VERSION
 
 ENV PAPERSPACE_API_KEY your_api_key_value
 ENV PAPERSPACE_WEB_URL https://console.paperspace.com
