@@ -86,8 +86,6 @@ workflows:
           workspace_root: *workspace_root
           docker_image: *docker_image
           docker_tag: latest
-          requires:
-            - test
           filters:
             tags:
               only: /.*/
