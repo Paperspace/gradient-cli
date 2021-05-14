@@ -41,17 +41,6 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
-      - docker-tools/tag:
-          name: tag
-          context: docker-deploy
-          docker_username: ${DOCKER_USERNAME}
-          docker_password: ${DOCKER_PASSWORD}
-          docker_image: *docker_image
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
       - docker-tools/build_and_push:
           name: build_and_push_latest
           context: docker-deploy
@@ -66,6 +55,18 @@ workflows:
             branches:
               ignore: /.*/
           docker_build_args: --build-arg VERSION=${CIRCLE_TAG}
+      - docker-tools/tag:
+          name: tag
+          context: docker-deploy
+          docker_username: ${DOCKER_USERNAME}
+          docker_password: ${DOCKER_PASSWORD}
+          docker_image: *docker_image
+          docker_source_tag: latest
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
 
 executors:
   python-tox:
