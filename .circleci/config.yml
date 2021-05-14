@@ -52,7 +52,6 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
-          build_args: --build-arg VERSION=${CIRCLE_TAG}
       - docker-tools/build_and_push:
           name: build_and_push_latest
           context: docker-deploy
