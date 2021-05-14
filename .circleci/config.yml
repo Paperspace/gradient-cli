@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   release-tools: paperspace/release-tools@0.1.1
-  docker-tools: paperspace/docker-tools@0.0.4
+  docker-tools: paperspace/docker-tools@0.0.6
 
 _docker_image: &docker_image paperspace/gradient-sdk
 _workspace_root: &workspace_root .
