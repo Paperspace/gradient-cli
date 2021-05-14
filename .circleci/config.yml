@@ -65,7 +65,7 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
-          build_args: --build-arg VERSION=${CIRCLE_TAG}
+          docker_build_args: --build-arg VERSION=${CIRCLE_TAG}
 
 executors:
   python-tox:
