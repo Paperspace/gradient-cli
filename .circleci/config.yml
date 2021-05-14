@@ -46,7 +46,7 @@ workflows:
           context: docker-deploy
           docker_username: ${DOCKER_USERNAME}
           docker_password: ${DOCKER_PASSWORD}
-          workspace_root: *workspace_root
+          workspace_root: /tmp/build_and_push_latest
           docker_image: *docker_image
           docker_tag: latest
           filters:
