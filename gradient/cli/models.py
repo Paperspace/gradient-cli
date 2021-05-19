@@ -216,6 +216,7 @@ def model_details(model_id, api_key, options_file):
 @click.option(
     "--destinationDir",
     "destination_directory",
+    required=True,
     help="Destination directory",
     cls=common.GradientOption,
 )
