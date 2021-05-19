@@ -126,6 +126,7 @@ def create_model(api_key, options_file, **model):
 @models_group.command("upload", help="Upload a model file or directory")
 @click.argument(
     "PATH",
+    required=True,
     type=click.Path(exists=True),
     cls=common.GradientArgument,
 )
