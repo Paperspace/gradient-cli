@@ -43,7 +43,7 @@ def create_workflow(api_key, name, project_id, options_file):
 @click.option(
     "--clusterId",
     "cluster_id",
-    required=True,
+    required=False,
     help="Cluster ID",
     cls=common.GradientOption,
 )
