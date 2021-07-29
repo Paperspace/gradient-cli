@@ -122,10 +122,6 @@ jobs:
           command: |
             make build
       - run:
-          name: sign packages
-          command: |
-            gpg --no-tty --batch --pinentry-mode loopback --armor --sign --local-user ${GPG_FINGERPRINT} --passphrase "${GPG_PASSWORD}" --detach-sign dist/gradient-*.*.*.tar.gz
-      - run:
           name: upload to pypi
           command: |
             python -m twine upload dist/*
