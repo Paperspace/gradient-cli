@@ -19,7 +19,7 @@ class WorkflowsClient(BaseClient):
         workflow = repository.create(name=name, project_id=project_id)
         return workflow
 
-    def run_workflow(self, spec, inputs, workflow_id, cluster_id):
+    def run_workflow(self, spec, inputs, workflow_id, cluster_id=None):
         """Create workflow with spec 
 
         :param obj spec: workflow spec
@@ -59,7 +59,6 @@ class WorkflowsClient(BaseClient):
         repository = self.build_repository(repositories.GetWorkflow)
         return repository.get(id=workflow_id)
     
-
     def list_runs(self, workflow_id):
         """List workflows runs by workflow id
 
