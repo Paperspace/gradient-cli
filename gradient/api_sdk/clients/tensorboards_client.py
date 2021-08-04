@@ -170,7 +170,8 @@ class TensorboardClient(BaseClient):
         :raises: ResourceFetchingError: When there is problem with response from API
         """
         repository = self.build_repository(repositories.UpdateTensorboard)
-        tensorboard = repository.update(id=id, added_experiments=added_experiments)
+        tensorboard = repository.update(
+            id=id, added_experiments=added_experiments)
         return tensorboard
 
     def remove_experiments(self, id, removed_experiments):
@@ -197,7 +198,8 @@ class TensorboardClient(BaseClient):
         :raises: ResourceFetchingError: When there is problem with response from API
         """
         repository = self.build_repository(repositories.UpdateTensorboard)
-        tensorboard = repository.update(id=id, removed_experiments=removed_experiments)
+        tensorboard = repository.update(
+            id=id, removed_experiments=removed_experiments)
         return tensorboard
 
     def delete(self, id):

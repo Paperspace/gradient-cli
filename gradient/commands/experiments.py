@@ -54,7 +54,8 @@ class TensorboardHandler(object):
 
         tensorboards = self._get_tensorboards()
         if len(tensorboards) == 1:
-            self._add_experiment_to_tensorboard(tensorboards[0].id, experiment_id)
+            self._add_experiment_to_tensorboard(
+                tensorboards[0].id, experiment_id)
         else:
             self._create_tensorboard_with_experiment(experiment_id)
 
@@ -64,7 +65,8 @@ class TensorboardHandler(object):
         :param str tensorboard_id:
         :param str experiment_id:
         """
-        command = tensorboards_commands.AddExperimentToTensorboard(api_key=self.api_key)
+        command = tensorboards_commands.AddExperimentToTensorboard(
+            api_key=self.api_key)
         command.execute(tensorboard_id, [experiment_id])
 
     def _get_tensorboards(self):
@@ -72,7 +74,8 @@ class TensorboardHandler(object):
 
         :rtype: list[api_sdk.Tensorboard]
         """
-        tensorboard_client = TensorboardClient(api_key=self.api_key, logger=self.logger)
+        tensorboard_client = TensorboardClient(
+            api_key=self.api_key, logger=self.logger)
         tensorboards = tensorboard_client.list()
         return tensorboards
 
@@ -81,7 +84,8 @@ class TensorboardHandler(object):
 
         :param str experiment_id:
         """
-        command = tensorboards_commands.CreateTensorboardCommand(api_key=self.api_key)
+        command = tensorboards_commands.CreateTensorboardCommand(
+            api_key=self.api_key)
         command.execute(experiments=[experiment_id])
 
 
@@ -101,14 +105,18 @@ class BaseCreateExperimentCommandMixin(BaseCommand):
         with halo.Halo(text=self.SPINNER_MESSAGE, spinner="dots"):
             experiment_id = self._create(json_)
 
-        self.logger.log(self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(experiment_id))
-        self.logger.log(self.get_instance_url(experiment_id, json_["project_id"]))
+        self.logger.log(
+            self.CREATE_SUCCESS_MESSAGE_TEMPLATE.format(experiment_id))
+        self.logger.log(self.get_instance_url(
+            experiment_id, json_["project_id"]))
 
-        self._maybe_add_to_tensorboard(add_to_tensorboard, experiment_id, self.api_key)
+        self._maybe_add_to_tensorboard(
+            add_to_tensorboard, experiment_id, self.api_key)
         return experiment_id
 
     def get_instance_url(self, instance_id, project_id):
-        url = concatenate_urls(config.WEB_URL, "{}/projects/{}/experiments/{}".format(self.get_namespace(), project_id, instance_id))
+        url = concatenate_urls(config.WEB_URL, "{}/projects/{}/experiments/{}".format(
+            self.get_namespace(), project_id, instance_id))
         return url
 
     def _handle_workspace(self, instance_dict):
@@ -129,7 +137,8 @@ class BaseCreateExperimentCommandMixin(BaseCommand):
         """
         if tensorboard_id is not False:
             tensorboard_handler = TensorboardHandler(api_key)
-            tensorboard_handler.maybe_add_to_tensorboard(tensorboard_id, experiment_id)
+            tensorboard_handler.maybe_add_to_tensorboard(
+                tensorboard_id, experiment_id)
 
     @staticmethod
     def _handle_dataset_data(json_):
@@ -151,12 +160,13 @@ class BaseCreateExperimentCommandMixin(BaseCommand):
             return
         else:
             datasets_len = max(len(datasets[0]), len(datasets[1]))
-            other_dataset_param_max_len = max(len(elem) for elem in datasets[2:])
+            other_dataset_param_max_len = max(
+                len(elem) for elem in datasets[2:])
             if datasets_len < other_dataset_param_max_len:
                 # there no point in defining n+1 dataset parameters of one type for n datasets
                 raise click.BadParameter(
                     "Too many dataset parameter sets ({}) for {} dataset URIs. Forgot to add one more dataset URI?"
-                        .format(other_dataset_param_max_len, datasets_len))
+                    .format(other_dataset_param_max_len, datasets_len))
 
         datasets = [none_strings_to_none_objects(d) for d in datasets]
 
@@ -194,7 +204,8 @@ class CreateMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExp
 
 class CreateMpiMultiNodeExperimentCommand(BaseCreateExperimentCommandMixin, BaseExperimentCommand):
     def _create(self, json_):
-        json_.pop("experiment_type_id", None)  # for MPI there is no experiment_type_id parameter in client method
+        # for MPI there is no experiment_type_id parameter in client method
+        json_.pop("experiment_type_id", None)
         handle = self.client.create_mpi_multi_node(**json_)
         return handle
 
@@ -213,7 +224,8 @@ class CreateAndStartMpiMultiNodeExperimentCommand(BaseCreateExperimentCommandMix
     CREATE_SUCCESS_MESSAGE_TEMPLATE = "New experiment created and started with ID: {}"
 
     def _create(self, json_):
-        json_.pop("experiment_type_id", None)  # for MPI there is no experiment_type_id parameter in client method
+        # for MPI there is no experiment_type_id parameter in client method
+        json_.pop("experiment_type_id", None)
         handle = self.client.run_mpi_multi_node(**json_)
         return handle
 
@@ -283,7 +295,8 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
         if experiment.experiment_type_id == constants.ExperimentType.MPI_MULTI_NODE:
             return self._get_multi_node_mpi_data(experiment)
 
-        raise ValueError("Wrong experiment type: {}".format(experiment.experiment_type_id))
+        raise ValueError("Wrong experiment type: {}".format(
+            experiment.experiment_type_id))
 
     @staticmethod
     def _get_single_node_data(experiment):
@@ -323,13 +336,15 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
             ("Artifact directory", experiment.artifact_directory),
             ("Cluster ID", experiment.cluster_id),
             ("Experiment Env", experiment.experiment_env),
-            ("Experiment Type", constants.ExperimentType.get_type_str(experiment.experiment_type_id)),
+            ("Experiment Type", constants.ExperimentType.get_type_str(
+                experiment.experiment_type_id)),
             ("Model Type", experiment.model_type),
             ("Model Path", experiment.model_path),
             ("Parameter Server Command", experiment.parameter_server_command),
             ("Parameter Server Container", experiment.parameter_server_container),
             ("Parameter Server Count", experiment.parameter_server_count),
-            ("Parameter Server Machine Type", experiment.parameter_server_machine_type),
+            ("Parameter Server Machine Type",
+             experiment.parameter_server_machine_type),
             ("Ports", experiment.ports),
             ("Project ID", experiment.project_id),
             ("Worker Command", experiment.worker_command),
@@ -356,7 +371,8 @@ class GetExperimentCommand(DetailsCommandMixin, BaseExperimentCommand):
             ("Artifact directory", experiment.artifact_directory),
             ("Cluster ID", experiment.cluster_id),
             ("Experiment Env", experiment.experiment_env),
-            ("Experiment Type", constants.ExperimentType.get_type_str(experiment.experiment_type_id)),
+            ("Experiment Type", constants.ExperimentType.get_type_str(
+                experiment.experiment_type_id)),
             ("Model Type", experiment.model_type),
             ("Model Path", experiment.model_path),
             ("Master Command", experiment.master_command),
@@ -428,6 +444,7 @@ class GetExperimentMetricsCommand(BaseExperimentCommand):
         formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
         self.logger.log(formatted_metrics)
 
+
 class ListExperimentMetricsCommand(BaseExperimentCommand):
     def execute(self, experiment_id, start, end, interval, *args, **kwargs):
         metrics = self.client.list_metrics(
@@ -438,6 +455,7 @@ class ListExperimentMetricsCommand(BaseExperimentCommand):
         )
         formatted_metrics = json.dumps(metrics, indent=2, sort_keys=True)
         self.logger.log(formatted_metrics)
+
 
 class StreamExperimentMetricsCommand(StreamMetricsCommand, BaseExperimentCommand):
     pass
