@@ -22,7 +22,7 @@ class DetailJSONCommandMixin(DetailsCommandMixin):
         if instance is None:
             self.logger.warning("Not found")
             return
-        
+
         json_formatted_str = json.dumps(instance, indent=4)
         print(json_formatted_str)
 
@@ -54,25 +54,29 @@ class CreateWorkflowCommand(BaseWorkflowCommand, DetailsCommandMixin):
 
         return workflow
 
+
 class CreateWorkflowRunCommand(BaseWorkflowCommand):
     def execute(self, spec_path=None, input_path=None, workflow_id=None, cluster_id=None):
         spec = None
         inputs = None
         if spec_path:
             if not os.path.exists(spec_path):
-                raise ApplicationError('Source path not found: {}'.format(spec_path))
+                raise ApplicationError(
+                    'Source path not found: {}'.format(spec_path))
             else:
                 yaml_spec = open(spec_path, 'r')
                 spec = yaml.safe_load(yaml_spec)
 
         if input_path:
             if not os.path.exists(input_path):
-                raise ApplicationError('Source path not found: {}'.format(input_path))
+                raise ApplicationError(
+                    'Source path not found: {}'.format(input_path))
             else:
                 yaml_inputs = open(input_path, 'r')
                 inputs = yaml.safe_load(yaml_inputs)
 
-        workflow = self.client.run_workflow(spec=spec, inputs=inputs, workflow_id=workflow_id, cluster_id=cluster_id)
+        workflow = self.client.run_workflow(
+            spec=spec, inputs=inputs, workflow_id=workflow_id, cluster_id=cluster_id)
         return workflow
 
 
@@ -90,18 +94,20 @@ class ListWorkflowsCommand(ListCommandMixin, BaseWorkflowCommand):
             ))
         return data
 
+
 class ListWorkflowRunsCommand(ListCommandMixin, BaseWorkflowCommand):
     def _get_instances(self, kwargs):
         instances = self.client.list_runs(**kwargs)
         return instances
-        
+
     def _get_table_data(self, objects):
-        data = [('Run', 'Cluster ID', 'Status')]
+        data = [('Run', 'Cluster ID', 'Status', 'Log ID')]
         for workflow_run in objects:
             data.append((
                 workflow_run['id'],
                 workflow_run['cluster']['id'],
                 workflow_run['status']['phase'],
+                workflow_run['status']['logId'],
             ))
         return data
 
@@ -117,6 +123,7 @@ class GetWorkflowCommand(DetailJSONCommandMixin, BaseWorkflowCommand):
         instance = self.client.get(workflow_id=workflow_id)
         return instance
 
+
 class GetWorkflowRunCommand(DetailJSONCommandMixin, BaseWorkflowCommand):
     def execute(self, workflow_id, run):
         with halo.Halo(text=self.WAITING_FOR_RESPONSE_MESSAGE, spinner="dots"):
@@ -128,6 +135,6 @@ class GetWorkflowRunCommand(DetailJSONCommandMixin, BaseWorkflowCommand):
         instance = self.client.get_run(workflow_id=workflow_id, run=run)
         return instance
 
+
 class WorkflowLogsCommand(LogsCommandMixin, BaseWorkflowCommand):
     ENTITY = "Workflows"
-
