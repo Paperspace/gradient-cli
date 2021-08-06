@@ -77,6 +77,10 @@ class CreateWorkflowRunCommand(BaseWorkflowCommand):
 
         workflow = self.client.run_workflow(
             spec=spec, inputs=inputs, workflow_id=workflow_id, cluster_id=cluster_id)
+
+        logId = workflow.get('status', {}).get('logId')
+        if logId is not None:
+            self.logger.log("Created workflow run %s", logId)
         return workflow
 
 
