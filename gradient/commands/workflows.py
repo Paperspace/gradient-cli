@@ -80,7 +80,7 @@ class CreateWorkflowRunCommand(BaseWorkflowCommand):
 
         logId = workflow.get('status', {}).get('logId')
         if logId is not None:
-            self.logger.log("Created workflow run %s", logId)
+            self.logger.log("Created workflow run {}".format(logId))
         return workflow
 
 
