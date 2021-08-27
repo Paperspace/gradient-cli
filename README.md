@@ -10,18 +10,17 @@ Gradient CLI
 
 **Get started:** [Create Account](https://console.paperspace.com/signup?gradient=true) • [Install CLI](https://docs.paperspace.com/gradient/get-started/install-the-cli) • [Tutorials](https://docs.paperspace.com/gradient/tutorials) • [Docs](https://docs.paperspace.com/gradient)
 
-**Resources:** [Website](https://gradient.paperspace.com/) • [Blog](https://blog.paperspace.com/) • [Support](https://support.paperspace.com/hc/en-us) • [Contact Sales](https://info.paperspace.com/contact-sales)
+**Resources:** [Website](https://gradient.run/) • [Blog](https://blog.paperspace.com/) • [Support](https://support.paperspace.com/hc/en-us) • [Contact Sales](https://info.paperspace.com/contact-sales-gradient)
 
 <br>
 
-Gradient is an an end-to-end MLOps platform that enables individuals and organizations to quickly develop, train, and deploy Deep Learning models.  The Gradient software stack runs on any infrastructure e.g. AWS, GCP, on-premise and low-cost [Paperspace GPUs](https://gradient.paperspace.com/instances).  Leverage automatic versioning, distributed training, built-in graphs & metrics, hyperparameter search, GradientCI, 1-click Jupyter Notebooks, our Python SDK, and more. 
+Gradient is an an end-to-end MLOps platform that enables individuals and organizations to quickly develop, train, and deploy Deep Learning models.  The Gradient software stack runs on any infrastructure e.g. AWS, GCP, on-premise and low-cost [Paperspace GPUs](https://gradient.run/instances).  Leverage automatic versioning, distributed training, built-in graphs & metrics, hyperparameter search, GradientCI, 1-click Jupyter Notebooks, our Python SDK, and more. 
 
 Key components:
 
-* [Notebooks](https://gradient.paperspace.com/notebooks): 1-click Jupyter Notebooks.
-* [Experiments](https://gradient.paperspace.com/experiments): Run experiments from a web interface, CLI, SDK, or [GradientCI](https://gradient.paperspace.com/gradientci) bot.
-* [Models](https://gradient.paperspace.com/models): Store, analyze, and version models.
-* [Inference](https://gradient.paperspace.com/inference): Deploy models as API endpoints.
+* [Notebooks](https://gradient.run/notebooks): 1-click Jupyter Notebooks.
+* [Workflows](https://gradient.run/workflows): Train models at scale with composable actions. 
+* [Inference](https://gradient.run/deployments): Deploy models as API endpoints.
 
 Gradient supports any ML/DL framework (TensorFlow, PyTorch, XGBoost, etc).
 
@@ -63,11 +62,10 @@ The Gradient CLI follows a standard [command] [--options] syntax
 
 For example, to create a new experiment use:
 ```
-gradient experiments create [type] [--options]
+gradient deployments create [type] [--options]
 ```
-The two available experiment types are `singlenode` and `multinode`. Various command options include setting the instance type, container, project, etc.  Note that some options are required to create new experiment.
 
-For a full list of available commands run `gradient experiments --help`. You can also view more info about Experiments in the [docs](https://docs.paperspace.com/gradient/experiments/using-experiments).  
+For a full list of available commands run `gradient deployments --help`. You can also view more info about Deployments in the [docs](https://docs.paperspace.com/gradient/explore-train-deploy/deployments).  
 
 Contributing
 ============
