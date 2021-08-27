@@ -62,10 +62,10 @@ The Gradient CLI follows a standard [command] [--options] syntax
 
 For example, to create a new Deployment use:
 ```
-gradient deployments create [type] [--options]
+gradient workflows create [type] [--options]
 ```
 
-For a full list of available commands run `gradient deployments --help`. You can also view more info about Deployments in the [docs](https://docs.paperspace.com/gradient/explore-train-deploy/deployments).  
+For a full list of available commands run `gradient workflows --help`. You can also view more info about Deployments in the [docs](https://docs.paperspace.com/gradient/explore-train-deploy/workflows).  
 
 Contributing
 ============
