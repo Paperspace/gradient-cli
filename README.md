@@ -60,7 +60,7 @@ Executing tasks on Gradient
 =================
 The Gradient CLI follows a standard [command] [--options] syntax
 
-For example, to create a new experiment use:
+For example, to create a new Deployment use:
 ```
 gradient deployments create [type] [--options]
 ```
