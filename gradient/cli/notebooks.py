@@ -191,13 +191,6 @@ def create_notebook(api_key, options_file, **notebook):
     cls=common.GradientOption,
 )
 @click.option(
-    "--name",
-    "name",
-    type=str,
-    help="Notebook name",
-    cls=common.GradientOption,
-)
-@click.option(
     "--shutdownTimeout",
     "shutdown_timeout",
     help="Shutdown timeout in hours",

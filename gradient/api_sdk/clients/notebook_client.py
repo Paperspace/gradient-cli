@@ -87,7 +87,6 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             id,
             machine_type,
             cluster_id=None,
-            name=None,
             shutdown_timeout=None,
             is_preemptible=None,
             tags=None,
@@ -108,7 +107,6 @@ class NotebooksClient(TagsSupportMixin, BaseClient):
             notebook_id=id,
             machine_type=machine_type,
             cluster_id=cluster_id,
-            notebook_name=name,
             shutdown_timeout=shutdown_timeout,
             is_preemptible=is_preemptible,
         )
