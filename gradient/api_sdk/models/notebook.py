@@ -72,5 +72,4 @@ class NotebookStart(object):
     cluster_id = attr.ib(type=str, default=None)
     shutdown_timeout = attr.ib(type=int, default=None)
     is_preemptible = attr.ib(type=bool, default=None)
-    notebook_name = attr.ib(type=str, default=None)
 
