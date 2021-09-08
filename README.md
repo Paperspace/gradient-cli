@@ -65,7 +65,7 @@ For example, to create a new Deployment use:
 gradient workflows create [type] [--options]
 ```
 
-For a full list of available commands run `gradient workflows --help`. You can also view more info about Deployments in the [docs](https://docs.paperspace.com/gradient/explore-train-deploy/workflows).  
+For a full list of available commands run `gradient workflows --help`. You can also view more info about Workflows in the [docs](https://docs.paperspace.com/gradient/explore-train-deploy/workflows).  
 
 Contributing
 ============
