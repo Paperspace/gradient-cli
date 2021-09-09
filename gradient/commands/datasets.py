@@ -11,7 +11,7 @@ try:
 except ImportError:
     import Queue as queue
 from xml.etree import ElementTree
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 
 import halo
 import requests
@@ -560,7 +560,9 @@ class PutDatasetFilesCommand(BaseDatasetFilesCommand):
     @classmethod
     def _put(cls, path, url, content_type):
         size = os.path.getsize(path)
-
+        filename = os.path.basename(path)
+        o = urlparse(url)
+        url = o.geturl()
         with requests.Session() as session:
             headers = {'Content-Type': content_type}
 
@@ -632,7 +634,9 @@ class PutDatasetFilesCommand(BaseDatasetFilesCommand):
                         path = path.replace(os.path.sep, '/')
 
                         key = target_path
-                        if not source_path_is_file:
+                        if source_path_is_file:
+                            key = source_name
+                        else:
                             if not has_trailing_slash:
                                 key += source_name + '/'
                             key += path[len(source_path)+1:]
