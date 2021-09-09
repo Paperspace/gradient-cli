@@ -11,7 +11,7 @@ try:
 except ImportError:
     import Queue as queue
 from xml.etree import ElementTree
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urlparse
 
 import halo
 import requests
