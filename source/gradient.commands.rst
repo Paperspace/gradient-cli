@@ -44,6 +44,14 @@ gradient.commands.experiments module
    :undoc-members:
    :show-inheritance:
 
+gradient.commands.helpers module
+--------------------------------
+
+.. automodule:: gradient.commands.helpers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.commands.hyperparameters module
 ----------------------------------------
 

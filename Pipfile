@@ -25,7 +25,7 @@ gradient-utils = ">=0.1.1"
 sphinx = "*"
 recommonmark = "*"
 sphinx-click = "*"
-gql = {extras = ["requests"], version = "*"}
+gql = {extras = ["requests"], version = "~=3.0.0a6"}
 
 [dev-packages]
 twine = "*"
