@@ -1,11 +1,11 @@
 import click
 import colorama
+import os
 from click._compat import get_text_stderr
 
 import gradient.cli.auth
 import gradient.cli.clusters
 import gradient.cli.datasets
-import gradient.cli.deployments
 import gradient.cli.experiments
 import gradient.cli.hyperparameters
 import gradient.cli.jobs
@@ -18,6 +18,13 @@ import gradient.cli.secrets
 import gradient.cli.storage_providers
 import gradient.cli.tensorboards
 import gradient.cli.workflows
+from gradient.api_sdk.config import config
+
+
+if config.USE_LEGACY_DEPLOYMENTS:
+    import gradient.cli.deployments
+else:
+    import gradient.cli.gradient_deployments
 
 
 def show(self, file=None):

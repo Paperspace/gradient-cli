@@ -1,10 +1,17 @@
+from ..config import config
+
 from .clusters import ListClusters
 from .datasets import ListDatasets, CreateDataset, DeleteDataset, GetDataset, GetDatasetRef, UpdateDataset
 from .dataset_tags import ListDatasetTags, GetDatasetTag, SetDatasetTag, DeleteDatasetTag
 from .dataset_versions import ListDatasetVersions, CreateDatasetVersion, DeleteDatasetVersion, \
     GenerateDatasetVersionPreSignedS3Urls, GetDatasetVersion, UpdateDatasetVersion
-from .deployments import ListDeployments, CreateDeployment, StartDeployment, StopDeployment, DeleteDeployment, \
+
+if config.USE_LEGACY_DEPLOYMENTS:
+    from .deployments import ListDeployments, CreateDeployment, StartDeployment, StopDeployment, DeleteDeployment, \
     UpdateDeployment, GetDeployment, GetDeploymentMetrics, ListDeploymentMetrics, StreamDeploymentMetrics, ListDeploymentLogs
+else:
+    from .gradient_deployments import create_deployment, list_deployments, delete_deployment, get_deployment, update_deployment
+
 from .experiments import ListExperiments, GetExperiment, ListExperimentLogs, StartExperiment, StopExperiment, \
     CreateSingleNodeExperiment, CreateMultiNodeExperiment, RunSingleNodeExperiment, RunMultiNodeExperiment, \
     CreateMpiMultiNodeExperiment, RunMpiMultiNodeExperiment, DeleteExperiment, GetExperimentMetrics, ListExperimentMetrics, \

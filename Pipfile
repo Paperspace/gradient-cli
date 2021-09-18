@@ -25,6 +25,7 @@ gradient-utils = ">=0.1.1"
 sphinx = "*"
 recommonmark = "*"
 sphinx-click = "*"
+gql = {extras = ["requests"], version = "*"}
 
 [dev-packages]
 twine = "*"
@@ -34,3 +35,6 @@ mock = "*"
 coverage = "*"
 tox = "*"
 sphinx = "*"
+
+[pipenv]
+allow_prereleases = true
