@@ -6,11 +6,10 @@ from .dataset_tags import ListDatasetTags, GetDatasetTag, SetDatasetTag, DeleteD
 from .dataset_versions import ListDatasetVersions, CreateDatasetVersion, DeleteDatasetVersion, \
     GenerateDatasetVersionPreSignedS3Urls, GetDatasetVersion, UpdateDatasetVersion
 
-if config.USE_LEGACY_DEPLOYMENTS:
-    from .deployments import ListDeployments, CreateDeployment, StartDeployment, StopDeployment, DeleteDeployment, \
+from .deployments import ListDeployments, CreateDeployment, StartDeployment, StopDeployment, DeleteDeployment, \
     UpdateDeployment, GetDeployment, GetDeploymentMetrics, ListDeploymentMetrics, StreamDeploymentMetrics, ListDeploymentLogs
-else:
-    from .gradient_deployments import create_deployment, list_deployments, delete_deployment, get_deployment, update_deployment
+    
+from .gradient_deployments import create_deployment, list_deployments, delete_deployment, get_deployment, update_deployment
 
 from .experiments import ListExperiments, GetExperiment, ListExperimentLogs, StartExperiment, StopExperiment, \
     CreateSingleNodeExperiment, CreateMultiNodeExperiment, RunSingleNodeExperiment, RunMultiNodeExperiment, \
