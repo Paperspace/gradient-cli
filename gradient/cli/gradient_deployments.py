@@ -11,6 +11,7 @@ from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.common import  api_key_option, ClickGroup
 from gradient.commands.helpers import print_table, formatted_graphql
+from gradient.exceptions import ApplicationError
 
 
 logger = logging.getLogger(__name__)
