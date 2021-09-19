@@ -10,4 +10,4 @@ def graphql_client(api_key=config.PAPERSPACE_API_KEY):
 	}
 	transport = RequestsHTTPTransport(headers=headers, url=config.API_HOST, verify=True, retries=3)
 	
-	return Client(transport=transport, fetch_schema_from_transport=True)
+	return Client(transport=transport)
