@@ -69,6 +69,14 @@ def get_deployment(id, first=100):
 				deploymentSpecs(first: $first) {
 					nodes {
 						id
+						data {
+							image
+							port
+							resources {
+								instanceType
+								replicas
+							}
+						}
 						endpointUrl
 						actor {
 							avatarUrl
@@ -134,6 +142,19 @@ def list_deployments(first=100):
 					deploymentSpecs(first: $first) {
 						nodes {
 							id
+							data {
+								image
+								port
+								resources {
+									instanceType
+									replicas
+								}
+							}
+							endpointUrl
+							actor {
+								avatarUrl
+								fullName
+							}
 							deploymentRuns(first: $first) {
 								nodes {
 									id
