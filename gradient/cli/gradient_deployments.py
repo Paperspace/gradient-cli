@@ -139,6 +139,9 @@ def update_deployment_command(ctx, api_key, id, name, project_id, spec_path, clu
 def list_deployments_command(ctx, api_key):
 	try:
 		deployments = list_deployments()
+		if len(deployments) == 0:
+			print('No deployments found')
+			return
 		table_data = [('Name', 'ID')]
 		for deployment in deployments:
 			table_data.append((deployment['name'], deployment['id']))
