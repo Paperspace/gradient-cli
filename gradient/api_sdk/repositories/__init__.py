@@ -1,5 +1,3 @@
-from ..config import config
-
 from .clusters import ListClusters
 from .datasets import ListDatasets, CreateDataset, DeleteDataset, GetDataset, GetDatasetRef, UpdateDataset
 from .dataset_tags import ListDatasetTags, GetDatasetTag, SetDatasetTag, DeleteDatasetTag

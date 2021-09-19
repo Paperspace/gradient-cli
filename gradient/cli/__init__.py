@@ -1,6 +1,5 @@
 import click
 import colorama
-import os
 from click._compat import get_text_stderr
 
 import gradient.cli.auth
