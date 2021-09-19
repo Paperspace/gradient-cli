@@ -39,6 +39,14 @@ gradient.api\_sdk.constants module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.graphql module
+--------------------------------
+
+.. automodule:: gradient.api_sdk.graphql
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.logger module
 -------------------------------
 

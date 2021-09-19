@@ -60,6 +60,14 @@ gradient.api\_sdk.repositories.experiments module
    :undoc-members:
    :show-inheritance:
 
+gradient.api\_sdk.repositories.gradient\_deployments module
+-----------------------------------------------------------
+
+.. automodule:: gradient.api_sdk.repositories.gradient_deployments
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gradient.api\_sdk.repositories.hyperparameter module
 ----------------------------------------------------
 
