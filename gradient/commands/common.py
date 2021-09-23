@@ -242,6 +242,7 @@ class LogsCommandMixin(object):
             self._log_table_of_logs(id, line, limit)
 
     def _log_table_of_logs(self, id, line, limit):
+        print("id", id, "line", line, "limit", limit)
         logs = self.client.logs(id, line, limit)
         if not logs:
             raise ApplicationError("No logs found")
