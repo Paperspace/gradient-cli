@@ -184,7 +184,6 @@ def list_logs(ctx, api_key, workflow_id, workflow_log_id, run, line, limit, opti
     if workflow_log_id:
         command.execute(workflow_log_id, line, limit, follow)
     else:
-        print('start')
         getRunCommand = GetWorkflowRunCommand(api_key=api_key)
         workflow_run = getRunCommand.get_instance(workflow_id, run)
         try:
