@@ -188,8 +188,9 @@ def list_logs(ctx, api_key, workflow_id, workflow_log_id, run, line, limit, opti
         workflow_run = getRunCommand.get_instance(workflow_id, run)
         try:
             jobs = workflow_run['status']['jobs']
-            for job in jobs.values():
+            for job_name, job in jobs.items():
                 logId = job['logId']
+                click.echo(f'Job Name: {job_name}')
                 command.execute(logId, line, limit, follow)
         except KeyError:
             pass
