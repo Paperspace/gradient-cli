@@ -79,7 +79,7 @@ def create_workflow_run(ctx, api_key, workflow_id, cluster_id, spec_path, input_
 @click.option(
     "--projectId",
     "project_id",
-    required=False,
+    required=True,
     help="Project ID",
     cls=common.GradientOption,
 )
