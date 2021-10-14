@@ -32,8 +32,11 @@ class TestCreateDeployments(object):
 
         result = CliRunner().invoke(
             cli.cli,
-            ["deployments", "create"] + ["--name=test-deployment",
-                                         "--projectId=prsmlkp15", "--spec=./deployment.yaml"]
+            ["deployments", "create"] + [
+                "--name=test-deployment",
+                "--projectId=prsmlkp15",
+                "--spec=./deployment.yaml"
+            ]
         )
 
         assert STDOUT in result.output
