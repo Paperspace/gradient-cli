@@ -4,8 +4,6 @@ from click.testing import CliRunner
 
 from gradient.api_sdk.clients import http_client
 from gradient.cli import cli
-from tests import example_responses, MockResponse
-import traceback
 
 EXPECTED_HEADERS = http_client.default_headers.copy()
 EXPECTED_HEADERS["ps_client_name"] = "gradient-cli"
