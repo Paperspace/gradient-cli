@@ -25,7 +25,7 @@ class TestCreateDeployments(object):
     }
 
     @mock.patch("gradient.cli.gradient_deployments.load_spec", return_value=LOAD_SPEC_VALUE)
-    @mock.patch("gradient.api_sdk.create_deployment")
+    @mock.patch("gradient.cli.gradient_deployments.create_deployment")
     def test_create_deployments(self, method, load_spec):
         STDOUT = "Created deployment: 5c229375-6f77-41b1-afbc-acd00cac9b77"
         method.return_value = {"id": "5c229375-6f77-41b1-afbc-acd00cac9b77"}
@@ -50,7 +50,7 @@ class TestUpdateDeployments(object):
     }
 
     @mock.patch("gradient.cli.gradient_deployments.load_spec", return_value=LOAD_SPEC_VALUE)
-    @mock.patch("gradient.api_sdk.update_deployment")
+    @mock.patch("gradient.cli.gradient_deployments.update_deployment")
     def test_update_deployments(self, method, load_spec):
         STDOUT = "Updated deployment: 5c229375-6f77-41b1-afbc-acd00cac9b77"
         method.return_value = {"id": "5c229375-6f77-41b1-afbc-acd00cac9b77"}
@@ -69,7 +69,7 @@ class TestUpdateDeployments(object):
 
 
 class TestListDeployments(object):
-    @mock.patch("gradient.api_sdk.list_deployments")
+    @mock.patch("gradient.cli.gradient_deployments.list_deployments")
     def test_list_deployments(self, method):
         STDOUT = """+-----------------+--------------------------------------+
 | Name            | ID                                   |
@@ -112,7 +112,7 @@ class TestListDeployments(object):
 
         assert STDOUT in result.output
 
-    @mock.patch("gradient.api_sdk.list_deployments")
+    @mock.patch("gradient.cli.gradient_deployments.list_deployments")
     def test_list_deployments_no_nodes(self, method):
         STDOUT = "No deployments found"
 
@@ -124,7 +124,7 @@ class TestListDeployments(object):
 
 
 class TestGetDeployment(object):
-    @mock.patch("gradient.api_sdk.get_deployment")
+    @mock.patch("gradient.cli.gradient_deployments.get_deployment")
     def test_list_deployments(self, method):
         STDOUT = """{
     "id": "efe770ee-6f9d-42cb-b802-66e6dd5d646c",
@@ -208,7 +208,7 @@ class TestGetDeployment(object):
 
         assert json.loads(STDOUT) == json.loads(result.output)
 
-    @mock.patch("gradient.api_sdk.get_deployment")
+    @mock.patch("gradient.cli.gradient_deployments.get_deployment")
     def test_get_deployment_no_deployment(self, method):
         STDOUT = "Deployment not found"
 
@@ -223,7 +223,7 @@ class TestGetDeployment(object):
 
 
 class TestDeleteDeployment(object):
-    @mock.patch("gradient.api_sdk.delete_deployment")
+    @mock.patch("gradient.cli.gradient_deployments.delete_deployment")
     def test_delete_deployments(self, method):
         STDOUT = "Deleted deployment: 5c229375-6f77-41b1-afbc-acd00cac9b77"
 
@@ -238,7 +238,7 @@ class TestDeleteDeployment(object):
 
         assert STDOUT in result.output
 
-    @mock.patch("gradient.api_sdk.delete_deployment")
+    @mock.patch("gradient.cli.gradient_deployments.delete_deployment")
     def test_delete_deployment_no_deployment(self, method):
         STDOUT = "Deployment not found"
 

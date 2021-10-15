@@ -6,7 +6,7 @@ import yaml
 from gql import gql
 from gql.transport.exceptions import TransportQueryError
 
-from gradient import api_sdk
+from gradient.api_sdk import create_deployment, update_deployment, list_deployments, get_deployment, delete_deployment
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.common import api_key_option, ClickGroup
@@ -139,11 +139,7 @@ def update_deployment_command(ctx, api_key, id, name, project_id, spec_path, clu
 @click.pass_context
 def list_deployments_command(ctx, api_key):
     try:
-<<<<<<< HEAD
         deployments = list_deployments(api_key=api_key)
-=======
-        deployments = api_sdk.list_deployments()
->>>>>>> 6791409 (Add integration tests for deployment command)
         if len(deployments) == 0:
             print('No deployments found')
             return
@@ -197,7 +193,6 @@ def get_deployment_command(ctx, api_key, id):
 def delete_deployment_command(ctx, api_key, id):
     try:
         deployment = delete_deployment(id, api_key=api_key)
-
         if deployment is None:
             print('Deployment not found')
         else:
