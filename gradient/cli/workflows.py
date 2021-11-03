@@ -79,7 +79,7 @@ def create_workflow_run(ctx, api_key, workflow_id, cluster_id, spec_path, input_
 @click.option(
     "--projectId",
     "project_id",
-    required=False,
+    required=True,
     help="Project ID",
     cls=common.GradientOption,
 )
@@ -167,17 +167,19 @@ def get_workflow(api_key, workflow_id, show_runs, run, options_file):
     default=10000,
     cls=common.GradientOption,
 )
-@click.option(
-    "--follow",
-    "follow",
-    required=False,
-    default=False,
-    cls=common.GradientOption,
-)
+# TODO (roger): Disabled follow for now since we iterate through multiple workflow job ids 
+# instead of the top level workflow id
+# @click.option(
+#     "--follow",
+#     "follow",
+#     required=False,
+#     default=False,
+#     cls=common.GradientOption,
+# )
 @api_key_option
 @common.options_file
 @click.pass_context
-def list_logs(ctx, api_key, workflow_id, workflow_log_id, run, line, limit, follow, options_file):
+def list_logs(ctx, api_key, workflow_id, workflow_log_id, run, line, limit, options_file, follow=False):
     command = WorkflowLogsCommand(api_key=api_key)
     if workflow_log_id:
         command.execute(workflow_log_id, line, limit, follow)
@@ -185,8 +187,11 @@ def list_logs(ctx, api_key, workflow_id, workflow_log_id, run, line, limit, foll
         getRunCommand = GetWorkflowRunCommand(api_key=api_key)
         workflow_run = getRunCommand.get_instance(workflow_id, run)
         try:
-            logId = workflow_run['status']['logId']
-            command.execute(logId, line, limit, follow)
+            jobs = workflow_run['status']['jobs']
+            for job_name, job in jobs.items():
+                logId = job['logId']
+                click.echo(f'Job Name: {job_name}')
+                command.execute(logId, line, limit, follow)
         except KeyError:
             pass
 

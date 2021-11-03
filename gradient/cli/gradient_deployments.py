@@ -18,11 +18,11 @@ logger = logging.getLogger(__name__)
 
 
 def load_spec(spec_path):
-	if not os.path.exists(spec_path):
-		raise ApplicationError(
-			'Source path not found: {}'.format(spec_path))
-	yaml_spec = open(spec_path, 'r')
-	return yaml.safe_load(yaml_spec)
+    if not os.path.exists(spec_path):
+        raise ApplicationError(
+            'Source path not found: {}'.format(spec_path))
+    yaml_spec = open(spec_path, 'r')
+    return yaml.safe_load(yaml_spec)
 
 
 @cli.group("deployments", help="Manage Deployments", cls=ClickGroup)
@@ -63,19 +63,19 @@ def deployments():
 @api_key_option
 @click.pass_context
 def create_deployment_command(ctx, api_key, name, project_id, cluster_id, spec_path):
-	try:
-		spec = load_spec(spec_path)
-	except Exception as error:
-		logger.error(f'Invalid spec: {error}')
-		return
+    try:
+        spec = load_spec(spec_path)
+    except Exception as error:
+        logger.error(f'Invalid spec: {error}')
+        return
 
-	try:
-		deployment = create_deployment(name, project_id, spec, cluster_id)
-		print(f'Created deployment: {deployment["id"]}')
-	except TransportQueryError as error:
-		logger.error(error.errors[0]['message'])
-	except Exception as error:
-		logger.error(f'There was an error, please try again')
+    try:
+        deployment = create_deployment(name, project_id, spec, cluster_id)
+        print(f'Created deployment: {deployment["id"]}')
+    except TransportQueryError as error:
+        logger.error(error.errors[0]['message'])
+    except Exception as error:
+        logger.error(f'There was an error, please try again')
 
 
 @deployments.command("update", help="Update a deployment")
@@ -117,42 +117,42 @@ def create_deployment_command(ctx, api_key, name, project_id, cluster_id, spec_p
 @api_key_option
 @click.pass_context
 def update_deployment_command(ctx, api_key, id, name, project_id, spec_path, cluster_id):
-	spec = None
-	if spec_path is not None:
-		try:
-			spec = load_spec(spec_path)
-		except Exception as error:
-			logger.error(f'Invalid spec: {error}')
-			return
+    spec = None
+    if spec_path is not None:
+        try:
+            spec = load_spec(spec_path)
+        except Exception as error:
+            logger.error(f'Invalid spec: {error}')
+            return
 
-	try:
-		deployment = update_deployment(id, name, project_id, spec, cluster_id)
-		print(f'Updated deployment: {deployment["id"]}')
-	except TransportQueryError as error:
-		logger.error(error.errors[0]['message'])
-	except Exception as error:
-		print(error)
-		logger.error(f'There was an error, please try again')
+    try:
+        deployment = update_deployment(id, name, project_id, spec, cluster_id)
+        print(f'Updated deployment: {deployment["id"]}')
+    except TransportQueryError as error:
+        logger.error(error.errors[0]['message'])
+    except Exception as error:
+        print(error)
+        logger.error(f'There was an error, please try again')
 
 @deployments.command("list", help="List deployments")
 @api_key_option
 @click.pass_context
 def list_deployments_command(ctx, api_key):
-	try:
-		deployments = list_deployments()
-		if len(deployments) == 0:
-			print('No deployments found')
-			return
-		table_data = [('Name', 'ID')]
-		for deployment in deployments:
-			table_data.append((deployment['name'], deployment['id']))
+    try:
+        deployments = list_deployments()
+        if len(deployments) == 0:
+            print('No deployments found')
+            return
+        table_data = [('Name', 'ID')]
+        for deployment in deployments:
+            table_data.append((deployment['name'], deployment['id']))
 
-		print_table(table_data)
-	except TransportQueryError as error:
-		logger.error(error.errors[0]['message'])
-	except Exception as error:
-		print(error)
-		logger.error(f'There was an error, please try again')
+        print_table(table_data)
+    except TransportQueryError as error:
+        logger.error(error.errors[0]['message'])
+    except Exception as error:
+        print(error)
+        logger.error(f'There was an error, please try again')
 
 
 @click.option(
@@ -166,17 +166,17 @@ def list_deployments_command(ctx, api_key):
 @api_key_option
 @click.pass_context
 def get_deployment_command(ctx, api_key, id):
-	try:
-		deployment = get_deployment(id)
-		if deployment['deployment'] is None:
-			print('Deployment not found')
-		else:
-			print(json.dumps(formatted_graphql(deployment['deployment']), indent=4))
-	except TransportQueryError as error:
-		logger.error(error.errors[0]['message'])
-	except Exception as error:
-		print(error)
-		logger.error(f'There was an error, please try again')
+    try:
+        deployment = get_deployment(id)
+        if deployment['deployment'] is None:
+            print('Deployment not found')
+        else:
+            print(json.dumps(formatted_graphql(deployment['deployment']), indent=4))
+    except TransportQueryError as error:
+        logger.error(error.errors[0]['message'])
+    except Exception as error:
+        print(error)
+        logger.error(f'There was an error, please try again')
 
 
 @click.option(
@@ -190,15 +190,15 @@ def get_deployment_command(ctx, api_key, id):
 @api_key_option
 @click.pass_context
 def delete_deployment_command(ctx, api_key, id):
-	try:
-		deployment = delete_deployment(id)
+    try:
+        deployment = delete_deployment(id)
 
-		if deployment is None:
-			print('Deployment not found')
-		else:
-			print(f'Deleted deployment: {deployment["deployment"]["id"]}')
-	except TransportQueryError as error:
-		logger.error(error.errors[0]['message'])
-	except Exception as error:
-		print(error)
-		logger.error(f'There was an error, please try again')
+        if deployment is None:
+            print('Deployment not found')
+        else:
+            print(f'Deleted deployment: {deployment["deployment"]["id"]}')
+    except TransportQueryError as error:
+        logger.error(error.errors[0]['message'])
+    except Exception as error:
+        print(error)
+        logger.error(f'There was an error, please try again')

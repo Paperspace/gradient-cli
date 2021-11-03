@@ -5,7 +5,6 @@ ARG VERSION
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir gradient==$VERSION
 
-ENV PAPERSPACE_API_KEY your_api_key_value
 ENV PAPERSPACE_WEB_URL https://console.paperspace.com
 ENV PAPERSPACE_CONFIG_HOST https://api.paperspace.io
 ENV PAPERSPACE_CONFIG_LOG_HOST https://logs.paperspace.io
