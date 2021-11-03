@@ -2,8 +2,8 @@ from gql import gql
 from ..graphql import graphql_client
 
 
-def create_deployment(name, project_id, spec, cluster_id=None):
-    client = graphql_client()
+def create_deployment(name, project_id, spec, cluster_id=None, api_key=None):
+    client = graphql_client(api_key)
     query = gql(
     """
         mutation createDeployment($input: CreateDeploymentInput!) {
@@ -26,8 +26,8 @@ def create_deployment(name, project_id, spec, cluster_id=None):
     return client.execute(query, variable_values=params)['createDeployment']['deployment']
 
 
-def update_deployment(id, name=None, project_id=None, spec=None, cluster_id=None):
-    client = graphql_client()
+def update_deployment(id, name=None, project_id=None, spec=None, cluster_id=None, api_key=None):
+    client = graphql_client(api_key)
     query = gql(
     """
         mutation updateDeployment($input: UpdateDeploymentInput!) {
@@ -58,8 +58,8 @@ def update_deployment(id, name=None, project_id=None, spec=None, cluster_id=None
     return client.execute(query, variable_values=params)['updateDeployment']['deployment']
 
 
-def get_deployment(id, first=100):
-    client = graphql_client()
+def get_deployment(id, first=100, api_key=None):
+    client = graphql_client(api_key)
     query = gql(
     """
         query getDeployment($id: UUID!, $first: Int!) {
@@ -130,8 +130,8 @@ def get_deployment(id, first=100):
     return client.execute(query, variable_values=params)
 
 
-def list_deployments(first=100):
-    client = graphql_client()
+def list_deployments(first=100, api_key=None):
+    client = graphql_client(api_key)
     query = gql(
     """
         query getDeployments($first: Int!) {
@@ -184,8 +184,8 @@ def list_deployments(first=100):
     return client.execute(query, variable_values=params)['deployments']['nodes']
 
 
-def delete_deployment(id):
-    client = graphql_client()
+def delete_deployment(id, api_key=None):
+    client = graphql_client(api_key)
     query = gql(
     """
         mutation deleteDeployment($input: DeleteDeploymentInput!) {

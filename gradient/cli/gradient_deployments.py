@@ -70,7 +70,7 @@ def create_deployment_command(ctx, api_key, name, project_id, cluster_id, spec_p
         return
 
     try:
-        deployment = create_deployment(name, project_id, spec, cluster_id)
+        deployment = create_deployment(name, project_id, spec, cluster_id, api_key=api_key)
         print(f'Created deployment: {deployment["id"]}')
     except TransportQueryError as error:
         logger.error(error.errors[0]['message'])
@@ -126,7 +126,7 @@ def update_deployment_command(ctx, api_key, id, name, project_id, spec_path, clu
             return
 
     try:
-        deployment = update_deployment(id, name, project_id, spec, cluster_id)
+        deployment = update_deployment(id, name, project_id, spec, cluster_id, api_key=api_key)
         print(f'Updated deployment: {deployment["id"]}')
     except TransportQueryError as error:
         logger.error(error.errors[0]['message'])
@@ -139,7 +139,7 @@ def update_deployment_command(ctx, api_key, id, name, project_id, spec_path, clu
 @click.pass_context
 def list_deployments_command(ctx, api_key):
     try:
-        deployments = list_deployments()
+        deployments = list_deployments(api_key=api_key)
         if len(deployments) == 0:
             print('No deployments found')
             return
@@ -167,7 +167,7 @@ def list_deployments_command(ctx, api_key):
 @click.pass_context
 def get_deployment_command(ctx, api_key, id):
     try:
-        deployment = get_deployment(id)
+        deployment = get_deployment(id, api_key=api_key)
         if deployment['deployment'] is None:
             print('Deployment not found')
         else:
@@ -191,7 +191,7 @@ def get_deployment_command(ctx, api_key, id):
 @click.pass_context
 def delete_deployment_command(ctx, api_key, id):
     try:
-        deployment = delete_deployment(id)
+        deployment = delete_deployment(id, api_key=api_key)
 
         if deployment is None:
             print('Deployment not found')

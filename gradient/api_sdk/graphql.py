@@ -4,7 +4,9 @@ from gql.transport.requests import RequestsHTTPTransport
 
 from .config import config
 
-def graphql_client(api_key=config.PAPERSPACE_API_KEY):
+def graphql_client(api_key=None):
+	if api_key is None:
+		api_key = config.PAPERSPACE_API_KEY
 	headers = {
 		'Authorization': f'Bearer {api_key}',
 	}
