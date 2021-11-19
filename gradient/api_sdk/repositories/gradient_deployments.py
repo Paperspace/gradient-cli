@@ -5,7 +5,7 @@ from ..graphql import graphql_client
 def create_deployment(name, project_id, spec, cluster_id=None, api_key=None):
     client = graphql_client(api_key)
     query = gql(
-    """
+        """
         mutation createDeployment($input: CreateDeploymentInput!) {
             createDeployment(input: $input) {
                 deployment {
@@ -29,7 +29,7 @@ def create_deployment(name, project_id, spec, cluster_id=None, api_key=None):
 def update_deployment(id, name=None, project_id=None, spec=None, cluster_id=None, api_key=None):
     client = graphql_client(api_key)
     query = gql(
-    """
+        """
         mutation updateDeployment($input: UpdateDeploymentInput!) {
             updateDeployment(input: $input) {
                 deployment {
@@ -53,7 +53,7 @@ def update_deployment(id, name=None, project_id=None, spec=None, cluster_id=None
         input["spec"] = spec
 
     params = {
-        "input": input	
+        "input": input
     }
     return client.execute(query, variable_values=params)['updateDeployment']['deployment']
 
@@ -61,7 +61,7 @@ def update_deployment(id, name=None, project_id=None, spec=None, cluster_id=None
 def get_deployment(id, first=100, api_key=None):
     client = graphql_client(api_key)
     query = gql(
-    """
+        """
         query getDeployment($id: UUID!, $first: Int!) {
             deployment(id: $id) {
                 id
@@ -133,7 +133,7 @@ def get_deployment(id, first=100, api_key=None):
 def list_deployments(first=100, api_key=None):
     client = graphql_client(api_key)
     query = gql(
-    """
+        """
         query getDeployments($first: Int!) {
             deployments(first: $first) {
                 nodes {
@@ -187,7 +187,7 @@ def list_deployments(first=100, api_key=None):
 def delete_deployment(id, api_key=None):
     client = graphql_client(api_key)
     query = gql(
-    """
+        """
         mutation deleteDeployment($input: DeleteDeploymentInput!) {
             deleteDeployment(input: $input) {
                 deployment {

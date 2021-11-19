@@ -31,11 +31,6 @@ def cli():
     pass
 
 
-# TODO: delete experiment - not implemented in the api
-# TODO: modify experiment - not implemented in the api
-# TODO: create experiment template?? What is the difference between experiment and experiment template?
-
-
 @cli.command("version", help="Show the version and exit")
 def get_version():
     command = login_commands.ShowVersionCommand()

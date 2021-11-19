@@ -23,7 +23,8 @@ class TestEntityAddTags(object):
         "--tags", "test2,test3",
         "--id", "some_id",
     ]
-    COMMAND_WITH_OPTIONS_FILE = ["tags", "add", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["tags", "add",
+                                 "--optionsFile", ]  # path added in test
 
     TAGS_JSON = {
         "entity": "",
@@ -38,7 +39,7 @@ class TestEntityAddTags(object):
     @pytest.mark.parametrize(
         "entity_command, entity, result_entity",
         [
-            ("deployments", "deployment", "deployment"),
+            # ("deployments", "deployment", "deployment"),
             ("experiments", "experiment", "experiment"),
             ("experiments hyperparameters", "experiment", "hyperparameter"),
             ("jobs", "job", "job"),
@@ -57,7 +58,8 @@ class TestEntityAddTags(object):
         expected_result = self.EXPECTED_STDOUT % result_entity
 
         get_patched.return_value = MockResponse({}, 200, "fake content")
-        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
+        put_patched.return_value = MockResponse(
+            self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
@@ -78,7 +80,7 @@ class TestEntityAddTags(object):
     @pytest.mark.parametrize(
         "entity_command, entity, result_entity",
         [
-            ("deployments", "deployment", "deployment"),
+            # ("deployments", "deployment", "deployment"),
             ("experiments", "experiment", "experiment"),
             ("experiments hyperparameters", "experiment", "hyperparameter"),
             ("jobs", "job", "job"),
@@ -92,10 +94,12 @@ class TestEntityAddTags(object):
             self, get_patched, put_patched, entity_tags_add_config_path, entity_command, entity, result_entity
     ):
         get_patched.return_value = MockResponse({}, 200, "fake content")
-        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
+        put_patched.return_value = MockResponse(
+            self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
 
         entity_command = entity_command.split(" ")
-        command = entity_command + self.COMMAND_WITH_OPTIONS_FILE + [entity_tags_add_config_path]
+        command = entity_command + self.COMMAND_WITH_OPTIONS_FILE + \
+            [entity_tags_add_config_path]
 
         tags_json = self.TAGS_JSON.copy()
         tags_json["entity"] = entity
@@ -125,7 +129,8 @@ class TestEntityRemoveTags(object):
         "--tags", "test2",
         "--id", "some_id",
     ]
-    COMMAND_WITH_OPTIONS_FILE = ["tags", "remove", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["tags", "remove",
+                                 "--optionsFile", ]  # path added in test
 
     GET_TAGS_MOCK_RESPONSE = example_responses.GET_TAGS_RESPONSE
 
@@ -142,7 +147,7 @@ class TestEntityRemoveTags(object):
     @pytest.mark.parametrize(
         "entity_command, entity, result_entity",
         [
-            ("deployments", "deployment", "deployment"),
+            # ("deployments", "deployment", "deployment"),
             ("experiments", "experiment", "experiment"),
             ("experiments hyperparameters", "experiment", "hyperparameter"),
             ("jobs", "job", "job"),
@@ -160,8 +165,10 @@ class TestEntityRemoveTags(object):
         tags_json["entity"] = entity
         expected_result = self.EXPECTED_STDOUT % result_entity
 
-        get_patched.return_value = MockResponse(self.GET_TAGS_MOCK_RESPONSE, 200, "fake content")
-        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
+        get_patched.return_value = MockResponse(
+            self.GET_TAGS_MOCK_RESPONSE, 200, "fake content")
+        put_patched.return_value = MockResponse(
+            self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
@@ -182,7 +189,7 @@ class TestEntityRemoveTags(object):
     @pytest.mark.parametrize(
         "entity_command, entity, result_entity",
         [
-            ("deployments", "deployment", "deployment"),
+            # ("deployments", "deployment", "deployment"),
             ("experiments", "experiment", "experiment"),
             ("experiments hyperparameters", "experiment", "hyperparameter"),
             ("jobs", "job", "job"),
@@ -195,11 +202,14 @@ class TestEntityRemoveTags(object):
     def test_should_read_options_from_yaml_file(
             self, get_patched, put_patched, entity_tags_remove_config_path, entity_command, entity, result_entity
     ):
-        get_patched.return_value = MockResponse(self.GET_TAGS_MOCK_RESPONSE, 200, "fake content")
-        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
+        get_patched.return_value = MockResponse(
+            self.GET_TAGS_MOCK_RESPONSE, 200, "fake content")
+        put_patched.return_value = MockResponse(
+            self.UPDATE_TAGS_RESPONSE_JSON_200, 200, "fake content")
 
         entity_command = entity_command.split(" ")
-        command = entity_command + self.COMMAND_WITH_OPTIONS_FILE + [entity_tags_remove_config_path]
+        command = entity_command + self.COMMAND_WITH_OPTIONS_FILE + \
+            [entity_tags_remove_config_path]
 
         tags_json = self.TAGS_JSON.copy()
         tags_json["entity"] = entity
