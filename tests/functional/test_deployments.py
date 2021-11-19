@@ -20,7 +20,7 @@ class TestCreateDeployments(object):
         "port": 8080,
         "resources": {
             "replicas": 1,
-            "instanceType": "C3"
+            "instanceType": "C4"
         }
     }
 
@@ -49,7 +49,7 @@ class TestUpdateDeployments(object):
         "port": 8080,
         "resources": {
             "replicas": 1,
-            "instanceType": "C3"
+            "instanceType": "C4"
         }
     }
 
