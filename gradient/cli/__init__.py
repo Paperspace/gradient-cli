@@ -20,6 +20,8 @@ import gradient.cli.workflows
 from gradient.api_sdk.config import config
 if config.USE_LEGACY_DEPLOYMENTS:
     import gradient.cli.deployments
+else:
+    import gradient.cli.gradient_deployments
 
 def show(self, file=None):
     if file is None:
