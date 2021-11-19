@@ -6,7 +6,7 @@ import yaml
 from gql import gql
 from gql.transport.exceptions import TransportQueryError
 
-from gradient.api_sdk import create_deployment, update_deployment, list_deployments, get_deployment, delete_deployment
+from gradient.api_sdk.repositories import gradient_deployments
 from gradient.cli import common
 from gradient.cli.cli import cli
 from gradient.cli.common import api_key_option, ClickGroup
@@ -69,7 +69,7 @@ def create_deployment_command(ctx, api_key, name, project_id, cluster_id, spec_p
         return
 
     try:
-        deployment = create_deployment(name, project_id, spec, cluster_id, api_key=api_key)
+        deployment = gradient_deployments.create_deployment(name, project_id, spec, cluster_id, api_key=api_key)
         print(f'Created deployment: {deployment["id"]}')
     except TransportQueryError as error:
         logger.error(error.errors[0]['message'])
@@ -125,7 +125,7 @@ def update_deployment_command(ctx, api_key, id, name, project_id, spec_path, clu
             return
 
     try:
-        deployment = update_deployment(id, name, project_id, spec, cluster_id, api_key=api_key)
+        deployment = gradient_deployments.update_deployment(id, name, project_id, spec, cluster_id, api_key=api_key)
         print(f'Updated deployment: {deployment["id"]}')
     except TransportQueryError as error:
         logger.error(error.errors[0]['message'])
@@ -139,7 +139,7 @@ def update_deployment_command(ctx, api_key, id, name, project_id, spec_path, clu
 @click.pass_context
 def list_deployments_command(ctx, api_key):
     try:
-        deployments = list_deployments(api_key=api_key)
+        deployments = gradient_deployments.list_deployments(api_key=api_key)
         if len(deployments) == 0:
             print('No deployments found')
             return
@@ -167,7 +167,7 @@ def list_deployments_command(ctx, api_key):
 @click.pass_context
 def get_deployment_command(ctx, api_key, id):
     try:
-        deployment = get_deployment(id, api_key=api_key)
+        deployment = gradient_deployments.get_deployment(id, api_key=api_key)
         if deployment['deployment'] is None:
             print('Deployment not found')
         else:
@@ -192,7 +192,7 @@ def get_deployment_command(ctx, api_key, id):
 @click.pass_context
 def delete_deployment_command(ctx, api_key, id):
     try:
-        deployment = delete_deployment(id, api_key=api_key)
+        deployment = gradient_deployments.delete_deployment(id, api_key=api_key)
         if deployment is None:
             print('Deployment not found')
         else:
