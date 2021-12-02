@@ -135,11 +135,36 @@ def update_deployment_command(ctx, api_key, id, name, project_id, spec_path, clu
 
 
 @deployments.command("list", help="List deployments")
+@click.option(
+    "--name",
+    "name",
+    required=False,
+    help="Name",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--projectId",
+    "project_id",
+    required=False,
+    help="Project ID",
+    cls=common.GradientOption,
+)
+@click.option(
+    "--clusterId",
+    "cluster_id",
+    required=False,
+    help="Cluster ID",
+    cls=common.GradientOption,
+)
 @api_key_option
 @click.pass_context
-def list_deployments_command(ctx, api_key):
+def list_deployments_command(ctx, name, project_id, cluster_id, api_key):
     try:
-        deployments = gradient_deployments.list_deployments(api_key=api_key)
+        deployments = gradient_deployments.list_deployments(
+            name,
+            project_id,
+            cluster_id,
+            api_key=api_key)
         if len(deployments) == 0:
             print('No deployments found')
             return
