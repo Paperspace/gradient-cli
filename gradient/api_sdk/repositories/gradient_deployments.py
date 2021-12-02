@@ -84,7 +84,7 @@ def get_deployment(id, first=100, api_key=None):
                         }
                         cluster {
                             id
-                        }	
+                        }
                         data {
                             command
                             env {
@@ -130,16 +130,25 @@ def get_deployment(id, first=100, api_key=None):
     return client.execute(query, variable_values=params)
 
 
-def list_deployments(first=100, api_key=None):
+def list_deployments(name=None, project_id=None, cluster_id=None, first=100, api_key=None):
     client = graphql_client(api_key)
     query = gql(
         """
-        query getDeployments($first: Int!) {
-            deployments(first: $first) {
+        query getDeployments(
+            $first: Int!
+            $projectId: String
+            $clusterId: String
+            $name: String
+        ) {
+            deployments(
+                first: $first
+                projectId: $projectId
+                name: $name
+            ) {
                 nodes {
                     id
                     name
-                    deploymentSpecs(first: $first) {
+                    deploymentSpecs(first: $first, clusterId: $clusterId) {
                         nodes {
                             id
                             data {
@@ -172,7 +181,7 @@ def list_deployments(first=100, api_key=None):
                                 }
                             }
                         }
-                            }
+                    }
                 }
             }
         }
@@ -180,6 +189,9 @@ def list_deployments(first=100, api_key=None):
     )
     params = {
         "first": first,
+        "projectId": project_id,
+        "clusterId": cluster_id,
+        "name": name
     }
     return client.execute(query, variable_values=params)['deployments']['nodes']
 
