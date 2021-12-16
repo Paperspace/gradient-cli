@@ -60,9 +60,10 @@ Executing tasks on Gradient
 =================
 The Gradient CLI follows a standard [command] [--options] syntax
 
-For example, to create a new Deployment use:
+For example, to create a new Workflow in a project use:
 ```
-gradient workflows create [type] [--options]
+gradient projects list
+gradient workflows create --name <name> --projectId <project-id>
 ```
 
 For a full list of available commands run `gradient workflows --help`. You can also view more info about Workflows in the [docs](https://docs.paperspace.com/gradient/explore-train-deploy/workflows).  
