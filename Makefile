@@ -18,6 +18,9 @@ pip-install-dev: pip-update
 build:
 	python setup.py sdist bdist_wheel
 
+clean:
+	rm -rf build dist
+
 prepare-docs-source:
 	@sphinx-apidoc -f -o source gradient
 	@cp source/cli_docs/gradient.cli.rst source/gradient.cli.rst
