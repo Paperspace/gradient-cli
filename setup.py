@@ -71,7 +71,8 @@ setup(
         'python-dateutil==2.*',
         'websocket-client==0.57.*',
         'gradient-utils>=0.1.2',
-        'gql[requests]==3.0.0a6'
+        'gql[requests]==3.0.0a6',
+        'windows-curses>=2.3.0 ; platform_system=="Windows"'
     ],
     entry_points={'console_scripts': [
         'gradient = gradient:main.main',
