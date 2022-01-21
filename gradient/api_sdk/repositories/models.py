@@ -2,6 +2,8 @@ import gradient.api_sdk.config
 from .. import serializers, s3_uploader
 from ..repositories.common import ListResources, DeleteResource, CreateResource, GetResource
 from ..sdk_exceptions import ResourceFetchingError
+from gql import gql
+from ..graphql import graphql_client
 
 
 class ParseModelDictMixin(object):
@@ -160,3 +162,65 @@ class ListModelFiles(GetBaseModelsApiUrlMixin, ListResources):
             json_["size"] = True
 
         return json_
+
+
+def get_model_usage(num_models=100, num_deployments=100, cluster_id=None,
+                    project_id=None, model_name=None, api_key=None):
+    client = graphql_client(api_key)
+    query = gql(
+        """
+        query modelDeployments(
+            $firstModels: Int,
+            $firstSpecs: Int,
+            $clusterId: String,
+            $projectId: String,
+            $name: String
+        ) {
+            modelDeployments(
+                name: $name,
+                projectId: $projectId,
+                first: $firstModels
+            ) {
+                nodes {
+                    id
+                    name
+                    dtCreated
+                    deploymentSpecs(
+                        first: $firstSpecs,
+                        clusterId: $clusterId
+                    ) {
+                        nodes {
+                            id
+                            dtCreated
+                            externalApplied
+                            actor {
+                                fullName
+                                email
+                            }
+                            deployment {
+                                name
+                                id
+                            }
+                            cluster {
+                                fqdn
+                                name
+                            }
+                            endpointUrl
+                        }
+                    }
+                }
+            }
+        }
+        """
+    )
+    params = {
+        'firstModels': num_models,
+        'firstSpecs': num_deployments,
+        'clusterId': cluster_id,
+        'projectId': project_id,
+        'name': model_name,
+    }
+    return client.execute(
+        query,
+        variable_values=params
+    )['modelDeployments']['nodes']
