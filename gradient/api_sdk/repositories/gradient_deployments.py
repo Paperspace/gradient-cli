@@ -1,5 +1,7 @@
 from gql import gql
 from ..graphql import graphql_client
+from .common import ListLogs
+from .. import logger as sdk_logger
 
 
 def create_deployment(name, project_id, spec, cluster_id=None, api_key=None):
@@ -215,3 +217,29 @@ def delete_deployment(id, api_key=None):
         }
     }
     return client.execute(query, variable_values=params)['deleteDeployment']
+
+
+# my disappointment is immeasurable
+# and my day is ruined
+class ListDeploymentV3Logs(ListLogs):
+    def _get_request_params(self, kwargs):
+        params = {
+            'gradientDeploymentId': kwargs['id'],
+            'line': kwargs['line'],
+            'limit': kwargs['limit']
+        }
+        return params
+
+
+def get_deployment_logs(deployment_id, line=1, limit=10000, api_key=None):
+    DeploymentLogs = ListDeploymentV3Logs(
+        api_key=api_key,
+        logger=sdk_logger.MuteLogger())
+    return DeploymentLogs.list(id=deployment_id, line=line, limit=limit)
+
+
+def yield_deployment_logs(deployment_id, line=1, limit=10000, api_key=None):
+    DeploymentLogs = ListDeploymentV3Logs(
+        api_key=api_key,
+        logger=sdk_logger.MuteLogger())
+    return DeploymentLogs.yield_logs(id=deployment_id, line=line, limit=limit)
