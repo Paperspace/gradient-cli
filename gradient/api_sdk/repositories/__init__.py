@@ -41,7 +41,9 @@ from .gradient_deployments import (
     list_deployments,
     delete_deployment,
     get_deployment,
-    update_deployment
+    update_deployment,
+    get_deployment_logs,
+    yield_deployment_logs
 )
 from .experiments import (
     ListExperiments,
