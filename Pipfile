@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+name = "pypi"
+verify_ssl = true
+
+[packages]
+requests = {extras = ["security"]}
+cryptography = {extras = ["security"]}
+pyyaml = "*"
+websocket-client = "*"
+gql = {extras = ["requests"], version = "==3.0.0a6"}
+
+[dev-packages]
+sphinx = "*"
+pypandoc = "*"
+pytest = "*"
+mock = "*"
+coverage = "*"
+tox = "*"
+mypy = "*"
