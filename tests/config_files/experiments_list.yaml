@@ -1,9 +1,0 @@
-apiKey: some_key
-limit: 20
-offset: 0
-projectId:
-- some_id
-- some_id_2
-tag:
-- some_tag
-- some_tag_2

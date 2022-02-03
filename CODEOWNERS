@@ -1,5 +1,0 @@
-# These owners will be the default owners for everything in
-# the repo.
-
-**/*deployment*.py  @Paperspace/gradient-deployments
-**/*model*.py       @Paperspace/gradient-deployments

@@ -1,6 +1,0 @@
-apiKey: some_key
-id: dev61ity7lx232
-interval: 20s
-metric:
-- gpuMemoryFree
-- gpuMemoryUsed

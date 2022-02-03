@@ -1,6 +1,0 @@
-apiKey: some_key
-id: ngw7piq9
-interval: 20s
-metric:
-- gpuMemoryFree
-- gpuMemoryUsed
