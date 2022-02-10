@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os
 import json
 
@@ -17,7 +18,7 @@ class Session():
 
     def __init__(self, api_key: str=None) -> None:
         self.config = self.load_configs()
-        self.api_key = self.get_api_key(api_key, self.config)
+        self.api_key = self.get_api_key(config=self.config, api_key=api_key)
 
     def load_configs(self) -> dict[str, str]:
         config: dict[str, str] = {}
@@ -29,6 +30,9 @@ class Session():
     def get_api_key(self, config: dict[str, str], api_key: str=None) -> str:
         if api_key is not None:
             return api_key
+
+        if os.environ.get('PAPERSPACE_API_KEY'):
+            return os.environ.get('PAPERSPACE_API_KEY')
 
         paperspace_dir = os.path.expanduser(config['CONFIG_DIR_PATH'])
         config_path = os.path.join(paperspace_dir, config['CONFIG_FILE_NAME'])
