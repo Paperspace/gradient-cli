@@ -1,0 +1,16 @@
+site_name: Paperspace Python Docs
+plugins:
+    - search
+    - awesome-pages
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - json
+    - bash
+    - python
+  include_homepage_in_sidebar: true
+  prev_next_buttons_location: bottom
+  features:
+    -toc.integrate

@@ -17,7 +17,7 @@ query = """
             nodes {
                 id
                 name
-                deploymentSpecs(first: $first, clusterId: $clusterId) {
+                deploymentSpecs(first: 1, clusterId: $clusterId) {
                     nodes {
                         id
                         data {
@@ -30,24 +30,7 @@ query = """
                         }
                         endpointUrl
                         actor {
-                            avatarUrl
                             fullName
-                        }
-                        deploymentRuns(first: $first) {
-                            nodes {
-                                id
-                                availableReplicas
-                                readyReplicas
-                                replicas
-                                deploymentRunInstances(first: $first) {
-                                    nodes {
-                                        id
-                                        phase
-                                        dtStarted
-                                        dtFinished
-                                    }
-                                }
-                            }
                         }
                     }
                 }

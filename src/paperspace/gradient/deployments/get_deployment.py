@@ -20,7 +20,6 @@ query = """
                     }
                     endpointUrl
                     actor {
-                        avatarUrl
                         fullName
                     }
                     cluster {
@@ -40,22 +39,6 @@ query = """
                         port
                         resources {
                             replicas
-                        }
-                    }
-                    deploymentRuns(first: $first) {
-                        nodes {
-                            id
-                            availableReplicas
-                            readyReplicas
-                            replicas
-                            deploymentRunInstances(first: $first) {
-                                nodes {
-                                    id
-                                    phase
-                                    dtStarted
-                                    dtFinished
-                                }
-                            }
                         }
                     }
                 }
