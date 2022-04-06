@@ -6,6 +6,9 @@ import re
 import threading
 import uuid
 import json
+import boto3
+from requests_toolbelt.multipart import encoder
+
 try:
     import queue
 except ImportError:
@@ -324,6 +327,8 @@ class BaseDatasetFilesCommand(BaseDatasetVersionsCommand):
             raise ApplicationError(
                 '%s storage type not supported' % dataset.storage_provider.type)
 
+        return dataset
+
     def resolve_dataset_version_id(self, dataset_ref):
         try:
             dataset_ref = self.dataset_client.get_ref(dataset_ref)
@@ -555,26 +560,51 @@ class GetDatasetFilesCommand(BaseDatasetFilesCommand):
                             pool.put(self._get, url=pre_signed.url, path=path)
 
 
+
 class PutDatasetFilesCommand(BaseDatasetFilesCommand):
 
+
     @classmethod
-    def _put(cls, path, url, content_type):
+    def _put(cls, path, url, content_type, dataset):
         size = os.path.getsize(path)
         with requests.Session() as session:
             headers = {'Content-Type': content_type}
-
             try:
-                if size > 0:
+                if size <= 0:
+                    headers.update({'Content-Size': '0'})
+                    r = session.put(url, data='', headers=headers, timeout=5)
+                # For files less than a 1/2 GB
+                elif size <= (1000000000) / 2:
                     with open(path, 'rb') as f:
                         r = session.put(
                             url, data=f, headers=headers, timeout=5)
+                # For file sizes greater than 1 GB
                 else:
-                    headers.update({'Content-Size': '0'})
-                    r = session.put(url, data='', headers=headers, timeout=5)
+                    bucket = dataset.storage_provider.config.get("bucket")
+                    key_path = url.split(dataset.storage_provider.config.get("bucket"))[2].split("?")[0]
+
+
+                    s3_client = boto3.client(
+                        's3',
+                        aws_access_key_id=dataset.storage_provider.config.get("accessKey"),
+                        aws_secret_access_key=dataset.storage_provider.config.get("secretAccessKey"),
+                        endpoint_url=dataset.storage_provider.config.get("endpoint")
+                    )
+                    """
+                    Signed URL is in the form:
+                    https://{s3 endpoint}/{bucket}/{key}/datasets/{dataset id}/versions/{dataset version}/data/
+                    {uploaded file name}
+                    """
+
+                    r = s3_client.upload_file(path, dataset.storage_provider.config.get("bucket"), key_path[1:])
+                    f = 1
+
 
                 cls.validate_s3_response(r)
             except requests.exceptions.ConnectionError as e:
                 return cls.report_connection_error(e)
+            except Exception as e:
+                return e
 
     @staticmethod
     def _list_files(source_path):
@@ -590,7 +620,7 @@ class PutDatasetFilesCommand(BaseDatasetFilesCommand):
 
         raise ApplicationError('Invalid source path: ' + source_path)
 
-    def _sign_and_put(self, dataset_version_id, pool, results, update_status):
+    def _sign_and_put(self, dataset_version_id, pool, results, update_status, dataset):
         pre_signeds = self.client.generate_pre_signed_s3_urls(
             dataset_version_id,
             calls=[dict(method='putObject', params=dict(
@@ -600,11 +630,10 @@ class PutDatasetFilesCommand(BaseDatasetFilesCommand):
         for pre_signed, result in zip(pre_signeds, results):
             update_status()
             pool.put(self._put, url=pre_signed.url,
-                     path=result['path'], content_type=result['mimetype'])
+                     path=result['path'], content_type=result['mimetype'], dataset=dataset)
 
     def execute(self, dataset_version_id, source_paths, target_path):
-        self.assert_supported(dataset_version_id)
-
+        _ = self.assert_supported(dataset_version_id)
         if not target_path:
             target_path = '/'
         else:
@@ -646,12 +675,12 @@ class PutDatasetFilesCommand(BaseDatasetFilesCommand):
 
                         if len(results) == pool.worker_count:
                             self._sign_and_put(
-                                dataset_version_id, pool, results, update_status)
+                                dataset_version_id, pool, results, update_status, _)
                             results = []
 
                     if results:
                         self._sign_and_put(
-                            dataset_version_id, pool, results, update_status)
+                            dataset_version_id, pool, results, update_status, _)
 
 
 class DeleteDatasetFilesCommand(BaseDatasetFilesCommand):
