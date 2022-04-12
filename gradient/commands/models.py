@@ -31,14 +31,13 @@ class ListModelsCommand(GetModelsClientMixin, ListCommandMixin, BaseCommand):
         return instances
 
     def _get_table_data(self, models):
-        data = [("Name", "ID", "Model Type", "Project ID", "Experiment ID")]
+        data = [("Name", "ID", "Model Type", "Project ID")]
         for model in models:
             name = model.name
             id_ = model.id
             project_id = model.project_id
-            experiment_id = model.experiment_id
             model_type = model.model_type
-            data.append((name, id_, model_type, project_id, experiment_id))
+            data.append((name, id_, model_type, project_id))
 
         return data
 
@@ -80,7 +79,6 @@ class GetModelCommand(DetailsCommandMixin, GetModelsClientMixin, BaseCommand):
             ("ID", instance.id),
             ("Name", instance.name),
             ("Project ID", instance.project_id),
-            ("Experiment ID", instance.experiment_id),
             ("Model Type", instance.model_type),
             ("URL", instance.url),
             ("Deployment State", instance.deployment_state),

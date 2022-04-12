@@ -55,19 +55,20 @@ def list_projects(api_key, tags, options_file):
     "--tag",
     "tags",
     multiple=True,
-    help="One or many tags that you want to add to experiment",
+    help="One or many tags that you want to add to project",
     cls=common.GradientOption
 )
 @click.option(
     "--tags",
     "tags_comma",
-    help="Separated by comma tags that you want add to experiment",
+    help="Separated by comma tags that you want add to project",
     cls=common.GradientOption
 )
 @common.api_key_option
 @common.options_file
 def create_project(api_key, options_file, **project):
-    project["tags"] = validate_comma_split_option(project.pop("tags_comma"), project.pop("tags"))
+    project["tags"] = validate_comma_split_option(
+        project.pop("tags_comma"), project.pop("tags"))
     command = projects_commands.CreateProjectCommand(api_key)
     command.execute(project)
 
@@ -86,7 +87,7 @@ def create_project(project_id, api_key, options_file):
     command.execute(project_id)
 
 
-@projects_group.command("delete", help="Delete project and all its experiments")
+@projects_group.command("delete", help="Delete project and all its nested resources")
 @click.option(
     "--id",
     "project_id",
@@ -125,7 +126,8 @@ def delete_project(project_id, options_file, api_key):
 @common.api_key_option
 @common.options_file
 def project_add_tag(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop(
+        "tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = projects_commands.ProjectAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -155,7 +157,8 @@ def project_add_tag(id, options_file, api_key, **kwargs):
 @common.api_key_option
 @common.options_file
 def project_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop(
+        "tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = projects_commands.ProjectRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)

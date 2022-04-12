@@ -21,34 +21,31 @@ class TestModelsList(object):
     URL = "https://api.paperspace.io/mlModels/getModelList/"
     COMMAND = ["models", "list"]
 
-    COMMAND_WITH_FILTERING_BY_EXPERIMENT_ID = [
-        "models", "list",
-        "--experimentId", "some_experiment_id",
-        "--projectId", "some_project_id",
-        "--tag", "some_tag",
-        "--tag", "some_other_tag",
-    ]
-    EXPECTED_REQUEST_JSON_WITH_FILTERING = {"filter": {"where": {"and": [{"projectId": "some_project_id",
-                                                                          "experimentId": "some_experiment_id"}]}},
+    EXPECTED_REQUEST_JSON_WITH_FILTERING = {"filter": {"where": {"and": [{"projectId": "some_project_id"}]}},
                                             "tagFilter": ("some_tag", "some_other_tag")}
 
-    COMMAND_WITH_API_KEY_PARAMETER_USED = ["models", "list", "--apiKey", "some_key"]
-    COMMAND_WITH_OPTIONS_FILE = ["models", "list", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_API_KEY_PARAMETER_USED = [
+        "models", "list", "--apiKey", "some_key"]
+    COMMAND_WITH_OPTIONS_FILE = ["models", "list",
+                                 "--optionsFile", ]  # path added in test
 
-    EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND = {"modelList": [], "total": 1, "displayTotal": 0}
+    EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND = {
+        "modelList": [], "total": 1, "displayTotal": 0}
 
-    EXPECTED_STDOUT = """+------+-----------------+------------+------------+---------------+
-| Name | ID              | Model Type | Project ID | Experiment ID |
-+------+-----------------+------------+------------+---------------+
-| None | mosu30xm7q8vb0p | Tensorflow | prmr22ve0  | ehla1kvbwzaco |
-+------+-----------------+------------+------------+---------------+
+    EXPECTED_STDOUT = """+------+-----------------+------------+------------+
+| Name | ID              | Model Type | Project ID |
++------+-----------------+------------+------------+
+| None | mosu30xm7q8vb0p | Tensorflow | prmr22ve0  |
++------+-----------------+------------+------------+
 """
 
-    EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 401, "message": "No such API token"}
+    EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {
+        "status": 401, "message": "No such API token"}
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
-    def test_should_send_get_request_and_print_list_of_experiments(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON)
+    def test_should_send_get_request_and_print_list_of_models(self, get_patched):
+        get_patched.return_value = MockResponse(
+            example_responses.LIST_MODELS_RESPONSE_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -63,10 +60,12 @@ class TestModelsList(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_replate_api_key_in_headers_when_api_key_parameter_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON)
+        get_patched.return_value = MockResponse(
+            example_responses.LIST_MODELS_RESPONSE_JSON)
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
+        result = runner.invoke(
+            cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -78,7 +77,8 @@ class TestModelsList(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(self, get_patched, models_list_config_path):
-        get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON)
+        get_patched.return_value = MockResponse(
+            example_responses.LIST_MODELS_RESPONSE_JSON)
         command = self.COMMAND_WITH_OPTIONS_FILE[:] + [models_list_config_path]
 
         runner = CliRunner()
@@ -93,23 +93,10 @@ class TestModelsList(object):
         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
-    def test_should_send_get_request_and_print_list_of_models_filtered_experiment_id(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.LIST_MODELS_RESPONSE_JSON)
-
-        runner = CliRunner()
-        result = runner.invoke(cli.cli, self.COMMAND_WITH_FILTERING_BY_EXPERIMENT_ID)
-
-        get_patched.assert_called_once_with(self.URL,
-                                            headers=EXPECTED_HEADERS,
-                                            json=self.EXPECTED_REQUEST_JSON_WITH_FILTERING,
-                                            params={"limit": -1})
-
-        assert result.output == self.EXPECTED_STDOUT
-
-    @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_proper_message_when_no_models_were_found(
             self, get_patched):
-        get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND)
+        get_patched.return_value = MockResponse(
+            self.EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -123,7 +110,8 @@ class TestModelsList(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
+        get_patched.return_value = MockResponse(
+            self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -141,12 +129,15 @@ class TestDeleteModel(object):
     COMMAND = ["models", "delete", "--id", "some_id"]
     EXPECTED_REQUEST_JSON = {"id": "some_id"}
 
-    COMMAND_WITH_API_KEY_PARAMETER_USED = ["models", "delete", "--id", "some_id", "--apiKey", "some_key"]
-    COMMAND_WITH_OPTIONS_FILE = ["models", "delete", "--id", "some_id", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_API_KEY_PARAMETER_USED = [
+        "models", "delete", "--id", "some_id", "--apiKey", "some_key"]
+    COMMAND_WITH_OPTIONS_FILE = [
+        "models", "delete", "--id", "some_id", "--optionsFile", ]  # path added in test
 
     EXPECTED_STDOUT = "Model deleted\n"
 
-    EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 400, "message": "Invalid API token"}
+    EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {
+        "status": 400, "message": "Invalid API token"}
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_post_request_when_models_delete_command_was_executed(self, post_patched):
@@ -170,7 +161,8 @@ class TestDeleteModel(object):
         post_patched.return_value = MockResponse(status_code=204)
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
+        result = runner.invoke(
+            cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
         post_patched.assert_called_once_with(self.URL,
                                              headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -185,7 +177,8 @@ class TestDeleteModel(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_yaml_file(self, post_patched, models_delete_config_path):
         post_patched.return_value = MockResponse(status_code=204)
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [models_delete_config_path]
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
+            [models_delete_config_path]
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
@@ -203,7 +196,8 @@ class TestDeleteModel(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_post_request_and_print_proper_message_when_model_with_given_id_was_not_found(
             self, post_patched):
-        post_patched.return_value = MockResponse(example_responses.DELETE_MODEL_404_RESPONSE_JSON, status_code=404)
+        post_patched.return_value = MockResponse(
+            example_responses.DELETE_MODEL_404_RESPONSE_JSON, status_code=404)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -219,7 +213,8 @@ class TestDeleteModel(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
+        post_patched.return_value = MockResponse(
+            self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -232,6 +227,7 @@ class TestDeleteModel(object):
                                              params=None)
 
         assert result.output == "Failed to delete resource: Invalid API token\n"
+
 
 class TestModelCreate(object):
     URL = "https://api.paperspace.io/mlModels/createModelV2"
@@ -264,7 +260,6 @@ class TestModelCreate(object):
         "datasetRef": "dsr8k5qzn401lb5:latest",
     }
 
-
     EXPECTED_STDOUT = "Model created with ID: some_model_id\n"
 
     CREATE_MODEL_V2_REPONSE = example_responses.MODEL_CREATE_RESPONSE_JSON_V2
@@ -280,11 +275,11 @@ class TestModelCreate(object):
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_has_calls([
             mock.call(self.URL,
-                        headers=EXPECTED_HEADERS,
-                        json=None,
-                        files=None,
-                        data=None,
-                        params=self.BASE_PARAMS),
+                      headers=EXPECTED_HEADERS,
+                      json=None,
+                      files=None,
+                      data=None,
+                      params=self.BASE_PARAMS),
         ])
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
@@ -298,11 +293,11 @@ class TestModelCreate(object):
         assert result.output == self.EXPECTED_STDOUT, result.exc_info
         post_patched.assert_has_calls([
             mock.call(self.URL,
-                        headers=EXPECTED_HEADERS,
-                        json=None,
-                        files=None,
-                        data=None,
-                        params=self.ALL_OPTIONS_PARAMS),
+                      headers=EXPECTED_HEADERS,
+                      json=None,
+                      files=None,
+                      data=None,
+                      params=self.ALL_OPTIONS_PARAMS),
         ])
 
 
@@ -363,18 +358,22 @@ class TestModelUpload(object):
         "--clusterId", "some_cluster_id",
         "--apiKey", "some_key",
     ]
-    COMMAND_WITH_OPTIONS_FILE = ["models", "upload", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["models", "upload",
+                                 "--optionsFile", ]  # path added in test
 
     EXPECTED_STDOUT = "Model uploaded with ID: some_model_id\n"
 
     GET_PRESIGNED_URL = "https://api.paperspace.io/mlModels/getPresignedModelUrl"
-    GET_PRESIGNED_URL_PARAMS = {"fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": "", "clusterId": "some_cluster_id"}
-    GET_PRESIGNED_URL_PARAMS_BASIC = {"fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": ""}
+    GET_PRESIGNED_URL_PARAMS = {"fileName": "saved_model.pb",
+                                "modelHandle": "some_model_id", "contentType": "", "clusterId": "some_cluster_id"}
+    GET_PRESIGNED_URL_PARAMS_BASIC = {
+        "fileName": "saved_model.pb", "modelHandle": "some_model_id", "contentType": ""}
     GET_PRESIGNED_URL_RESPONSE = example_responses.MODEL_UPLOAD_GET_PRESIGNED_URL_RESPONSE
 
     CREATE_MODEL_V2_REPONSE = example_responses.MODEL_CREATE_RESPONSE_JSON_V2
 
-    EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 400, "message": "Invalid API token"}
+    EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {
+        "status": 400, "message": "Invalid API token"}
     UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -384,7 +383,8 @@ class TestModelUpload(object):
             self, post_patched, put_patched, get_patched):
         post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
         put_patched.return_value = MockResponse()
-        get_patched.return_value = MockResponse(self.GET_PRESIGNED_URL_RESPONSE)
+        get_patched.return_value = MockResponse(
+            self.GET_PRESIGNED_URL_RESPONSE)
 
         runner = CliRunner()
         with runner.isolated_filesystem():
@@ -425,7 +425,8 @@ class TestModelUpload(object):
             self, post_patched, put_patched, get_patched):
         post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
         put_patched.return_value = MockResponse()
-        get_patched.return_value = MockResponse(self.GET_PRESIGNED_URL_RESPONSE)
+        get_patched.return_value = MockResponse(
+            self.GET_PRESIGNED_URL_RESPONSE)
 
         runner = CliRunner()
         with runner.isolated_filesystem():
@@ -465,14 +466,16 @@ class TestModelUpload(object):
             self, post_patched, put_patched, get_patched):
         post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
         put_patched.return_value = MockResponse()
-        get_patched.return_value = MockResponse(self.GET_PRESIGNED_URL_RESPONSE)
+        get_patched.return_value = MockResponse(
+            self.GET_PRESIGNED_URL_RESPONSE)
 
         runner = CliRunner()
         with runner.isolated_filesystem():
             with open(self.MODEL_FILE, "w") as h:
                 h.write("I'm a model!")
 
-            result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
+            result = runner.invoke(
+                cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
             assert result.output == self.EXPECTED_STDOUT, result.exc_info
             post_patched.assert_has_calls([
@@ -507,8 +510,10 @@ class TestModelUpload(object):
             self, post_patched, put_patched, get_patched, models_upload_config_path):
         post_patched.return_value = MockResponse(self.CREATE_MODEL_V2_REPONSE)
         put_patched.return_value = MockResponse()
-        get_patched.return_value = MockResponse(self.GET_PRESIGNED_URL_RESPONSE)
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [models_upload_config_path]
+        get_patched.return_value = MockResponse(
+            self.GET_PRESIGNED_URL_RESPONSE)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
+            [models_upload_config_path]
 
         runner = CliRunner()
         with runner.isolated_filesystem():
@@ -544,7 +549,8 @@ class TestModelUpload(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
+        post_patched.return_value = MockResponse(
+            self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
 
         runner = CliRunner()
         with runner.isolated_filesystem():
@@ -628,17 +634,19 @@ class TestModelDetails(object):
 
     EXPECTED_REQUEST_JSON = {"filter": {"where": {"and": [{"id": "some_id"}]}}}
 
-    COMMAND_WITH_API_KEY_PARAMETER_USED = ["models", "details", "--id", "some_id", "--apiKey", "some_key"]
-    COMMAND_WITH_OPTIONS_FILE = ["models", "details", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_API_KEY_PARAMETER_USED = [
+        "models", "details", "--id", "some_id", "--apiKey", "some_key"]
+    COMMAND_WITH_OPTIONS_FILE = [
+        "models", "details", "--optionsFile", ]  # path added in test
 
-    EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND = {"modelList": [], "total": 1, "displayTotal": 0}
+    EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND = {
+        "modelList": [], "total": 1, "displayTotal": 0}
 
     EXPECTED_STDOUT = """+------------------+----------------------------------------------------------------------------+
 | ID               | some_id                                                                    |
 +------------------+----------------------------------------------------------------------------+
 | Name             | some_name                                                                  |
 | Project ID       | some_project_id                                                            |
-| Experiment ID    | some_experiment_id                                                         |
 | Model Type       | Tensorflow                                                                 |
 | URL              | s3://ps-projects-development/asdf/some_project_id/some_experiment_id/model |
 | Deployment State | Stopped                                                                    |
@@ -651,7 +659,6 @@ class TestModelDetails(object):
 +------------------+----------------------------------------------------------------------------+
 | Name             | some_name                                                                  |
 | Project ID       | some_project_id                                                            |
-| Experiment ID    | some_experiment_id                                                         |
 | Model Type       | Tensorflow                                                                 |
 | URL              | s3://ps-projects-development/asdf/some_project_id/some_experiment_id/model |
 | Deployment State | Stopped                                                                    |
@@ -659,11 +666,13 @@ class TestModelDetails(object):
 +------------------+----------------------------------------------------------------------------+
 """
 
-    EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {"status": 400, "message": "Invalid API token"}
+    EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED = {
+        "status": 400, "message": "Invalid API token"}
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
-    def test_should_send_get_request_and_print_details_of_experiment(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.MODEL_DETAILS_RESPONSE_JSON)
+    def test_should_send_get_request_and_print_details_of_model(self, get_patched):
+        get_patched.return_value = MockResponse(
+            example_responses.MODEL_DETAILS_RESPONSE_JSON)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -677,8 +686,9 @@ class TestModelDetails(object):
         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
-    def test_should_send_get_request_and_print_details_of_experiment_that_has_some_tags(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.MODEL_DETAILS_RESPONSE_JSON_WITH_TAGS)
+    def test_should_send_get_request_and_print_details_of_model_that_has_some_tags(self, get_patched):
+        get_patched.return_value = MockResponse(
+            example_responses.MODEL_DETAILS_RESPONSE_JSON_WITH_TAGS)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -693,10 +703,12 @@ class TestModelDetails(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_replace_api_key_in_headers_when_api_key_parameter_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(example_responses.MODEL_DETAILS_RESPONSE_JSON)
+        get_patched.return_value = MockResponse(
+            example_responses.MODEL_DETAILS_RESPONSE_JSON)
 
         runner = CliRunner()
-        result = runner.invoke(cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
+        result = runner.invoke(
+            cli.cli, self.COMMAND_WITH_API_KEY_PARAMETER_USED)
 
         get_patched.assert_called_once_with(self.URL,
                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
@@ -708,8 +720,10 @@ class TestModelDetails(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(self, get_patched, models_details_config_path):
-        get_patched.return_value = MockResponse(example_responses.MODEL_DETAILS_RESPONSE_JSON)
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [models_details_config_path]
+        get_patched.return_value = MockResponse(
+            example_responses.MODEL_DETAILS_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
+            [models_details_config_path]
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, command)
@@ -725,7 +739,8 @@ class TestModelDetails(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_proper_message_when_no_models_were_found(
             self, get_patched):
-        get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND)
+        get_patched.return_value = MockResponse(
+            self.EXPECTED_RESPONSE_JSON_WHEN_NO_MODELS_WERE_FOUND)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -739,7 +754,8 @@ class TestModelDetails(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_proper_message_when_wrong_api_key_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
+        get_patched.return_value = MockResponse(
+            self.EXPECTED_RESPONSE_WHEN_WRONG_API_KEY_WAS_USED, 401)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.COMMAND)
@@ -758,7 +774,8 @@ class TestDownloadModelFiles(object):
     DESTINATION_DIR_NAME = "dest"
     DESTINATION_DIR_PATH = os.path.join(tempfile.gettempdir(), "dest")
 
-    COMMAND = ["models", "download", "--id", "some_model_id", "--destinationDir", DESTINATION_DIR_PATH]
+    COMMAND = ["models", "download", "--id", "some_model_id",
+               "--destinationDir", DESTINATION_DIR_PATH]
 
     @classmethod
     def teardown_method(cls):
@@ -818,7 +835,8 @@ class TestDownloadModelFiles(object):
         with open(hello2_txt_path) as h:
             assert h.read() == "\"Hello Paperspace 2\n\""
 
-        elo_txt_path = os.path.join(self.DESTINATION_DIR_PATH, "keton", "elo.txt")
+        elo_txt_path = os.path.join(
+            self.DESTINATION_DIR_PATH, "keton", "elo.txt")
         assert os.path.exists(elo_txt_path)
         assert not os.path.isdir(elo_txt_path)
         with open(elo_txt_path) as h:

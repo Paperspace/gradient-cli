@@ -20,12 +20,6 @@ def model_tags():
 
 @models_group.command("list", help="List models with optional filtering")
 @click.option(
-    "--experimentId",
-    "experiment_id",
-    help="Use to filter by experiment ID",
-    cls=common.GradientOption,
-)
-@click.option(
     "--projectId",
     "project_id",
     help="Use to filter by project ID",
@@ -40,9 +34,9 @@ def model_tags():
 )
 @common.api_key_option
 @common.options_file
-def list_models(api_key, experiment_id, project_id, tags, options_file):
+def list_models(api_key, project_id, tags, options_file):
     command = models_commands.ListModelsCommand(api_key=api_key)
-    command.execute(experiment_id=experiment_id, project_id=project_id, tags=tags)
+    command.execute(project_id=project_id, tags=tags)
 
 
 @models_group.command("delete", help="Delete model")
@@ -106,19 +100,20 @@ def delete_model(api_key, model_id, options_file):
     "--tag",
     "tags",
     multiple=True,
-    help="One or many tags that you want to add to experiment",
+    help="One or many tags that you want to add to model",
     cls=common.GradientOption
 )
 @click.option(
     "--tags",
     "tags_comma",
-    help="Separated by comma tags that you want add to experiment",
+    help="Separated by comma tags that you want add to model",
     cls=common.GradientOption
 )
 @common.api_key_option
 @common.options_file
 def create_model(api_key, options_file, **model):
-    model["tags"] = validate_comma_split_option(model.pop("tags_comma"), model.pop("tags"))
+    model["tags"] = validate_comma_split_option(
+        model.pop("tags_comma"), model.pop("tags"))
     command = models_commands.CreateModel(api_key=api_key)
     command.execute(**model)
 
@@ -174,19 +169,20 @@ def create_model(api_key, options_file, **model):
     "--tag",
     "tags",
     multiple=True,
-    help="One or many tags that you want to add to experiment",
+    help="One or many tags that you want to add to model",
     cls=common.GradientOption
 )
 @click.option(
     "--tags",
     "tags_comma",
-    help="Separated by comma tags that you want add to experiment",
+    help="Separated by comma tags that you want add to model",
     cls=common.GradientOption
 )
 @common.api_key_option
 @common.options_file
 def upload_model(api_key, options_file, **model):
-    model["tags"] = validate_comma_split_option(model.pop("tags_comma"), model.pop("tags"))
+    model["tags"] = validate_comma_split_option(
+        model.pop("tags_comma"), model.pop("tags"))
     command = models_commands.UploadModel(api_key=api_key)
     command.execute(**model)
 
@@ -252,7 +248,8 @@ def download_model_files(model_id, destination_directory, api_key, options_file)
 @common.api_key_option
 @common.options_file
 def ml_model_add_tag(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop(
+        "tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = models_commands.MLModelAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -282,7 +279,8 @@ def ml_model_add_tag(id, options_file, api_key, **kwargs):
 @common.api_key_option
 @common.options_file
 def ml_model_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop(
+        "tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = models_commands.MLModelRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
