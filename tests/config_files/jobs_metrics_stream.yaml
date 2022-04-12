@@ -1,6 +1,0 @@
-apiKey: some_key
-id: jstkd2lapucirs
-interval: 20s
-metric:
-- gpuMemoryFree
-- gpuMemoryUsed

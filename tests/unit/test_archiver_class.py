@@ -63,7 +63,8 @@ class TestZipArchiver(object):
     def test_should_get_valid_excluded_paths_when_list_of_files_was_passed_to_get_excluded_paths(self):
         archiver = gradient.api_sdk.archivers.ZipArchiver()
 
-        excluded = archiver.get_excluded_paths(["some_file", "some_dir/some_other_file"])
+        excluded = archiver.get_excluded_paths(
+            ["some_file", "some_dir/some_other_file"])
 
         assert excluded == {
             os.path.join(".git", "*"),
@@ -127,7 +128,8 @@ class TestZipArchiver(object):
             zip_file.extractall(temp_dir_for_extracted_files)
             archiver2 = gradient.api_sdk.archivers.ZipArchiver()
             archiver2.default_excluded_paths = []
-            paths_in_extracted_dir = archiver2.get_file_paths(temp_dir_for_extracted_files)
+            paths_in_extracted_dir = archiver2.get_file_paths(
+                temp_dir_for_extracted_files)
 
         finally:
             shutil.rmtree(temp_dir)
@@ -144,54 +146,3 @@ class TestS3FileUploader(object):
         uploader.upload(file_path, "s3://some.url", {"key": "some_key"})
 
         post_patched.assert_called_once()
-
-
-class TestExperimentWorkspaceDirectoryUploader(object):
-    WORKSPACE_DIR_PATH = "/some/workspace/dir/path/"
-    TEMP_DIR_PATH = "/some/temp/dir/path/"
-
-    @mock.patch("gradient.api_sdk.s3_uploader.ExperimentFileUploader")
-    @mock.patch("gradient.api_sdk.s3_uploader.ZipArchiver")
-    def test_class_with_default_params(self, zip_archiver_cls, s3_project_file_uploader_cls):
-        zip_archiver = mock.MagicMock()
-        zip_archiver_cls.return_value = zip_archiver
-        s3_project_file_uploader = mock.MagicMock()
-        s3_project_file_uploader.upload.return_value = "s3://url/to/bucket"
-        s3_project_file_uploader_cls.return_value = s3_project_file_uploader
-        archive_path = os.path.join(tempfile.gettempdir(), "temp.zip")
-
-        uploader = gradient.ExperimentWorkspaceDirectoryUploader("some_api_key", ps_client_name="some_client_name")
-        bucket_url = uploader.upload(self.WORKSPACE_DIR_PATH, "some_project_id")
-
-        s3_project_file_uploader_cls.assert_called_once_with("some_api_key", ps_client_name="some_client_name")
-        zip_archiver.archive.assert_called_once_with(self.WORKSPACE_DIR_PATH, archive_path, exclude=None)
-        s3_project_file_uploader.upload.assert_called_once_with(archive_path, "some_project_id")
-        assert bucket_url == "s3://url/to/bucket"
-
-    def test_should_run_upload_(self):
-        zip_archiver = mock.MagicMock()
-        s3_project_file_uploader = mock.MagicMock()
-        s3_project_file_uploader.upload.return_value = "s3://url/to/bucket"
-        temp_file_name = "some_temp_file_name.zip"
-        archive_path = os.path.join(self.TEMP_DIR_PATH, temp_file_name)
-
-        uploader = gradient.ExperimentWorkspaceDirectoryUploader(
-            "some_api_key",
-            temp_dir=self.TEMP_DIR_PATH,
-            archiver=zip_archiver,
-            project_uploader=s3_project_file_uploader,
-        )
-        bucket_url = uploader.upload(
-            self.WORKSPACE_DIR_PATH,
-            "some_project_id",
-            exclude=["file1", "dir/file2"],
-            temp_file_name=temp_file_name,
-        )
-
-        zip_archiver.archive.assert_called_once_with(
-            self.WORKSPACE_DIR_PATH,
-            os.path.join(self.TEMP_DIR_PATH, temp_file_name),
-            exclude=["file1", "dir/file2"],
-        )
-        s3_project_file_uploader.upload.assert_called_once_with(archive_path, "some_project_id")
-        assert bucket_url == "s3://url/to/bucket"

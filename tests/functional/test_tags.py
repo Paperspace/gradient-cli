@@ -39,10 +39,6 @@ class TestEntityAddTags(object):
     @pytest.mark.parametrize(
         "entity_command, entity, result_entity",
         [
-            # ("deployments", "deployment", "deployment"),
-            ("experiments", "experiment", "experiment"),
-            ("experiments hyperparameters", "experiment", "hyperparameter"),
-            ("jobs", "job", "job"),
             ("machines", "machine", "machine"),
             ("models", "mlModel", "ml model"),
             ("notebooks", "notebook", "notebook"),
@@ -80,10 +76,6 @@ class TestEntityAddTags(object):
     @pytest.mark.parametrize(
         "entity_command, entity, result_entity",
         [
-            # ("deployments", "deployment", "deployment"),
-            ("experiments", "experiment", "experiment"),
-            ("experiments hyperparameters", "experiment", "hyperparameter"),
-            ("jobs", "job", "job"),
             ("machines", "machine", "machine"),
             ("models", "mlModel", "ml model"),
             ("notebooks", "notebook", "notebook"),
@@ -147,10 +139,6 @@ class TestEntityRemoveTags(object):
     @pytest.mark.parametrize(
         "entity_command, entity, result_entity",
         [
-            # ("deployments", "deployment", "deployment"),
-            ("experiments", "experiment", "experiment"),
-            ("experiments hyperparameters", "experiment", "hyperparameter"),
-            ("jobs", "job", "job"),
             ("machines", "machine", "machine"),
             ("models", "mlModel", "ml model"),
             ("notebooks", "notebook", "notebook"),
@@ -189,10 +177,6 @@ class TestEntityRemoveTags(object):
     @pytest.mark.parametrize(
         "entity_command, entity, result_entity",
         [
-            # ("deployments", "deployment", "deployment"),
-            ("experiments", "experiment", "experiment"),
-            ("experiments hyperparameters", "experiment", "hyperparameter"),
-            ("jobs", "job", "job"),
             ("machines", "machine", "machine"),
             ("models", "mlModel", "ml model"),
             ("notebooks", "notebook", "notebook"),

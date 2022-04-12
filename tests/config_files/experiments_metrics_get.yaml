@@ -1,8 +1,0 @@
-apiKey: some_key
-end: 2020-04-02 21:37:00
-id: esro6mbmiulvbl
-interval: 20s
-metric:
-- gpuMemoryFree
-- gpuMemoryUsed
-start: 2020-04-01 00:00:00

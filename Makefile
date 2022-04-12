@@ -23,7 +23,6 @@ clean:
 
 prepare-docs-source:
 	@sphinx-apidoc -f -o source gradient
-	@cp source/cli_docs/gradient.cli.rst source/gradient.cli.rst
 
 gh-pages: prepare-docs-source
 	@make html

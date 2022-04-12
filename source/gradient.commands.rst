@@ -28,42 +28,10 @@ gradient.commands.datasets module
    :undoc-members:
    :show-inheritance:
 
-gradient.commands.deployments module
-------------------------------------
-
-.. automodule:: gradient.commands.deployments
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gradient.commands.experiments module
-------------------------------------
-
-.. automodule:: gradient.commands.experiments
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 gradient.commands.helpers module
 --------------------------------
 
 .. automodule:: gradient.commands.helpers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gradient.commands.hyperparameters module
-----------------------------------------
-
-.. automodule:: gradient.commands.hyperparameters
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gradient.commands.jobs module
------------------------------
-
-.. automodule:: gradient.commands.jobs
    :members:
    :undoc-members:
    :show-inheritance:
@@ -128,14 +96,6 @@ gradient.commands.storage\_providers module
 -------------------------------------------
 
 .. automodule:: gradient.commands.storage_providers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gradient.commands.tensorboards module
--------------------------------------
-
-.. automodule:: gradient.commands.tensorboards
    :members:
    :undoc-members:
    :show-inheritance:

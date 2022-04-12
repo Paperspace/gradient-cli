@@ -6,7 +6,7 @@ import requests
 import six
 
 from . import sdk_exceptions
-from .clients import JobsClient, ModelsClient
+from .clients import ModelsClient
 from .clients.base_client import BaseClient
 from .logger import MuteLogger
 
@@ -23,7 +23,8 @@ class S3FilesDownloader(object):
         :param str destination_dir:
         """
         for source in sources:
-            self.download_file(source, destination_dir, max_retries=self.file_download_retries)
+            self.download_file(source, destination_dir,
+                               max_retries=self.file_download_retries)
 
     def download_file(self, source, destination_dir, max_retries=0):
         self._create_directory(destination_dir)
@@ -38,10 +39,12 @@ class S3FilesDownloader(object):
                 response = requests.get(file_url)
                 break
             except requests.exceptions.ConnectionError:
-                self.logger.debug("Downloading {} resulted in error. Trying again...".format(file_path))
+                self.logger.debug(
+                    "Downloading {} resulted in error. Trying again...".format(file_path))
                 time.sleep(0.1)
         else:  # break statement not executed - ConnectionError `max_retries` times
-            raise sdk_exceptions.ResourceFetchingError("Downloading {} resulted in error".format(file_path))
+            raise sdk_exceptions.ResourceFetchingError(
+                "Downloading {} resulted in error".format(file_path))
 
         self._create_subdirectories(file_path, destination_dir)
         self._save_file(response, file_path, destination_dir)
@@ -75,7 +78,8 @@ class ResourceDownloader(object):
         self.api_key = api_key
         self.logger = logger
         self.ps_client_name = ps_client_name
-        self.client = self._build_client(self.CLIENT_CLASS, api_key, logger=logger)
+        self.client = self._build_client(
+            self.CLIENT_CLASS, api_key, logger=logger)
 
     def download(self, job_id, destination):
         files = self._get_files_list(job_id)
@@ -101,26 +105,6 @@ class ResourceDownloader(object):
             client.ps_client_name = self.ps_client_name
 
         return client
-
-
-class JobArtifactsDownloader(ResourceDownloader):
-    CLIENT_CLASS = JobsClient
-
-    def _get_files_list(self, job_id):
-        start_after = None
-        files = []
-        while True:
-            pagination_response = self.client.artifacts_list(job_id, start_after=start_after)
-
-            if pagination_response.data:
-                files.extend(pagination_response.data)
-            start_after = pagination_response.start_after
-
-            if start_after is None:
-                break
-
-        files = tuple((f.file, f.url) for f in files)
-        return files
 
 
 class ModelFilesDownloader(ResourceDownloader):

@@ -22,20 +22,6 @@ from .dataset_versions import (
     UpdateDatasetVersion
 )
 
-from .deployments import (
-    ListDeployments,
-    CreateDeployment,
-    StartDeployment,
-    StopDeployment,
-    DeleteDeployment,
-    UpdateDeployment,
-    GetDeployment,
-    GetDeploymentMetrics,
-    ListDeploymentMetrics,
-    StreamDeploymentMetrics,
-    ListDeploymentLogs
-)
-
 from .gradient_deployments import (
     create_deployment,
     list_deployments,
@@ -44,40 +30,6 @@ from .gradient_deployments import (
     update_deployment,
     get_deployment_logs,
     yield_deployment_logs
-)
-from .experiments import (
-    ListExperiments,
-    GetExperiment,
-    ListExperimentLogs,
-    StartExperiment,
-    StopExperiment,
-    CreateSingleNodeExperiment,
-    CreateMultiNodeExperiment,
-    RunSingleNodeExperiment,
-    RunMultiNodeExperiment,
-    CreateMpiMultiNodeExperiment,
-    RunMpiMultiNodeExperiment,
-    DeleteExperiment,
-    GetExperimentMetrics,
-    ListExperimentMetrics,
-    StreamExperimentMetrics
-)
-from .hyperparameter import (
-    CreateHyperparameterJob,
-    CreateAndStartHyperparameterJob,
-    ListHyperparameterJobs,
-    GetHyperparameterTuningJob,
-    StartHyperparameterTuningJob
-)
-from .jobs import (
-    ListJobs,
-    ListResources,
-    ListJobArtifacts,
-    ListJobLogs,
-    GetJob,
-    GetJobMetrics,
-    ListJobMetrics,
-    StreamJobMetrics
 )
 from .machine_types import ListMachineTypes
 from .machines import (
@@ -132,13 +84,6 @@ from .storage_providers import (
     DeleteStorageProvider,
     GetStorageProvider,
     UpdateStorageProvider
-)
-from .tensorboards import (
-    CreateTensorboard,
-    GetTensorboard,
-    ListTensorboards,
-    UpdateTensorboard,
-    DeleteTensorboard
 )
 from .workflows import (
     ListWorkflows,

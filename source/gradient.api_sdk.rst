@@ -95,14 +95,6 @@ gradient.api\_sdk.validation\_messages module
    :undoc-members:
    :show-inheritance:
 
-gradient.api\_sdk.workspace module
-----------------------------------
-
-.. automodule:: gradient.api_sdk.workspace
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 
