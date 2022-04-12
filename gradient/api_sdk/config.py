@@ -24,7 +24,6 @@ _DEFAULT_CONFIG_FILE_NAME = os.path.expanduser("config.json")
 _DEFAULT_HELP_HEADERS_COLOR = "yellow"
 _DEFAULT_HELP_OPTIONS_COLOR = "green"
 _DEFAULT_USE_CONSOLE_COLORS = True
-_DEFAULT_USE_LEGACY_DEPLOYMENTS = False
 
 
 def get_help_colors_dict(use_colors, help_headers_color, help_options_color):
@@ -43,8 +42,6 @@ class config(object):
 
     WEB_URL = os.environ.get("PAPERSPACE_WEB_URL", _DEFAULT_WEB_URL)
     API_HOST = os.environ.get("PAPERSPACE_API_HOST", _DEFAULT_API_HOST)
-    USE_LEGACY_DEPLOYMENTS = os.environ.get(
-        "USE_LEGACY_DEPLOYMENTS", _DEFAULT_USE_LEGACY_DEPLOYMENTS)
     CONFIG_HOST = os.environ.get(
         "PAPERSPACE_CONFIG_HOST", _DEFAULT_CONFIG_HOST)
     CONFIG_LOG_HOST = os.environ.get(
