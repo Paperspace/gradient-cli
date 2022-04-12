@@ -189,19 +189,20 @@ create_machine_help = "Create a new Paperspace virtual machine. If you are using
     "--tag",
     "tags",
     multiple=True,
-    help="One or many tags that you want to add to experiment",
+    help="One or many tags that you want to add to machine",
     cls=common.GradientOption
 )
 @click.option(
     "--tags",
     "tags_comma",
-    help="Separated by comma tags that you want add to experiment",
+    help="Separated by comma tags that you want add to machine",
     cls=common.GradientOption
 )
 @api_key_option
 @common.options_file
 def create_machine(api_key, options_file, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"))
+    kwargs["tags"] = validate_comma_split_option(
+        kwargs.pop("tags_comma"), kwargs.pop("tags"))
     del_if_value_is_none(kwargs)
 
     assign_public_ip = kwargs.get("assign_public_ip")
@@ -217,7 +218,8 @@ def create_machine(api_key, options_file, **kwargs):
     validate_mutually_exclusive([user_id], [email, password, first_name, last_name],
                                 "--userId is mutually exclusive with --email, --password, --firstName and --lastName")
 
-    command = machines_commands.CreateMachineCommand(api_key=api_key, logger=clilogger.CliLogger())
+    command = machines_commands.CreateMachineCommand(
+        api_key=api_key, logger=clilogger.CliLogger())
     command.execute(kwargs)
 
 
@@ -247,7 +249,8 @@ destroy_machine_help = "Destroy the machine with the given id. When this action 
 @api_key_option
 @common.options_file
 def destroy_machine(machine_id, release_public_ip, api_key, options_file):
-    command = machines_commands.DestroyMachineCommand(api_key=api_key, logger=clilogger.CliLogger())
+    command = machines_commands.DestroyMachineCommand(
+        api_key=api_key, logger=clilogger.CliLogger())
     command.execute(machine_id, release_public_ip)
 
 
@@ -424,7 +427,8 @@ def list_machines(api_key, params, options_file, **kwargs):
     validate_mutually_exclusive(params.values(), kwargs.values(),
                                 "You can use either --params dictionary or single filter arguments")
 
-    command = machines_commands.ListMachinesCommand(api_key=api_key, logger=clilogger.CliLogger())
+    command = machines_commands.ListMachinesCommand(
+        api_key=api_key, logger=clilogger.CliLogger())
     filters = params or kwargs
     command.execute(**filters)
 
@@ -445,7 +449,8 @@ restart_machine_help = "Restart an individual machine. If the machine is already
 @api_key_option
 @common.options_file
 def restart_machine(machine_id, api_key, options_file):
-    command = machines_commands.RestartMachineCommand(api_key=api_key, logger=clilogger.CliLogger())
+    command = machines_commands.RestartMachineCommand(
+        api_key=api_key, logger=clilogger.CliLogger())
     command.execute(machine_id)
 
 
@@ -652,7 +657,8 @@ def wait_for_machine_state(machine_id, state, api_key, options_file):
 @api_key_option
 @common.options_file
 def machine_add_tag(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop(
+        "tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = machines_commands.MachineAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -682,7 +688,8 @@ def machine_add_tag(id, options_file, api_key, **kwargs):
 @api_key_option
 @common.options_file
 def machine_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop(
+        "tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = machines_commands.MachineRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)

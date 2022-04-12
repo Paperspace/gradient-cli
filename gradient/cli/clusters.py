@@ -17,7 +17,7 @@ def clusters():
     "-l",
     "cluster_limit",
     default=20,
-    help="Limit listed experiments per page",
+    help="Limit listed clusters per page",
     cls=common.GradientOption,
 )
 @click.option(

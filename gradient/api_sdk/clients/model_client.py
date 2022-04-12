@@ -7,10 +7,9 @@ from .. import repositories, models
 class ModelsClient(TagsSupportMixin, BaseClient):
     entity = "mlModel"
 
-    def list(self, experiment_id=None, project_id=None, tags=None):
+    def list(self, project_id=None, tags=None):
         """Get list of models
 
-        :param str experiment_id: Experiment ID to filter models
         :param str project_id: Project ID to filter models
         :param list[str]|tuple[str] tags: tags to filter models
 
@@ -18,7 +17,7 @@ class ModelsClient(TagsSupportMixin, BaseClient):
         :rtype: list[models.Model]
         """
         repository = self.build_repository(repositories.ListModels)
-        models_list = repository.list(experiment_id=experiment_id, project_id=project_id, tags=tags)
+        models_list = repository.list(project_id=project_id, tags=tags)
         return models_list
 
     def delete(self, model_id):
@@ -114,5 +113,6 @@ class ModelsClient(TagsSupportMixin, BaseClient):
         :rtype: list[models.ModelFile]
         """
         repository = self.build_repository(repositories.ListModelFiles)
-        models_list = repository.list(model_id=model_id, links=links, size=size)
+        models_list = repository.list(
+            model_id=model_id, links=links, size=size)
         return models_list

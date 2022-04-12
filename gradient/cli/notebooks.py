@@ -150,21 +150,23 @@ def notebook_metrics():
     "--tag",
     "tags",
     multiple=True,
-    help="One or many tags that you want to add to experiment",
+    help="One or many tags that you want to add to notebook",
     cls=common.GradientOption
 )
 @click.option(
     "--tags",
     "tags_comma",
-    help="Separated by comma tags that you want add to experiment",
+    help="Separated by comma tags that you want add to notebook",
     cls=common.GradientOption
 )
 @common.api_key_option
 @common.options_file
 def create_notebook(api_key, options_file, **notebook):
-    notebook["tags"] = validate_comma_split_option(notebook.pop("tags_comma"), notebook.pop("tags"))
+    notebook["tags"] = validate_comma_split_option(
+        notebook.pop("tags_comma"), notebook.pop("tags"))
     command = notebooks.CreateNotebookCommand(api_key=api_key)
     command.execute(**notebook)
+
 
 @notebooks_group.command("start", help="Start notebook")
 @click.option(
@@ -209,22 +211,23 @@ def create_notebook(api_key, options_file, **notebook):
     "--tag",
     "tags",
     multiple=True,
-    help="One or many tags that you want to add to experiment",
+    help="One or many tags that you want to add to notebook",
     cls=common.GradientOption
 )
 @click.option(
     "--tags",
     "tags_comma",
-    help="Separated by comma tags that you want add to experiment",
+    help="Separated by comma tags that you want add to notebook",
     cls=common.GradientOption
 )
-
 @common.api_key_option
 @common.options_file
 def start_notebook(api_key, options_file, **notebook):
-    notebook["tags"] = validate_comma_split_option(notebook.pop("tags_comma"), notebook.pop("tags"))
+    notebook["tags"] = validate_comma_split_option(
+        notebook.pop("tags_comma"), notebook.pop("tags"))
     command = notebooks.StartNotebookCommand(api_key=api_key)
     command.execute(**notebook)
+
 
 @notebooks_group.command("fork", help="Fork existing notebook")
 @click.option(
@@ -322,7 +325,8 @@ def show_notebook(id, api_key, options_file):
 @common.api_key_option
 @common.options_file
 def notebook_add_tag(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop(
+        "tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = notebooks.NotebookAddTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -352,7 +356,8 @@ def notebook_add_tag(id, options_file, api_key, **kwargs):
 @common.api_key_option
 @common.options_file
 def notebook_remove_tags(id, options_file, api_key, **kwargs):
-    kwargs["tags"] = validate_comma_split_option(kwargs.pop("tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
+    kwargs["tags"] = validate_comma_split_option(kwargs.pop(
+        "tags_comma"), kwargs.pop("tags"), raise_if_no_values=True)
 
     command = notebooks.NotebookRemoveTagsCommand(api_key=api_key)
     command.execute(id, **kwargs)
@@ -375,8 +380,10 @@ def notebook_remove_tags(id, options_file, api_key, **kwargs):
     "metrics_list",
     multiple=True,
     type=str,
-    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
-    help=("One or more metrics that you want to read: {}. Defaults to cpuPercentage and memoryUsage. To view available custom metrics, use command: `gradient notebooks metrics list`".format(', '.join(map(str, constants.METRICS_MAP)))),
+    default=(constants.BuiltinMetrics.cpu_percentage,
+             constants.BuiltinMetrics.memory_usage),
+    help=("One or more metrics that you want to read: {}. Defaults to cpuPercentage and memoryUsage. To view available custom metrics, use command: `gradient notebooks metrics list`".format(
+        ', '.join(map(str, constants.METRICS_MAP)))),
     cls=common.GradientOption,
 )
 @click.option(
@@ -404,7 +411,8 @@ def notebook_remove_tags(id, options_file, api_key, **kwargs):
 @common.options_file
 def get_deployment_metrics(notebook_id, metrics_list, interval, start, end, options_file, api_key):
     command = GetNotebookMetricsCommand(api_key=api_key)
-    command.execute(notebook_id, start, end, interval, built_in_metrics=metrics_list)
+    command.execute(notebook_id, start, end, interval,
+                    built_in_metrics=metrics_list)
 
 
 @notebook_metrics.command(
@@ -464,7 +472,8 @@ def list_deployment_metrics(notebook_id, interval, start, end, options_file, api
     "metrics_list",
     multiple=True,
     type=ChoiceType(constants.METRICS_MAP, case_sensitive=False),
-    default=(constants.BuiltinMetrics.cpu_percentage, constants.BuiltinMetrics.memory_usage),
+    default=(constants.BuiltinMetrics.cpu_percentage,
+             constants.BuiltinMetrics.memory_usage),
     help="One or more metrics that you want to read. Defaults to cpuPercentage and memoryUsage",
     cls=common.GradientOption,
 )
@@ -479,7 +488,9 @@ def list_deployment_metrics(notebook_id, interval, start, end, options_file, api
 @common.options_file
 def stream_model_deployment_metrics(notebook_id, metrics_list, interval, options_file, api_key):
     command = StreamNotebookMetricsCommand(api_key=api_key)
-    command.execute(notebook_id=notebook_id, interval=interval, built_in_metrics=metrics_list)
+    command.execute(notebook_id=notebook_id, interval=interval,
+                    built_in_metrics=metrics_list)
+
 
 @notebooks_group.command("stop", help="Stop running notebook")
 @click.option(
@@ -534,7 +545,9 @@ def artifacts():
 @common.options_file
 def list_artifacts(notebook_id, size, links, files, options_file, api_key=None):
     command = notebooks.ArtifactsListCommand(api_key=api_key)
-    command.execute(notebook_id=notebook_id, size=size, links=links, files=files)
+    command.execute(notebook_id=notebook_id, size=size,
+                    links=links, files=files)
+
 
 @notebooks_group.command("logs", help="List notebook logs")
 @click.option(

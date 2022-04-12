@@ -26,20 +26,18 @@ class ListModels(GetBaseModelsApiUrlMixin, ParseModelDictMixin, ListResources):
         return "/mlModels/getModelList/"
 
     def _parse_objects(self, data, **kwargs):
-        experiments = []
+        models = []
         for model_dict in data["modelList"]:
-            experiment = self._parse_object(model_dict)
-            experiments.append(experiment)
+            model = self._parse_object(model_dict)
+            models.append(model)
 
-        return experiments
+        return models
 
     def _get_request_params(self, kwargs):
         return {"limit": -1}
 
     def _get_request_json(self, kwargs):
         filters = {}
-        if kwargs.get("experiment_id"):
-            filters["experimentId"] = kwargs.get("experiment_id")
         if kwargs.get("project_id"):
             filters["projectId"] = kwargs.get("project_id")
 
@@ -89,7 +87,8 @@ class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
         return None
 
     def create(self, instance, data=None, path=None, cluster_id=None):
-        model_id = super(UploadModel, self).create(instance, data=data, path=path)
+        model_id = super(UploadModel, self).create(
+            instance, data=data, path=path)
         try:
             self._upload_model(path, model_id, cluster_id=cluster_id)
         except BaseException:
@@ -105,7 +104,8 @@ class UploadModel(GetBaseModelsApiUrlMixin, CreateResource):
         model_uploader.upload(file_path, model_id, cluster_id=cluster_id)
 
     def _delete_model(self, model_id):
-        repository = DeleteModel(self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
+        repository = DeleteModel(
+            self.api_key, logger=self.logger, ps_client_name=self.ps_client_name)
         repository.delete(model_id)
 
 
@@ -123,7 +123,8 @@ class CreateModel(GetBaseModelsApiUrlMixin, CreateResource):
         return None
 
     def create(self, instance, data=None, path=None):
-        model_id = super(CreateModel, self).create(instance, data=data, path=path)
+        model_id = super(CreateModel, self).create(
+            instance, data=data, path=path)
         return model_id
 
 

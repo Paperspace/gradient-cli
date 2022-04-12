@@ -44,46 +44,6 @@ gradient.api\_sdk.models.dataset\_version module
    :undoc-members:
    :show-inheritance:
 
-gradient.api\_sdk.models.deployment module
-------------------------------------------
-
-.. automodule:: gradient.api_sdk.models.deployment
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gradient.api\_sdk.models.experiment module
-------------------------------------------
-
-.. automodule:: gradient.api_sdk.models.experiment
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gradient.api\_sdk.models.experiment\_dataset module
----------------------------------------------------
-
-.. automodule:: gradient.api_sdk.models.experiment_dataset
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gradient.api\_sdk.models.hyperparameter module
-----------------------------------------------
-
-.. automodule:: gradient.api_sdk.models.hyperparameter
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gradient.api\_sdk.models.job module
------------------------------------
-
-.. automodule:: gradient.api_sdk.models.job
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 gradient.api\_sdk.models.log module
 -----------------------------------
 
@@ -152,14 +112,6 @@ gradient.api\_sdk.models.tag module
 -----------------------------------
 
 .. automodule:: gradient.api_sdk.models.tag
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gradient.api\_sdk.models.tensorboard module
--------------------------------------------
-
-.. automodule:: gradient.api_sdk.models.tensorboard
    :members:
    :undoc-members:
    :show-inheritance:

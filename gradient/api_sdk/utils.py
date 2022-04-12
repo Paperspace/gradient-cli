@@ -61,19 +61,6 @@ def print_dict_recursive(input_dict, logger, indent=0, tabulator="  "):
             logger.log("%s%s" % (tabulator * (indent + 1), val))
 
 
-class ExperimentsClientHelpersMixin(object):
-    def _get_experiment_type_id(self, value):
-        if isinstance(value, int):
-            return value
-
-        try:
-            experiment_type_id = constants.MULTI_NODE_EXPERIMENT_TYPES_MAP[value]
-        except KeyError as e:
-            raise sdk_exceptions.GradientSdkError("Invalid experiment type: {}".format(e))
-
-        return experiment_type_id
-
-
 def validate_auth_options(auth_username, auth_password, generate_auth):
     if generate_auth and any((auth_username, auth_password)):
         raise sdk_exceptions.InvalidParametersError(
@@ -82,11 +69,13 @@ def validate_auth_options(auth_username, auth_password, generate_auth):
 
     # checking if both or none auth parameters were used
     if len([val for val in (auth_username, auth_password) if not bool(val)]) == 1:
-        raise sdk_exceptions.InvalidParametersError("auth_username and auth_password have to be used together")
+        raise sdk_exceptions.InvalidParametersError(
+            "auth_username and auth_password have to be used together")
 
 
 def generate_credential(n):
-    cred = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(n))
+    cred = ''.join(random.choice(string.ascii_uppercase +
+                                 string.ascii_lowercase + string.digits) for _ in range(n))
     return cred
 
 
@@ -126,7 +115,8 @@ def concatenate_urls(fst_part, snd_part):
 class MultipartEncoder(object):
     def __init__(self, fields):
         mp_encoder = encoder.MultipartEncoder(fields=fields)
-        self.monitor = encoder.MultipartEncoderMonitor(mp_encoder, callback=self._create_callback(mp_encoder))
+        self.monitor = encoder.MultipartEncoderMonitor(
+            mp_encoder, callback=self._create_callback(mp_encoder))
 
     def get_monitor(self):
         return self.monitor
@@ -177,7 +167,8 @@ class PathParser(object):
         if cls.is_http_url(path):
             return cls.HTTP_URL
 
-        raise sdk_exceptions.WrongPathError("Given path is neither local path, nor valid URL")
+        raise sdk_exceptions.WrongPathError(
+            "Given path is neither local path, nor valid URL")
 
     @staticmethod
     def is_local_dir(path):
