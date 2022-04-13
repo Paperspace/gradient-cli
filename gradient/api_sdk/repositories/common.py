@@ -58,7 +58,8 @@ class BaseRepository(object):
         url = self.get_request_url(**kwargs)
         client = self._get_client(**kwargs)
         response = self._send_request(client, url, json=json_, params=params)
-        gradient_response = http_client.GradientResponse.interpret_response(response)
+        gradient_response = http_client.GradientResponse.interpret_response(
+            response)
 
         return gradient_response
 
@@ -118,6 +119,9 @@ class ListResources(BaseRepository):
             return instances, meta_data
         return instances
 
+    def _get_request_params(self, kwargs):
+        return {'includePublicClusters': 'true'}
+
     def _get_instances(self, response, **kwargs):
         if not response.data:
             return []
@@ -164,7 +168,8 @@ class CreateResource(BaseRepository):
 
     def create(self, instance, data=None, path=None):
         instance_dict = self._get_instance_dict(instance)
-        response = self._send_create_request(instance_dict, data=data, path=path)
+        response = self._send_create_request(
+            instance_dict, data=data, path=path)
         self._validate_response(response)
         handle = self._process_response(response)
         return handle
@@ -189,8 +194,10 @@ class CreateResource(BaseRepository):
         json_ = self._get_request_json(instance_dict)
         params = self._get_request_params(instance_dict)
         files = self._get_request_files(path)
-        response = client.post(url, params=params, json=json_, data=data, files=files)
-        gradient_response = http_client.GradientResponse.interpret_response(response)
+        response = client.post(
+            url, params=params, json=json_, data=data, files=files)
+        gradient_response = http_client.GradientResponse.interpret_response(
+            response)
         return gradient_response
 
     def _process_response(self, response):
@@ -241,7 +248,8 @@ class AlterResource(BaseRepository):
         client = self._get_client(**kwargs)
         json_data = self._get_request_json(kwargs)
         response = self._send_request(client, url, json_data=json_data)
-        gradient_response = http_client.GradientResponse.interpret_response(response)
+        gradient_response = http_client.GradientResponse.interpret_response(
+            response)
         return gradient_response
 
     def _send_request(self, client, url, json_data=None):
@@ -300,7 +308,8 @@ class GetMetrics(GetResource):
         if not instance.metrics_url:
             raise GradientSdkError("Metrics API url not found")
 
-        metrics_api_url = concatenate_urls(protocol + "://", instance.metrics_url)
+        metrics_api_url = concatenate_urls(
+            protocol + "://", instance.metrics_url)
         return metrics_api_url
 
     def _get(self, **kwargs):
@@ -346,7 +355,8 @@ class GetMetrics(GetResource):
         return metrics
 
     def _get_start_date(self, instance, kwargs):
-        datetime_string = kwargs.get("start") or instance.dt_started or instance.dt_created
+        datetime_string = kwargs.get(
+            "start") or instance.dt_started or instance.dt_created
         if not datetime_string:
             return None
 
@@ -377,6 +387,7 @@ class GetMetrics(GetResource):
         datetime_str = some_datetime.strftime("%Y-%m-%dT%H:%M:%SZ")
         return datetime_str
 
+
 class ListMetrics(GetResource):
     OBJECT_TYPE = None
 
@@ -390,7 +401,8 @@ class ListMetrics(GetResource):
         if not instance.metrics_url:
             raise GradientSdkError("Metrics API url not found")
 
-        metrics_api_url = concatenate_urls(protocol + "://", instance.metrics_url)
+        metrics_api_url = concatenate_urls(
+            protocol + "://", instance.metrics_url)
         return metrics_api_url
 
     def _get(self, **kwargs):
@@ -425,7 +437,8 @@ class ListMetrics(GetResource):
         return api_url
 
     def _get_start_date(self, instance, kwargs):
-        datetime_string = kwargs.get("start") or instance.dt_started or instance.dt_created
+        datetime_string = kwargs.get(
+            "start") or instance.dt_started or instance.dt_created
         if not datetime_string:
             return None
 
@@ -456,6 +469,7 @@ class ListMetrics(GetResource):
         datetime_str = some_datetime.strftime("%Y-%m-%dT%H:%M:%SZ")
         return datetime_str
 
+
 @six.add_metaclass(abc.ABCMeta)
 class StreamMetrics(BaseRepository):
     OBJECT_TYPE = None
@@ -467,7 +481,8 @@ class StreamMetrics(BaseRepository):
         if not instance.metrics_url:
             raise GradientSdkError("Metrics API url not found")
 
-        metrics_api_url = concatenate_urls(protocol + "://", instance.metrics_url)
+        metrics_api_url = concatenate_urls(
+            protocol + "://", instance.metrics_url)
         return metrics_api_url
 
     def _get_api_url(self, **kwargs):
@@ -484,20 +499,23 @@ class StreamMetrics(BaseRepository):
                     self.logger.debug("Metrics data: {}".format(data))
                     yield data
             except websocket.WebSocketConnectionClosedException as e:
-                self.logger.debug("WebSocketConnectionClosedException: {}".format(e))
+                self.logger.debug(
+                    "WebSocketConnectionClosedException: {}".format(e))
             except sdk_exceptions.EndWebsocketStream:
                 return
 
     def _get_connection(self, kwargs):
         url = self._get_full_url(kwargs)
-        self.logger.debug("(Re)opening websocket connection to: {}".format(url))
+        self.logger.debug(
+            "(Re)opening websocket connection to: {}".format(url))
         ws = websocket.create_connection(url)
         self.logger.debug("Connected")
         return ws
 
     def _get_full_url(self, kwargs):
         instance_id = kwargs["id"]
-        metrics_api_url = self._get_metrics_api_url(instance_id, protocol="wss")
+        metrics_api_url = self._get_metrics_api_url(
+            instance_id, protocol="wss")
         url = concatenate_urls(metrics_api_url, self.get_request_url())
         return url
 
@@ -529,10 +547,12 @@ class StreamMetrics(BaseRepository):
         descriptor = self._get_chart_descriptor(kwargs)
         self.logger.debug("Sending chart descriptor: {}".format(descriptor))
         response = connection.send(descriptor)
-        self.logger.debug("Chart descriptor sent. Response: {}".format(response))
+        self.logger.debug(
+            "Chart descriptor sent. Response: {}".format(response))
 
     def _get_stream_generator(self, connection):
         return connection
+
 
 class ListLogs(ListResources):
     @abc.abstractmethod
