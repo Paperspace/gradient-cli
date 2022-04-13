@@ -28,13 +28,11 @@ class TestMachineAvailability(object):
         "--machineType", "P4000",
         "--apiKey", "some_key",
     ]
-    COMMAND_WITH_OPTIONS_FILE = [
-        "machines", "availability", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "availability", "--optionsFile", ]  # path added in test
 
     EXPECTED_STDOUT = "Machine available: True\n"
 
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
-        "status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
@@ -68,8 +66,7 @@ class TestMachineAvailability(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(self, get_patched, machines_availability_config_path):
         get_patched.return_value = MockResponse(self.RESPONSE_JSON)
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
-            [machines_availability_config_path]
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_availability_config_path]
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, command)
@@ -84,8 +81,7 @@ class TestMachineAvailability(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_valid_error_message_when_availability_command_was_used_with_invalid_api_token(self,
                                                                                                         get_patched):
-        get_patched.return_value = MockResponse(
-            self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
+        get_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.COMMAND)
@@ -212,14 +208,12 @@ class TestCreateMachine(object):
         "--apiKey", "some_key",
     ]
 
-    COMMAND_WITH_OPTIONS_FILE = [
-        "machines", "create", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "create", "--optionsFile", ]  # path added in test
 
     EXPECTED_STDOUT = "New machine created with id: psclbvqpc\n" \
                       "https://console.paperspace.com/machines/psclbvqpc\n"
 
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
-        "status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to create resource: Invalid API token\n"
     UPDATE_TAGS_RESPONSE_JSON_200 = example_responses.UPDATE_TAGS_RESPONSE
 
@@ -245,8 +239,7 @@ class TestCreateMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_valid_post_request_when_machine_create_was_used_with_requested_options(self, get_patched):
-        get_patched.return_value = MockResponse(
-            example_responses.CREATE_MACHINE_RESPONSE, 200)
+        get_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -262,8 +255,7 @@ class TestCreateMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_valid_post_request_when_machine_create_was_used_with_all_options(self, post_patched):
-        post_patched.return_value = MockResponse(
-            example_responses.CREATE_MACHINE_RESPONSE, 200)
+        post_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.ALL_COMMANDS)
@@ -279,8 +271,7 @@ class TestCreateMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(
-            example_responses.CREATE_MACHINE_RESPONSE, 200)
+        post_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -296,10 +287,8 @@ class TestCreateMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_yaml_file(self, post_patched, machines_create_config_path):
-        post_patched.return_value = MockResponse(
-            example_responses.CREATE_MACHINE_RESPONSE)
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
-            [machines_create_config_path]
+        post_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_create_config_path]
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, command)
@@ -315,8 +304,7 @@ class TestCreateMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_error_message_when_wrong_api_key_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(
-            self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -332,8 +320,7 @@ class TestCreateMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_error_message_when_wrong_template_id_was_used(self, post_patched):
-        post_patched.return_value = MockResponse(
-            self.RESPONSE_JSON_WITH_WRONG_TEMPLATE_ID, 400)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_TEMPLATE_ID, 400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -366,8 +353,7 @@ class TestCreateMachine(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_error_message_when_mutually_exclusive_options_were_used(self, get_patched):
         cli_runner = CliRunner()
-        result = cli_runner.invoke(
-            cli.cli, self.BASIC_COMMAND_WITH_MUTUALLY_EXCLUSIVE_OPTIONS_USED)
+        result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_MUTUALLY_EXCLUSIVE_OPTIONS_USED)
 
         get_patched.assert_not_called()
         assert "Error: --userId is mutually exclusive with --email, --password, --firstName and --lastName\n" \
@@ -378,11 +364,9 @@ class TestCreateMachine(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_proper_data_and_tag_machine(self, post_patched, get_patched, put_patched):
-        post_patched.return_value = MockResponse(
-            example_responses.CREATE_MACHINE_RESPONSE, 200)
+        post_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
         get_patched.return_value = MockResponse({}, 200)
-        put_patched.return_value = MockResponse(
-            self.UPDATE_TAGS_RESPONSE_JSON_200, 200)
+        put_patched.return_value = MockResponse(self.UPDATE_TAGS_RESPONSE_JSON_200, 200)
 
         runner = CliRunner()
         result = runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_TAGS)
@@ -426,13 +410,11 @@ class TestDestroyMachine(object):
         "--apiKey", "some_key",
     ]
 
-    COMMAND_WITH_OPTIONS_FILE = [
-        "machines", "destroy", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "destroy", "--optionsFile", ]  # path added in test
 
     EXPECTED_STDOUT = "Machine successfully destroyed\n"
 
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
-        "status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to delete resource: Invalid API token\n"
 
     RESPONSE_JSON_WITH_404_MACHINE_NOT_FOUND = {
@@ -480,8 +462,7 @@ class TestDestroyMachine(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_yaml_file(self, post_patched, machines_destroy_config_path):
         post_patched.return_value = MockResponse()
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
-            [machines_destroy_config_path]
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_destroy_config_path]
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, command)
@@ -513,8 +494,7 @@ class TestDestroyMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_valid_post_request_when_machines_destroy_was_used_with_wrong_api_key(self, post_patched):
-        post_patched.return_value = MockResponse(
-            json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        post_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -641,13 +621,11 @@ class TestListMachines(object):
         },
     }
 
-    COMMAND_WITH_OPTIONS_FILE = ["machines", "list",
-                                 "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "list", "--optionsFile", ]  # path added in test
 
     BASIC_COMMAND_WITH_API_KEY = ["machines", "list", "--apiKey", "some_key"]
 
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
-        "status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
 
     EXPECTED_STDOUT_WHEN_NO_MACHINES_WERE_FOUND = "No data found\n"
@@ -658,12 +636,9 @@ class TestListMachines(object):
         "--name", "some_name",
     ]
 
-    DEFAULT_PARAMS = {'includePublicClusters': 'true'}
-
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_machines_list_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -672,13 +647,12 @@ class TestListMachines(object):
         get_patched.assert_called_with(self.URL,
                                        headers=EXPECTED_HEADERS,
                                        json=None,
-                                       params=self.DEFAULT_PARAMS)
+                                       params=None)
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_when_all_options_were_used(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_ALL_OPTIONS)
@@ -687,13 +661,12 @@ class TestListMachines(object):
         get_patched.assert_called_with(self.URL,
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=self.ALL_OPTIONS_REQUEST_JSON,
-                                       params=self.DEFAULT_PARAMS)
+                                       params=None)
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_when_all_options_were_used(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_ALL_OPTIONS)
@@ -702,13 +675,12 @@ class TestListMachines(object):
         get_patched.assert_called_with(self.URL,
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=self.ALL_OPTIONS_REQUEST_JSON,
-                                       params=self.DEFAULT_PARAMS)
+                                       params=None)
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_when_params_option_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_PARAMS_OPTION)
@@ -716,14 +688,13 @@ class TestListMachines(object):
         get_patched.assert_called_with(self.URL,
                                        headers=EXPECTED_HEADERS,
                                        json=self.REQUEST_JSON_WITH_PARAMS_OPTION,
-                                       params=self.DEFAULT_PARAMS)
+                                       params=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_when_machines_list_was_used_with_api_key_option(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -731,16 +702,14 @@ class TestListMachines(object):
         get_patched.assert_called_with(self.URL,
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=self.DEFAULT_PARAMS)
+                                       params=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(self, get_patched, machines_list_config_path):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON)
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
-            [machines_list_config_path]
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_list_config_path]
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, command)
@@ -748,14 +717,13 @@ class TestListMachines(object):
         get_patched.assert_called_with(self.URL,
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=self.ALL_OPTIONS_REQUEST_JSON,
-                                       params=self.DEFAULT_PARAMS)
+                                       params=None)
         assert result.output == self.EXPECTED_STDOUT
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_when_machines_list_was_used_with_wrong_api_key(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -763,7 +731,7 @@ class TestListMachines(object):
         get_patched.assert_called_with(self.URL,
                                        headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                        json=None,
-                                       params=self.DEFAULT_PARAMS)
+                                       params=None)
         assert result.output == self.EXPECTED_STDOUT_WITH_WRONG_API_TOKEN
         assert result.exit_code == 0
 
@@ -777,7 +745,7 @@ class TestListMachines(object):
         get_patched.assert_called_with(self.URL,
                                        headers=EXPECTED_HEADERS,
                                        json=None,
-                                       params=self.DEFAULT_PARAMS)
+                                       params=None)
         assert result.output == self.EXPECTED_STDOUT_WHEN_NO_MACHINES_WERE_FOUND
         assert result.exit_code == 0
 
@@ -791,15 +759,14 @@ class TestListMachines(object):
         get_patched.assert_called_with(self.URL,
                                        headers=EXPECTED_HEADERS,
                                        json=None,
-                                       params=self.DEFAULT_PARAMS)
+                                       params=None)
         assert result.output == "Failed to fetch data\n"
         assert result.exit_code == 0
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_print_error_message_when_params_option_was_used_with_mutually_exclusive_option(self, get_patched):
         cli_runner = CliRunner()
-        result = cli_runner.invoke(
-            cli.cli, self.COMMAND_WITH_MUTUALLY_EXCLUSIVE_OPTIONS)
+        result = cli_runner.invoke(cli.cli, self.COMMAND_WITH_MUTUALLY_EXCLUSIVE_OPTIONS)
 
         get_patched.assert_not_called()
         assert "You can use either --params dictionary or single filter arguments" in result.output
@@ -820,11 +787,9 @@ class TestRestartMachine(object):
         "--apiKey", "some_key",
     ]
 
-    COMMAND_WITH_OPTIONS_FILE = [
-        "machines", "restart", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "restart", "--optionsFile", ]  # path added in test
 
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
-        "status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Unable to restart instance: Invalid API token\n"
 
     RESPONSE_JSON_WITH_404_MACHINE_NOT_FOUND = {
@@ -872,8 +837,7 @@ class TestRestartMachine(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_config_file(self, post_patched, machines_restart_config_path):
         post_patched.return_value = MockResponse()
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
-            [machines_restart_config_path]
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_restart_config_path]
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, command)
@@ -889,8 +853,7 @@ class TestRestartMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_valid_error_message_when_start_command_was_used_with_invalid_api_token(self, post_patched):
-        post_patched.return_value = MockResponse(
-            self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.COMMAND)
@@ -981,11 +944,9 @@ class TestShowMachine(object):
         "--id", "some_id",
         "--apiKey", "some_key",
     ]
-    COMMAND_WITH_OPTIONS_FILE = [
-        "machines", "details", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "details", "--optionsFile", ]  # path added in test
 
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
-        "status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
 
     RESPONSE_JSON_WHEN_MACHINE_WAS_NOT_FOUND = {
@@ -999,8 +960,7 @@ class TestShowMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_machines_list_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -1014,8 +974,7 @@ class TestShowMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_when_machines_show_was_used_with_api_key_option(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -1029,10 +988,8 @@ class TestShowMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(self, get_patched, machines_show_config_path):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON)
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
-            [machines_show_config_path]
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_show_config_path]
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, command)
@@ -1046,8 +1003,7 @@ class TestShowMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_when_machines_list_was_used_with_wrong_api_key(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -1097,8 +1053,7 @@ class TestStartMachine(object):
     ]
     EXPECTED_STDOUT = "Machine started\n"
 
-    COMMAND_WITH_OPTIONS_FILE = [
-        "machines", "start", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "start", "--optionsFile", ]  # path added in test
 
     COMMAND_WITH_API_KEY = [
         "machines", "start",
@@ -1106,8 +1061,7 @@ class TestStartMachine(object):
         "--apiKey", "some_key",
     ]
 
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
-        "status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Unable to start instance: Invalid API token\n"
 
     RESPONSE_JSON_WITH_404_MACHINE_NOT_FOUND = {
@@ -1155,8 +1109,7 @@ class TestStartMachine(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_yaml_file(self, post_patched, machines_start_config_path):
         post_patched.return_value = MockResponse()
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
-            [machines_start_config_path]
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_start_config_path]
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, command)
@@ -1172,8 +1125,7 @@ class TestStartMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_valid_error_message_when_start_command_was_used_with_invalid_api_token(self, post_patched):
-        post_patched.return_value = MockResponse(
-            self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.COMMAND)
@@ -1229,8 +1181,7 @@ class TestStopMachine(object):
     ]
     EXPECTED_STDOUT = "Machine stopped\n"
 
-    COMMAND_WITH_OPTIONS_FILE = ["machines", "stop",
-                                 "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "stop", "--optionsFile", ]  # path added in test
 
     COMMAND_WITH_API_KEY = [
         "machines", "stop",
@@ -1238,8 +1189,7 @@ class TestStopMachine(object):
         "--apiKey", "some_key",
     ]
 
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
-        "status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Unable to stop instance: Invalid API token\n"
 
     RESPONSE_JSON_WITH_404_MACHINE_NOT_FOUND = {
@@ -1287,8 +1237,7 @@ class TestStopMachine(object):
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_yaml_file(self, post_patched, machines_stop_config_path):
         post_patched.return_value = MockResponse()
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
-            [machines_stop_config_path]
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_stop_config_path]
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, command)
@@ -1304,8 +1253,7 @@ class TestStopMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_valid_error_message_when_stop_command_was_used_with_invalid_api_token(self, post_patched):
-        post_patched.return_value = MockResponse(
-            self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        post_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.COMMAND)
@@ -1382,8 +1330,7 @@ class TestUpdateMachine(object):
         "autoSnapshotSaveCount": 1,
         "dynamicPublicIp": True,
     }
-    COMMAND_WITH_OPTIONS_FILE = [
-        "machines", "update", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "update", "--optionsFile", ]  # path added in test
 
     BASIC_COMMAND_WITH_API_KEY = [
         "machines", "update",
@@ -1393,12 +1340,10 @@ class TestUpdateMachine(object):
     ]
     EXPECTED_STDOUT = "Machine updated\n"
 
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
-        "status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to update resource: Invalid API token\n"
 
-    RESPONSE_JSON_WITH_WRONG_MACHINE_ID = {
-        "error": {"name": "Error", "status": 404, "message": "Not found"}}
+    RESPONSE_JSON_WITH_WRONG_MACHINE_ID = {"error": {"name": "Error", "status": 404, "message": "Not found"}}
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_valid_post_request_when_machine_create_was_used_with_requested_options(self, get_patched):
@@ -1434,8 +1379,7 @@ class TestUpdateMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_send_changed_headers_when_api_key_option_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(
-            example_responses.CREATE_MACHINE_RESPONSE, 200)
+        get_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -1451,10 +1395,8 @@ class TestUpdateMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_read_options_from_yaml_file(self, get_patched, machines_update_config_path):
-        get_patched.return_value = MockResponse(
-            example_responses.CREATE_MACHINE_RESPONSE, 200)
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
-            [machines_update_config_path]
+        get_patched.return_value = MockResponse(example_responses.CREATE_MACHINE_RESPONSE, 200)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_update_config_path]
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, command)
@@ -1470,8 +1412,7 @@ class TestUpdateMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_error_message_when_wrong_api_key_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(
-            self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
+        get_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, 400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -1487,8 +1428,7 @@ class TestUpdateMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.post")
     def test_should_print_error_message_when_wrong_machine_id_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(
-            self.RESPONSE_JSON_WITH_WRONG_MACHINE_ID, 400)
+        get_patched.return_value = MockResponse(self.RESPONSE_JSON_WITH_WRONG_MACHINE_ID, 400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -1545,11 +1485,9 @@ class TestShowMachineUtilization(object):
         "--apiKey", "some_key",
     ]
 
-    COMMAND_WITH_OPTIONS_FILE = [
-        "machines", "utilization", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "utilization", "--optionsFile", ]  # path added in test
 
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
-        "status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
 
     RESPONSE_JSON_WHEN_MACHINE_WAS_NOT_FOUND = {
@@ -1563,8 +1501,7 @@ class TestShowMachineUtilization(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_machines_utilizaation_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -1578,8 +1515,7 @@ class TestShowMachineUtilization(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_when_machines_utilization_was_used_with_api_key_option(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -1593,10 +1529,8 @@ class TestShowMachineUtilization(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(self, get_patched, machines_utilization_config_path):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON)
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
-            [machines_utilization_config_path]
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_utilization_config_path]
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, command)
@@ -1610,8 +1544,7 @@ class TestShowMachineUtilization(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_when_machines_utilization_was_used_with_wrong_api_key(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -1671,11 +1604,9 @@ class TestWaitForMachine(object):
         "--apiKey", "some_key",
     ]
 
-    COMMAND_WITH_OPTIONS_FILE = [
-        "machines", "waitfor", "--optionsFile", ]  # path added in test
+    COMMAND_WITH_OPTIONS_FILE = ["machines", "waitfor", "--optionsFile", ]  # path added in test
 
-    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {
-        "status": 400, "message": "Invalid API token"}
+    RESPONSE_JSON_WITH_WRONG_API_TOKEN = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WITH_WRONG_API_TOKEN = "Failed to fetch data: Invalid API token\n"
 
     RESPONSE_JSON_WHEN_MACHINE_WAS_NOT_FOUND = {
@@ -1689,8 +1620,7 @@ class TestWaitForMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_and_print_table_when_machines_waitfor_was_used(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND)
@@ -1704,8 +1634,7 @@ class TestWaitForMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_when_machines_waitfor_was_used_with_api_key_option(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
+        get_patched.return_value = MockResponse(json_data=self.EXPECTED_RESPONSE_JSON, status_code=200)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -1719,8 +1648,7 @@ class TestWaitForMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_valid_post_request_when_machines_waitfor_was_used_with_wrong_api_key(self, get_patched):
-        get_patched.return_value = MockResponse(
-            json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, self.BASIC_COMMAND_WITH_API_KEY)
@@ -1734,10 +1662,8 @@ class TestWaitForMachine(object):
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_read_options_from_yaml_file(self, get_patched, machines_waitfor_config_path):
-        get_patched.return_value = MockResponse(
-            json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
-        command = self.COMMAND_WITH_OPTIONS_FILE[:] + \
-            [machines_waitfor_config_path]
+        get_patched.return_value = MockResponse(json_data=self.RESPONSE_JSON_WITH_WRONG_API_TOKEN, status_code=400)
+        command = self.COMMAND_WITH_OPTIONS_FILE[:] + [machines_waitfor_config_path]
 
         cli_runner = CliRunner()
         result = cli_runner.invoke(cli.cli, command)

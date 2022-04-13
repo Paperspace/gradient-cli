@@ -13,6 +13,9 @@ class ListMachineTypes(ListResources):
     def _get_api_url(self, **kwargs):
         return config.config.CONFIG_HOST
 
+    def _get_request_params(self, kwargs):
+        return {'includePublicClusters': 'true'}
+
     def _get_instance_dicts(self, data, cluster_id=None, **kwargs):
         vm_types_dicts = {}  # vmType["label"]: vmType dict
         for cluster_list_of_vms in data.values():
