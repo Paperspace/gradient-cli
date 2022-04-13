@@ -127,6 +127,7 @@ class TestListVmTypes(object):
 
     RESPONSE_JSON_WHEN_WRONG_API_KEY_WAS_USED = {"status": 400, "message": "Invalid API token"}
     EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED = "Failed to fetch data: Invalid API token\n"
+    DEFAULT_PARAMS = {'includePublicClusters': 'true'}
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_machine_types(self, get_patched):
@@ -139,7 +140,7 @@ class TestListVmTypes(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=EXPECTED_HEADERS,
                                             json=None,
-                                            params=None)
+                                            params=self.DEFAULT_PARAMS)
 
         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
 
@@ -154,7 +155,7 @@ class TestListVmTypes(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=EXPECTED_HEADERS,
                                             json=None,
-                                            params=None)
+                                            params=self.DEFAULT_PARAMS)
 
     @mock.patch("gradient.api_sdk.clients.http_client.requests.get")
     def test_should_send_get_request_and_print_list_of_machine_types_but_none_found(self, get_patched):
@@ -166,7 +167,7 @@ class TestListVmTypes(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=EXPECTED_HEADERS,
                                             json=None,
-                                            params=None)
+                                            params=self.DEFAULT_PARAMS)
 
         assert result.output == "No data found\n"
 
@@ -181,7 +182,7 @@ class TestListVmTypes(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=EXPECTED_HEADERS,
                                             json=None,
-                                            params=None)
+                                            params=self.DEFAULT_PARAMS)
 
         assert result.output == self.EXPECTED_STDOUT_WHEN_WRONG_API_KEY_WAS_USED
         assert EXPECTED_HEADERS["X-API-Key"] != "some_key"
@@ -198,4 +199,4 @@ class TestListVmTypes(object):
         get_patched.assert_called_once_with(self.URL,
                                             headers=EXPECTED_HEADERS_WITH_CHANGED_API_KEY,
                                             json=None,
-                                            params=None)
+                                            params=self.DEFAULT_PARAMS)
