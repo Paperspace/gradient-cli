@@ -640,12 +640,40 @@ class PutDatasetFilesCommand(BaseDatasetFilesCommand):
                             )[0]['url']
 
                             chunk = f.read(part_minsize)
-                            part_res = session.put(
-                                presigned_url,
-                                data=chunk,
-                                timeout=5)
+                            for attempt in range(0, 5):
+                                part_res = session.put(
+                                    presigned_url,
+                                    data=chunk,
+                                    timeout=5)
+                                if part_res.status_code == 200:
+                                    break
+
+                            if part_res.status_code != 200:
+                                # Why do we silence exceptions that get
+                                # explicitly raised? Mystery for the ages, but
+                                # there you have it I guess...
+                                print(f'\nUnable to complete upload of {path}')
+                                raise ApplicationError(
+                                    f'Unable to complete upload of {path}')
                             etag = part_res.headers['ETag'].replace('"', '')
                             parts.append({'ETag': etag, 'PartNumber': part})
+                            # This is a pretty jank way to get about multipart
+                            # upload status updates, but we structure the Halo
+                            # spinner to report on the number of completed
+                            # tasks dispatched to the workers in the pool.
+                            # Since it's more of a PITA to properly distribute
+                            # this MPU among all workers than I really want to
+                            # deal with, that means we can't easily plug into
+                            # Halo for these updates. But we can print to
+                            # console! Which again, jank and noisy, but arguably
+                            # better than a task sitting forever, never either
+                            # completing or emitting an error message.
+                            if len(parts) % 7 == 0:  # About every 100MB
+                                print(
+                                    f'\nUploaded {len(parts) * part_minsize / 10e5}MB '
+                                    f'of {int(size / 10e5)}MB for '
+                                    f'{path}'
+                                )
 
                     r = api_client.post(
                         url=mpu_url,
