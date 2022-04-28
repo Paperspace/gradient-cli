@@ -8,13 +8,13 @@ Gradient CLI
 
 <br>
 
-**Get started:** [Create Account](https://console.paperspace.com/signup?gradient=true) • [Install CLI](https://docs.paperspace.com/gradient/get-started/install-the-cli) • [Tutorials](https://docs.paperspace.com/gradient/tutorials) • [Docs](https://docs.paperspace.com/gradient)
+**Get started:** [Create Account](https://console.paperspace.com/signup?gradient=true) • [Install CLI](https://docs.paperspace.com/gradient/cli/) • [Tutorials](https://docs.paperspace.com/gradient/tutorials/) • [Docs](https://docs.paperspace.com/gradient)
 
-**Resources:** [Website](https://gradient.run/) • [Blog](https://blog.paperspace.com/) • [Support](https://support.paperspace.com/hc/en-us) • [Contact Sales](https://info.paperspace.com/contact-sales-gradient)
+**Resources:** [Website](https://gradient.run/) • [Blog](https://blog.paperspace.com/) • [Support](https://docs.paperspace.com/contact-support/) • [Contact Sales](https://paperspace.com/contact-sales)
 
 <br>
 
-Gradient is an an end-to-end MLOps platform that enables individuals and organizations to quickly develop, train, and deploy Deep Learning models.  The Gradient software stack runs on any infrastructure e.g. AWS, GCP, on-premise and low-cost [Paperspace GPUs](https://gradient.run/instances).  Leverage automatic versioning, distributed training, built-in graphs & metrics, hyperparameter search, GradientCI, 1-click Jupyter Notebooks, our Python SDK, and more. 
+Gradient is an an end-to-end MLOps platform that enables individuals and organizations to quickly develop, train, and deploy Deep Learning models.  The Gradient software stack runs on any infrastructure e.g. AWS, GCP, on-premise and low-cost [Paperspace GPUs](https://docs.paperspace.com/gradient/machines/).  Leverage automatic versioning, distributed training, built-in graphs & metrics, hyperparameter search, GradientCI, 1-click Jupyter Notebooks, our Python SDK, and more. 
 
 Key components:
 
