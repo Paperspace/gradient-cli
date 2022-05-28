@@ -3,7 +3,6 @@ clusterId: 321
 projectId: pr1234
 container: "jupyter/notebook"
 command: some_entrypoint
-containerUser: some_container_user
 isPreemptible: true
 name: some_notebook_name
 registryPassword: some_password

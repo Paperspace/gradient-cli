@@ -21,7 +21,6 @@ class NotebookSchema(BaseSchema):
     registry_password = marshmallow.fields.Str(load_from="registryPassword", dump_to="registryPassword")
     command = marshmallow.fields.Str(load_from="command", dump_to="command")
     default_entrypoint = marshmallow.fields.Str(load_from="defaultEntrypoint", dump_to="defaultEntrypoint")
-    container_user = marshmallow.fields.Str(load_from="containerUser", dump_to="containerUser")
     shutdown_timeout = marshmallow.fields.Int(load_from="shutdownTimeout", dump_to="shutdownTimeout")
     is_preemptible = marshmallow.fields.Bool(load_from="isPreemptible", dump_to="isPreemptible")
     is_public = marshmallow.fields.Bool(load_from="isPublic", dump_to="isPublic")
