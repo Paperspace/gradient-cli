@@ -20,7 +20,6 @@ class Notebook(object):
     registry_password = attr.ib(type=str, default=None)
     command = attr.ib(type=str, default=None)
     default_entrypoint = attr.ib(type=str, default=None)
-    container_user = attr.ib(type=str, default=None)
     shutdown_timeout = attr.ib(type=int, default=None)
     is_preemptible = attr.ib(type=bool, default=None)
     project_id = attr.ib(type=str, default=None)

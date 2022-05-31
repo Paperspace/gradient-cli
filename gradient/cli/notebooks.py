@@ -85,13 +85,6 @@ def notebook_metrics():
     cls=common.GradientOption,
 )
 @click.option(
-    "--containerUser",
-    "container_user",
-    type=str,
-    help="Container user",
-    cls=common.GradientOption,
-)
-@click.option(
     "--shutdownTimeout",
     "shutdown_timeout",
     help="Shutdown timeout in hours",
