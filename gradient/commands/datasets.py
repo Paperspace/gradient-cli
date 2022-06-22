@@ -558,6 +558,10 @@ class GetDatasetFilesCommand(BaseDatasetFilesCommand):
                             pool.put(self._get, url=pre_signed.url, path=path)
 
 
+MULTIPART_CHUNK_SIZE = int(15e6)  # 15MB
+PUT_TIMEOUT = 300  # 5 minutes
+
+
 class PutDatasetFilesCommand(BaseDatasetFilesCommand):
 
     # @classmethod
@@ -570,10 +574,10 @@ class PutDatasetFilesCommand(BaseDatasetFilesCommand):
                 headers.update({'Content-Size': '0'})
                 r = session.put(url, data='', headers=headers, timeout=5)
             # for files under 15MB
-            elif size <= (15e6):
+            elif size <= (MULTIPART_CHUNK_SIZE):
                 with open(path, 'rb') as f:
                     r = session.put(
-                        url, data=f, headers=headers, timeout=300)
+                        url, data=f, headers=headers, timeout=PUT_TIMEOUT)
             # # for chonky files, use a multipart upload
             else:
                 # Chunks need to be at least 5MB or AWS throws an
@@ -587,7 +591,7 @@ class PutDatasetFilesCommand(BaseDatasetFilesCommand):
                 # We can dynamically assign a larger part size if needed,
                 # but for the majority of use cases we should be fine
                 # as-is
-                part_minsize = int(15e6)
+                part_minsize = MULTIPART_CHUNK_SIZE
                 dataset_id, _, version = dataset_version_id.partition(":")
                 mpu_url = f'/datasets/{dataset_id}/versions/{version}/s3/preSignedUrls'
                 api_client = http_client.API(
@@ -643,7 +647,7 @@ class PutDatasetFilesCommand(BaseDatasetFilesCommand):
                                 presigned_url,
                                 data=chunk,
                                 headers=headers,
-                                timeout=300)
+                                timeout=PUT_TIMEOUT)
 
                             if part_res.status_code == 200:
                                 break
