@@ -5,7 +5,7 @@ import os
 import re
 import threading
 import uuid
-import json
+import math
 try:
     import queue
 except ImportError:
@@ -616,12 +616,11 @@ class PutDatasetFilesCommand(BaseDatasetFilesCommand):
 
                 parts = []
                 with open(path, 'rb') as f:
-                    # we +2 the number of parts since we're doing floor
-                    # division, which will cut off any trailing part
-                    # less than the part_minsize, AND we want to 1-index
-                    # our range to match what AWS expects for part
-                    # numbers
-                    for part in range(1, (size // part_minsize) + 2):
+                    # we +1 the number of parts since we count from zero
+                    # to match what AWS expects for part numbers. We use
+                    # `ceil` to capture any remaining data less than
+                    # part_minsize at the end of upload
+                    for part in range(1, math.ceil(size / part_minsize) + 1):
                         presigned_url_res = api_client.post(
                             url=mpu_url,
                             json={
