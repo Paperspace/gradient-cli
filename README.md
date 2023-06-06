@@ -1,6 +1,7 @@
 ----
 > **Note**
 > We are rolling out a new streamlined [Paperspace CLI](https://github.com/Paperspace/cli) and recommend using this new CLI for all new projects.
+----
 
 ![GitHubSplash](https://user-images.githubusercontent.com/585865/65443342-e630d300-ddfb-11e9-9bcd-de1d2033ea60.png)
 
