@@ -67,7 +67,7 @@ setup(
         'halo',
         'marshmallow<3.0',
         'attrs<=19',
-        'PyYAML==5.*',
+        'PyYAML==5.3.1',
         'python-dateutil==2.*',
         'websocket-client==0.57.*',
         'gradient-utils>=0.1.2',
