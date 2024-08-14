@@ -15,7 +15,7 @@ Gradient CLI
 
 **Get started:** [Create Account](https://console.paperspace.com/signup?gradient=true) • [Install CLI](https://docs.paperspace.com/gradient/cli/) • [Tutorials](https://docs.paperspace.com/gradient/tutorials/) • [Docs](https://docs.paperspace.com/gradient)
 
-**Resources:** [Website](https://gradient.run/) • [Blog](https://blog.paperspace.com/) • [Support](https://docs.paperspace.com/contact-support/) • [Contact Sales](https://paperspace.com/contact-sales)
+**Resources:** [Website](https://www.paperspace.com/) • [Blog](https://blog.paperspace.com/) • [Support](https://docs.paperspace.com/contact-support/) • [Contact Sales](https://paperspace.com/contact-sales)
 
 <br>
 
@@ -23,9 +23,8 @@ Gradient is an an end-to-end MLOps platform that enables individuals and organiz
 
 Key components:
 
-* [Notebooks](https://gradient.run/notebooks): 1-click Jupyter Notebooks.
-* [Workflows](https://gradient.run/workflows): Train models at scale with composable actions. 
-* [Inference](https://gradient.run/deployments): Deploy models as API endpoints.
+* [Notebooks](https://www.paperspace.com/notebooks): 1-click Jupyter Notebooks.
+* [Inference](https://www.paperspace.com/deployments): Deploy models as API endpoints.
 
 Gradient supports any ML/DL framework (TensorFlow, PyTorch, XGBoost, etc).
 
