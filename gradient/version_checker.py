@@ -1,17 +1,13 @@
 import os
 import sys
 from platform import system
+import json
 
-import six
+import requests
 from distutils.version import StrictVersion
 
 from gradient.clilogger import CliLogger
 from gradient.version import version
-
-if six.PY2:
-    import xmlrpclib
-else:
-    import xmlrpc.client as xmlrpclib
 
 logger = CliLogger()
 
@@ -30,12 +26,33 @@ class VersionChecker(object):
         return up_to_date, version_in_repository
 
     def get_version_from_repository(
-        self, module_name, repository_url="http://pypi.python.org/pypi"
+        self, module_name, repository_url="https://pypi.org/pypi"
     ):
-        pypi = xmlrpclib.ServerProxy(repository_url)
-        versions = pypi.package_releases(module_name)
+        # Use PyPI JSON API instead of XML-RPC
+        json_url = f"{repository_url}/{module_name}/json"
+
+        try:
+            response = requests.get(json_url, timeout=5)
+            response.raise_for_status()
+            data = response.json()
+        except (requests.RequestException, json.JSONDecodeError) as e:
+            raise PackageNotFoundError(
+                "Package {} not found or API error: {}".format(module_name, str(e))
+            )
+
+        # Get all release versions
+        releases = data.get("releases", {})
+        if not releases:
+            raise PackageNotFoundError(
+                "No releases found for package {}".format(module_name)
+            )
+
+        # Get all version numbers
+        versions = list(releases.keys())
         if not versions:
-            raise PackageNotFoundError("Package {} not found".format(module_name))
+            raise PackageNotFoundError(
+                "No versions found for package {}".format(module_name)
+            )
 
         # Filter to only include versions < 3.0 (v2 versions only)
         v2_versions = []
