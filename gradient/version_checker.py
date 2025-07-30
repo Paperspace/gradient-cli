@@ -24,16 +24,38 @@ class VersionChecker(object):
     def is_up_to_date(self, module_name, current_version):
         version_in_repository = self.get_version_from_repository(module_name)
 
-        up_to_date = StrictVersion(current_version) >= StrictVersion(version_in_repository)
+        up_to_date = StrictVersion(current_version) >= StrictVersion(
+            version_in_repository
+        )
         return up_to_date, version_in_repository
 
-    def get_version_from_repository(self, module_name, repository_url="http://pypi.python.org/pypi"):
+    def get_version_from_repository(
+        self, module_name, repository_url="http://pypi.python.org/pypi"
+    ):
         pypi = xmlrpclib.ServerProxy(repository_url)
         versions = pypi.package_releases(module_name)
         if not versions:
             raise PackageNotFoundError("Package {} not found".format(module_name))
 
-        return versions[0]
+        # Filter to only include versions < 3.0 (v2 versions only)
+        v2_versions = []
+        for v in versions:
+            try:
+                if StrictVersion(v) < StrictVersion("3.0.0"):
+                    v2_versions.append(v)
+            except ValueError:
+                # Skip invalid version strings
+                continue
+
+        if not v2_versions:
+            # If no v2 versions found, raise exception to skip the check
+            raise PackageNotFoundError(
+                "No v2 versions found for package {}".format(module_name)
+            )
+
+        # Sort v2_versions to get the latest one (highest version number)
+        v2_versions.sort(key=lambda x: StrictVersion(x), reverse=True)
+        return v2_versions[0]
 
 
 class GradientVersionChecker(object):
@@ -74,9 +96,15 @@ class GradientVersionChecker(object):
             return
 
         if not up_to_date:
-            msg = "Warning: this version of the Gradient CLI ({current_version}) is out of date. " \
-                  "Some functionality might not be supported until you upgrade. \n\n" \
-                  "Run `pip install -U gradient` to upgrade\n".format(current_version=version)
+            msg = (
+                "Warning: this version of the Gradient CLI ({current_version}) is out of date. "
+                "Some functionality might not be supported until you upgrade. \n\n"
+                "The latest v2 version is {version_from_repository}.\n"
+                'Run `pip install -U "gradient<3.0"` to upgrade to the latest v2 version\n'
+                "Note: v3+ will be the DigitalOcean Gradient SDK. Pin to v2 to avoid breaking changes.\n".format(
+                    current_version=version
+                )
+            )
             logger.warning(msg)
 
     @staticmethod
