@@ -1,4 +1,13 @@
 ----
+> **⚠️ DEPRECATION NOTICE**
+>
+> **gradient-cli v2 is deprecated.** v3 of this project will host the DigitalOcean Gradient SDK.
+> Development for the new version will be in https://github.com/digitalocean/gradient-python.
+>
+> **Users are advised to pin to v2 of this library** to avoid breaking changes.
+----
+
+----
 > **Note**
 > We are rolling out a new streamlined [Paperspace CLI](https://github.com/Paperspace/cli) and recommend using this new CLI for all new projects.
 ----
@@ -19,7 +28,7 @@ Gradient CLI
 
 <br>
 
-Gradient is an an end-to-end MLOps platform that enables individuals and organizations to quickly develop, train, and deploy Deep Learning models.  The Gradient software stack runs on any infrastructure e.g. AWS, GCP, on-premise and low-cost [Paperspace GPUs](https://docs.paperspace.com/gradient/machines/).  Leverage automatic versioning, distributed training, built-in graphs & metrics, hyperparameter search, GradientCI, 1-click Jupyter Notebooks, our Python SDK, and more. 
+Gradient is an an end-to-end MLOps platform that enables individuals and organizations to quickly develop, train, and deploy Deep Learning models.  The Gradient software stack runs on any infrastructure e.g. AWS, GCP, on-premise and low-cost [Paperspace GPUs](https://docs.paperspace.com/gradient/machines/).  Leverage automatic versioning, distributed training, built-in graphs & metrics, hyperparameter search, GradientCI, 1-click Jupyter Notebooks, our Python SDK, and more.
 
 Key components:
 
@@ -38,16 +47,19 @@ See [releasenotes.md](https://github.com/Paperspace/gradient-cli/blob/master/rel
 
 Getting Started
 ===============
+
+> **⚠️ IMPORTANT:** This library is deprecated. Pin to v2 to avoid breaking changes: `pip install "gradient<3.0"`
+
 1. Make sure you have a Paperspace account set up. Go to [http://paperspace.com](https://console.paperspace.com/signup?gradient=true)
    to register and generate an API key.
 
 2. Use pip, pipenv, or conda to install the gradient package, e.g.:
 
-    `pip install -U gradient`
+    `pip install "gradient<3.0"`  # Pin to v2 to avoid breaking changes
 
-    To install/update prerelease (Alpha/Beta) version version of gradient, use:
+    To install/update prerelease (Alpha/Beta) version version of gradient v2, use:
 
-    `pip install -U --pre gradient`
+    `pip install -U --pre "gradient<3.0"`
 
 3. Set your api key by executing the following:
 
@@ -70,7 +82,7 @@ gradient projects list
 gradient workflows create --name <name> --projectId <project-id>
 ```
 
-For a full list of available commands run `gradient workflows --help`. You can also view more info about Workflows in the [docs](https://docs.paperspace.com/gradient/explore-train-deploy/workflows).  
+For a full list of available commands run `gradient workflows --help`. You can also view more info about Workflows in the [docs](https://docs.paperspace.com/gradient/explore-train-deploy/workflows).
 
 Contributing
 ============
