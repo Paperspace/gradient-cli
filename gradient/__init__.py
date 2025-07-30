@@ -10,6 +10,22 @@ warnings.warn(
     stacklevel=2,
 )
 
+# Redirect distutils to setuptools._distutils
+# This is necessary to avoid issues with setuptools and distutils compatibility in python 3.12+
+import sys
+import types
+import setuptools._distutils as _distutils
+
+# Create a fake 'distutils' module pointing to setuptools._distutils
+sys.modules["distutils"] = _distutils
+
+# Also redirect submodules like distutils.core, distutils.version, etc.
+sys.modules["distutils.core"] = _distutils.core
+# sys.modules["distutils.version"] = _distutils.version
+sys.modules["distutils.spawn"] = _distutils.spawn
+# sys.modules["distutils.sysconfig"] = _distutils.sysconfig
+
+
 from gradient_utils import *
 
 from .api_sdk import *

@@ -27,6 +27,7 @@ recommonmark = "*"
 sphinx-click = "*"
 gql = {extras = ["requests"], version = "==3.0.0a6"}
 windows-curses = {version = ">=2.3.0", markers = "platform_system=='Windows'"}
+setuptools = "*"
 
 [dev-packages]
 twine = "*"

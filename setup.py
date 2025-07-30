@@ -66,7 +66,7 @@ setup(
         "requests-toolbelt",
         "progressbar2",
         "halo",
-        "marshmallow~=4.0",
+        "marshmallow~=2.0",
         "attrs<=19",
         "PyYAML==5.3.1",
         "python-dateutil==2.*",
@@ -74,6 +74,7 @@ setup(
         "gradient-utils>=0.1.2",
         "gql[requests]==3.0.0a6",
         "packaging",
+        "setuptools",
         'windows-curses>=2.3.0 ; platform_system=="Windows"',
     ],
     entry_points={
