@@ -3,8 +3,9 @@ import sys
 from platform import system
 import json
 
+import six
 import requests
-from distutils.version import StrictVersion
+from packaging.version import Version
 
 from gradient.clilogger import CliLogger
 from gradient.version import version
@@ -20,9 +21,7 @@ class VersionChecker(object):
     def is_up_to_date(self, module_name, current_version):
         version_in_repository = self.get_version_from_repository(module_name)
 
-        up_to_date = StrictVersion(current_version) >= StrictVersion(
-            version_in_repository
-        )
+        up_to_date = Version(current_version) >= Version(version_in_repository)
         return up_to_date, version_in_repository
 
     def get_version_from_repository(
@@ -58,9 +57,9 @@ class VersionChecker(object):
         v2_versions = []
         for v in versions:
             try:
-                if StrictVersion(v) < StrictVersion("3.0.0"):
+                if Version(v) < Version("3.0.0"):
                     v2_versions.append(v)
-            except ValueError:
+            except Exception:
                 # Skip invalid version strings
                 continue
 
@@ -71,7 +70,7 @@ class VersionChecker(object):
             )
 
         # Sort v2_versions to get the latest one (highest version number)
-        v2_versions.sort(key=lambda x: StrictVersion(x), reverse=True)
+        v2_versions.sort(key=lambda x: Version(x), reverse=True)
         return v2_versions[0]
 
 

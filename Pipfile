@@ -4,7 +4,6 @@ name = "pypi"
 verify_ssl = true
 
 [packages]
-e1839a8 = {path = ".",editable = true}
 requests = {extras = ["security"]}
 requests-toolbelt = "*"
 progressbar2 = "*"
@@ -22,6 +21,7 @@ pyyaml = "*"
 python-dateutil = ">=2.0,<3.0"
 websocket-client = "*"
 gradient-utils = ">=0.5.0"
+packaging = "*"
 sphinx = "*"
 recommonmark = "*"
 sphinx-click = "*"
